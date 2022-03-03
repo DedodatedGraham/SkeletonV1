@@ -33,7 +33,7 @@ while i < len(TestPoints):
 i = 0
 while i < len(finPoints):
     finX.append(finPoints[i][0])
-    finY.append(finPoints[i][0])
+    finY.append(finPoints[i][1])
     i = i + 1
 plt.scatter(testX, testY)
 plt.scatter(finX, finY)

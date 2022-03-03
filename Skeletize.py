@@ -20,26 +20,37 @@ def getRadius2D(point1, point2 , norm) -> float:
         px = point2[0] + diffx
     else:
         px = point1[0] + diffx
+        
     if point1[1] > point2[1]:
         py = point2[1] + diffy
     else:
         py = point1[1] + diffy
+        
     inside = np.sqrt(pow(px * norm[0],2) + pow(py * norm[1],2))
     if inside != 0:
         inside = inside/distance 
+        
+        
     if inside < 1 and inside > -1:
         theta = np.arccos(inside)
         radius = distance/(2*np.cos(theta))
         
     elif inside > 0:
-        factor = inside % 1
+        factor = float(inside % 1)
+        #print('posFactor',factor)
         theta = np.arccos(factor)
+        #print('theta',theta)
         radius = distance/(2*np.cos(theta))
     else:
-        factor = (-1 * inside) % 1
+        factor = float((-1 * inside) % 1)
+        #print('NegFactor',factor)
         theta = np.arccos(factor)
         radius = distance/(2*np.cos(theta))
         
+    
+        
+    #print('point1',point1,'point2',point2,'radius',radius,'distance',distance)
+    #print('inside',inside,'norm',norm)
     
     return radius
     
@@ -62,45 +73,46 @@ def Skeletize2D(points : list, norms : list):
     index = 1
     guessr = 0
     for point in points:
-        #print('Current Point:')
-        #print(point)
-        #initialization
-        
-        
         tempr = []
         if index == 1:
             pcross = points[randint(index,len(points))]
+            pcross = points[10]
             tempr.append(getRadius2D(point,pcross,norms[index - 1]))
         else:
             tempr.append(guessr)
         
-        
+        if index == 2:
+            break
         print(index-1)
+        
+            
         i = 0
         centerp = []
         testp = []
         case = False
         while not case:
+            
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
-            #print ('itteration, point: ',i, ' , ', point)
             
-            testp = tree.getNear(centerp[i][0],centerp[i][1])
-            
-                        
-                        
-                        
-                        
+            testp = tree.getNear(centerp[i][0],centerp[i][1],point)         
             
             tempr.append(getRadius2D(point, testp, norms[index - 1]))
+           
             
-                
             
+            if index <=10:
+                print(index-1)
+                print('point',point)
+                print('Tree point',testp)
+                print('centerpoint',centerp[len(centerp)-1])
+                print(points[10])
+                print(tempr[len(tempr)-1])
+                print()
             if tempr[len(tempr)-1] == tempr[len(tempr) - 2]:
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[i+1])
                 #print('found')
                 case = True
-            
             
                 
             
@@ -111,7 +123,7 @@ def Skeletize2D(points : list, norms : list):
             pointq = points[randint(0,index)]
             
             if(pointq[0] == points[index][0] and pointq[1] == points[index][1]):
-               pointq = points[randint(0,index - 1)]
+                pointq = points[randint(0,index - 1)]
             guessr = getRadius2D(pointq, points[index], norms[index])
             
         index = index + 1

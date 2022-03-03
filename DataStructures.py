@@ -84,14 +84,14 @@ class kdTree:
     
     
     #non recursive function 
-    def getNear(self,pointx,pointy):
+    def getNear(self,pointx,pointy,RefPoint):
         point = [pointx,pointy]
-        retPoint, dep, distance = self.getNearR(point,self.tree)
+        retPoint, dep, distance = self.getNearR(point,RefPoint,self.tree)
         
         return retPoint    
         
                
-    def getNearR(self,searchPoint : list, tree : list, depth : int = 0):
+    def getNearR(self,searchPoint : list,exclude : list, tree : list, depth : int = 0):
         point = []
         tdep = depth
         Tdist = 10 * pow(10,10)
@@ -101,11 +101,11 @@ class kdTree:
                 i = 1
                 while i < len(tree):
                     td = getDistance2D(searchPoint,tree[i])
-                    if(td < Tdist):
+                    if td < Tdist and tree[i] != exclude:
                         point = tree[i]
                         Tdist = td
                     i = i + 1
-            elif len(tree) == 2:
+            elif len(tree) == 2 and tree[1] != exclude:
                 point = tree[1]
                 Tdist = 0
             else:
@@ -113,9 +113,9 @@ class kdTree:
                 tdep = 0
                 Tdist = 0
                 
-        elif tree[0] == searchPoint:#if search is a point on list
-            point1,tdep1,tdist1 = self.getNearR(searchPoint,tree[1],depth + 1)
-            point2,tdep2,tdist2 = self.getNearR(searchPoint,tree[0],depth + 1)
+        elif tree[0] == searchPoint or tree[0] == exclude:#if search is a point on list
+            point1,tdep1,tdist1 = self.getNearR(searchPoint,exclude,tree[1],depth + 1)
+            point2,tdep2,tdist2 = self.getNearR(searchPoint,exclude,tree[2],depth + 1)
             if tdist1 > tdist2:
                 Tdist = tdist2
                 point = point2
@@ -124,15 +124,17 @@ class kdTree:
                 Tdist = tdist1
                 point = point1
                 tdep = tdep1
+                
+                
         else:#needs to search further
             #first will grab lowest point from underneath
             axis = depth % self.dimensions
             if searchPoint[axis] >= tree[0][axis]:#will prioritize 'right' side of tree
                 
-                point,tdep,Tdist = self.getNearR(searchPoint,tree[2],depth + 1)
+                point,tdep,Tdist = self.getNearR(searchPoint,exclude,tree[2],depth + 1)
             else:#if 'left' side of tree
                 
-                point,tdep,Tdist = self.getNearR(searchPoint,tree[1],depth + 1)
+                point,tdep,Tdist = self.getNearR(searchPoint,exclude,tree[1],depth + 1)
             
             #then if within a count of  one dimensions away
             if tdep - depth < self.dimensions + 3:
