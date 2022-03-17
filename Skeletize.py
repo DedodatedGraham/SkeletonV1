@@ -11,47 +11,35 @@ from random  import randint
 
 
 def getRadius2D(point1, point2 , norm) -> float:
+    print('P',point1)
+    print('P`',point2)
+    print('Norm',norm)
     distance = getDistance2D(point1, point2)
-    diffx= np.abs(point1[0]-point2[0])
-    diffy= np.abs(point1[1]-point2[1])
-    px = 0
-    py = 0
-    if point1[0] > point2[0]:
-        px = point2[0] + diffx
+    print('Distance from P to P`',distance)
+    Pvec = [point1[0] - point2[0] , point1[1] - point2[1]]
+    print('Vector from P to P`',Pvec)
+    top = norm[0] * Pvec[0] + norm[1] * Pvec[0]
+    print('Dot Product',top)
+    if top/distance <= 1 and top/distance >= -1:
+        top = top/distance
+        print('inside',top)
+        theta = np.arccos(top)
+        print('angle',theta)
     else:
-        px = point1[0] + diffx
-        
-    if point1[1] > point2[1]:
-        py = point2[1] + diffy
-    else:
-        py = point1[1] + diffy
-        
-    inside = np.sqrt(pow(px * norm[0],2) + pow(py * norm[1],2))
-    if inside != 0:
-        inside = inside/distance 
-        
-        
-    if inside < 1 and inside > -1:
-        theta = np.arccos(inside)
-        radius = distance/(2*np.cos(theta))
-        
-    elif inside > 0:
-        factor = float(inside % 1)
-        #print('posFactor',factor)
-        theta = np.arccos(factor)
-        #print('theta',theta)
-        radius = distance/(2*np.cos(theta))
-    else:
-        factor = float((-1 * inside) % 1)
-        #print('NegFactor',factor)
-        theta = np.arccos(factor)
-        radius = distance/(2*np.cos(theta))
-        
+        top = top/distance
+        print('inside1',top)
+        top = top + 1
+        print('inside2',top)
+        top = top % 2
+        print('inside3',top)
+        top = top - 1
+        print('inside4',top)    
+        theta = np.arccos(top)
+        print('angle',theta)
     
-        
-    #print('point1',point1,'point2',point2,'radius',radius,'distance',distance)
-    #print('inside',inside,'norm',norm)
-    
+    radius = np.abs(distance / (2 * np.cos(theta)))
+    print('radius',radius)
+    print()
     return radius
     
 def Skeletize2D(points : list, norms : list):
@@ -76,14 +64,12 @@ def Skeletize2D(points : list, norms : list):
         tempr = []
         if index == 1:
             pcross = points[randint(index,len(points))]
-            pcross = points[10]
+            pcross = points[100]
             tempr.append(getRadius2D(point,pcross,norms[index - 1]))
         else:
             tempr.append(guessr)
         
-        if index == 2:
-            break
-        print(index-1)
+        
         
             
         i = 0
@@ -94,20 +80,22 @@ def Skeletize2D(points : list, norms : list):
             
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
             
-            testp = tree.getNear(centerp[i][0],centerp[i][1],point)         
+            testp = tree.getNear(centerp[i][0],centerp[i][1],point)  
+            
+            print('getting temp radius')
             
             tempr.append(getRadius2D(point, testp, norms[index - 1]))
            
             
             
-            if index <=10:
-                print(index-1)
-                print('point',point)
-                print('Tree point',testp)
-                print('centerpoint',centerp[len(centerp)-1])
-                print(points[10])
-                print(tempr[len(tempr)-1])
-                print()
+            print('index',index-1,i)
+            print('point',point)
+            print('Tree point',testp)
+            print('normal',norms[index-1])
+            print('centerpoint',centerp[len(centerp)-1])
+            print('initial point',points[100])
+            print('radius',tempr[len(tempr)-1])
+            print()
             if tempr[len(tempr)-1] == tempr[len(tempr) - 2]:
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[i+1])
@@ -120,13 +108,14 @@ def Skeletize2D(points : list, norms : list):
             i = i + 1
         #guess values
         if index != len(points):
-            pointq = points[randint(0,index)]
-            
-            if(pointq[0] == points[index][0] and pointq[1] == points[index][1]):
-                pointq = points[randint(0,index - 1)]
-            guessr = getRadius2D(pointq, points[index], norms[index])
-            
+            pointq = points[index]
+            print('getting guess radius')
+            guessr = getRadius2D(pointq,testp, norms[index])
+        
+        if index == 2:
+            break
         index = index + 1
+        
         
         
     #returns important values    

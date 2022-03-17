@@ -34,7 +34,17 @@ class kdTree:
         self.dimensions = dim
         self.tree = self.makeTree(points,0)
         
+    def sort(self,points : list, dimension) -> list:
         
+       
+        for i in range(len(points)):
+            min_i = i
+            for j in range(i+1,len(points)):
+                if points[j][dimension] < points[min_i][dimension]:
+                    min_i = j
+            points[i],points[min_i] = points[min_i],points[i]
+        
+        return points
         
     def makeTree(self,points:list, depth : int) -> list:
         finTree = []
@@ -42,13 +52,30 @@ class kdTree:
         if self.dimensions == 2:#formatting for 2D
             if len(points) > 5 and depth < 100:
                 axis = depth % self.dimensions #gets axis to divide along
-                points = np.sort(points,axis)
-            
-                mid = len(points) // 2
+                points = self.sort(points,axis)
                 
+                
+                mid = len(points) // 2
+                #print('level points',points)
                 finTree.append([points[mid][0],points[mid][1]])#choses node point
-                finTree.append(self.makeTree(points[:mid],depth+1))#gets roots(Left of node)
-                finTree.append(self.makeTree(points[mid+1:],depth+1))#(right of node)
+                #print('Midpoint',finTree[0])
+                pointsl = []
+                i = 0
+                while i < mid:
+                    pointsl.append([points[i][0] , points[i][1]])
+                    i = i + 1
+                #print('Left points',pointsl)
+                finTree.append(self.makeTree(pointsl,depth+1))#gets roots(Left of node)
+                
+                pointsr = []
+                i = mid + 1
+                
+                while i < len(points):
+                    pointsr.append([points[i][0] , points[i][1]])
+                    i = i + 1
+                #print('Right points',pointsr)
+                finTree.append(self.makeTree(pointsr,depth+1))#(right of node)
+                
                 
             
             else:
@@ -147,5 +174,6 @@ class kdTree:
         
         return point, tdep , Tdist
                 
+    
         
         
