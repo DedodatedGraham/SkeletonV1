@@ -11,39 +11,38 @@ from random  import randint
 
 
 def getRadius2D(point1, point2 , norm) -> float:
-    print('P',point1)
-    print('P`',point2)
-    print('Norm',norm)
+    #print('P',point1)
+    #print('P`',point2)
+    #print('Norm',norm)
     distance = getDistance2D(point1, point2)
-    print('Distance from P to P`',distance)
+    #print('Distance from P to P`',distance)
     Pvec = [point1[0] - point2[0] , point1[1] - point2[1]]
-    print('Vector from P to P`',Pvec)
+    #print('Vector from P to P`',Pvec)
     top = norm[0] * Pvec[0] + norm[1] * Pvec[0]
-    print('Dot Product',top)
+    #print('Dot Product',top)
     if top/distance <= 1 and top/distance >= -1:
         top = top/distance
-        print('inside',top)
+        #print('inside',top)
         theta = np.arccos(top)
-        print('angle',theta)
+        #print('angle',theta)
     else:
         top = top/distance
-        print('inside1',top)
+        #print('inside1',top)
         top = top + 1
-        print('inside2',top)
+        #print('inside2',top)
         top = top % 2
-        print('inside3',top)
+        #print('inside3',top)
         top = top - 1
-        print('inside4',top)    
+        #print('inside4',top)    
         theta = np.arccos(top)
-        print('angle',theta)
+        #print('angle',theta)
     
     radius = np.abs(distance / (2 * np.cos(theta)))
-    print('radius',radius)
-    print()
+    #print('radius',radius)
+    #print()
     return radius
     
 def Skeletize2D(points : list, norms : list):
-    
     #skeletize takes in 
     #points, the given plain list of points [x,y] for 2D case
     #tree, a kd-tree means for quick searching for points
@@ -53,9 +52,13 @@ def Skeletize2D(points : list, norms : list):
     # finPoints = [[x,y],...] of skeleton points
     # finR = [r1,r2,...] of the radius of each skeleton point
     
+    pts = []
+    i = 0
+    while i < len(points):
+        pts.append(points[i])
+        i = i + 1
     norms = normalize2D(norms)
-    tree = kdTree(points, 2)
-    
+    tree = kdTree(pts, 2)
     finPoints = []#list of skeletized points
     finR = []#radius values of each point
     index = 1
@@ -82,20 +85,20 @@ def Skeletize2D(points : list, norms : list):
             
             testp = tree.getNear(centerp[i][0],centerp[i][1],point)  
             
-            print('getting temp radius')
+            #print('getting temp radius')
             
             tempr.append(getRadius2D(point, testp, norms[index - 1]))
            
             
-            
-            print('index',index-1,i)
-            print('point',point)
-            print('Tree point',testp)
-            print('normal',norms[index-1])
-            print('centerpoint',centerp[len(centerp)-1])
-            print('initial point',points[100])
-            print('radius',tempr[len(tempr)-1])
-            print()
+            # if i < 20:
+            #     print('index',index-1,i)
+            #     print('point',point)
+            #     print('Tree point',testp)
+            #     print('normal',norms[index-1])
+            #     print('centerpoint',centerp[len(centerp)-1])
+            #     print('initial point',points[100])
+            #     print('radius',tempr[len(tempr)-1])
+            #     print()
             if tempr[len(tempr)-1] == tempr[len(tempr) - 2]:
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[i+1])
@@ -109,11 +112,9 @@ def Skeletize2D(points : list, norms : list):
         #guess values
         if index != len(points):
             pointq = points[index]
-            print('getting guess radius')
+            # print('getting guess radius')
             guessr = getRadius2D(pointq,testp, norms[index])
-        
-        if index == 2:
-            break
+            # print('guess radius',guessr)
         index = index + 1
         
         

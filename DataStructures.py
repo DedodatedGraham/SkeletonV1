@@ -58,7 +58,7 @@ class kdTree:
                 mid = len(points) // 2
                 #print('level points',points)
                 finTree.append([points[mid][0],points[mid][1]])#choses node point
-                #print('Midpoint',finTree[0])
+                # print('Midpoint',finTree[0])
                 pointsl = []
                 i = 0
                 while i < mid:
@@ -118,20 +118,27 @@ class kdTree:
         return retPoint    
         
                
-    def getNearR(self,searchPoint : list,exclude : list, tree : list, depth : int = 0):
+    def getNearR(self,searchPoint : list , exclude : list , tree : list, depth : int = 0):
+        #norm will help us find the closeest point twards the center 
+        
         point = []
         tdep = depth
         Tdist = 10 * pow(10,10)
+        # print('go')
         if tree[0] == 'Full':#if it is bottom layer return 
             
             if len(tree) > 2:
                 i = 1
                 while i < len(tree):
-                    td = getDistance2D(searchPoint,tree[i])
-                    if td < Tdist and tree[i] != exclude:
-                        point = tree[i]
-                        Tdist = td
+                    if (tree[i][0] <= searchPoint[0] and tree[i][0] >= exclude[0]) or (tree[i][0] >= searchPoint[0] and tree[i][0] <= exclude[0]):
+                        if (tree[i][1] <= searchPoint[1] and tree[i][1] >= exclude[1]) or (tree[i][1] >= searchPoint[1] and tree[i][1] <= exclude[1]):
+                            td = getDistance2D(searchPoint,tree[i])
+                            if td < Tdist and tree[i] != exclude:
+                                point = tree[i]
+                                Tdist = td
                     i = i + 1
+                if point == []:
+                    point = 'None'
             elif len(tree) == 2 and tree[1] != exclude:
                 point = tree[1]
                 Tdist = 0
@@ -154,24 +161,35 @@ class kdTree:
                 
                 
         else:#needs to search further
+            # print('depth',depth)
+            # print('searchpoint',searchPoint)
+            # print('exclude',exclude)
             #first will grab lowest point from underneath
             axis = depth % self.dimensions
             if searchPoint[axis] >= tree[0][axis]:#will prioritize 'right' side of tree
-                
+                # print('left',tree[2])
+                # print('axis',axis)
+                # print()
                 point,tdep,Tdist = self.getNearR(searchPoint,exclude,tree[2],depth + 1)
             else:#if 'left' side of tree
-                
+                # print('right',tree[1])
+                # print('axis',axis)
+                # print()
                 point,tdep,Tdist = self.getNearR(searchPoint,exclude,tree[1],depth + 1)
             
-            #then if within a count of  one dimensions away
-            if tdep - depth < self.dimensions + 3:
+            print('checking')
+            if point == 'None' or (point[0] <= searchPoint[0] and point[0] >= exclude[0]) or (point[0] >= searchPoint[0] and point[0] <= exclude[0]):
+                print('xlim',point)
+                if (point == 'None' or point[1] <= searchPoint[1] and point[1] >= exclude[1]) or (point[1] >= searchPoint[1] and point[1] <= exclude[1]):
+                    print('ylim')
+                    if tdep - depth < self.dimensions + 3:
                 
-                Ndist = getDistance2D(tree[0], searchPoint)
-                if Ndist < Tdist:
-                    point = tree[0]
-                    tdep = depth
-                    Tdist = Ndist
-        
+                        Ndist = getDistance2D(tree[0], searchPoint)
+                        if Ndist < Tdist:
+                            point = tree[0]
+                            tdep = depth
+                            Tdist = Ndist
+        # print('found point',point)
         return point, tdep , Tdist
                 
     

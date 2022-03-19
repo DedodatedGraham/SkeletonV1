@@ -18,16 +18,10 @@ with open('interface_points_070000.dat','r') as csvfile:
         NormPoints.append([float(row[2]),float(row[3])])
     csvfile.close()
 
-#x = [[0,0],[0,1],[0,2.4],[1.1,2],[2,2],[1.1,0],[0.3,2],[10,20],[4.5,6],[-3.2,1.4],[6,-2],[3.2,1],[0,-1.6],[-7,8]]
-#TestTree = kdTree(x, 2)
-#found = TestTree.getNear(0.4, 2,[0,0])
-#print(found)
-# print(TestTree.tree[0])
-# print(TestTree.tree[1])
-# print(TestTree.tree[2])
-TestPoint = TestPoints[randint(0,len(TestPoints))]
+
 
 finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
+
 testX = []
 testY = []
 finX = []
