@@ -114,7 +114,6 @@ class kdTree:
     def getNear(self,pointx,pointy,RefPoint):
         point = [pointx,pointy]
         retPoint, dep, distance = self.getNearR(point,RefPoint,self.tree)
-        
         return retPoint    
         
                
@@ -177,13 +176,13 @@ class kdTree:
                 # print()
                 point,tdep,Tdist = self.getNearR(searchPoint,exclude,tree[1],depth + 1)
             
-            print('checking')
+            # print('checking')
             if point == 'None' or (point[0] <= searchPoint[0] and point[0] >= exclude[0]) or (point[0] >= searchPoint[0] and point[0] <= exclude[0]):
-                print('xlim',point)
+                # print('xlim',point)
                 if (point == 'None' or point[1] <= searchPoint[1] and point[1] >= exclude[1]) or (point[1] >= searchPoint[1] and point[1] <= exclude[1]):
-                    print('ylim')
+                    # print('ylim')
                     if tdep - depth < self.dimensions + 3:
-                
+                        # print('search',searchPoint, 'exclude', exclude)
                         Ndist = getDistance2D(tree[0], searchPoint)
                         if Ndist < Tdist:
                             point = tree[0]
@@ -192,6 +191,31 @@ class kdTree:
         # print('found point',point)
         return point, tdep , Tdist
                 
-    
+        def treeLines2D(self,bounds : list,onode : list = [],side : int = 0,depth : int = 0) -> list:
+            #bounds format [[top left] , [bottom right]], both with [x,y]
+            #output: [ [a1x,a1y] , [a2x,a2y] , [b1x,b1y] , [b2x,b2y] , ...] coupled points
+            ret = []
+            axis = depth % self.dimensions
+            if depth == 0:
+                onode = []
+            node = self.tree[0]
+            if self.tree[0] != 'Full':
+                if axis == 0:#drawing straight along the y
+                    if side == 0 #right side
+                        ret.append([node[0],bounds[0][1]])
+                        ret.append([node[0],onode[1]])
+                    else: #leftside
+                        ret.append([node[0],onode[1]])
+                        ret.append([node[0],bounds[1][1]])
+                else:#drwaing straight along the x
+                    if side == 0:
+                        ret.append([bounds[0][0],node[1]])
+                        ret.append([onode[0],node[1]])
+                    else:
+                        ret.append([onode[0],node[1]])
+                        ret.append([bounds[1][0],node[1]])
+                    temp = self.treeLines2D(bounds,node,)
+                
+            
         
         

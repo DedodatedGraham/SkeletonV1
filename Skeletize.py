@@ -11,31 +11,32 @@ from random  import randint
 
 
 def getRadius2D(point1, point2 , norm) -> float:
-    #print('P',point1)
-    #print('P`',point2)
-    #print('Norm',norm)
+    
+    # print('P',point1)
+    # print('P`',point2)
+    # print('Norm',norm)
     distance = getDistance2D(point1, point2)
-    #print('Distance from P to P`',distance)
+    # print('Distance from P to P`',distance)
     Pvec = [point1[0] - point2[0] , point1[1] - point2[1]]
-    #print('Vector from P to P`',Pvec)
-    top = norm[0] * Pvec[0] + norm[1] * Pvec[0]
-    #print('Dot Product',top)
+    # print('Vector from P to P`',Pvec)
+    top = norm[0] * Pvec[0] + norm[1] * Pvec[1]
+    # print('Dot Product',top)
     if top/distance <= 1 and top/distance >= -1:
         top = top/distance
-        #print('inside',top)
+        # print('inside',top)
         theta = np.arccos(top)
-        #print('angle',theta)
+        # print('angle',theta)
     else:
         top = top/distance
-        #print('inside1',top)
+        # print('inside1',top)
         top = top + 1
-        #print('inside2',top)
+        # print('inside2',top)
         top = top % 2
-        #print('inside3',top)
+        # print('inside3',top)
         top = top - 1
-        #print('inside4',top)    
+        # print('inside4',top)    
         theta = np.arccos(top)
-        #print('angle',theta)
+        # print('angle',theta)
     
     radius = np.abs(distance / (2 * np.cos(theta)))
     #print('radius',radius)
@@ -80,26 +81,32 @@ def Skeletize2D(points : list, norms : list):
         testp = []
         case = False
         while not case:
-            
+            if i == 20:
+                break
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
             
             testp = tree.getNear(centerp[i][0],centerp[i][1],point)  
             
-            #print('getting temp radius')
+            # print('getting temp radius',point,testp)
             
             tempr.append(getRadius2D(point, testp, norms[index - 1]))
-           
+            # print(tempr[len(tempr)-1])
+            # print()
             
-            # if i < 20:
-            #     print('index',index-1,i)
-            #     print('point',point)
-            #     print('Tree point',testp)
-            #     print('normal',norms[index-1])
-            #     print('centerpoint',centerp[len(centerp)-1])
-            #     print('initial point',points[100])
-            #     print('radius',tempr[len(tempr)-1])
-            #     print()
-            if tempr[len(tempr)-1] == tempr[len(tempr) - 2]:
+            
+            # print('index',index-1,i)
+            # print('point',point)
+            # print('Tree point',testp)
+            # print('normal',norms[index-1])
+            # print('centerpoint',centerp[len(centerp)-1])
+            # print('initial point',points[100])
+            # print('radius',tempr[len(tempr)-1])
+            # print()
+            
+            leng = len(tempr)-1
+            
+            if tempr[leng] == tempr[leng - 1] and leng > 8:
+                centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[i+1])
                 #print('found')
@@ -110,11 +117,23 @@ def Skeletize2D(points : list, norms : list):
                 
             i = i + 1
         #guess values
+        a = getDistance2D(testp,point)
+        b = getDistance2D(point,centerp[len(centerp)-1])
+        c = getDistance2D(centerp[len(centerp)-1],testp)
+        if not(pow(a, 2) + pow(b, 2) >= pow(c, 2) and pow(a, 2) + pow(c, 2) >= pow(b, 2)):
+            print(i,index-1,' point',point,'final testp',testp)
+            print('center',centerp[len(centerp)-1],'radius',tempr[len(tempr)-1])
+            print()
+        
         if index != len(points):
             pointq = points[index]
-            # print('getting guess radius')
+            if pointq == testp:
+                testp = points[index + 1]
+            # print('getting guess radius',pointq,testp)
             guessr = getRadius2D(pointq,testp, norms[index])
             # print('guess radius',guessr)
+            # print()
+        
         index = index + 1
         
         
