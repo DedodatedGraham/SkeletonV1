@@ -25,7 +25,7 @@ testTree = kdTree(TestPoints,2)
 q = [[0.5,1],[1,0]]
 a = testTree.treeLines2D(q)
 
-#finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
+finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
 
 testX = []
 testY = []
@@ -47,11 +47,11 @@ while i < len(a):
 
 
 print(a)
-#i = 0
-# while i < len(finPoints):
-#     finX.append()
-#     finY.append(finPoints[i][1])
-#     i = i + 1
+i = 0
+while i < len(finPoints):
+    finX.append()
+    finY.append(finPoints[i][1])
+    i = i + 1
 plt.scatter(testX, testY)
-# plt.scatter(finX, finY)
+plt.scatter(finX, finY)
 

@@ -192,7 +192,7 @@ class kdTree:
         return point, tdep , Tdist
                 
     def treeLines2D(self,bounds : list,onode : list = [],side : int = 0,tree : list = [],depth : int = 0) -> list:
-        #bounds format [[top left] , [bottom right]], both with [x,y]
+        #input: bounds format [[top left] , [bottom right]], both with [x,y]
         #output: [ [a1x,a1y] , [a2x,a2y] , [b1x,b1y] , [b2x,b2y] , ...] coupled points
         ret = []
         axis = depth % self.dimensions
@@ -200,83 +200,52 @@ class kdTree:
             tree = self.tree
             onode = [0,bounds[1][1]]
         node = tree[0]
-        if node != 'Full':
-            
-            #print(tree)
-            #print()
-            #print(tree[0])
-            if axis == 0:#drawing straight along the y
-                if len(tree) == 3:        
-                    # #right
-                    # ret.append([node[0],bounds[0][1]])#gets 2 points for line
-                    # ret.append([node[0],onode[1]])
-                    # tbounds[0] = [node[0],bounds[0][1]]
-                    # temp = self.treeLines2D(tbounds,node,0,tree[2],depth+1)
-                    # i = 0
-                    # while i < len(temp):
-                    #     ret.append(temp[i])
-                    #     i = i + 1
-                    # #left        
-                    # ret.append([node[0],onode[1]])#gets 2 points for line
-                    # ret.append([node[0],bounds[1][1]])
-                    # tbounds[1] = [node[0],bounds[1][1]]
-                    # temp = self.treeLines2D(tbounds,node,1,tree[1],depth+1)
-                    # i = 0
-                    # while i < len(temp):
-                    #     ret.append(temp[i])
-                    #     i = i + 1
-                    if side == 0:
-                        ret.append([node[0],onode[1]])
-                        ret.append([node[0],bounds[0][1]])
-                    else:
-                        ret.append([node[0],onode[1]])
-                        ret.append([node[0],bounds[1][1]])
-                    #now ret will have the line of the current sector it is in
-                    boundsleft = [bounds[0],[node[0],bounds[1][1]]]
-                    left = self.treeLines2D(boundsleft,node,1,tree[1],depth + 1)
+        if axis == 0:#drawing straight along the y
+            if len(tree) == 3 and node != 'Full':
+                if side == 0:
+                    ret.append([node[0],onode[1]])
+                    ret.append([node[0],bounds[0][1]])
+                else:
+                    ret.append([node[0],onode[1]])
+                    ret.append([node[0],bounds[1][1]])
+                boundsleft = [bounds[0],[node[0],bounds[1][1]]]
+                left = self.treeLines2D(boundsleft,node,1,tree[1],depth + 1)
+                if left != None:
                     i = 0
                     while i < len(left):
-                        ret.append(left[i])
-                    boundsright = [[node[0],bounds[0][1]],bounds[1]]
-                    right = self.treeLines2D(boundsright,node,0,tree[2],depth + 1)
+                        ret.append([left[i][0],left[i][1]])
+                        i = i + 1
+                boundsright = [[node[0],bounds[0][1]],bounds[1]]
+                right = self.treeLines2D(boundsright,node,0,tree[2],depth + 1)
+                if right != None:
                     i = 0 
                     while i < len(right):
-                        ret.append(right[i])    
-            else:#drwaing straight along the x
-                # if len(tree) == 3:
-                #     ret.append([bounds[0][0],node[1]])#gets 2 points for line
-                #     ret.append([onode[0],node[1]])
-                #     tbounds[0] = [bounds[0][0],node[1]]
-                #     temp = self.treeLines2D(tbounds,node,0,tree[2],depth+1)
-                #     i = 0
-                #     while i < len(temp):
-                #         ret.append(temp[i])
-                #         i = i + 1
-                #     ret.append([onode[0],node[1]])#gets 2 points for line
-                #     ret.append([bounds[1][0],node[1]])
-                #     tbounds[0] = [bounds[1][0],node[1]]
-                #     temp = self.treeLines2D(tbounds,node,1,tree[1],depth+1)
-                #     i = 0
-                #     while i < len(temp):
-                #         ret.append(temp[i])
-                #         i = i + 1
+                        ret.append([right[i][0],right[i][1]])
+                        i = i + 1
+        else:#drwaing straight along the x
+            
+            if len(tree) == 3 and node != 'Full':
                 if side == 0:
                     ret.append([onode[0],node[1]])
                     ret.append([bounds[1][0],node[1]])
                 else:
                     ret.append([onode[0],node[1]])
                     ret.append([bounds[0][0],node[1]])
-                #now ret will have the line of the current sector it is in
                 boundsleft = [[bounds[0][0],node[1]],bounds[1]]
                 left = self.treeLines2D(boundsleft,node,1,tree[1],depth + 1)
                 i = 0
-                while i < len(left):
-                    ret.append(left[i])
+                if left != None:
+                    while i < len(left):
+                        ret.append([left[i][0],left[i][1]])
+                        i = i + 1
                 boundsright = [bounds[0],[bounds[1][0],node[0]]]
                 right = self.treeLines2D(boundsright,node,0,tree[2],depth + 1)
-                while i < len(right):
-                    ret.append(right[i])
-                
-        return ret
+                if right != None:
+                    i = 0
+                    while i < len(right):
+                        ret.append([right[i][0],right[i][1]])
+                        i = i + 1
+        if ret != []:
+            return ret
         
         
