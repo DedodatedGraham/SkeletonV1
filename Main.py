@@ -22,7 +22,7 @@ with open('interface_points_070000.dat','r') as csvfile:
 
 
 testTree = kdTree(TestPoints,2)
-q = [[-1,1],[1,-1]]
+q = [[0.5,1],[1,0]]
 a = testTree.treeLines2D(q)
 
 #finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
@@ -36,17 +36,22 @@ while i < len(TestPoints):
     testX.append(TestPoints[i][0])
     testY.append(TestPoints[i][1])
     i = i + 1
-i = 0
-while i < len(finPoints):
-    finX.append()
-    finY.append(finPoints[i][1])
-    i = i + 1
-plt.scatter(testX, testY)
-plt.scatter(finX, finY)
-# i = 0
-# while i < len(x):
-    # finX.append(x[i][0])
-    # finY.append(x[i][1])
-    # i = i + 1
     
-# plt.scatter(finX,finY)
+    
+i = 0
+while i < len(a):
+    x = [a[i][0],a[i+1][0]]
+    y = [a[i][1],a[i+1][1]]
+    plt.plot(x,y)
+    i = i + 2
+
+
+print(a)
+#i = 0
+# while i < len(finPoints):
+#     finX.append()
+#     finY.append(finPoints[i][1])
+#     i = i + 1
+plt.scatter(testX, testY)
+# plt.scatter(finX, finY)
+
