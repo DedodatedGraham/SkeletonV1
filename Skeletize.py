@@ -117,15 +117,8 @@ def Skeletize2D(points : list, norms : list):
                 
             i = i + 1
         #guess values
-        a = getDistance2D(testp,point)
-        b = getDistance2D(point,centerp[len(centerp)-1])
-        c = getDistance2D(centerp[len(centerp)-1],testp)
-        if not(pow(a, 2) + pow(b, 2) >= pow(c, 2) and pow(a, 2) + pow(c, 2) >= pow(b, 2)):
-            print(i,index-1,' point',point,'final testp',testp)
-            print('center',centerp[len(centerp)-1],'radius',tempr[len(tempr)-1])
-            print()
         
-        if index != len(points):
+        if index - 1 != len(points):
             pointq = points[index]
             if pointq == testp:
                 testp = points[index + 1]
