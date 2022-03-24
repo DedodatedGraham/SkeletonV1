@@ -45,11 +45,9 @@ while i < len(a):
     plt.plot(x,y)
     i = i + 2
 
-
-print(a)
 i = 0
 while i < len(finPoints):
-    finX.append()
+    finX.append(finPoints[i][0])
     finY.append(finPoints[i][1])
     i = i + 1
 plt.scatter(testX, testY)

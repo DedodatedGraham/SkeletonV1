@@ -31,6 +31,8 @@ def getDistance3D(point1, point2) -> float:
 class kdTree:
     
     def __init__(self,points : list, dim : int):
+        
+    #for sorting points along an axis
         self.dimensions = dim
         self.tree = self.makeTree(points,0)
         
@@ -45,7 +47,8 @@ class kdTree:
             points[i],points[min_i] = points[min_i],points[i]
         
         return points
-        
+    
+    #contructs the tree    
     def makeTree(self,points:list, depth : int) -> list:
         finTree = []
         #designed to never have empty leafs
@@ -106,90 +109,67 @@ class kdTree:
                     i = i + 1
         return finTree
     
-    
-    
-    
-    
-    #non recursive function 
-    def getNear(self,pointx,pointy,RefPoint):
-        point = [pointx,pointy]
-        retPoint, dep, distance = self.getNearR(point,RefPoint,self.tree)
-        return retPoint    
-        
-               
-    def getNearR(self,searchPoint : list , exclude : list , tree : list, depth : int = 0):
-        #norm will help us find the closeest point twards the center 
-        
-        point = []
-        tdep = depth
-        Tdist = 10 * pow(10,10)
-        # print('go')
-        if tree[0] == 'Full':#if it is bottom layer return 
-            
-            if len(tree) > 2:
-                i = 1
-                while i < len(tree):
-                    if (tree[i][0] <= searchPoint[0] and tree[i][0] >= exclude[0]) or (tree[i][0] >= searchPoint[0] and tree[i][0] <= exclude[0]):
-                        if (tree[i][1] <= searchPoint[1] and tree[i][1] >= exclude[1]) or (tree[i][1] >= searchPoint[1] and tree[i][1] <= exclude[1]):
-                            td = getDistance2D(searchPoint,tree[i])
-                            if td < Tdist and tree[i] != exclude:
-                                point = tree[i]
-                                Tdist = td
-                    i = i + 1
-                if point == []:
-                    point = 'None'
-            elif len(tree) == 2 and tree[1] != exclude:
-                point = tree[1]
-                Tdist = 0
+      
+    #searches tree              
+    def getNearR2D(self,searchPoint : list , exclude : list ,tree : list = [], depth : int = 0):
+        dmin = 0
+        tdep = 0
+        smallestLayer = []
+        if depth == 0:
+            tree= self.tree
+        node = tree[0]
+        axis = depth % self.dimensions
+        if node == 'Full':
+            tdep = depth
+            #if searching on a bottom Layer, will brute force
+            i = 1
+            while i < len(tree):
+                if(tree[i] != exclude):
+                    if i == 1:
+                        dmin = getDistance2D(searchPoint, tree[1])
+                        smallestLayer = tree[1]
+                    dtemp = getDistance2D(searchPoint,tree[i])
+                    if dtemp < dmin:
+                        dmin = dtemp
+                        smallestLayer = tree[i]
+                i = i + 1
+        else:
+            if tree[0] == exclude:
+                if searchPoint[axis] <= tree[0][axis]:
+                    #want to go deeper to the left
+                    pLeft,tdep,dmin = self.getNearR2D(searchPoint,exclude,tree[1], depth + 1)
+                else:
+                    #want to go deeper to the right
+                    pRight,tdep,dmin = self.getNearR2D(searchPoint,exclude,tree[2], depth + 1)
             else:
-                point = 'None'
-                tdep = 0
-                Tdist = 0
-                
-        elif tree[0] == searchPoint or tree[0] == exclude:#if search is a point on list
-            point1,tdep1,tdist1 = self.getNearR(searchPoint,exclude,tree[1],depth + 1)
-            point2,tdep2,tdist2 = self.getNearR(searchPoint,exclude,tree[2],depth + 1)
-            if tdist1 > tdist2:
-                Tdist = tdist2
-                point = point2
-                tdep = tdep2
-            else:
-                Tdist = tdist1
-                point = point1
-                tdep = tdep1
-                
-                
-        else:#needs to search further
-            # print('depth',depth)
-            # print('searchpoint',searchPoint)
-            # print('exclude',exclude)
-            #first will grab lowest point from underneath
-            axis = depth % self.dimensions
-            if searchPoint[axis] >= tree[0][axis]:#will prioritize 'right' side of tree
-                # print('left',tree[2])
-                # print('axis',axis)
-                # print()
-                point,tdep,Tdist = self.getNearR(searchPoint,exclude,tree[2],depth + 1)
-            else:#if 'left' side of tree
-                # print('right',tree[1])
-                # print('axis',axis)
-                # print()
-                point,tdep,Tdist = self.getNearR(searchPoint,exclude,tree[1],depth + 1)
+                if searchPoint[axis] <= tree[0][axis]:
+                    #want to go deeper to the left
+                    pLeft,tdep,dmin = self.getNearR2D(searchPoint,exclude,tree[1], depth + 1)
+                else:
+                    #want to go deeper to the right
+                    pRight,tdep,dmin = self.getNearR2D(searchPoint,exclude,tree[2], depth + 1)
+                #makes sure node isnt closer, only needs to be ran for non excluded points
+                if tdep - depth < 3:
+                    tdis = getDistance2D(searchPoint,node)
+                    if tdis < dmin:
+                        smallestLayer = node
+                        tdep = depth
+                        dmin = tdis
+                if axis == 0:
+                    tpoint = []
+                else:
+                    tpoint = []
+                tdis = getDistance2D(searchPoint,tpoint)
             
-            # print('checking')
-            if point == 'None' or (point[0] <= searchPoint[0] and point[0] >= exclude[0]) or (point[0] >= searchPoint[0] and point[0] <= exclude[0]):
-                # print('xlim',point)
-                if (point == 'None' or point[1] <= searchPoint[1] and point[1] >= exclude[1]) or (point[1] >= searchPoint[1] and point[1] <= exclude[1]):
-                    # print('ylim')
-                    if tdep - depth < self.dimensions + 3:
-                        # print('search',searchPoint, 'exclude', exclude)
-                        Ndist = getDistance2D(tree[0], searchPoint)
-                        if Ndist < Tdist:
-                            point = tree[0]
-                            tdep = depth
-                            Tdist = Ndist
-        # print('found point',point)
-        return point, tdep , Tdist
+                
+                        
+        return smallestLayer, tdep, dmin
+                    
+                
+        
+        
+        
+        
                 
     def treeLines2D(self,bounds : list,onode : list = [],side : int = 0,tree : list = [],depth : int = 0) -> list:
         #input: bounds format [[top left] , [bottom right]], both with [x,y]

@@ -52,12 +52,13 @@ def Skeletize2D(points : list, norms : list):
     #then returns 2 things
     # finPoints = [[x,y],...] of skeleton points
     # finR = [r1,r2,...] of the radius of each skeleton point
-    
+    counts = []
     pts = []
     i = 0
     while i < len(points):
         pts.append(points[i])
         i = i + 1
+        
     norms = normalize2D(norms)
     tree = kdTree(pts, 2)
     finPoints = []#list of skeletized points
@@ -82,55 +83,45 @@ def Skeletize2D(points : list, norms : list):
         case = False
         while not case:
             if i == 20:
+                counts.append(index-1)
+                finPoints.append(centerp[len(centerp)-1])
+                finR.append(tempr[len(tempr)-1])
                 break
+            
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
-            
-            testp = tree.getNear(centerp[i][0],centerp[i][1],point)  
-            
-            # print('getting temp radius',point,testp)
-            
+            testp = tree.getNear(centerp[i][0],centerp[i][1],point)
             tempr.append(getRadius2D(point, testp, norms[index - 1]))
-            # print(tempr[len(tempr)-1])
-            # print()
-            
-            
-            # print('index',index-1,i)
-            # print('point',point)
-            # print('Tree point',testp)
-            # print('normal',norms[index-1])
-            # print('centerpoint',centerp[len(centerp)-1])
-            # print('initial point',points[100])
-            # print('radius',tempr[len(tempr)-1])
-            # print()
             
             leng = len(tempr)-1
-            
-            if tempr[leng] == tempr[leng - 1] and leng > 8:
+            if tempr[leng] == tempr[leng - 1]:
                 centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[i+1])
-                #print('found')
                 case = True
-            
                 
             
                 
             i = i + 1
         #guess values
         
-        if index - 1 != len(points):
+        if index  != len(points):
             pointq = points[index]
-            if pointq == testp:
-                testp = points[index + 1]
-            # print('getting guess radius',pointq,testp)
+            case = True
+            i = 1
+            while case:
+                if pointq == testp:
+                    testp = points[index + i]
+                    i = i + 1
+                else:
+                    case = False
             guessr = getRadius2D(pointq,testp, norms[index])
-            # print('guess radius',guessr)
-            # print()
         
         index = index + 1
         
         
         
-    #returns important values    
+    #returns important values 
+        
+        
     return finPoints,finR
 
