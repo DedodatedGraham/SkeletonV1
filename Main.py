@@ -38,12 +38,12 @@ while i < len(TestPoints):
     i = i + 1
     
     
-i = 0
-while i < len(a):
-    x = [a[i][0],a[i+1][0]]
-    y = [a[i][1],a[i+1][1]]
-    plt.plot(x,y)
-    i = i + 2
+# i = 0
+# while i < len(a):
+#     x = [a[i][0],a[i+1][0]]
+#     y = [a[i][1],a[i+1][1]]
+#     plt.plot(x,y)
+#     i = i + 2
 
 i = 0
 while i < len(finPoints):

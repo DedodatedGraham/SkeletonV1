@@ -82,23 +82,15 @@ def Skeletize2D(points : list, norms : list):
         testp = []
         case = False
         while not case:
-            if i == 20:
-                counts.append(index-1)
-                finPoints.append(centerp[len(centerp)-1])
-                finR.append(tempr[len(tempr)-1])
-                break
-            
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
-            testp = tree.getNear(centerp[i][0],centerp[i][1],point)
+            testp = tree.getNearR(centerp[len(centerp)-1], point)
             tempr.append(getRadius2D(point, testp, norms[index - 1]))
             
             leng = len(tempr)-1
             if tempr[leng] == tempr[leng - 1]:
-                centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                 finPoints.append(centerp[len(centerp)-1])
-                finR.append(tempr[i+1])
+                finR.append(tempr[leng])
                 case = True
-                
             
                 
             i = i + 1
