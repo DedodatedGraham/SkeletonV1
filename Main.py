@@ -21,12 +21,11 @@ with open('interface_points_070000.dat','r') as csvfile:
 
 
 
+#when making the tree it changes test points?
 testTree = kdTree(TestPoints,2)
 q = [[0.5,1],[1,0]]
 a = testTree.treeLines2D(q)
-
 finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
-
 testX = []
 testY = []
 finX = []

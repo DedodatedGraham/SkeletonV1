@@ -12,35 +12,20 @@ from random  import randint
 
 def getRadius2D(point1, point2 , norm) -> float:
     
-    # print('P',point1)
-    # print('P`',point2)
-    # print('Norm',norm)
     distance = getDistance2D(point1, point2)
-    # print('Distance from P to P`',distance)
     Pvec = [point1[0] - point2[0] , point1[1] - point2[1]]
-    # print('Vector from P to P`',Pvec)
     top = norm[0] * Pvec[0] + norm[1] * Pvec[1]
-    # print('Dot Product',top)
     if top/distance <= 1 and top/distance >= -1:
         top = top/distance
-        # print('inside',top)
         theta = np.arccos(top)
-        # print('angle',theta)
     else:
         top = top/distance
-        # print('inside1',top)
         top = top + 1
-        # print('inside2',top)
         top = top % 2
-        # print('inside3',top)
-        top = top - 1
-        # print('inside4',top)    
+        top = top - 1  
         theta = np.arccos(top)
-        # print('angle',theta)
     
     radius = np.abs(distance / (2 * np.cos(theta)))
-    #print('radius',radius)
-    #print()
     return radius
     
 def Skeletize2D(points : list, norms : list):
@@ -85,9 +70,18 @@ def Skeletize2D(points : list, norms : list):
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
             testp = tree.getNearR(centerp[len(centerp)-1], point)
             tempr.append(getRadius2D(point, testp, norms[index - 1]))
-            
             leng = len(tempr)-1
+            
+            if index == 450:
+                print(i)
+                print('Point',point,'norm',norms[index-1])
+                print('tree point',testp)
+                print('center points',centerp[len(centerp)-1])
+                print('radius',tempr[len(tempr)-1])
+                print()
+                
             if tempr[leng] == tempr[leng - 1]:
+                centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[leng])
                 case = True
@@ -106,11 +100,12 @@ def Skeletize2D(points : list, norms : list):
                     i = i + 1
                 else:
                     case = False
+            
             guessr = getRadius2D(pointq,testp, norms[index])
         
         index = index + 1
         
-        
+    
         
     #returns important values 
         

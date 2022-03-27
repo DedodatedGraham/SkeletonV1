@@ -33,8 +33,13 @@ class kdTree:
     def __init__(self,points : list, dim : int):
         
     #for sorting points along an axis
+        self.PointsList = []
+        i = 0
+        while i < len(points):
+            self.PointsList.append(points[i])
+            i = i + 1
         self.dimensions = dim
-        self.tree = self.makeTree(points,0)
+        self.tree = self.makeTree(self.PointsList,0)
         
     def sort(self,points : list, dimension) -> list:
         
@@ -59,15 +64,12 @@ class kdTree:
                 
                 
                 mid = len(points) // 2
-                #print('level points',points)
                 finTree.append([points[mid][0],points[mid][1]])#choses node point
-                # print('Midpoint',finTree[0])
                 pointsl = []
                 i = 0
                 while i < mid:
                     pointsl.append([points[i][0] , points[i][1]])
                     i = i + 1
-                #print('Left points',pointsl)
                 finTree.append(self.makeTree(pointsl,depth+1))#gets roots(Left of node)
                 
                 pointsr = []
@@ -76,11 +78,8 @@ class kdTree:
                 while i < len(points):
                     pointsr.append([points[i][0] , points[i][1]])
                     i = i + 1
-                #print('Right points',pointsr)
                 finTree.append(self.makeTree(pointsr,depth+1))#(right of node)
                 
-                
-            
             else:
                 #add in all points, if small amount of points or too deep
                 i = 0
