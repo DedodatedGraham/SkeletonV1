@@ -11,7 +11,7 @@ from DataStructures import kdTree
 TestPoints = []
 NormPoints = []
 #loads in test case
-with open('interface_points_070000.dat','r') as csvfile:
+with open('interface_points_020000.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:
         TestPoints.append([float(row[0]),float(row[1])])
@@ -45,10 +45,21 @@ while i < len(TestPoints):
 #     i = i + 2
 
 i = 0
-while i < len(finPoints):
-    finX.append(finPoints[i][0])
-    finY.append(finPoints[i][1])
-    i = i + 1
-plt.scatter(testX, testY)
-plt.scatter(finX, finY)
+# while i < len(finPoints):
+#     finX.append(finPoints[i][0])
+#     finY.append(finPoints[i][1])
+#     i = i + 1
+# plt.scatter(testX, testY)
+# plt.scatter(finX, finY)
+
+
+# i = 0
+# theta = np.linspace(0, 2*np.pi, 100)
+# while i < 100:
+#     r = finR[i]
+#     x1 = finPoints[i][0] + r*np.cos(theta)
+#     x2 = finPoints[i][1] + r*np.sin(theta)
+#     plt.plot(x1, x2)
+#     i = i + 1
+
 
