@@ -38,13 +38,13 @@ def Skeletize2D(points : list, norms : list):
     #then returns 2 things
     # finPoints = [[x,y],...] of skeleton points
     # finR = [r1,r2,...] of the radius of each skeleton point
-    counts = []
+    
     pts = []
     i = 0
     while i < len(points):
         pts.append(points[i])
         i = i + 1
-        
+    cnt = len(pts) - 1    
     norms = normalize2D(norms)
     tree = kdTree(pts, 2)
     finPoints = []#list of skeletized points
@@ -62,7 +62,8 @@ def Skeletize2D(points : list, norms : list):
         
         
         
-            
+        treex = []
+        treey = []
         i = 0
         centerp = []
         testp = []
@@ -75,18 +76,20 @@ def Skeletize2D(points : list, norms : list):
             
             if index == 420:
                 plt.plot(testp[0],testp[1])
-                print(index-1 , i)
-                print('Point',point,'norm',norms[index-1])
-                print('center points',centerp[len(centerp)-1])
-                print('tree point',testp)
-                print('radius',tempr[len(tempr)-1])
-                print()
+                # print(index-1 , i)
+                # print('Point',point,'norm',norms[index-1])
+                # print('center points',centerp[len(centerp)-1])
+                # print('tree point',testp)
+                # print('radius',tempr[len(tempr)-1])
+                # print()
+                treex.append(testp[0])
+                treey.append(testp[1])
                 if i > 0:
                     theta = np.linspace(0, 2*np.pi, 100)
                     r = tempr[leng]
                     x1 = centerp[len(centerp)-1][0] + r*np.cos(theta)
                     x2 = centerp[len(centerp)-1][1] + r*np.sin(theta)
-                    plt.plot(x1, x2)
+                    # plt.plot(x1, x2)
                 
                 
             if tempr[leng] == tempr[leng - 1] and i > 1:
@@ -94,6 +97,15 @@ def Skeletize2D(points : list, norms : list):
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[leng])
                 if index == 420:
+                    # x = []
+                    # y = []
+                    # x.append(points[index-2][0])
+                    # x.append(points[index-1][0])
+                    # x.append(points[index][0])
+                    # y.append(points[index-2][1])
+                    # y.append(points[index-1][1])
+                    # y.append(points[index][1])
+                    # plt.scatter(x,y)
                     cx = []
                     cy = []
                     j = 1
@@ -101,7 +113,9 @@ def Skeletize2D(points : list, norms : list):
                         cx.append(centerp[j][0])
                         cy.append(centerp[j][1])
                         j = j + 1
-                    plt.scatter(cx,cy)
+                    # plt.scatter(cx,cy)
+                    
+                    # plt.scatter(treex,treey)
                 case = True
                 
             
@@ -110,8 +124,7 @@ def Skeletize2D(points : list, norms : list):
         #guess values
         
         if index  != len(points):
-            
-            guessr = finR[len(finR)-1] * 100        
+            guessr = tempr[len(tempr)-1] * 100     
         index = index + 1
         
     

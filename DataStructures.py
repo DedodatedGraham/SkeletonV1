@@ -87,26 +87,37 @@ class kdTree:
                 while i < len(points):
                     finTree.append([points[i][0],points[i][1]])
                     i = i + 1
-        #not working right need to update
-        # if self.dimensions == 3:#formatting for 3D
-        #     if len(points) > 5 and depth < 100:
-        #         axis = depth % self.dimensions #gets axis to divide along
-        #         points = np.sort(points,axis)
-            
-        #         mid = len(points) // 2
+        else:
+            if len(points) > 5 and depth < 100:
+                axis = depth % self.dimensions #gets axis to divide along
+                points = self.sort(points,axis)
                 
-        #         finTree.append('Full')
-        #         finTree.append([points[mid][0],points[mid][1]],points[mid][2])#choses node point
-        #         finTree.append(self.makeTree(points[:mid],depth+1))#gets roots
-        #         finTree.append(self.makeTree(points[mid+1:],depth+1))
+                
+                mid = len(points) // 2
+                finTree.append([points[mid][0],points[mid][1],points[mid][2]])#choses node point
+                pointsl = []
+                i = 0
+                while i < mid:
+                    pointsl.append([points[i][0] , points[i][1] , points[i][2]])
+                    i = i + 1
+                finTree.append(self.makeTree(pointsl,depth+1))#gets roots(Left of node)
+                
+                pointsr = []
+                i = mid + 1
+                
+                while i < len(points):
+                    pointsr.append([points[i][0] , points[i][1] , points[i][2]])
+                    i = i + 1
+                finTree.append(self.makeTree(pointsr,depth+1))#(right of node)
+                
+            else:
+                #add in all points, if small amount of points or too deep
+                i = 0
+                finTree.append('Full')#marks a bottom layer
+                while i < len(points):
+                    finTree.append([points[i][0],points[i][1],points[i][2]])
+                    i = i + 1
             
-            
-        #     else:
-        #         #add in all points, if small amount of points or too deep
-        #         i = 0
-        #         while i < len(points):
-        #             finTree.append([points[i][0],points[i][1],points[i][2]])
-        #             i = i + 1
         return finTree
     
       
@@ -190,7 +201,7 @@ class kdTree:
                     tdis = tdis2
             
             
-                
+               
         return smallestLayer
                     
                 
