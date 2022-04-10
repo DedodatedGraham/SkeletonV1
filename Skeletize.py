@@ -62,7 +62,8 @@ def Skeletize2D(points : list, norms : list):
         
         
         
-            
+        treesx = []
+        treesy = []
         i = 0
         centerp = []
         testp = []
@@ -70,23 +71,25 @@ def Skeletize2D(points : list, norms : list):
         while not case:
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
             testp = tree.getNearR(centerp[len(centerp)-1], point)
-            tempr.append(getRadius2D(point, testp, norms[index - 1]))
+            tempr.append(np.round(getRadius2D(point, testp, norms[index - 1]),6))
             leng = len(tempr)-1
-            
-            if index == 420:
-                plt.plot(testp[0],testp[1])
-                print(index-1 , i)
-                print('Point',point,'norm',norms[index-1])
-                print('center points',centerp[len(centerp)-1])
-                print('tree point',testp)
-                print('radius',tempr[len(tempr)-1])
-                print()
-                if i > 0:
-                    theta = np.linspace(0, 2*np.pi, 100)
-                    r = tempr[leng]
-                    x1 = centerp[len(centerp)-1][0] + r*np.cos(theta)
-                    x2 = centerp[len(centerp)-1][1] + r*np.sin(theta)
-                    plt.plot(x1, x2)
+            # print(index,i)
+            # if index == 17:
+            #     plt.plot(testp[0],testp[1])
+            #     print(index-1 , i)
+            #     print('Point',point,'norm',norms[index-1])
+            #     print('center points',centerp[len(centerp)-1])
+            #     print('tree point',testp)
+            #     print('radius',tempr[len(tempr)-1])
+            #     print()
+                # treesx.append(testp[0])
+                # treesy.append(testp[1])
+                # if i > 0:
+                #     theta = np.linspace(0, 2*np.pi, 100)
+                #     r = tempr[leng]
+                #     x1 = centerp[len(centerp)-1][0] + r*np.cos(theta)
+                #     x2 = centerp[len(centerp)-1][1] + r*np.sin(theta)
+                #     plt.plot(x1, x2)
                 
                 
             if tempr[leng] == tempr[leng - 1] and i > 1:
@@ -102,8 +105,19 @@ def Skeletize2D(points : list, norms : list):
                         cy.append(centerp[j][1])
                         j = j + 1
                     plt.scatter(cx,cy)
+                    
+                    plt.scatter(treesx,treesy)
                 case = True
-                
+            if i > 2:
+                if tempr[i] == tempr[i-2] and tempr[i-1] == tempr[i-3]:
+                    if tempr[i] > tempr[i-1]:
+                        finPoints.append(centerp[i-1])
+                        finR.append(tempr[i-1])
+                        case = True
+                    else:
+                        finPoints.append(centerp[i])
+                        finR.append(tempr[i])
+                        case = True
             
                 
             i = i + 1

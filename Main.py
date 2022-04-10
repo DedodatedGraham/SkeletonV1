@@ -10,7 +10,16 @@ from DataStructures import kdTree
 
 TestPoints = []
 NormPoints = []
-#loads in test case
+
+# i = 0
+# theta = np.linspace(0, 2*np.pi, 100)
+# while i < 100:
+#     r = 0.5
+#     TestPoints.append([0.5 + r*np.cos(theta[i]),0.5 + r*np.sin(theta[i])])
+#     NormPoints.append([TestPoints[i][0] - 0.5,TestPoints[i][1] - 0.5])
+#     i = i + 1
+    
+# loads in test case
 with open('interface_points_020000.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:
@@ -26,6 +35,7 @@ testTree = kdTree(TestPoints,2)
 q = [[0.5,1],[1,0]]
 a = testTree.treeLines2D(q)
 finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
+# print(finPoints,finR)
 testX = []
 testY = []
 finX = []
@@ -45,21 +55,15 @@ while i < len(TestPoints):
 #     i = i + 2
 
 i = 0
-# while i < len(finPoints):
-#     finX.append(finPoints[i][0])
-#     finY.append(finPoints[i][1])
-#     i = i + 1
-# plt.scatter(testX, testY)
-# plt.scatter(finX, finY)
+while i < len(finPoints):
+    finX.append(finPoints[i][0])
+    finY.append(finPoints[i][1])
+    i = i + 1
+plt.scatter(testX, testY)
+plt.scatter(finX, finY)
 
 
-# i = 0
-# theta = np.linspace(0, 2*np.pi, 100)
-# while i < 100:
-#     r = finR[i]
-#     x1 = finPoints[i][0] + r*np.cos(theta)
-#     x2 = finPoints[i][1] + r*np.sin(theta)
-#     plt.plot(x1, x2)
-#     i = i + 1
 
 
+plt.xlim(-0.1,1.1)
+plt.ylim(-0.1,1.1)
