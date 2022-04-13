@@ -15,7 +15,7 @@ i = 0
 theta = np.linspace(0, 2*np.pi, 100)
 while i < 100:
     r = 0.5
-    TestPoints.append([0.5 + r*np.cos(theta[i]),0.5 + 1.2*r*np.sin(theta[i])])
+    TestPoints.append([0.5 + r*np.cos(theta[i]),0.5 + 2*r*np.sin(theta[i])])
     NormPoints.append([TestPoints[i][0] - 0.5,TestPoints[i][1] - 0.5])
     i = i + 1
     
@@ -65,5 +65,5 @@ plt.scatter(finX, finY)
 
 
 
-plt.xlim(-0.1,1.1)
-plt.ylim(-0.1,1.1)
+plt.xlim(0,1.5)
+plt.ylim(-2,2)
