@@ -108,7 +108,7 @@ def Skeletize2D(points : list, norms : list):
                     
                     plt.scatter(treesx,treesy)
                 case = True
-            if i > 2:
+            if i >= 3:
                 if tempr[i] == tempr[i-2] and tempr[i-1] == tempr[i-3]:
                     if tempr[i] > tempr[i-1]:
                         finPoints.append(centerp[i-1])
