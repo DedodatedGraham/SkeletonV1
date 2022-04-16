@@ -12,7 +12,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 def getRadius2D(point1, point2 , norm) -> float:
-    
     distance = getDistance2D(point1, point2)
     Pvec = [point1[0] - point2[0] , point1[1] - point2[1]]
     top = norm[0] * Pvec[0] + norm[1] * Pvec[1]
