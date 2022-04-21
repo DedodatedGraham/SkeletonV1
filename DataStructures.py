@@ -23,10 +23,28 @@ def normalize2D(points : list) -> list:
         i = i + 1
     return retpoints
 
+def normalize3D(points : list) -> list:
+    #each point is [x,y,z]
+    i = 0
+    retpoints = []
+    while i < len(points):
+        
+        tempx = points[i][0]
+        tempy = points[i][1]
+        tempz = points[i][2]
+        normalize = 1/np.sqrt(np.power(tempx,2)+np.power(tempy,2)+np.power(tempz,2))
+        tempx = tempx * normalize
+        tempy = tempy * normalize
+        tempz = tempz * normalize
+        retpoints.append([tempx,tempy,tempz])
+        i = i + 1
+    return retpoints
+
 def getDistance2D(point1, point2) -> float:
     return np.sqrt(pow(np.abs(point1[0]-point2[0]),2) + pow(np.abs(point1[1]-point2[1]),2))
     
 def getDistance3D(point1, point2) -> float:
+    
     return np.sqrt(np.abs(pow(point1[0]-point2[0],2)) + np.abs(pow(point1[1]-point2[1],2))+np.abs(pow(point1[2]-point2[2],2)))
 class kdTree:
     
@@ -166,7 +184,10 @@ class kdTree:
             if smallestLayer == None or smallestLayer == []:
                 tdis = 10000000000
             else:
-                tdis = getDistance2D(searchPoint,smallestLayer)
+                if self.dimensions == 2:
+                    tdis = getDistance2D(searchPoint,smallestLayer)
+                else:
+                    tdis = getDistance3D(searchPoint, smallestLayer)
             
             if tree[0] != exclude:
                 #checks if current node is closer than found
@@ -266,5 +287,4 @@ class kdTree:
                         i = i + 1
         if ret != []:
             return ret
-        
         

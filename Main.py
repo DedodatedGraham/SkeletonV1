@@ -11,25 +11,25 @@ from DataStructures import kdTree
 TestPoints = []
 NormPoints = []
 
-#ellipse, norm isnt working well
-i = 0
-theta = np.linspace(0, 2*np.pi, 100)
-while i < 100:
-    r = 0.5
-    TestPoints.append([0.5 + r*np.cos(theta[i]),0.5 + 2*r*np.sin(theta[i])])
-    i = i + 1
+# #ellipse, norm isnt working well
+# i = 0
+# theta = np.linspace(0, 2*np.pi, 100)
+# while i < 100:
+#     r = 0.5
+#     TestPoints.append([0.5 + r*np.cos(theta[i]),0.5 + 2*r*np.sin(theta[i])])
+#     i = i + 1
     
-i = 0
-while i < 100:
-    if i == 99:
-        a = [TestPoints[i - 1][0] - TestPoints[i][0],TestPoints[i - 1][1] - TestPoints[i][1]]
-        b = [TestPoints[0][0] - TestPoints[i][0],TestPoints[0][1] - TestPoints[i][1]]
-    else:
-        a = [TestPoints[i - 1][0] - TestPoints[i][0],TestPoints[i - 1][1] - TestPoints[i][1]]
-        b = [TestPoints[i + 1][0] - TestPoints[i][0],TestPoints[i + 1][1] - TestPoints[i][1]]
-    c = [a[0] + b[0],a[1] + b[1]]
-    NormPoints.append([-c[0] + TestPoints[i][0],-c[1] + TestPoints[i][1]])
-    i = i + 1
+# i = 0
+# while i < 100:
+#     if i == 99:
+#         a = [TestPoints[i - 1][0] - TestPoints[i][0],TestPoints[i - 1][1] - TestPoints[i][1]]
+#         b = [TestPoints[0][0] - TestPoints[i][0],TestPoints[0][1] - TestPoints[i][1]]
+#     else:
+#         a = [TestPoints[i - 1][0] - TestPoints[i][0],TestPoints[i - 1][1] - TestPoints[i][1]]
+#         b = [TestPoints[i + 1][0] - TestPoints[i][0],TestPoints[i + 1][1] - TestPoints[i][1]]
+#     c = [a[0] + b[0],a[1] + b[1]]
+#     NormPoints.append([-c[0] + TestPoints[i][0],-c[1] + TestPoints[i][1]])
+#     i = i + 1
    
 
 #square with norm working
@@ -95,12 +95,12 @@ while i < 100:
 
 
 # loads in test case
-# with open('interface_points_020000.dat','r') as csvfile:
-#     data = csv.reader(csvfile, delimiter = ' ')
-#     for row in data:
-#         TestPoints.append([float(row[0]),float(row[1])])
-#         NormPoints.append([float(row[2]),float(row[3])])
-#     csvfile.close()
+with open('interface_points_020000.dat','r') as csvfile:
+    data = csv.reader(csvfile, delimiter = ' ')
+    for row in data:
+        TestPoints.append([float(row[0]),float(row[1])])
+        NormPoints.append([float(row[2]),float(row[3])])
+    csvfile.close()
 
 
 
@@ -130,7 +130,16 @@ i = 0
 while i < len(finPoints):
     finX.append(finPoints[i][0])
     finY.append(finPoints[i][1])
-    plt.plot([testX[i],finX[i]],[testY[i],finY[i]])
+    theta = np.linspace(0,2*np.pi,100)
+    q = 0
+    tx = []
+    ty = []
+    if i > 20 and i < 40:
+        while q < 100:
+            tx.append(finX[i] + finR[i]* np.cos(theta[q]))
+            ty.append(finY[i] + finR[i]* np.sin(theta[q]))
+            q = q + 1
+        plt.plot(tx,ty)
     i = i + 1
 plt.scatter(testX, testY)
 plt.scatter(finX, finY)
@@ -138,5 +147,5 @@ plt.scatter(finX, finY)
 
 
 
-plt.xlim(-0.1,1.1)
-plt.ylim(-0.8,1.8)
+plt.xlim(0.2,0.9)
+plt.ylim(0.2,0.9)
