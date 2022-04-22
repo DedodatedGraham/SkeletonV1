@@ -34,7 +34,7 @@ NormPoints = []
 #     i = i + 1
    
 
-#square with norm working
+#square with norm working [0.101839, 0.906566, 0.5, 0.325819]
 # i = 0
 # while i < 100:
 #     if i < 25:

@@ -11,6 +11,25 @@ from random  import randint
 import matplotlib
 import matplotlib.pyplot as plt
 
+def checkRepeat(check : list):
+    n = 2 #order of repeat
+    a = False
+    size = len(check)
+    while n < size:
+        
+        right = check[size - n : size]
+        print('right',right)
+        left = check[size - 2 * n : size - (n)]
+        print('left',left)
+        
+        if right == left:
+            a = True
+            print('Found',n)
+            break
+        n = n + 1
+    return a , n
+
+
 def getRadius2D(point1, point2 , norm) -> float:
     
     
@@ -95,15 +114,10 @@ def Skeletize2D(points : list, norms : list):
                 case = True
             #going back and fourth from two radii    
             if i >= 3:
-                if tempr[i] == tempr[i-2] and tempr[i-1] == tempr[i-3]:
-                    if tempr[i] > tempr[i-1]:
-                        finPoints.append(centerp[i-1])
-                        finR.append(tempr[i-1])
-                        case = True
-                    else:
-                        finPoints.append(centerp[i])
-                        finR.append(tempr[i])
-                        case = True
+                repeat, order = checkRepeat(tempr)
+                # if repeat:
+                    
+                    
                 
             i = i + 1
             
