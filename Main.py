@@ -11,6 +11,8 @@ from DataStructures import kdTree
 TestPoints = []
 NormPoints = []
 
+###TEST CASES ONLY ONE SHOULD BE ACTIVE AT A TIME:
+
 # #ellipse, norm isnt working well
 # i = 0
 # theta = np.linspace(0, 2*np.pi, 100)
@@ -92,22 +94,36 @@ NormPoints = []
 #         NormPoints.append([TestPoints[i][0] - 0.5,TestPoints[i][1]-0.5])
 #     i = i + 1
 
+#Test case with two circles inside || Centered at (0.5,0.5) with Rmajor = 0.5 and Rminor = 0.25
+i = 0
+theta = np.linspace(0,2*np.pi,100)
+while i < 100:
+    #outside
+    TestPoints.append([0.5 + 0.5 * np.cos(theta[i]),0.5 + 0.5 * np.sin(theta[i])])
+    NormPoints.append([TestPoints[len(TestPoints) - 1][0] - 0.5,TestPoints[len(TestPoints) - 1][1] - 0.5])
+    #inside
+    TestPoints.append([0.55 + 0.25 * np.cos(theta[i]),0.55 + 0.25 * np.sin(theta[i])])
+    NormPoints.append([0.55 - TestPoints[len(TestPoints) - 1][0],0.55 - TestPoints[len(TestPoints) - 1][1]])
+    
+    i = i + 1
+
+# # loads in test case from data (020000.dat or 070000.dat)
+# with open('interface_points_020000.dat','r') as csvfile:
+#     data = csv.reader(csvfile, delimiter = ' ')
+#     for row in data:
+#         TestPoints.append([float(row[0]),float(row[1])])
+#         NormPoints.append([float(row[2]),float(row[3])])
+#     csvfile.close()
 
 
-# loads in test case
-with open('interface_points_020000.dat','r') as csvfile:
-    data = csv.reader(csvfile, delimiter = ' ')
-    for row in data:
-        TestPoints.append([float(row[0]),float(row[1])])
-        NormPoints.append([float(row[2]),float(row[3])])
-    csvfile.close()
-
-
-
+###SOLVING THE POINTS
 
 #when making the tree it changes test points?
 finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
-# print(finPoints,finR)
+
+
+
+###PROCESSING DATA INTO FIGURES
 testX = []
 testY = []
 finX = []
@@ -130,16 +146,17 @@ i = 0
 while i < len(finPoints):
     finX.append(finPoints[i][0])
     finY.append(finPoints[i][1])
-    theta = np.linspace(0,2*np.pi,100)
-    q = 0
-    tx = []
-    ty = []
-    if i > 20 and i < 40:
-        while q < 100:
-            tx.append(finX[i] + finR[i]* np.cos(theta[q]))
-            ty.append(finY[i] + finR[i]* np.sin(theta[q]))
-            q = q + 1
-        plt.plot(tx,ty)
+    #if you want to see final circles in a figure
+    # theta = np.linspace(0,2*np.pi,100)
+    # q = 0
+    # tx = []
+    # ty = []
+    # if i > 20 and i < 40:
+    #     while q < 100:
+    #         tx.append(finX[i] + finR[i]* np.cos(theta[q]))
+    #         ty.append(finY[i] + finR[i]* np.sin(theta[q]))
+    #         q = q + 1
+    #     plt.plot(tx,ty)
     i = i + 1
 plt.scatter(testX, testY)
 plt.scatter(finX, finY)
@@ -147,5 +164,5 @@ plt.scatter(finX, finY)
 
 
 
-plt.xlim(0.2,0.9)
-plt.ylim(0.2,0.9)
+plt.xlim(-0.1,1.1)
+plt.ylim(-0.1,1.1)

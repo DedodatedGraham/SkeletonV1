@@ -21,7 +21,7 @@ def getRadius2D(point1, point2 , norm) -> float:
         top = top/distance
         theta = np.arccos(top)
     else:
-        print('rip')
+        print('rip',top/distance)
         top = top/distance
         top = top + 1
         top = top % 2
@@ -78,6 +78,7 @@ def Skeletize2D(points : list, norms : list):
         
         #solve loop
         while not case:
+            print(index - 1, i,tempr[len(tempr)-1])
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
             testp = tree.getNearR(centerp[len(centerp)-1], point)
             tempr.append(np.round(getRadius2D(point, testp, norms[index - 1]),6))
@@ -202,10 +203,10 @@ def Skeletize3D(points : list, norms : list):
         
     return finPoints,finR
 
-def BuildSkeleton2D(centerPoints : list, radius : list, dim):
+def BuildSkeleton(centerPoints : list, radius : list, dim):
     
     #first define the geometric center of all the points, averaging out, then the closeest point will be the node
-    if dim == 2:
+    if dim == 2:#2d
         i = 0
         tx = 0
         ty = 0
@@ -217,7 +218,7 @@ def BuildSkeleton2D(centerPoints : list, radius : list, dim):
         tgeoCent = [tx/n,ty/n]
         tree = kdTree(centerPoints,2)
         geoCent = tree.getNearR(tgeoCent,[10000,10000])
-    else:
+    else:#3D 
         i = 0
         tx = 0
         ty = 0
@@ -231,5 +232,5 @@ def BuildSkeleton2D(centerPoints : list, radius : list, dim):
         tgeoCent = [tx/n,ty/n,tz/n]
         tree = kdTree(centerPoints,3)
         geoCent = tree.getNearR(tgeoCent,[10000,10000])
+    #now a final point will be classified as the center point and we can branch out 
     
-    #then 
