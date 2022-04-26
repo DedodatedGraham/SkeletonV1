@@ -52,6 +52,38 @@ def getRadius2D(point1, point2 , norm) -> float:
 
 def getRadius3D(point1,point2,norm) -> float:
     return 0
+
+
+def thin(opts : list, measured : list, finPts : list, finR : list, pointDis):
+    pts = []
+    j = 0
+    while j < len(opts):
+        pts.append(opts[j])
+        j = j + 1
+    
+    N = 5           #points to grab arround test point
+    Threshold = pointDis * 10 # applies for how much varying is allowed between a real point / fake point
+    
+    
+    thin1p = []
+    thin1r = []
+    #before fitting the curves,
+    i = 0
+    while i < len(finPts) - 1:
+        
+        j = i + 1
+        while j < len(finPts):
+            if(np.abs(finR[i] - finR[j]) < Threshold):
+                
+            j = j + 1
+        
+        
+        
+        
+        
+        i = i + 1
+    
+    
     
 def Skeletize2D(points : list, norms : list):
     #skeletize takes in 
@@ -77,6 +109,7 @@ def Skeletize2D(points : list, norms : list):
     close = tree.getNearR(points[0],points[0])
     threshDistance = getDistance2D(points[0],close)
     
+    thinPoints = []
     finPoints = []#list of skeletized points
     finR = []#radius values of each point
     index = 1
@@ -111,12 +144,28 @@ def Skeletize2D(points : list, norms : list):
                 centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[leng])
+                thinPoints.append(point)
                 case = True
             #going back and fourth from two radii    
             if i >= 3:
                 repeat, order = checkRepeat(tempr)
-                # if repeat:
-                    
+                if repeat:
+                    n = 0
+                    p = 0
+                    sml = 0.0
+                    while p < order:
+                        if p == 0:
+                            sml = tempr[len(tempr) - (order - p)]
+                        else:
+                            tmp = tempr[len(tempr)-(order - p)]
+                            if tmp < sml:
+                                sml = tmp
+                                n = len(tempr)-(order-p)
+                        p = p + 1
+                    finPoints.append(centerp[n])
+                    finR.append(tempr[n])
+                    thinPoints.append(point)
+                    case = True
                     
                 
             i = i + 1
@@ -128,10 +177,10 @@ def Skeletize2D(points : list, norms : list):
         
     
         
-    #returns important values 
+    #Thins out data and returns correct points. 
         
-        
-    return finPoints,finR
+    fin2Points , fin2R = thin(points,thinPoints, finPoints, finR, threshDistance)    
+    return fin2Points,fin2R
 
 def Skeletize3D(points : list, norms : list):
     #skeletize takes in 
@@ -214,7 +263,7 @@ def Skeletize3D(points : list, norms : list):
         
     #returns important values 
         
-        
+    
     return finPoints,finR
 
 def BuildSkeleton(centerPoints : list, radius : list, dim):
