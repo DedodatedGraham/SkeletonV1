@@ -18,13 +18,10 @@ def checkRepeat(check : list):
     while n < size:
         
         right = check[size - n : size]
-        print('right',right)
         left = check[size - 2 * n : size - (n)]
-        print('left',left)
         
         if right == left:
             a = True
-            print('Found',n)
             break
         n = n + 1
     return a , n
@@ -118,7 +115,7 @@ def Skeletize2D(points : list, norms : list):
         tempr = []
         if index == 1:
             pcross = points[randint(index,len(points))]
-            tempr.append(getRadius2D(point,pcross,norms[index - 1]))
+            tempr.append(np.round(getRadius2D(point,pcross,norms[index - 1]),6))
         else:
             # print('guessr',guessr)
             tempr.append(guessr)
@@ -127,10 +124,9 @@ def Skeletize2D(points : list, norms : list):
         centerp = []
         testp = []
         case = False
-        
+        print(index, '/' , len(points))
         #solve loop
         while not case:
-            print(index - 1, i,tempr[len(tempr)-1])
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
             testp = tree.getNearR(centerp[len(centerp)-1], point)
             tempr.append(np.round(getRadius2D(point, testp, norms[index - 1]),6))
@@ -158,12 +154,9 @@ def Skeletize2D(points : list, norms : list):
                             sml = tempr[len(tempr) - (order - p)]
                         else:
                             tmp = tempr[len(tempr)-(order - p)]
-                            if tmp < sml:
-                                sml = tmp
-                                n = len(tempr)-(order-p)
-                        p = p + 1
-                    finPoints.append(centerp[n])
-                    finR.append(tempr[n])
+                            if tmp < sml
+                                sml = tempr[len(tempr)-(order-p)]
+                                n = len(tempr) - (order - p)
                     thinPoints.append(point)
                     case = True
                     
