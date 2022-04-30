@@ -103,11 +103,11 @@ NormPoints = []
 #     TestPoints.append([0.5 + 0.5 * np.cos(theta[i]),0.5 + 0.5 * np.sin(theta[i])])
 #     NormPoints.append([TestPoints[len(TestPoints) - 1][0] - 0.5,TestPoints[len(TestPoints) - 1][1] - 0.5])
 #     #inside
-#     TestPoints.append([0.35 + 0.25 * np.cos(theta[i]),0.35 + 0.25 * np.sin(theta[i])])
-#     NormPoints.append([0.35 - TestPoints[len(TestPoints) - 1][0],0.35 - TestPoints[len(TestPoints) - 1][1]])
+#     TestPoints.append([0.5 + 0.25 * np.cos(theta[i]),0.5 + 0.25 * np.sin(theta[i])])
+#     NormPoints.append([0.5 - TestPoints[len(TestPoints) - 1][0],0.5 - TestPoints[len(TestPoints) - 1][1]])
 #     i = i + 1
 
-# # loads in test case from data (020000.dat or 070000.dat)
+# loads in test case from data (020000.dat or 070000.dat)
 with open('interface_points_020000.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:

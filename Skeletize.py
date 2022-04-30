@@ -27,6 +27,13 @@ def checkRepeat(check : list):
     return a , n
 
 
+def RadOfCur(points : list) -> float:
+    i = 0
+    while i < len(points):
+        
+    
+    
+
 def getRadius2D(point1, point2 , norm) -> float:
     
     
@@ -37,7 +44,6 @@ def getRadius2D(point1, point2 , norm) -> float:
         top = top/distance
         theta = np.arccos(top)
     else:
-        print('rip',top/distance)
         top = top/distance
         top = top + 1
         top = top % 2
@@ -51,35 +57,41 @@ def getRadius3D(point1,point2,norm) -> float:
     return 0
 
 
-def thin(opts : list, measured : list, finPts : list, finR : list, pointDis):
+def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     pts = []
     j = 0
+    #interface points
     while j < len(opts):
         pts.append(opts[j])
         j = j + 1
     
-    N = 5           #points to grab arround test point
-    Threshold = pointDis * 10 # applies for how much varying is allowed between a real point / fake point
+    N = 5 #points to grab arround test point
+    Threshold = pointDis  # applies for how much varying is allowed between a real point / fake point
     
     
     thin1p = []
     thin1r = []
-    #before fitting the curves,
+    #removing the repeated points, as they arent very important 
     i = 0
     while i < len(finPts) - 1:
-        
+        print(i,'/',len(finPts))
         j = i + 1
+        noRepeat = True
         while j < len(finPts):
-            if(np.abs(finR[i] - finR[j]) < Threshold):
-                
+            if np.abs(finR[i] - finR[j]) <= Threshold/100:
+                if np.abs(finPts[i][0] - finPts[j][0]) <= Threshold/100:
+                    if np.abs(finPts[i][1] - finPts[j][1]) <= Threshold/100:
+                        noRepeat = False
+                        
             j = j + 1
-        
-        
-        
-        
-        
+        if noRepeat:
+            thin1p.append(finPts[i])
+            thin1r.append(finR[i])
         i = i + 1
     
+    #After reduction has taken place,curve test 
+    
+    return thin1p,thin1r
     
     
 def Skeletize2D(points : list, norms : list):
@@ -154,7 +166,7 @@ def Skeletize2D(points : list, norms : list):
                             sml = tempr[len(tempr) - (order - p)]
                         else:
                             tmp = tempr[len(tempr)-(order - p)]
-                            if tmp < sml
+                            if tmp < sml:
                                 sml = tempr[len(tempr)-(order-p)]
                                 n = len(tempr) - (order - p)
                     thinPoints.append(point)

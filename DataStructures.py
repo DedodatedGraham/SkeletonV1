@@ -48,6 +48,9 @@ def getDistance3D(point1, point2) -> float:
     return np.sqrt(np.abs(pow(point1[0]-point2[0],2)) + np.abs(pow(point1[1]-point2[1],2))+np.abs(pow(point1[2]-point2[2],2)))
 class kdTree:
     
+    
+
+    
     def __init__(self,points : list, dim : int):
         
     #for sorting points along an axis
@@ -287,4 +290,3 @@ class kdTree:
                         i = i + 1
         if ret != []:
             return ret
-        
