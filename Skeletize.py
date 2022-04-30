@@ -5,11 +5,13 @@ Created on Thu Feb 17 16:22:45 2022
 @author: Graham Garcia
 """
 
+
 import numpy as np
 from DataStructures import normalize2D, normalize3D, kdTree, getDistance2D, getDistance3D
 from random  import randint
 import matplotlib
 import matplotlib.pyplot as plt
+import scipy
 
 def checkRepeat(check : list):
     n = 2 #order of repeat
@@ -28,6 +30,7 @@ def checkRepeat(check : list):
 
 
 def RadOfCur(points : list) -> float:
+    #
     i = 0
     while i < len(points):
         
@@ -88,9 +91,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
             thin1p.append(finPts[i])
             thin1r.append(finR[i])
         i = i + 1
-    
-    #After reduction has taken place,curve test 
-    
+    print(len(thin1p))
     return thin1p,thin1r
     
     
@@ -158,23 +159,49 @@ def Skeletize2D(points : list, norms : list):
             if i >= 3:
                 repeat, order = checkRepeat(tempr)
                 if repeat:
+                    print('bruh')
                     n = 0
                     p = 0
                     sml = 0.0
                     while p < order:
                         if p == 0:
-                            sml = tempr[len(tempr) - (order - p)]
+                            sml = tempr[len(tempr) - (order)]
                         else:
                             tmp = tempr[len(tempr)-(order - p)]
                             if tmp < sml:
                                 sml = tempr[len(tempr)-(order-p)]
                                 n = len(tempr) - (order - p)
-                    thinPoints.append(point)
+                        p = p + 1
+                        
+                        
+                    #checks radius of curvature
+                    #first grabs the needed points
+                    curvepts = []
+                    N = 7
+                    curvepts.append(point)
+                    curvepts.append(tree.getNearR(point,[1000000,1000000]))
+                    curvepts.append(tree.getNearR(point, curvepts[len(curvepts)-1]))
+                    curvepts.append(tree.getNearR(curvepts[len(curvepts)-2], curvepts[len(curvepts) - 3]))
+                    curvepts.append(tree.getNearR(curvepts[len(curvepts)-2], curvepts[len(curvepts) - 4]))
+                    imax = (N - 5) / 2
+                    it = 0
+                    while it < imax:
+                        curvepts.append(tree.getNearR(curvepts[len(curvepts)-2],curvepts[len(curvepts) - 4]))
+                        curvepts.append(tree.getNearR(curvepts[len(curvepts)-2],curvepts[len(curvepts) - 4]))
+                        it = it + 1
+                    testrad = RadOfCur(curvepts)
+                    if np.abs(testrad - sml) < threshDistance :
+                        finR.append(sml)
+                        finPoints.append(centerp[n])
+                        thinPoints.append(point)
                     case = True
                     
                 
             i = i + 1
+        
             
+        
+        
         #guess values
         if index  != len(points):
             guessr = finR[len(finR)-1] * 100        
@@ -184,7 +211,7 @@ def Skeletize2D(points : list, norms : list):
         
     #Thins out data and returns correct points. 
         
-    fin2Points , fin2R = thin(points,thinPoints, finPoints, finR, threshDistance)    
+    fin2Points , fin2R = thin2D(points,thinPoints, finPoints, finR, threshDistance)    
     return fin2Points,fin2R
 
 def Skeletize3D(points : list, norms : list):
