@@ -29,10 +29,10 @@ def checkRepeat(check : list):
     return a , n
 
 
-def RadOfCur(points : list) -> float:
-    #
-    i = 0
-    while i < len(points):
+# def RadOfCur(points : list) -> float:
+#     #
+#     i = 0
+#     while i < len(points):
         
     
     
@@ -98,7 +98,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
 def Skeletize2D(points : list, norms : list):
     #skeletize takes in 
     #points, the given plain list of points [x,y] for 2D case
-    #norms, a list of not yet normalized normal points [n_z,n_y] here for 2D case
+    #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
     
     #then returns 2 things
     # finPoints = [[x,y],...] of skeleton points
@@ -150,6 +150,7 @@ def Skeletize2D(points : list, norms : list):
             
             #cases for cacthing when stuck  
             if tempr[leng] == tempr[leng - 1] and i > 1:
+                
                 centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[leng])
@@ -174,26 +175,10 @@ def Skeletize2D(points : list, norms : list):
                         p = p + 1
                         
                         
-                    #checks radius of curvature
-                    #first grabs the needed points
-                    curvepts = []
-                    N = 7
-                    curvepts.append(point)
-                    curvepts.append(tree.getNearR(point,[1000000,1000000]))
-                    curvepts.append(tree.getNearR(point, curvepts[len(curvepts)-1]))
-                    curvepts.append(tree.getNearR(curvepts[len(curvepts)-2], curvepts[len(curvepts) - 3]))
-                    curvepts.append(tree.getNearR(curvepts[len(curvepts)-2], curvepts[len(curvepts) - 4]))
-                    imax = (N - 5) / 2
-                    it = 0
-                    while it < imax:
-                        curvepts.append(tree.getNearR(curvepts[len(curvepts)-2],curvepts[len(curvepts) - 4]))
-                        curvepts.append(tree.getNearR(curvepts[len(curvepts)-2],curvepts[len(curvepts) - 4]))
-                        it = it + 1
-                    testrad = RadOfCur(curvepts)
-                    if np.abs(testrad - sml) < threshDistance :
-                        finR.append(sml)
-                        finPoints.append(centerp[n])
-                        thinPoints.append(point)
+                
+                    finR.append(sml)
+                    finPoints.append(centerp[n])
+                    thinPoints.append(point)
                     case = True
                     
                 
