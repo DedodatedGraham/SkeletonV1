@@ -8,6 +8,7 @@ import numpy as np
 import csv
 import Skeletize
 from DataStructures import kdTree
+import pandas as pd
 
 TestPoints = []
 NormPoints = []
