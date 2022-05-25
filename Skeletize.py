@@ -4,8 +4,6 @@ Created on Thu Feb 17 16:22:45 2022
 
 @author: Graham Garcia
 """
-
-
 import numpy as np
 from DataStructures import normalize2D, normalize3D, kdTree, getDistance2D, getDistance3D
 from random  import randint
@@ -36,7 +34,7 @@ def checkRepeat(check : list):
 #     while i < len(points):
         
     
-    
+
 
 def getRadius2D(point1, point2 , norm) -> float:
     
