@@ -93,14 +93,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
             thin1r.append(finR[i])
         i = i + 1
     print(len(thin1p))
-    i = 0
-    thin2p = []
-    thin2r = []
-    while i < len(thin1p) - 1:
-        
-        i = i + 1
-    
-    return thin2p,thin2r
+    return thin1p,thin1r
     
     
 def Skeletize2D(points : list, norms : list):
@@ -131,7 +124,7 @@ def Skeletize2D(points : list, norms : list):
     cweight = 0.5#weight of c value(exponetialy weighted)
     maxReach = 11 #max ittrations of the reach algorithm
     pointtol = 0.2 #in %
-    closew = 30 #Another modifier for tollerance on skeleton filter
+    closew = 100 #Another modifier for tollerance on skeleton filter
     
     thinPoints = []
     finPoints = []#list of skeletized points
