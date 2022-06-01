@@ -109,7 +109,7 @@ NormPoints = []
 #     i = i + 1
 
 # loads in test case from data (020000.dat or 070000.dat)
-with open('interface_points_020000.dat','r') as csvfile:
+with open('interface_points_070000.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:
         TestPoints.append([float(row[0]),float(row[1])])
@@ -164,8 +164,8 @@ while i < len(finPoints):
     #     plt.plot(tx,ty)
     i = i + 1
 
-plt.scatter(testX, testY)
-plt.scatter(finX, finY)
+plt.scatter(testX, testY, zorder = 2)
+plt.scatter(finX, finY, zorder = 1)
 plt.savefig("Output.png")
 # ax = plt.axes(projection='3d')
 

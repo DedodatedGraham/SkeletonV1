@@ -28,14 +28,6 @@ def checkRepeat(check : list):
     return a , n
 
 
-# def RadOfCur(points : list) -> float:
-#     #
-#     i = 0
-#     while i < len(points):
-        
-    
-
-
 def getRadius2D(point1, point2 , norm) -> float:
     
     
@@ -76,7 +68,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     #removing the repeated points, as they arent very important 
     i = 0
     while i < len(finPts) - 1:
-        print(i,'/',len(finPts))
+        # print(i,'/',len(finPts))
         j = i + 1
         noRepeat = True
         while j < len(finPts):
@@ -105,7 +97,7 @@ def Skeletize2D(points : list, norms : list):
     # finPoints = [[x,y],...] of skeleton points
     # finR = [r1,r2,...] of the radius of each skeleton point
     
-   
+    level = 96
     
     pts = []
     i = 0
@@ -164,28 +156,33 @@ def Skeletize2D(points : list, norms : list):
                 while reach:
                     c = np.power(10, reachitt) * threshDistance * np.power(cweight,reachitt)
                     if(reachitt > maxReach or c <= 0):
-                        # if c <=0:
-                            # print(c,theta)
                         reach = False
                     cords = [point[0]-norms[index-1][0]*c,point[1]-norms[index-1][1]*c]
                     checkp = tree.getNearR(cords,[cords[0]*10000,cords[1]*9000])
                     
-                    # plt.scatter([point[0],cords[0],checkp[0]],[point[1],cords[1],checkp[1]])
-                    # print(point)
+                  
                     if not(checkp == point):
                         A = [point[0] - cords[0],point[1] - cords[1]]
                         B = [point[0] - checkp[0],point[1] - checkp[1]]
                         theta = np.arccos((A[0] * B[0] + A[1] * B[1]) / (np.sqrt(np.power(np.abs(A[0]),2) + np.power(np.abs(A[1]),2)) * np.sqrt(np.power(np.abs(B[0]),2) + np.power(np.abs(B[1]),2))))
-                        # if(c == 1 or c == 5):
-                            # print(c,'Theta',theta)
-                            # print(reachitt,c,'cords',point,cords,checkp)
-                        # pd.notnull(theta)
-                        # print(reachitt,c,'cords',point,cords,checkp)
                         if(theta < 0.2):
                             
                             midp = [(point[0] + checkp[0])/2,(point[1] + checkp[1])/2]
                             if(np.abs(midp[0] - centerp[len(centerp) - 1][0]) < closew * pointtol * threshDistance and np.abs(midp[1] - centerp[len(centerp) - 1][1]) < closew * pointtol * threshDistance):
-                                # print(np.abs(midp[0] - centerp[len(centerp) - 1][0]))
+                                if(index == level):
+                                    print(centerp)
+                                    print(tempr)
+                                    q = 1
+                                    ptx = []
+                                    pty = []
+                                    while q < len(centerp):
+                                        ptx.append(centerp[q][0])
+                                        pty.append(centerp[q][1])
+                                        q = q + 1
+                                    ptx.append(point[0])
+                                    pty.append(point[1])
+                                    plt.scatter(ptx, pty, zorder = 3)
+                                    print('rip')
                                 centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                                 finPoints.append(centerp[len(centerp)-1])
                                 finR.append(tempr[leng])
@@ -198,7 +195,7 @@ def Skeletize2D(points : list, norms : list):
             if i >= 3:
                 repeat, order = checkRepeat(tempr)
                 if repeat:
-                    # print('bruh')
+                    print('bruh')
                     n = 0
                     p = 0
                     sml = 0.0
@@ -220,26 +217,26 @@ def Skeletize2D(points : list, norms : list):
                     while reach:
                         c = np.power(10, reachitt) * threshDistance * np.power(cweight,reachitt)
                         if(reachitt > maxReach or c <= 0):
-                            # if c <=0:
-                                # print(c,theta)
                             reach = False
                         cords = [point[0]-norms[index-1][0]*c,point[1]-norms[index-1][1]*c]
                         checkp = tree.getNearR(cords,[cords[0]*10000,cords[1]*9000])
-                        
-                        # plt.scatter([point[0],cords[0],checkp[0]],[point[1],cords[1],checkp[1]])
-                        # print(point)
                         if not(checkp == point):
                             A = [point[0] - cords[0],point[1] - cords[1]]
                             B = [point[0] - checkp[0],point[1] - checkp[1]]
                             theta = np.arccos((A[0] * B[0] + A[1] * B[1]) / (np.sqrt(np.power(np.abs(A[0]),2) + np.power(np.abs(A[1]),2)) * np.sqrt(np.power(np.abs(B[0]),2) + np.power(np.abs(B[1]),2))))
-                            # if(c == 1 or c == 5):
-                                # print(c,'Theta',theta)
-                                # print(reachitt,c,'cords',point,cords,checkp)
-                            # pd.notnull(theta)
-                            # print(reachitt,c,'cords',point,cords,checkp)
                             if(theta < 0.2):
                                 midp = [(point[0] + checkp[0])/2,(point[1] + checkp[1])/2]
                                 if(np.abs(midp[0] - centerp[len(centerp) - 1][0]) < closew * pointtol * threshDistance and np.abs(midp[1] - centerp[len(centerp) - 1][1]) < closew * pointtol * threshDistance):
+                                   if(index == level):
+                                       print(centerp)
+                                       q = 1
+                                       ptx = []
+                                       pty = []
+                                       while q < len(centerp):
+                                           ptx.append(centerp[q][0])
+                                           pty.append(centerp[q][1])
+                                           q = q + 1
+                                       plt.scatter(ptx, pty, zorder = 3)
                                    finR.append(sml)
                                    finPoints.append(centerp[n])
                                    thinPoints.append(point)
