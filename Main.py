@@ -138,7 +138,7 @@ with open('interface_points_070000.dat','r') as csvfile:
 ###SOLVING THE POINTS
 
 
-finPoints,finR,animfile = Skeletize.Skeletize2D(TestPoints, NormPoints,0 , len(TestPoints))
+finPoints,finR,animfile,animdfile = Skeletize.Skeletize2D(TestPoints, NormPoints,0 , len(TestPoints))
 # finPoints,finR = Skeletize.Skeletize3D(TestPoints, NormPoints) 
 
 
@@ -194,8 +194,8 @@ while i < len(finPoints):
     #     plt.plot(tx,ty)
     i = i + 1
 
-# plt.scatter(testX, testY, zorder = 2)
-# plt.scatter(finX, finY, zorder = 1)
+# plt.scatter(testX, testY, zorder = 1)
+# plt.scatter(finX, finY, zorder = 2)
 # plt.savefig("Output.png")
 # ax = plt.axes(projection='3d')
 
@@ -222,7 +222,7 @@ while i < len(animfile[0]):
 
 
 print("length",len(animfile[0]))
-
+print("Building Animation...")
 p = 0
 case = True
 while case:
@@ -236,7 +236,7 @@ while case:
         
 i = 0 
 count = 0
-
+#Building
 while i < len(animfile[0]):
     j = 0
     while j < len(animfile[0][i]):
@@ -297,5 +297,53 @@ while i < len(animfile[0]):
         count += 1
         j += 1
     i += 1
+    
+    
+#thinning
+count2 = 0
+i = 0
+x = []
+y = []
+while i < len(animdfile):
+    print(i,"/",len(animdfile)-1)
+    x.append(animdfile[i][0])
+    y.append(animdfile[i][1])
+    plt.clf()
+    plt.xlim(0.45,1.05)
+    plt.ylim(0.15,0.85)
+    #Interface
+    plt.scatter(intX,intY,marker = "X",color = "black")
+    plt.scatter(testX,testY,marker = "X",color = "yellow")
+    #Plotting for the saved calculated centerpoints
+    if not(len(cx) == 0):
+        plt.scatter(cx,cy,color = "blue", marker = "^")
+    plt.scatter(x, y,color = "red", marker = "X")
+    save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count + count2)
+    plt.savefig(save)
+    count2 += 1
+    i += 1
+
+count3 = 0
 
 
+
+
+plt.clf()
+plt.xlim(0.45,1.05)
+plt.ylim(0.15,0.85)
+#Interface
+plt.scatter(intX,intY,marker = "X",color = "black")
+plt.scatter(testX,testY,marker = "X",color = "yellow")
+
+i = 0
+while i < len(finX):
+    print(i,"/",len(finX)-1)
+    plt.scatter(finX[i],finY[i],color = "blue", marker = "^")
+    plt.plot(finX[i] + finR[i] * np.cos(theta), finY[i] + finR[i] * np.sin(theta))
+        
+    save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count + count2 + count3)
+    plt.savefig(save)
+    
+    count3 += 1
+    i += 1
+    
