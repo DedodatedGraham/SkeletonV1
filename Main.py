@@ -1,4 +1,3 @@
-#plotting
 from random  import randint
 from sys import float_repr_style
 import matplotlib
@@ -184,6 +183,8 @@ while i < len(finPoints):
 
 ###ANIMATED FIGURE(ANIMFILE holds all information needed for building the animated figures)
 
+countt = 0
+countc = 0
 calc = 0
 temp = []
 i = 0   
@@ -201,13 +202,16 @@ def animate(i):
     x = []
     y = []
     
-    ax.plot(x,y)
+    x.append(animfile[0][countt])
     
-anima = FuncAnimation(fig, animate, init_func=init,frames=60, interval=calc, blit=True)
-
-
-Writer = animation.FFMpegWriter(fps=60)
-anima.save('animatedFig.mp4',writer = Writer)
+    ax.plot(x,y)
+    if i :
+        countt = countt + 1
+    countc = countc + 1
+anim = animation.FuncAnimation(fig, animate, init_func=init,
+                               frames=60, interval=calc, blit=True)
+# save as a GIF
+anim.save('animatedFig.gif', fps=60, writer='imagemagick')
 
     
 
