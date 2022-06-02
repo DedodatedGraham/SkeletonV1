@@ -209,6 +209,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                     
                 
             i = i + 1
+        #Adding each itteration's variable
         acp.append(tacp)
         atp.append(tatp)
         ar.append(tar)

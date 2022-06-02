@@ -19,10 +19,9 @@ from DataStructures import kdTree
 TestPoints = []
 NormPoints = []
 
-plt.xlim(0.55,1.05)
+fig = plt.figure()
+plt.xlim(0.55,0.95)
 plt.ylim(0.15,0.85)
-fig, ax = plt.subplots()
-line, = ax.plot([], [], lw=2)
 
 ###TEST CASES ONLY ONE SHOULD BE ACTIVE AT A TIME:
 
@@ -131,7 +130,7 @@ with open('interface_points_070000.dat','r') as csvfile:
 ###SOLVING THE POINTS
 
 
-finPoints,finR,animfile = Skeletize.Skeletize2D(TestPoints, NormPoints, 0, len(TestPoints))
+finPoints,finR,animfile = Skeletize.Skeletize2D(TestPoints, NormPoints,0 , len(TestPoints))
 # finPoints,finR = Skeletize.Skeletize3D(TestPoints, NormPoints) 
 
 
@@ -183,35 +182,72 @@ while i < len(finPoints):
 
 ###ANIMATED FIGURE(ANIMFILE holds all information needed for building the animated figures)
 
+cx = []
+cy = []
+target = 0
 countt = 0
 countc = 0
 calc = 0
 temp = []
-i = 0   
+i = 0  
+
+theta = np.linspace(0,2*np.pi,100)
+
 while i < len(animfile[0]):
     calc = calc + len(animfile[0][i])
-    temp.append([len(animfile[0][i])])
+    temp.append(len(animfile[0][i]))
     i = i + 1
 
-def init():
-    line, = ax.plot(testX,testY)
-    return line,
+i = 0 
+j = 0
+count = 0
 
-def animate(i):
-    ax.clear()
-    x = []
-    y = []
-    
-    x.append(animfile[0][countt])
-    
-    ax.plot(x,y)
-    if i :
-        countt = countt + 1
-    countc = countc + 1
-anim = animation.FuncAnimation(fig, animate, init_func=init,
-                               frames=60, interval=calc, blit=True)
-# save as a GIF
-anim.save('animatedFig.gif', fps=60, writer='imagemagick')
 
-    
+print("length",len(animfile[0]) - 1)
+save_Path = os.getcwd
+while i < len(animfile[0]) - 1:
+    while j < len(animfile[0][i]):
+        #Interface
+        plt.scatter(testX,testY,marker = "X",color = "black")
+      
+        print(i,"/",len(temp) - 1 , j , '/', temp[i])
+        #curent norm
+        tx = []
+        ty = [] 
+        tx.append(animfile[4][i][0] * 1000)
+        tx.append(animfile[4][i][0] * -1000)
+        ty.append(animfile[4][i][1] * 1000)
+        ty.append(animfile[4][i][1] * -1000)
+        plt.plot(tx,ty)
+        #Plot temporary varibles(change per frame)
+        tx = []
+        ty = []
+        tx.append(animfile[0][i][j][0])
+        tx.append(animfile[1][i][j][0])
+        ty.append(animfile[0][i][j][1])
+        ty.append(animfile[1][i][j][1])
+        plt.scatter(tx,ty,color = "blue", marker = "o")
+        plt.plot(animfile[2][i][j] * np.cos(theta) + tx[0],animfile[2][i][j] * np.sin(theta) + ty[0]) 
+        #plotting main point                                                           
+        plt.scatter(animfile[3][i][0],animfile[3][i][1],color = "green", marker = 's')
+        if j == len(animfile[0][i]) - 1:
+            cx.append(tx[0])
+            cy.append(ty[0])
+       
+        
+        
+
+        #Plotting for the saved calculated centerpoints
+        if not(len(cx) == 0):
+            plt.scatter(cx,cy,color = "red", marker = "^")
+        name = "/animationdata/ani" + str(count)
+        save = os.path.join(save_Path, name + ".png") 
+        plt.savefig(save) 
+        
+
+
+        count += 1
+        j += 1
+    i += 1
+
 
