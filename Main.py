@@ -15,12 +15,13 @@ import Skeletize
 from DataStructures import kdTree
 
 
-
+IntPoints = []
 TestPoints = []
 NormPoints = []
 
 fig = plt.figure()
-plt.xlim(0.55,0.95)
+ax = plt.subplot(111)
+plt.xlim(0.45,1.05)
 plt.ylim(0.15,0.85)
 
 ###TEST CASES ONLY ONE SHOULD BE ACTIVE AT A TIME:
@@ -119,12 +120,19 @@ plt.ylim(0.15,0.85)
 #     i = i + 1
 
 # loads in test case from data (020000.dat or 070000.dat)
+i = 0
 with open('interface_points_070000.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:
-        TestPoints.append([float(row[0]),float(row[1])])
-        NormPoints.append([float(row[2]),float(row[3])])
+        IntPoints.append([float(row[0]),float(row[1])])
+        i += 1
+        if i % 10 == 0:
+            TestPoints.append([float(row[0]),float(row[1])])
+            NormPoints.append([float(row[2]),float(row[3])])
     csvfile.close()
+
+
+##ORDERING POINTS CIRCULARLY
 
 
 ###SOLVING THE POINTS
@@ -141,6 +149,10 @@ testY = []
 finX = []
 finY = []
 # finz = []
+intX = []
+intY = []
+
+
 i = 0
 while i < len(TestPoints):
     testX.append(TestPoints[i][0])
@@ -155,6 +167,14 @@ while i < len(TestPoints):
 #     y = [a[i][1],a[i+1][1]]
 #     plt.plot(x,y)
 #     i = i + 2
+
+i = 0
+while i < len(IntPoints):
+    intX.append(IntPoints[i][0])
+    intY.append(IntPoints[i][1])
+    i += 1
+
+    
 
 i = 0
 while i < len(finPoints):
@@ -199,34 +219,45 @@ while i < len(animfile[0]):
     i = i + 1
 
 i = 0 
-j = 0
 count = 0
 
 
-print("length",len(animfile[0]) - 1)
-save_Path = os.getcwd
-while i < len(animfile[0]) - 1:
+print("length",len(animfile[0]))
+
+while i < len(animfile[0]):
+    j = 0
     while j < len(animfile[0][i]):
+        plt.clf()
+        plt.xlim(0.45,1.05)
+        plt.ylim(0.15,0.85)
         #Interface
-        plt.scatter(testX,testY,marker = "X",color = "black")
-      
-        print(i,"/",len(temp) - 1 , j , '/', temp[i])
+        plt.scatter(intX,intY,marker = "X",color = "black")
+        plt.scatter(testX,testY,marker = "X",color = "yellow")
+        print(i,"/",len(temp) - 1 , j , '/', temp[i] - 1)
         #curent norm
         tx = []
         ty = [] 
-        tx.append(animfile[4][i][0] * 1000)
-        tx.append(animfile[4][i][0] * -1000)
-        ty.append(animfile[4][i][1] * 1000)
-        ty.append(animfile[4][i][1] * -1000)
+        tx.append(animfile[3][i][0] + animfile[4][i][0] * 1000)
+        tx.append(animfile[3][i][0] + animfile[4][i][0] * -1000)
+        ty.append(animfile[3][i][1] + animfile[4][i][1] * 1000)
+        ty.append(animfile[3][i][1] + animfile[4][i][1] * -1000)
         plt.plot(tx,ty)
+        
         #Plot temporary varibles(change per frame)
         tx = []
         ty = []
-        tx.append(animfile[0][i][j][0])
         tx.append(animfile[1][i][j][0])
-        ty.append(animfile[0][i][j][1])
         ty.append(animfile[1][i][j][1])
         plt.scatter(tx,ty,color = "blue", marker = "o")
+        
+        tx = []
+        ty = []
+        tx.append(animfile[0][i][j][0])
+        ty.append(animfile[0][i][j][1])
+        plt.scatter(tx,ty,color = "purple", marker = "o")
+        
+        
+        
         plt.plot(animfile[2][i][j] * np.cos(theta) + tx[0],animfile[2][i][j] * np.sin(theta) + ty[0]) 
         #plotting main point                                                           
         plt.scatter(animfile[3][i][0],animfile[3][i][1],color = "green", marker = 's')
@@ -240,8 +271,13 @@ while i < len(animfile[0]) - 1:
         #Plotting for the saved calculated centerpoints
         if not(len(cx) == 0):
             plt.scatter(cx,cy,color = "red", marker = "^")
-        name = "/animationdata/ani" + str(count)
-        save = os.path.join(save_Path, name + ".png") 
+        
+        #formatting
+        
+        
+        
+        
+        save = os.getcwd() + "/AnimationData/fig{:04d}.png".format(count)
         plt.savefig(save) 
         
 
