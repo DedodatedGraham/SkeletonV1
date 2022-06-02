@@ -126,7 +126,7 @@ with open('interface_points_070000.dat','r') as csvfile:
     for row in data:
         IntPoints.append([float(row[0]),float(row[1])])
         i += 1
-        if i % 10 == 0:
+        if i % 1 == 0:
             TestPoints.append([float(row[0]),float(row[1])])
             NormPoints.append([float(row[2]),float(row[3])])
     csvfile.close()
@@ -218,11 +218,24 @@ while i < len(animfile[0]):
     temp.append(len(animfile[0][i]))
     i = i + 1
 
-i = 0 
-count = 0
+
 
 
 print("length",len(animfile[0]))
+
+p = 0
+case = True
+while case:
+    print(p)
+    if not(os.path.isdir(os.getcwd() + "/AnimationData/{:04d}".format(p))):
+        os.mkdir(os.getcwd() + "/AnimationData/{:04d}".format(p))
+        case = False
+    else:
+        p +=1
+        
+        
+i = 0 
+count = 0
 
 while i < len(animfile[0]):
     j = 0
@@ -276,8 +289,7 @@ while i < len(animfile[0]):
         
         
         
-        
-        save = os.getcwd() + "/AnimationData/fig{:04d}.png".format(count)
+        save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count)
         plt.savefig(save) 
         
 
