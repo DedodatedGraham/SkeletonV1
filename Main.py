@@ -3,15 +3,27 @@ from random  import randint
 from sys import float_repr_style
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib.animation import FuncAnimation
 from mpl_toolkits import mplot3d
 import numpy as np
 import csv
+import scipy
+import pandas as pd
+import os
+
 import Skeletize
 from DataStructures import kdTree
-import pandas as pd
+
+
 
 TestPoints = []
 NormPoints = []
+
+plt.xlim(0.55,1.05)
+plt.ylim(0.15,0.85)
+fig, ax = plt.subplots()
+line, = ax.plot([], [], lw=2)
 
 ###TEST CASES ONLY ONE SHOULD BE ACTIVE AT A TIME:
 
@@ -120,17 +132,17 @@ with open('interface_points_070000.dat','r') as csvfile:
 ###SOLVING THE POINTS
 
 
-finPoints,finR = Skeletize.Skeletize2D(TestPoints, NormPoints)
+finPoints,finR,animfile = Skeletize.Skeletize2D(TestPoints, NormPoints, 0, len(TestPoints))
 # finPoints,finR = Skeletize.Skeletize3D(TestPoints, NormPoints) 
 
 
 ###PROCESSING DATA INTO FIGURES
 testX = []
 testY = []
-testz = []
+# testz = []
 finX = []
 finY = []
-finz = []
+# finz = []
 i = 0
 while i < len(TestPoints):
     testX.append(TestPoints[i][0])
@@ -164,12 +176,38 @@ while i < len(finPoints):
     #     plt.plot(tx,ty)
     i = i + 1
 
-plt.scatter(testX, testY, zorder = 2)
-plt.scatter(finX, finY, zorder = 1)
-plt.savefig("Output.png")
+# plt.scatter(testX, testY, zorder = 2)
+# plt.scatter(finX, finY, zorder = 1)
+# plt.savefig("Output.png")
 # ax = plt.axes(projection='3d')
 
 
+###ANIMATED FIGURE(ANIMFILE holds all information needed for building the animated figures)
 
-# plt.xlim(-0.1,1.1)
-# plt.ylim(-0.1,1.1)
+calc = 0
+temp = []
+i = 0   
+while i < len(animfile[0]):
+    calc = calc + len(animfile[0][i])
+    temp.append([len(animfile[0][i])])
+    i = i + 1
+
+def init():
+    line, = ax.plot(testX,testY)
+    return line,
+
+def animate(i):
+    ax.clear()
+    x = []
+    y = []
+    
+    ax.plot(x,y)
+    
+anima = FuncAnimation(fig, animate, init_func=init,frames=60, interval=calc, blit=True)
+
+
+Writer = animation.FFMpegWriter(fps=60)
+anima.save('animatedFig.mp4',writer = Writer)
+
+    
+

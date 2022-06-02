@@ -4,13 +4,20 @@ Created on Thu Feb 17 16:22:45 2022
 
 @author: Graham Garcia
 """
-import numpy as np
-from DataStructures import normalize2D, normalize3D, kdTree, getDistance2D, getDistance3D
+
 from random  import randint
+from sys import float_repr_style
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from mpl_toolkits import mplot3d
+import numpy as np
+import csv
 import scipy
 import pandas as pd
+
+
+from DataStructures import normalize2D, normalize3D, kdTree, getDistance2D, getDistance3D
 
 def checkRepeat(check : list):
     n = 2 #order of repeat
@@ -88,7 +95,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     return thin1p,thin1r
     
     
-def Skeletize2D(points : list, norms : list):
+def Skeletize2D(points : list, norms : list,start : int, stop : int):
     #skeletize takes in 
     #points, the given plain list of points [x,y] for 2D case
     #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
@@ -96,8 +103,7 @@ def Skeletize2D(points : list, norms : list):
     #then returns 2 things
     # finPoints = [[x,y],...] of skeleton points
     # finR = [r1,r2,...] of the radius of each skeleton point
-    
-    level = 96
+
     
     pts = []
     i = 0
@@ -113,10 +119,16 @@ def Skeletize2D(points : list, norms : list):
     threshDistance = getDistance2D(points[0],close)
     
     #TOLLERANCES
-    cweight = 0.5#weight of c value(exponetialy weighted)
-    maxReach = 11 #max ittrations of the reach algorithm
-    pointtol = 0.2 #in %
-    closew = 100 #Another modifier for tollerance on skeleton filter
+    
+    #Stored as lists within lists, each list is a points individual searches
+    acp = []#CenterPoints saved when making an animation
+    atp = []#TreePoints saved when making an animation
+    ar = []#Radius saved when making animation
+   
+    ap = []#MainPoints saved when making animation
+    an = []#Normals saved when making animation
+    
+    
     
     thinPoints = []
     finPoints = []#list of skeletized points
@@ -124,6 +136,15 @@ def Skeletize2D(points : list, norms : list):
     index = 1
     guessr = 0
     for point in points:
+        
+        tacp = []
+        tatp = []
+        tar = []
+        
+        
+        if index - 1 >= start and index - 1 <= stop:
+            ap.append(point)
+            an.append(norms[index-1])
         
         tempr = []
         if index == 1:
@@ -145,57 +166,29 @@ def Skeletize2D(points : list, norms : list):
             tempr.append(np.round(getRadius2D(point, testp, norms[index - 1]),6))
             leng = len(tempr)-1
             
-            if tempr[leng] < 2 * threshDistance:
-                case = True
+            #INFORMATION CAPTURE FOR ANIMATION
+            if index - 1 >= start and index - 1 <= stop:
+                tacp.append(centerp[len(centerp) - 1])
+                tatp.append(testp)
+                tar.append(tempr[len(tempr) - 1])
+            
+            #for if within the threshold distance of the interface(too close to surface to be reasonable)
+            # if tempr[leng] < 2 * threshDistance:
+            #     case = True
             
             #cases for cacthing when stuck  
             if tempr[leng] == tempr[leng - 1] and i > 1:
                 
-                reach = True
-                reachitt = 1
-                while reach:
-                    c = np.power(10, reachitt) * threshDistance * np.power(cweight,reachitt)
-                    if(reachitt > maxReach or c <= 0):
-                        reach = False
-                    cords = [point[0]-norms[index-1][0]*c,point[1]-norms[index-1][1]*c]
-                    checkp = tree.getNearR(cords,[cords[0]*10000,cords[1]*9000])
-                    
-                  
-                    if not(checkp == point):
-                        A = [point[0] - cords[0],point[1] - cords[1]]
-                        B = [point[0] - checkp[0],point[1] - checkp[1]]
-                        theta = np.arccos((A[0] * B[0] + A[1] * B[1]) / (np.sqrt(np.power(np.abs(A[0]),2) + np.power(np.abs(A[1]),2)) * np.sqrt(np.power(np.abs(B[0]),2) + np.power(np.abs(B[1]),2))))
-                        if(theta < 0.2):
-                            
-                            midp = [(point[0] + checkp[0])/2,(point[1] + checkp[1])/2]
-                            if(np.abs(midp[0] - centerp[len(centerp) - 1][0]) < closew * pointtol * threshDistance and np.abs(midp[1] - centerp[len(centerp) - 1][1]) < closew * pointtol * threshDistance):
-                                if(index == level):
-                                    print(centerp)
-                                    print(tempr)
-                                    q = 1
-                                    ptx = []
-                                    pty = []
-                                    while q < len(centerp):
-                                        ptx.append(centerp[q][0])
-                                        pty.append(centerp[q][1])
-                                        q = q + 1
-                                    ptx.append(point[0])
-                                    pty.append(point[1])
-                                    plt.scatter(ptx, pty, zorder = 3)
-                                    print('rip')
-                                centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
-                                finPoints.append(centerp[len(centerp)-1])
-                                finR.append(tempr[leng])
-                                thinPoints.append(point)
-                            reach = False
-                        
-                    reachitt = reachitt + 1
+                centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
+                finPoints.append(centerp[len(centerp)-1])
+                finR.append(tempr[leng])
+                thinPoints.append(point)
                 case = True
             #going back and fourth from two radii    
             if i >= 3:
                 repeat, order = checkRepeat(tempr)
                 if repeat:
-                    print('bruh')
+                    print('Hit a Repeat')
                     n = 0
                     p = 0
                     sml = 0.0
@@ -209,46 +202,16 @@ def Skeletize2D(points : list, norms : list):
                                 n = len(tempr) - (order - p)
                         p = p + 1
                         
-                        
-                   
-                    
-                    reach = True
-                    reachitt = 1
-                    while reach:
-                        c = np.power(10, reachitt) * threshDistance * np.power(cweight,reachitt)
-                        if(reachitt > maxReach or c <= 0):
-                            reach = False
-                        cords = [point[0]-norms[index-1][0]*c,point[1]-norms[index-1][1]*c]
-                        checkp = tree.getNearR(cords,[cords[0]*10000,cords[1]*9000])
-                        if not(checkp == point):
-                            A = [point[0] - cords[0],point[1] - cords[1]]
-                            B = [point[0] - checkp[0],point[1] - checkp[1]]
-                            theta = np.arccos((A[0] * B[0] + A[1] * B[1]) / (np.sqrt(np.power(np.abs(A[0]),2) + np.power(np.abs(A[1]),2)) * np.sqrt(np.power(np.abs(B[0]),2) + np.power(np.abs(B[1]),2))))
-                            if(theta < 0.2):
-                                midp = [(point[0] + checkp[0])/2,(point[1] + checkp[1])/2]
-                                if(np.abs(midp[0] - centerp[len(centerp) - 1][0]) < closew * pointtol * threshDistance and np.abs(midp[1] - centerp[len(centerp) - 1][1]) < closew * pointtol * threshDistance):
-                                   if(index == level):
-                                       print(centerp)
-                                       q = 1
-                                       ptx = []
-                                       pty = []
-                                       while q < len(centerp):
-                                           ptx.append(centerp[q][0])
-                                           pty.append(centerp[q][1])
-                                           q = q + 1
-                                       plt.scatter(ptx, pty, zorder = 3)
-                                   finR.append(sml)
-                                   finPoints.append(centerp[n])
-                                   thinPoints.append(point)
-                                reach = False
-                            
-                        reachitt = reachitt + 1
+                    finR.append(sml)
+                    finPoints.append(centerp[n])
+                    thinPoints.append(point)
                     case = True
                     
                 
             i = i + 1
-        
-            
+        acp.append(tacp)
+        atp.append(tatp)
+        ar.append(tar)
         
         
         #guess values
@@ -262,9 +225,14 @@ def Skeletize2D(points : list, norms : list):
     
         
     #Thins out data and returns correct points. 
-        
-    fin2Points , fin2R = thin2D(points,thinPoints, finPoints, finR, threshDistance)    
-    return fin2Points,fin2R
+    # fin2Points , fin2R = thin2D(points,thinPoints, finPoints, finR, threshDistance)    
+    anim = []#return for animation info
+    anim.append(acp)
+    anim.append(atp)
+    anim.append(ar)
+    anim.append(ap)
+    anim.append(an)
+    return finPoints,finR, anim
 
 def Skeletize3D(points : list, norms : list):
     #skeletize takes in 
