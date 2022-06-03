@@ -125,8 +125,7 @@ with open('interface_points_070000.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:
         IntPoints.append([float(row[0]),float(row[1])])
-        i += 1
-        if i % 1 == 0:
+        if randint(0,10) > 7:
             TestPoints.append([float(row[0]),float(row[1])])
             NormPoints.append([float(row[2]),float(row[3])])
     csvfile.close()
@@ -194,11 +193,11 @@ while i < len(finPoints):
     #     plt.plot(tx,ty)
     i = i + 1
 
-# plt.scatter(testX, testY, zorder = 1)
-# plt.scatter(finX, finY, zorder = 2)
-# plt.savefig("Output.png")
+plt.scatter(testX, testY, zorder = 1)
+plt.scatter(finX, finY, zorder = 2)
+plt.savefig("Output.png")
 # ax = plt.axes(projection='3d')
-
+plt.clf()
 
 ###ANIMATED FIGURE(ANIMFILE holds all information needed for building the animated figures)
 
@@ -285,8 +284,16 @@ while i < len(animfile[0]):
         if not(len(cx) == 0):
             plt.scatter(cx,cy,color = "red", marker = "^")
         
-        #formatting
+        tx = []
+        ty = []
+        tx.append(animfile[0][i][j][0])
+        ty.append(animfile[0][i][j][1])
+        tx.append(animfile[3][i][0])
+        ty.append(animfile[3][i][1])
         
+        plt.plot()
+        #formatting
+        plt.title("Current r={}; Current Centerpoint[{},{}]".format(animfile[2][i][j],animfile[0][i][j][0],animfile[0][i][j][1]), size = 8)
         
         
         save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count)
@@ -318,6 +325,8 @@ while i < len(animdfile):
     if not(len(cx) == 0):
         plt.scatter(cx,cy,color = "blue", marker = "^")
     plt.scatter(x, y,color = "red", marker = "X")
+    
+    plt.title("Deleted:{}/{}".format(i,len(animdfile)-1),size = 8)
     save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count + count2)
     plt.savefig(save)
     count2 += 1

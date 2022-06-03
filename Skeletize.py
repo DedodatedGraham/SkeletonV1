@@ -104,7 +104,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     i = 0
     while i < len(thin1p):
         print(i,'/',len(thin1p) - 1)
-        if getDistance2D(thin1p[i],tree.getNearR(thin1p[i],thin1p[i])) < 2*pointDis and getDistance2D(thin1p[i],tree2.getNearR(thin1p[i],[thin1p[i][0]*13042,thin1p[i][1]*-9827])) > pointDis :
+        if getDistance2D(thin1p[i],tree.getNearR(thin1p[i],thin1p[i])) < pointDis and getDistance2D(thin1p[i],tree2.getNearR(thin1p[i],[thin1p[i][0]*13042,thin1p[i][1]*-9827])) > pointDis :
             thin2p.append(thin1p[i])
             thin2r.append(thin1r[i])
         else:
