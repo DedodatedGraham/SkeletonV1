@@ -74,10 +74,10 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     thin1p = []
     thin1r = []
     #removing the repeated points, as they arent very important 
-    print('removing repeats...')
+    print('Thinning...')
     i = 0
     while i < len(finPts):
-        print(i,'/',len(finPts) - 1)
+        # print(i,'/',len(finPts) - 1)
         j = i + 1
         noRepeat = True
         while j < len(finPts):
@@ -103,7 +103,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     tree2 = kdTree(pts,2)
     i = 0
     while i < len(thin1p):
-        print(i,'/',len(thin1p) - 1)
+        # print(i,'/',len(thin1p) - 1)
         if getDistance2D(thin1p[i],tree.getNearR(thin1p[i],thin1p[i])) < pointDis and getDistance2D(thin1p[i],tree2.getNearR(thin1p[i],[thin1p[i][0]*13042,thin1p[i][1]*-9827])) > pointDis :
             thin2p.append(thin1p[i])
             thin2r.append(thin1r[i])
@@ -117,6 +117,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     
     
 def Skeletize2D(points : list, norms : list,start : int, stop : int):
+    print('Skeletizing...')
     #skeletize takes in 
     #points, the given plain list of points [x,y] for 2D case
     #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
@@ -125,7 +126,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
     # finPoints = [[x,y],...] of skeleton points
     # finR = [r1,r2,...] of the radius of each skeleton point
 
-    
+    countbreak = 0
     pts = []
     i = 0
     while i < len(points):
@@ -148,6 +149,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
    
     ap = []#MainPoints saved when making animation
     an = []#Normals saved when making animation
+    
     
     thinPoints = []
     finPoints = []#list of skeletized points
@@ -177,7 +179,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
         centerp = []
         testp = []
         case = False
-        print(index, '/' , len(points))
+        # print(index, '/' , len(points))
         #solve loop
         while not case:
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
@@ -188,11 +190,12 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
             
             
             #for if within the threshold distance of the interface(too close to surface to be reasonable)
-            if getDistance2D(point, testp) < tempr[leng] and i > 3:
+            if getDistance2D(point, testp) < tempr[leng] and i > 2:
                 finPoints.append(centerp[len(centerp) - 2])
                 finR.append(tempr[leng - 1])
                 thinPoints.append(point)
                 case = True
+                countbreak += 1
                 break
             
             #INFORMATION CAPTURE FOR ANIMATION
@@ -204,11 +207,11 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
             #cases for cacthing when stuck  
             if tempr[leng] == tempr[leng - 1] and i > 1:
                 
-                centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
                 finPoints.append(centerp[len(centerp)-1])
                 finR.append(tempr[leng])
                 thinPoints.append(point)
                 case = True
+                break
             #going back and fourth from two radii    
             if i >= 3:
                 repeat, order = checkRepeat(tempr)
@@ -249,7 +252,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
         index = index + 1
         
     
-    
+    print('Skeletized', len(finPoints))
     animd = []
     anim = []#return for animation info
     #Thins out data and returns correct points. 
@@ -260,6 +263,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
     anim.append(ar)
     anim.append(ap)
     anim.append(an)
+    # print('points with distance less than radius',countbreak)
     return fin2Points,fin2R, anim, animd
 
 def Skeletize3D(points : list, norms : list):
