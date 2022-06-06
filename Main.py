@@ -125,15 +125,22 @@ with open('interface_points_070000.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:
         IntPoints.append([float(row[0]),float(row[1])])
-        if randint(0,10) > 7:
+        if randint(0,10) >= 0:
             TestPoints.append([float(row[0]),float(row[1])])
             NormPoints.append([float(row[2]),float(row[3])])
     csvfile.close()
 
 
-##ORDERING POINTS CIRCULARLY
 
 
+testX = []
+testY = []
+i = 0
+while i < len(TestPoints):
+    testX.append(TestPoints[i][0])
+    testY.append(TestPoints[i][1])
+    # testZ.append(TestPoints[i][2])
+    i = i + 1
 ###SOLVING THE POINTS
 
 
@@ -142,9 +149,6 @@ finPoints,finR,animfile,animdfile = Skeletize.Skeletize2D(TestPoints, NormPoints
 
 
 ###PROCESSING DATA INTO FIGURES
-testX = []
-testY = []
-# testz = []
 finX = []
 finY = []
 # finz = []
@@ -152,12 +156,6 @@ intX = []
 intY = []
 
 
-i = 0
-while i < len(TestPoints):
-    testX.append(TestPoints[i][0])
-    testY.append(TestPoints[i][1])
-    # testZ.append(TestPoints[i][2])
-    i = i + 1
     
     
 # i = 0

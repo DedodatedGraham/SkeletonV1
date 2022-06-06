@@ -36,22 +36,22 @@ def checkRepeat(check : list):
 
 
 def getRadius2D(point1, point2 , norm) -> float:
+    #First finds theta
+    dist = getDistance2D(point1,point2)
     
+    #Next calculate the midpoint
+    mp = [(point1[0] + point2[0])/2,(point1[1] + point2[1])/2]
+    mvec = [point2[0] - point1[0],point2[1] - point1[1]]
     
-    distance = getDistance2D(point1, point2)
-    Pvec = [point1[0] - point2[0] , point1[1] - point2[1]]
-    top = norm[0] * Pvec[0] + norm[1] * Pvec[1]
-    if top/distance <= 1 and top/distance >= -1:
-        top = top/distance
-        theta = np.arccos(top)
-    else:
-        top = top/distance
-        top = top + 1
-        top = top % 2
-        top = top - 1  
-        theta = np.arccos(top)
-    
-    radius = np.abs(distance / (2 * np.cos(theta)))
+    #Then find dot product of the norm and mvec
+    dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1]
+
+    #Next finds theta
+    theta = np.arccos(dot/dist)
+
+    #Finally finds radius
+    radius = np.abs(dist / (2 * np.cos(theta)))
+
     return radius
 
 def getRadius3D(point1,point2,norm) -> float:
@@ -182,7 +182,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
         while not case:
             centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1])])
             testp = tree.getNearR(centerp[len(centerp)-1], point)
-            tempr.append(np.round(getRadius2D(point, testp, norms[index - 1]),6))
+            tempr.append(np.round(getRadius2D(point,testp,norms[index-1]),8))
             leng = len(tempr)-1
             
             
@@ -199,7 +199,7 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
             if index - 1 >= start and index - 1 <= stop:
                 tacp.append(centerp[len(centerp) - 1])
                 tatp.append(testp)
-                tar.append(tempr[len(tempr) - 1])
+                tar.append(tempr[len(tempr) - 2])
             
             #cases for cacthing when stuck  
             if tempr[leng] == tempr[leng - 1] and i > 1:
@@ -243,22 +243,24 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
         #guess values
         if index  != len(points):
             if(len(finR) >=1):
-                guessr = finR[len(finR)-1] * 100  
+                guessr = getDistance2D(point,testp)*100
             else:
                 guessr = 1000
         index = index + 1
         
     
-        
+    
+    animd = []
+    anim = []#return for animation info
     #Thins out data and returns correct points. 
     fin2Points , fin2R, animd = thin2D(points,thinPoints, finPoints, finR, threshDistance)    
-    anim = []#return for animation info
+    
     anim.append(acp)
     anim.append(atp)
     anim.append(ar)
     anim.append(ap)
     anim.append(an)
-    return fin2Points,fin2R, anim,animd
+    return fin2Points,fin2R, anim, animd
 
 def Skeletize3D(points : list, norms : list):
     #skeletize takes in 
