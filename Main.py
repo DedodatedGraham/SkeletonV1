@@ -15,7 +15,10 @@ import time
 import Skeletize
 from DataStructures import kdTree
 
-plt.rcParams['figure.dpi'] = 400
+plt.rcParams['figure.dpi'] = 300
+
+theta = np.linspace(0,2*np.pi,100)
+
 
 tstart = time.time()
 IntPoints = []
@@ -150,7 +153,7 @@ TskeleStart = time.time()
 finPoints,finR,animfile,animdfile = Skeletize.Skeletize2D(TestPoints, NormPoints,0 , len(TestPoints))
 # finPoints,finR = Skeletize.Skeletize3D(TestPoints, NormPoints) 
 TskeleEnd = time.time()
-print("Skeletinzation time",TskeleEnd - TskeleStart)
+print("Skeletinzation time",TskeleEnd - TskeleStart,"seconds")
 
 ###PROCESSING DATA INTO FIGURES
 finX = []
@@ -206,14 +209,22 @@ while i < len(finPoints):
 #     i += 1
     
     
-
+plt.clf()
+plt.xlim(0.45,1.05)
+plt.ylim(0.15,0.85)
 plt.scatter(testX, testY, zorder = 1)
 plt.scatter(finX, finY, zorder = 2)
+# i = 0
+# while i < len(finX):
+#     plt.plot(finX[i] + np.cos(theta) * finR[i],finY[i] + np.sin(theta) *finR[i])
+#     i += 1
 plt.savefig("Output.png")
 # ax = plt.axes(projection='3d')
 
-
 ###ANIMATED FIGURE(ANIMFILE holds all information needed for building the animated figures)
+
+# taniStart = time.time()
+
 
 # plt.clf()
 # cx = []
@@ -225,7 +236,6 @@ plt.savefig("Output.png")
 # temp = []
 # i = 0  
 
-# theta = np.linspace(0,2*np.pi,100)
 
 # while i < len(animfile[0]):
 #     calc = calc + len(animfile[0][i])
@@ -273,10 +283,9 @@ plt.savefig("Output.png")
 #         #Plot temporary varibles(change per frame)
 #         tx = []
 #         ty = []
-#         if not(j == 0):
-#             tx.append(animfile[1][i][j-1][0])
-#             ty.append(animfile[1][i][j-1][1])
-#             plt.scatter(tx,ty,color = "blue", marker = "o")
+#         tx.append(animfile[1][i][j-1][0])
+#         ty.append(animfile[1][i][j-1][1])
+#         plt.scatter(tx,ty,color = "blue", marker = "o")
         
 #         tx = []
 #         ty = []
@@ -310,7 +319,7 @@ plt.savefig("Output.png")
 #         plt.plot()
 #         #formatting
 #         plt.title("Current r={}; Current Centerpoint[{},{}]".format(animfile[2][i][j],animfile[0][i][j][0],animfile[0][i][j][1]), size = 8)
-        
+#         plt.xlabel("TestPoint: {} ; TreePoint: {}".format(animfile[3][i],animfile[1][i][j-1]))
         
 #         save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count)
 #         plt.savefig(save) 
@@ -320,7 +329,6 @@ plt.savefig("Output.png")
 #         count += 1
 #         j += 1
 #     i += 1
-    
     
 # #thinning
 # count2 = 0
@@ -372,3 +380,5 @@ plt.savefig("Output.png")
 #     count3 += 1
 #     i += 1
     
+# taniEnd = time.time()
+# print('Animation took {} seconds'.format(taniEnd-taniStart))

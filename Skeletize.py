@@ -40,7 +40,6 @@ def getRadius2D(point1, point2 , norm) -> float:
     dist = getDistance2D(point1,point2)
     
     #Next calculate the midpoint
-    mp = [(point1[0] + point2[0])/2,(point1[1] + point2[1])/2]
     mvec = [point2[0] - point1[0],point2[1] - point1[1]]
     
     #Then find dot product of the norm and mvec
@@ -102,18 +101,18 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     tree = kdTree(thin1p, 2)
     tree2 = kdTree(pts,2)
     i = 0
-    while i < len(thin1p):
-        # print(i,'/',len(thin1p) - 1)
-        if getDistance2D(thin1p[i],tree.getNearR(thin1p[i],thin1p[i])) < pointDis and getDistance2D(thin1p[i],tree2.getNearR(thin1p[i],[thin1p[i][0]*13042,thin1p[i][1]*-9827])) > pointDis :
-            thin2p.append(thin1p[i])
-            thin2r.append(thin1r[i])
-        else:
-            animd.append(thin1p[i])
-        i += 1
+    # while i < len(thin1p):
+    #     # print(i,'/',len(thin1p) - 1)
+    #     if getDistance2D(thin1p[i],tree.getNearR(thin1p[i],thin1p[i])) < pointDis and getDistance2D(thin1p[i],tree2.getNearR(thin1p[i],[thin1p[i][0]*13042,thin1p[i][1]*-9827])) > pointDis :
+    #         thin2p.append(thin1p[i])
+    #         thin2r.append(thin1r[i])
+    #     else:
+    #         animd.append(thin1p[i])
+    #     i += 1
         
     print(len(finPts),"-->",len(thin1p),"Through repeat removal")
     print(len(thin1p),"-->",len(thin2p),"Through distance")
-    return thin2p,thin2r,animd
+    return thin1p,thin1r,animd
     
     
 def Skeletize2D(points : list, norms : list,start : int, stop : int):
@@ -188,27 +187,51 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
             leng = len(tempr)-1
             
             
+            #INFORMATION CAPTURE FOR ANIMATION
+            if index - 1 >= start and index - 1 <= stop:
+                tacp.append(centerp[len(centerp) - 1])
+                tatp.append(testp)
+                tar.append(tempr[leng-1])
             
-            #for if within the threshold distance of the interface(too close to surface to be reasonable)
-            if getDistance2D(point, testp) < tempr[leng] and i > 2:
+            
+            #check for radius size
+            if tempr[leng] < threshDistance and i > 1:
                 finPoints.append(centerp[len(centerp) - 2])
                 finR.append(tempr[leng - 1])
+                thinPoints.append(point)
+                
+                tacp.append(centerp[len(centerp) - 2])
+                tatp.append(tatp[len(tatp) - 2])
+                tar.append(tempr[leng-1])
+                
+                case = True
+                countbreak += 1
+                break
+            
+            #for if within the threshold distance of the interface(too close to surface to be reasonable)
+            if getDistance2D(point, testp) < tempr[leng] and i > 3:
+                finPoints.append(centerp[len(centerp) - 2])
+                finR.append(tempr[leng - 1])
+                
+                tacp.append(centerp[len(centerp) - 2])
+                tatp.append(tatp[len(tatp) - 2])
+                tar.append(tempr[leng-1])
+                
                 thinPoints.append(point)
                 case = True
                 countbreak += 1
                 break
             
-            #INFORMATION CAPTURE FOR ANIMATION
-            if index - 1 >= start and index - 1 <= stop:
-                tacp.append(centerp[len(centerp) - 1])
-                tatp.append(testp)
-                tar.append(tempr[len(tempr) - 2])
+            
             
             #cases for cacthing when stuck  
-            if tempr[leng] == tempr[leng - 1] and i > 1:
-                
-                finPoints.append(centerp[len(centerp)-1])
-                finR.append(tempr[leng])
+            if np.abs(tempr[leng] - tempr[leng-1]) < 0.00001 and i > 1:
+                if getDistance2D(point, testp) < tempr[leng]:
+                    finPoints.append(centerp[len(centerp) - 2])
+                    finR.append(tempr[leng - 1])
+                else:
+                    finPoints.append(centerp[len(centerp)-1])
+                    finR.append(tempr[leng])
                 thinPoints.append(point)
                 case = True
                 break
@@ -247,6 +270,8 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
         if index  != len(points):
             if(len(finR) >=1):
                 guessr = getDistance2D(point,testp)*100
+                if guessr < threshDistance * len(points) / 2:
+                    guessr = threshDistance * len(points) / 2
             else:
                 guessr = 1000
         index = index + 1
@@ -256,6 +281,24 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
     animd = []
     anim = []#return for animation info
     #Thins out data and returns correct points. 
+    tx = []
+    ty = []
+    ttx = []
+    tty = []
+    i = 0
+    while i < len(points):
+        tx.append(points[i][0])
+        ty.append(points[i][1])
+        i += 1
+    i = 0
+    while i < len(finPoints):
+        ttx.append(finPoints[i][0])
+        tty.append(finPoints[i][1])
+        i += 1
+    plt.scatter(tx,ty)
+    plt.scatter(ttx,tty)
+    plt.title('Before Removal')
+    plt.savefig('BeforeThin.png')
     fin2Points , fin2R, animd = thin2D(points,thinPoints, finPoints, finR, threshDistance)    
     
     anim.append(acp)
