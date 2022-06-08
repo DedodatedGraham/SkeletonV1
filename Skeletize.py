@@ -46,11 +46,11 @@ def getRadius2D(point1, point2 , norm) -> float:
     dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1]
 
     #Next finds theta
-    theta = np.arccos(dot/dist)
+    theta = np.arccos(min(1,dot/dist))
 
     #Finally finds radius
     radius = np.abs(dist / (2 * np.cos(theta)))
-
+    
     return radius
 
 def getRadius3D(point1,point2,norm) -> float:
@@ -98,9 +98,9 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
     thin2p = []
     thin2r = []
     #Next removes points that are too distant from any others
-    tree = kdTree(thin1p, 2)
-    tree2 = kdTree(pts,2)
-    i = 0
+    # tree = kdTree(thin1p, 2)
+    # tree2 = kdTree(pts,2)
+    # i = 0
     # while i < len(thin1p):
     #     # print(i,'/',len(thin1p) - 1)
     #     if getDistance2D(thin1p[i],tree.getNearR(thin1p[i],thin1p[i])) < pointDis and getDistance2D(thin1p[i],tree2.getNearR(thin1p[i],[thin1p[i][0]*13042,thin1p[i][1]*-9827])) > pointDis :
@@ -235,11 +235,12 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                 thinPoints.append(point)
                 case = True
                 break
+            
+            
             #going back and fourth from two radii    
             if i >= 3:
                 repeat, order = checkRepeat(tempr)
                 if repeat:
-                    print('Hit a Repeat')
                     n = 0
                     p = 0
                     sml = 0.0
@@ -260,6 +261,9 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                     
                 
             i = i + 1
+            
+            
+            
         #Adding each itteration's variable
         acp.append(tacp)
         atp.append(tatp)
