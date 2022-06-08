@@ -14,6 +14,7 @@ import time
 
 import Skeletize
 from DataStructures import kdTree
+from SkeleNet import SkeleNet
 
 plt.rcParams['figure.dpi'] = 300
 
@@ -83,35 +84,35 @@ ax = plt.subplot(111)
 #     i = i + 1
 
 #half circle half square
-i = 0
-r = 0.5
-theta = np.linspace((3/2)*np.pi, (5/2)*np.pi, 50)
-while i < 100:
-    if i < 25:
-        TestPoints.append([0.0, i / 25])
-        if i != 0:
-            NormPoints.append([-1.0,0.0])
-        else:
-            NormPoints.append([-1.0,-1.0]) 
-    elif i > 24 and i < 37:  
-        TestPoints.append([(i % 25) / 25,1.0])
-        if i != 25:
-            NormPoints.append([0.0,1.0])
-        else:
-            NormPoints.append([-1.0,1.0])
-    elif i > 88:
-        TestPoints.append([(25 - (i % 25)) / 25,0.0])
-        if i != 75:
-            NormPoints.append([0.0,-1.0])
-        else:
-            NormPoints.append([1.0,-1.0])
-    else:
-        if i == 60:
-            TestPoints.append([0.5 + r*np.cos(theta[49 - i % 50]),0.5 + 1.1*r*np.sin(theta[49 - i % 50])])
-        else:
-            TestPoints.append([0.5 + r*np.cos(theta[49 - i % 50]),0.5 + r*np.sin(theta[49 - i % 50])])
-        NormPoints.append([TestPoints[i][0] - 0.5,TestPoints[i][1]-0.5])
-    i = i + 1
+#i = 0
+#r = 0.5
+#theta = np.linspace((3/2)*np.pi, (5/2)*np.pi, 50)
+#while i < 100:
+#    if i < 25:
+#        TestPoints.append([0.0, i / 25])
+#        if i != 0:
+#            NormPoints.append([-1.0,0.0])
+#        else:
+#            NormPoints.append([-1.0,-1.0]) 
+#    elif i > 24 and i < 37:  
+#        TestPoints.append([(i % 25) / 25,1.0])
+#        if i != 25:
+#            NormPoints.append([0.0,1.0])
+#        else:
+#            NormPoints.append([-1.0,1.0])
+#    elif i > 88:
+#        TestPoints.append([(25 - (i % 25)) / 25,0.0])
+#        if i != 75:
+#            NormPoints.append([0.0,-1.0])
+#        else:
+#            NormPoints.append([1.0,-1.0])
+#    else:
+#        if i == 60:
+#            TestPoints.append([0.5 + r*np.cos(theta[49 - i % 50]),0.5 + 1.1*r*np.sin(theta[49 - i % 50])])
+#        else:
+#            TestPoints.append([0.5 + r*np.cos(theta[49 - i % 50]),0.5 + r*np.sin(theta[49 - i % 50])])
+#        NormPoints.append([TestPoints[i][0] - 0.5,TestPoints[i][1]-0.5])
+#    i = i + 1
 
 # #Test case with two circles inside || Centered at (0.5,0.5),(0.55,0.55) with Rmajor = 0.5 and Rminor = 0.25
 # i = 0
@@ -126,18 +127,19 @@ while i < 100:
 #     i = i + 1
 
 # loads in test case from data (020000.dat or 070000.dat)
-# i = 0
-# with open('interface_points_070000.dat','r') as csvfile:
-#     data = csv.reader(csvfile, delimiter = ' ')
-#     for row in data:
-#         IntPoints.append([float(row[0]),float(row[1])])
-#         if randint(0,10) >= 8:
-#             TestPoints.append([float(row[0]),float(row[1])])
-#             NormPoints.append([float(row[2]),float(row[3])])
-#     csvfile.close()
+i = 0
+with open('interface_points_070000.dat','r') as csvfile:
+    data = csv.reader(csvfile, delimiter = ' ')
+    for row in data:
+        IntPoints.append([float(row[0]),float(row[1])])
+        if randint(0,10) >= 0:
+            TestPoints.append([float(row[0]),float(row[1])])
+            NormPoints.append([float(row[2]),float(row[3])])
+    csvfile.close()
 
 
-
+net = SkeleNet(TestPoints,NormPoints)
+print(net.points,net.norms)
 
 testX = []
 testY = []
