@@ -13,7 +13,6 @@ import pandas as pd
 
 
 class SkeleNet:
-	
 	#In simpleTerms Skelenet is an easy to use skeletonization processer, 
 	#as before this theres only a messy Main file and a few functions, this aims
 	#to tie both of these things together well and mangage itsself well.
@@ -23,14 +22,14 @@ class SkeleNet:
 		with open('interface_points_070000.dat','r') as csvfile:
 			data = csv.reader(csvfile, delimiter = ' ')
         		for row in data:
-            			IntPoints.append([float(row[0]),float(row[1])])
+            		IntPoints.append([float(row[0]),float(row[1])])
 				if len(row) == 2:#No Norms assoicated, Needs to find norms
 					if randint(0,10) >= rnd:
-                				TestPoints.append([float(row[0]),float(row[1])])
-        			else:#Norms are given
+                		TestPoints.append([float(row[0]),float(row[1])])
+        		else:#Norms are given
 					if randint(0,10) >= rnd:
-                				TestPoints.append([float(row[0]),float(row[1])])
-               				 	NormPoints.append([float(row[2]),float(row[3])]) 
+                		TestPoints.append([float(row[0]),float(row[1])])
+               			NormPoints.append([float(row[2]),float(row[3])]) 
 			csvfile.close()
 
 	def __init__(self,pts : List, nrms : List):
