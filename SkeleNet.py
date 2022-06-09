@@ -13,38 +13,77 @@ import pandas as pd
 
 
 class SkeleNet:
-	#In simpleTerms Skelenet is an easy to use skeletonization processer, 
-	#as before this theres only a messy Main file and a few functions, this aims
-	#to tie both of these things together well and mangage itsself well.
+    #In simpleTerms Skelenet is an easy to use skeletonization processer, 
+    #It can intake a location of a data file, or even the straight points
+    #Then itll process then and output different figures for different things
+    #Can also Produce different shapes and stuff
+    
 
-	def __init__(self, FileLocation : str):
-		rnd = 0
-		with open('interface_points_070000.dat','r') as csvfile:
-			data = csv.reader(csvfile, delimiter = ' ')
-        		for row in data:
-            		IntPoints.append([float(row[0]),float(row[1])])
-				if len(row) == 2:#No Norms assoicated, Needs to find norms
-					if randint(0,10) >= rnd:
-                		TestPoints.append([float(row[0]),float(row[1])])
-        		else:#Norms are given
-					if randint(0,10) >= rnd:
-                		TestPoints.append([float(row[0]),float(row[1])])
-               			NormPoints.append([float(row[2]),float(row[3])]) 
-			csvfile.close()
+    rnd = 0
+###INITALIZERS
+    def __init__(self, FileLocation : str):
+        self.IntPoints = []
+        self.TestPoints = []
+        self.NormPoints = []
+        with open(FileLocation,'r') as csvfile:
+            data = csv.reader(csvfile, delimiter = ' ')
+            for row in data:
+                self.IntPoints.append([float(row[0]),float(row[1])])
+                if len(row) == 2:#No Norms assoicated, Needs to find norms
+                    if randint(0,10) >= self.rnd:
+                        self.TestPoints.append([float(row[0]),float(row[1])])
+                        self.dimensions = 2
+                elif len(row) == 4:#Norms are given
+                    if randint(0,10) >= self.rnd:
+                        self.TestPoints.append([float(row[0]),float(row[1])])
+                        self.NormPoints.append([float(row[2]),float(row[3])]) 
+                        self.dimensions = 2
+                elif len(row) == 3:#3D no norms    
+                    if randint(0,10) >= self.rnd:
+                        self.TestPoints.append([float(row[0]),float(row[1]),floar(row[2])])
+                        self.dimensions = 3
+                else:#3D with norm
+                    if randint(0,10) >= self.rnd:
+                        self.TestPoints.append([float(row[0]),float(row[1]),float(row[2])])
+                        self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])]) 
+                        self.dimensions = 3
 
-	def __init__(self,pts : List, nrms : List):
-		self.points = []
-		self.norms = [] 
-		self.points.append(for point in pts)
-		self.norms.append(for norm in nrms)
+        csvfile.close()
 
-	
-	def __init__(self, pts : List):
-		self.points = []
-		for point in pts:
-		self.points.append(points) 
-		
-		self.norms = DataStructures.findNorm(pts)
+    def __init__(self,points : list):
+        self.IntPoints = []
+        self.TestPoints = []
+        self.NormPoints = []
+        for point in points:
+            if randint(0,10) >= self.rnd:
+                self.TestPoints.append(point)
+        if len(points[0])==2:
+            self.dimensions = 2
+        else:
+            self.dimensions = 3 
+        self.NormPoints = getNorms(self.TestPoints)
+
+    def __init__(self,points : list, norms : list):
+        self.IntPoints = []
+        self.TestPoints = []
+        self.NormPoints = []
+        for point in points:
+            if randint(0,10) >= self.rnd:
+                self.TestPoints.append(point)	
+        for norm in norms:
+            if randint(0,10) >= self.rnd:
+                self.NormPoints.append(norm)
+        if len(points[0])==2:
+            self.dimensions = 2
+        else:
+            self.dimensions = 3 
 
 
-	
+
+
+####ImageProcessing
+
+###MISC FUCNTIONS FOR SKELENET
+    def getNorms(points : list) -> list:
+    #Used for determining norms if the given data doesnt have any
+        return []

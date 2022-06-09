@@ -20,6 +20,10 @@ plt.rcParams['figure.dpi'] = 300
 
 theta = np.linspace(0,2*np.pi,100)
 
+xmin = -0.3
+xmax = 0.2
+ymin = -0.3
+ymax = 0.2
 
 tstart = time.time()
 IntPoints = []
@@ -28,8 +32,8 @@ NormPoints = []
 
 fig = plt.figure()
 ax = plt.subplot(111)
-# plt.xlim(0.45,1.05)
-# plt.ylim(0.15,0.85)
+plt.xlim(xmin,xmax)
+plt.ylim(ymin,ymax)
 
 ###TEST CASES ONLY ONE SHOULD BE ACTIVE AT A TIME:
 
@@ -128,7 +132,7 @@ ax = plt.subplot(111)
 
 # loads in test case from data (020000.dat or 070000.dat)
 i = 0
-with open('interface_points_070000.dat','r') as csvfile:
+with open('spiral.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     for row in data:
         IntPoints.append([float(row[0]),float(row[1])])
@@ -138,8 +142,7 @@ with open('interface_points_070000.dat','r') as csvfile:
     csvfile.close()
 
 
-net = SkeleNet(TestPoints,NormPoints)
-print(net.points,net.norms)
+#net = SkeleNet(TestPoints,NormPoints)
 
 testX = []
 testY = []
@@ -225,162 +228,161 @@ plt.savefig("Output.png")
 
 ###ANIMATED FIGURE(ANIMFILE holds all information needed for building the animated figures)
 
-# taniStart = time.time()
+taniStart = time.time()
 
 
-# plt.clf()
-# cx = []
-# cy = []
-# target = 0
-# countt = 0
-# countc = 0
-# calc = 0
-# temp = []
-# i = 0  
+plt.clf()
+cx = []
+cy = []
+target = 0
+countt = 0
+countc = 0
+calc = 0
+temp = []
+i = 0  
 
 
-# while i < len(animfile[0]):
-#     calc = calc + len(animfile[0][i])
-#     temp.append(len(animfile[0][i]))
-#     i = i + 1
-
-
-
-
-# print("length",len(animfile[0]))
-# print("Building Animation...")
-# p = 0
-# case = True
-# while case:
-#     print(p)
-#     if not(os.path.isdir(os.getcwd() + "/AnimationData/{:04d}".format(p))):
-#         os.mkdir(os.getcwd() + "/AnimationData/{:04d}".format(p))
-#         case = False
-#     else:
-#         p +=1
-        
-        
-# i = 0 
-# count = 0
-# #Building
-# while i < len(animfile[0]):
-#     j = 0
-#     while j < len(animfile[0][i]):
-#         plt.clf()
-#         plt.xlim(0.45,1.05)
-#         plt.ylim(0.15,0.85)
-#         #Interface
-#         plt.scatter(intX,intY,marker = "X",color = "black")
-#         plt.scatter(testX,testY,marker = "X",color = "yellow")
-#         print(i,"/",len(temp) - 1 , j , '/', temp[i] - 1)
-#         #curent norm
-#         tx = []
-#         ty = [] 
-#         tx.append(animfile[3][i][0] + animfile[4][i][0] * 1000)
-#         tx.append(animfile[3][i][0] + animfile[4][i][0] * -1000)
-#         ty.append(animfile[3][i][1] + animfile[4][i][1] * 1000)
-#         ty.append(animfile[3][i][1] + animfile[4][i][1] * -1000)
-#         plt.plot(tx,ty)
-        
-#         #Plot temporary varibles(change per frame)
-#         tx = []
-#         ty = []
-#         tx.append(animfile[1][i][j-1][0])
-#         ty.append(animfile[1][i][j-1][1])
-#         plt.scatter(tx,ty,color = "blue", marker = "o")
-        
-#         tx = []
-#         ty = []
-#         tx.append(animfile[0][i][j][0])
-#         ty.append(animfile[0][i][j][1])
-#         plt.scatter(tx,ty,color = "purple", marker = "o")
-        
-        
-        
-#         plt.plot(animfile[2][i][j] * np.cos(theta) + tx[0],animfile[2][i][j] * np.sin(theta) + ty[0]) 
-#         #plotting main point                                                           
-#         plt.scatter(animfile[3][i][0],animfile[3][i][1],color = "green", marker = 's')
-#         if j == len(animfile[0][i]) - 1:
-#             cx.append(tx[0])
-#             cy.append(ty[0])
-       
-        
-        
-
-#         #Plotting for the saved calculated centerpoints
-#         if not(len(cx) == 0):
-#             plt.scatter(cx,cy,color = "red", marker = "^")
-        
-#         tx = []
-#         ty = []
-#         tx.append(animfile[0][i][j][0])
-#         ty.append(animfile[0][i][j][1])
-#         tx.append(animfile[3][i][0])
-#         ty.append(animfile[3][i][1])
-        
-#         plt.plot()
-#         #formatting
-#         plt.title("Current r={}; Current Centerpoint[{},{}]".format(animfile[2][i][j],animfile[0][i][j][0],animfile[0][i][j][1]), size = 8)
-#         plt.xlabel("TestPoint: {} ; TreePoint: {}".format(animfile[3][i],animfile[1][i][j-1]))
-        
-#         save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count)
-#         plt.savefig(save) 
-        
-
-
-#         count += 1
-#         j += 1
-#     i += 1
-    
-# #thinning
-# count2 = 0
-# i = 0
-# x = []
-# y = []
-# while i < len(animdfile):
-#     print(i,"/",len(animdfile)-1)
-#     x.append(animdfile[i][0])
-#     y.append(animdfile[i][1])
-#     plt.clf()
-#     plt.xlim(0.45,1.05)
-#     plt.ylim(0.15,0.85)
-#     #Interface
-#     plt.scatter(intX,intY,marker = "X",color = "black")
-#     plt.scatter(testX,testY,marker = "X",color = "yellow")
-#     #Plotting for the saved calculated centerpoints
-#     if not(len(cx) == 0):
-#         plt.scatter(cx,cy,color = "blue", marker = "^")
-#     plt.scatter(x, y,color = "red", marker = "X")
-    
-#     plt.title("Deleted:{}/{}".format(i,len(animdfile)-1),size = 8)
-#     save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count + count2)
-#     plt.savefig(save)
-#     count2 += 1
-#     i += 1
-
-# count3 = 0
+while i < len(animfile[0]):
+    calc = calc + len(animfile[0][i])
+    temp.append(len(animfile[0][i]))
+    i = i + 1
 
 
 
 
-# plt.clf()
-# plt.xlim(0.45,1.05)
-# plt.ylim(0.15,0.85)
-# #Interface
-# plt.scatter(intX,intY,marker = "X",color = "black")
-# plt.scatter(testX,testY,marker = "X",color = "yellow")
+print("length",len(animfile[0]))
+print("Building Animation...")
+p = 0
+case = True
+while case:
+    if not(os.path.isdir(os.getcwd() + "/AnimationData/{:04d}".format(p))):
+        os.mkdir(os.getcwd() + "/AnimationData/{:04d}".format(p))
+        case = False
+    else:
+        p +=1
+     
+     
+i = 0 
+count = 0
+#Building
+while i < len(animfile[0]):
+    j = 0
+    while j < len(animfile[0][i]):
+        plt.clf()
+        plt.xlim(xmin,xmax)
+        plt.ylim(ymin,ymax)
+        #Interface
+        plt.scatter(intX,intY,marker = "X",color = "black")
+        plt.scatter(testX,testY,marker = "X",color = "yellow")
+        print(i,"/",len(temp) - 1 , j , '/', temp[i] - 1)
+        #curent norm
+        tx = []
+        ty = [] 
+        tx.append(animfile[3][i][0] + animfile[4][i][0] * 1000)
+        tx.append(animfile[3][i][0] + animfile[4][i][0] * -1000)
+        ty.append(animfile[3][i][1] + animfile[4][i][1] * 1000)
+        ty.append(animfile[3][i][1] + animfile[4][i][1] * -1000)
+        plt.plot(tx,ty)
+      
+        #Plot temporary varibles(change per frame)
+        tx = []
+        ty = []
+        tx.append(animfile[1][i][j-1][0])
+        ty.append(animfile[1][i][j-1][1])
+        plt.scatter(tx,ty,color = "blue", marker = "o")
+      
+        tx = []
+        ty = []
+        tx.append(animfile[0][i][j][0])
+        ty.append(animfile[0][i][j][1])
+        plt.scatter(tx,ty,color = "purple", marker = "o")
+      
+      
+      
+        plt.plot(animfile[2][i][j] * np.cos(theta) + tx[0],animfile[2][i][j] * np.sin(theta) + ty[0]) 
+        #plotting main point                                                           
+        plt.scatter(animfile[3][i][0],animfile[3][i][1],color = "green", marker = 's')
+        if j == len(animfile[0][i]) - 1:
+            cx.append(tx[0])
+            cy.append(ty[0])
+     
+      
+      
 
-# i = 0
-# while i < len(finX):
-#     print(i,"/",len(finX)-1)
-#     plt.scatter(finX[i],finY[i],color = "blue", marker = "^")
-#     plt.plot(finX[i] + finR[i] * np.cos(theta), finY[i] + finR[i] * np.sin(theta))
-        
-#     save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count + count2 + count3)
-#     plt.savefig(save)
-    
-#     count3 += 1
-#     i += 1
-    
-# taniEnd = time.time()
-# print('Animation took {} seconds'.format(taniEnd-taniStart))
+        #Plotting for the saved calculated centerpoints
+        if not(len(cx) == 0):
+            plt.scatter(cx,cy,color = "red", marker = "^")
+      
+        tx = []
+        ty = []
+        tx.append(animfile[0][i][j][0])
+        ty.append(animfile[0][i][j][1])
+        tx.append(animfile[3][i][0])
+        ty.append(animfile[3][i][1])
+      
+        plt.plot()
+        #formatting
+        plt.title("Current r={}; Current Centerpoint[{},{}]".format(animfile[2][i][j],animfile[0][i][j][0],animfile[0][i][j][1]), size = 8)
+        plt.xlabel("TestPoint: {} ; TreePoint: {}".format(animfile[3][i],animfile[1][i][j-1]))
+      
+        save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count)
+        plt.savefig(save) 
+      
+
+
+        count += 1
+        j += 1
+    i += 1
+  
+#thinning
+count2 = 0
+i = 0
+x = []
+y = []
+while i < len(animdfile):
+    print(i,"/",len(animdfile)-1)
+    x.append(animdfile[i][0])
+    y.append(animdfile[i][1])
+    plt.clf()
+    plt.xlim(xmin,xmax)
+    plt.ylim(ymin,ymax)
+    #Interface
+    plt.scatter(intX,intY,marker = "X",color = "black")
+    plt.scatter(testX,testY,marker = "X",color = "yellow")
+    #Plotting for the saved calculated centerpoints
+    if not(len(cx) == 0):
+        plt.scatter(cx,cy,color = "blue", marker = "^")
+    plt.scatter(x, y,color = "red", marker = "X")
+  
+    plt.title("Deleted:{}/{}".format(i,len(animdfile)-1),size = 8)
+    save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count + count2)
+    plt.savefig(save)
+    count2 += 1
+    i += 1
+
+count3 = 0
+
+
+
+
+plt.clf()
+plt.xlim(xmin,xmax)
+plt.ylim(ymin,ymax)
+##Interface
+plt.scatter(intX,intY,marker = "X",color = "black")
+plt.scatter(testX,testY,marker = "X",color = "yellow")
+
+i = 0
+while i < len(finX):
+    print(i,"/",len(finX)-1)
+    plt.scatter(finX[i],finY[i],color = "blue", marker = "^")
+    plt.plot(finX[i] + finR[i] * np.cos(theta), finY[i] + finR[i] * np.sin(theta))
+      
+    save = os.getcwd() + "/AnimationData/{:04d}/fig{:04d}.png".format(p,count + count2 + count3)
+    plt.savefig(save)
+  
+    count3 += 1
+    i += 1
+  
+taniEnd = time.time()
+print('Animation took {} minuites and {} seconds'.format((taniEnd-taniStart) // 60,(taniEnd-taniStart) % 60))
