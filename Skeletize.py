@@ -112,7 +112,7 @@ def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
         
     print(len(finPts),"-->",len(thin1p),"Through repeat removal")
     print(len(thin1p),"-->",len(thin2p),"Through distance")
-    return thin1p,thin1r,animd
+    return thin2p,thin2r,animd
     
     
 def Skeletize2D(points : list, norms : list,start : int, stop : int):
@@ -200,8 +200,6 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                 finR.append(tempr[leng - 2])
                 thinPoints.append(point)
                 
-                if finPoints[len(finPoints) - 1][0] > 0.7 and finR[len(finR) - 1] < 0.2:
-                    print('1')
 	 
                 tacp.append(centerp[len(centerp) - 2])
                 tatp.append(tatp[len(tatp) - 2])
@@ -212,21 +210,19 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                 break
             
             #for if within the threshold distance of the interface(too close to surface to be reasonable)
-            #if getDistance2D(point, testp) < tempr[leng] and i > 3:
-            #    finPoints.append(centerp[len(centerp) - 2])
-            #    finR.append(tempr[leng - 1])
-		    #    
-            #    if finPoints[len(finPoints) - 1][0] > 0.7 and finR[len(finR) - 1] < 0.2:
-            #        print('2')
-            #    
-            #    tacp.append(centerp[len(centerp) - 2])
-            #    tatp.append(tatp[len(tatp) - 2])
-            #    tar.append(tempr[leng-1])
-            #    
-            #    thinPoints.append(point)
-            #    case = True
-            #    countbreak += 1
-            #    break
+            if getDistance2D(point, testp) < tempr[leng] and i > 3:
+                finPoints.append(centerp[len(centerp) - 2])
+                finR.append(tempr[leng - 1])
+		        
+                
+                tacp.append(centerp[len(centerp) - 2])
+                tatp.append(tatp[len(tatp) - 2])
+                tar.append(tempr[leng-1])
+                
+                thinPoints.append(point)
+                case = True
+                countbreak += 1
+                break
             
             
             
@@ -235,13 +231,9 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                 if getDistance2D(point, testp) < tempr[leng]:
                     finPoints.append(centerp[len(centerp) - 2])
                     finR.append(tempr[leng - 1])
-                    if finPoints[len(finPoints) - 1][0] > 0.7 and finR[len(finR) - 1] < 0.2:
-                        print('3')
                 else:
                     finPoints.append(centerp[len(centerp)-1])
                     finR.append(tempr[leng])
-                    if finPoints[len(finPoints) - 1][0] > 0.7 and finR[len(finR) - 1] < 0.2:
-                        print('4')
                 thinPoints.append(point)
                 case = True
                 break

@@ -164,7 +164,7 @@ class kdTree:
             i = 1
             dmin = 100000000000
             while i < len(tree):
-                if(tree[i] != exclude):
+                if(tree[i] != exclude and tree[i] != searchPoint):
                     #Allows 2D
                     if self.dimensions == 2:
                         if i == 1:
@@ -201,7 +201,7 @@ class kdTree:
                 else:
                     tdis = getDistance3D(searchPoint, smallestLayer)
             
-            if tree[0] != exclude:
+            if tree[0] != exclude and tree[0] != searchPoint:
                 #checks if current node is closer than found
                 if self.dimensions == 2:
                     tdis1 = getDistance2D(searchPoint,node)
