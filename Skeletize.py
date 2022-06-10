@@ -398,35 +398,3 @@ def Skeletize3D(points : list, norms : list):
         
     
     return finPoints,finR
-
-def BuildSkeleton(centerPoints : list, radius : list, dim):
-    
-    #first define the geometric center of all the points, averaging out, then the closeest point will be the node
-    if dim == 2:#2d
-        i = 0
-        tx = 0
-        ty = 0
-        n = len(centerPoints)
-        while i < n:
-            tx = tx + centerPoints[i][0]
-            ty = ty + centerPoints[i][1]
-            i = i + 1
-        tgeoCent = [tx/n,ty/n]
-        tree = kdTree(centerPoints,2)
-        geoCent = tree.getNearR(tgeoCent,[10000,10000])
-    else:#3D 
-        i = 0
-        tx = 0
-        ty = 0
-        tz = 0
-        n = len(centerPoints)
-        while i < n:
-            tx = tx + centerPoints[i][0]
-            ty = ty + centerPoints[i][1]
-            tz = tz + centerPoints[i][2]
-            i = i + 1
-        tgeoCent = [tx/n,ty/n,tz/n]
-        tree = kdTree(centerPoints,3)
-        geoCent = tree.getNearR(tgeoCent,[10000,10000])
-    #now a final point will be classified as the center point and we can branch out 
-    
