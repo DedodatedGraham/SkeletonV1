@@ -11,8 +11,8 @@ import scipy
 import pandas as pd
 import time
 
-import DataStructures
-from DataStructures import kdTree
+from DataStructures import kdTree,getDistance2D,getDistance3D,normalize2D,normalize3D
+from Skeletize import checkRepeat,getRadius2D,getRadius3D
 
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
@@ -76,17 +76,89 @@ class SkeleNet:
             self.getNorms()#Caution, normals only acurate to locals and perfect shapes and such, use for Smooth Points
             
         if self.dim == 2:
-            self.NormPoints = DataStructures.normalize2D(self.NormPoints)
+            self.NormPoints = normalize2D(self.NormPoints)
         else:
-            self.NormPoints = DataStructures.normalize3D(self.NormPoints)
+            self.NormPoints = normalize3D(self.NormPoints)
         
         self.tag()
 
 ###MAIN FUNCTIONS
-    def skeletize(self):
+    def skeletize(self,key : int,animate : bool):
+        #Skeletize takes in 
+        #FROM INPUT
+        #key is the specific index of tpoints and tnorms, allows for
+        #parallel capabilities in splitting apart skeleton tasks 
+        #FROM CLASS
+        #points, the given plain list of points [x,y] for 2D case
+        #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
+        #then returns 2 things
+        # finPoints = [[x1,y1],...] of skeleton points
+        # finR = [r1,...] of the radius of each skeleton point
         
-        return
-    
+        self.threshDistance = []
+        print('Skeletizing #{}...'.format(key))
+        pts = []
+        
+        ##INITAL SETTING UP METHOD
+        #removes the connection between input points and output ponts
+        #When not doing this kd-tree skews points for some reason?
+        i = 0
+        while i < len(self.tpoints[key]):
+            pts.append(self.tpoints[key][i])
+            i += 1
+        tree = kdTree(pts,self.dim)        
+        #Threshdistance averages 3 random points distance incase there is 
+        #An adaptive Mesh so it can capture good threshold 
+        tot = 0
+        i = 0
+        while i < 3:
+            tpt = self.tpoints[key][randint(0, len(self.tpoints[key]))]
+            if self.dim == 2:
+                tot += getDistance2D(tpt,tree.getNearR(tpt,[]))
+            else:
+                tot += getDistance3D(tpt,tree.getNearR(tpt,[]))
+            i += 1
+        self.threshDistance.append(tot / 3)
+        
+        ##START OF SOLVE
+        index = 0
+        guessr = 0
+        prnd = []
+        for point in self.tpoints[key]:
+            #finding inital temp radius
+            norm = self.tnorms[key][index]
+            tempr = []
+            if index == 0:
+                prnd = self.tpoints[key][randint(1, len(self.tpoints[key]))]
+                tempr.append(np.round(getRadius2D(point,prnd,norm),6))
+            else:
+                tempr.append(guessr)
+            i = 0
+            centerp = []
+            centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
+            testp = []
+            testp.append(prnd)
+            case = False
+            #Main loop for each points solve
+            while not case:
+                testp.append(tree.getNearR(centerp[len(centerp) - 1],point))
+                if self.dim == 2:
+                    tempr.append(np.round(getRadius2D(point,testp[index + 1],norm),6))                
+                    centerp.append([float(point[0]-norm[0]*tempr[i+1]),float(point[1]-norm[1]*tempr[i+1])])
+                else:
+                    tempr.append(np.round(getRadius3D(point,testp[index + 1], norm),6))
+                    centerp.append([float(point[0]-norm[0]*tempr[i+1]),float(point[1]-norm[1]*tempr[i+1]),float(point[2]-norm[2]*tempr[i+1])])
+                leng = len(tempr) - 1
+                if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < 0.00001:
+                    
+                
+                i += 1
+            
+            
+            index += 1
+                
+                
+                
     def tag(self):
         i = 0
         #Organizing Points means going through and seperating everything by tag
@@ -114,19 +186,7 @@ class SkeleNet:
                 self.tpoints[0].append(self.IntPoints[i])
                 self.tnorms[0].append(self.NormPoints[i])
             i += 1
-        self.orderPoints()
         
-    def orderPoints(self):
-        c = 0
-        while c < len(self.tagKey):
-            #Grabbing the closest point excluding the last, the shape should be able to finish
-            tempTree
-                
-            
-            
-            c += 1
-        return
-    
 ###MISC FUCNTIONS FOR SKELENET
     
     def getNorms(self):
@@ -148,42 +208,46 @@ class SkeleNet:
 
 ####ImageProcessing
 
-    def plot(self,mode : int,*,norm = True):
-        
-        print("Plotting")
-        if mode == 0:
-            st = time.time()
-            #edit for plotting normals
-            tx = []
-            ty = []
-            i = 0
-            while i < len(self.IntPoints):
-                tx.append(self.IntPoints[i][0])
-                ty.append(self.IntPoints[i][1])
-                i += 1
-            i = 0
-            while i < len(self.IntPoints):
-                print(i,'/',len(self.IntPoints) - 1)
-                plt.xlim(-0.3,0.2)
-                plt.ylim(-0.3,0.2)
-                plt.scatter(tx,ty)
-                plt.scatter(self.IntPoints[i][0],self.IntPoints[i][1]) 
-                if norm == False:
-                    plt.plot([self.IntPoints[i][0] + self.NormPoints[i][0] * 1000,self.IntPoints[i][0] + self.NormPoints[i][0] * - 1000],[self.IntPoints[i][1] + self.NormPoints[i][1] * 1000,self.IntPoints[i][1] + self.NormPoints[i][1] * -1000])
-                else:
-                    plt.plot([self.IntPoints[i][0] + self.NormPoints[i][0] * 1000,self.IntPoints[i][0]],[self.IntPoints[i][1] + self.NormPoints[i][1] * 1000,self.IntPoints[i][1]])
-                save = os.getcwd() + "\Debug\Debug{:04d}.png".format(i)
-                plt.savefig(save)
-                plt.clf()
-                i += 1
-            et = time.time()
-        elif mode == 1:
+    def plot(self,mode : [1] = [],*,norm = True):
+        index = 0
+        tt = 0
+        while index < len(mode)
+            print("Plotting {}".format(mode[index]))
+            #Mode 0 -> output to degbug of normals of each point
+            if mode == 0:
+                st = time.time()
+                tx = []
+                ty = []
+                i = 0
+                while i < len(self.IntPoints):
+                    tx.append(self.IntPoints[i][0])
+                    ty.append(self.IntPoints[i][1])
+                    i += 1
+                i = 0
+                while i < len(self.IntPoints):
+                    print(i,'/',len(self.IntPoints) - 1)
+                    plt.xlim(-0.3,0.2)
+                    plt.ylim(-0.3,0.2)
+                    plt.scatter(tx,ty)
+                    plt.scatter(self.IntPoints[i][0],self.IntPoints[i][1]) 
+                    if norm == False:
+                        plt.plot([self.IntPoints[i][0] + self.NormPoints[i][0] * 1000,self.IntPoints[i][0] + self.NormPoints[i][0] * - 1000],[self.IntPoints[i][1] + self.NormPoints[i][1] * 1000,self.IntPoints[i][1] + self.NormPoints[i][1] * -1000])
+                    else:
+                        plt.plot([self.IntPoints[i][0] + self.NormPoints[i][0] * 1000,self.IntPoints[i][0]],[self.IntPoints[i][1] + self.NormPoints[i][1] * 1000,self.IntPoints[i][1]])
+                    save = os.getcwd() + "\Debug\Debug{:04d}.png".format(i)
+                    plt.savefig(save)
+                    plt.clf()
+                    i += 1
+                et = time.time()
+                tt += (et - st)
+            #Mode 1 is for outputting final points
+            elif mode == 1:
             
             
-            return
+            
         
         
         
         
-        print('Animation took {} minuites and {} seconds'.format((et-st) // 60,(et-st) % 60))
+        print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 

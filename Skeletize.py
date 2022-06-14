@@ -54,7 +54,22 @@ def getRadius2D(point1, point2 , norm) -> float:
     return radius
 
 def getRadius3D(point1,point2,norm) -> float:
-    return 0
+    #First finds theta
+    dist = getDistance3D(point1,point2)
+    
+    #Next calculate the midpoint
+    mvec = [point2[0] - point1[0],point2[1] - point1[1],point2[2] - point1[2]]
+    
+    #Then find dot product of the norm and mvec
+    dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1] + mvec[2]*-1*norm[2]
+
+    #Next finds theta
+    theta = np.arccos(min(1,dot/dist))
+
+    #Finally finds radius
+    radius = np.abs(dist / (2 * np.cos(theta)))
+    
+    return radius
 
 
 def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
@@ -122,10 +137,9 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
     #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
     
     #then returns 2 things
-    # finPoints = [[x,y],...] of skeleton points
-    # finR = [r1,r2,...] of the radius of each skeleton point
+    # finPoints = [[x1,y1],...] of skeleton points
+    # finR = [r1,...] of the radius of each skeleton point
 
-    countbreak = 0
     pts = []
     i = 0
     while i < len(points):
@@ -206,7 +220,6 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                 tar.append(tempr[leng-2])
                 
                 case = True
-                countbreak += 1
                 break
             
             #for if within the threshold distance of the interface(too close to surface to be reasonable)
@@ -221,7 +234,6 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
                 
                 thinPoints.append(point)
                 case = True
-                countbreak += 1
                 break
             
             
