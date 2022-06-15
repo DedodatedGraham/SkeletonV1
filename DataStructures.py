@@ -17,48 +17,9 @@ import pandas as pd
 
 import numpy as np
 
-def normalize2D(points : list) -> list:
-    #each point is [x,y]
-    i = 0
-    retpoints = []
-    while i < len(points):
-        
-        tempx = points[i][0]
-        tempy = points[i][1]
-        normalize = 1/np.sqrt(np.power(tempx,2)+np.power(tempy,2))
-        tempx = tempx * normalize
-        tempy = tempy * normalize
-        retpoints.append([tempx,tempy])
-        i = i + 1
-    return retpoints
+from Skeletize import getDistance
 
-def normalize3D(points : list) -> list:
-    #each point is [x,y,z]
-    i = 0
-    retpoints = []
-    while i < len(points):
-        
-        tempx = points[i][0]
-        tempy = points[i][1]
-        tempz = points[i][2]
-        normalize = 1/np.sqrt(np.power(tempx,2)+np.power(tempy,2)+np.power(tempz,2))
-        tempx = tempx * normalize
-        tempy = tempy * normalize
-        tempz = tempz * normalize
-        retpoints.append([tempx,tempy,tempz])
-        i = i + 1
-    return retpoints
-
-def getDistance2D(point1, point2) -> float:
-    return np.sqrt(pow(np.abs(point1[0]-point2[0]),2) + pow(np.abs(point1[1]-point2[1]),2))
-    
-def getDistance3D(point1, point2) -> float:
-    
-    return np.sqrt(np.abs(pow(point1[0]-point2[0],2)) + np.abs(pow(point1[1]-point2[1],2))+np.abs(pow(point1[2]-point2[2],2)))
 class kdTree:
-    
-    
-
     
     def __init__(self,points : list, dim : int):
         
@@ -165,24 +126,13 @@ class kdTree:
             dmin = 100000000000
             while i < len(tree):
                 if(tree[i] != exclude and tree[i] != searchPoint):
-                    #Allows 2D
-                    if self.dimensions == 2:
-                        if i == 1:
-                            dmin = getDistance2D(searchPoint, tree[1])
-                            smallestLayer = tree[1]
-                        dtemp = getDistance2D(searchPoint,tree[i])
-                        if dtemp < dmin and dtemp != 0:
-                            dmin = dtemp
-                            smallestLayer = tree[i]
-                    #Allows 3D
-                    else:
-                        if i == 1:
-                            dmin = getDistance3D(searchPoint, tree[1])
-                            smallestLayer = tree[1]
-                        dtemp = getDistance3D(searchPoint,tree[i])
-                        if dtemp < dmin:
-                            dmin = dtemp
-                            smallestLayer = tree[i]
+                    if i == 1:
+                        dmin = getDistance(searchPoint, tree[1])
+                        smallestLayer = tree[1]
+                    dtemp = getDistance(searchPoint,tree[i])
+                    if dtemp < dmin and dtemp != 0:
+                        dmin = dtemp
+                        smallestLayer = tree[i]
                 i = i + 1
         else:
             
@@ -196,17 +146,11 @@ class kdTree:
             if smallestLayer == None or smallestLayer == []:
                 tdis = 10000000000
             else:
-                if self.dimensions == 2:
-                    tdis = getDistance2D(searchPoint,smallestLayer)
-                else:
-                    tdis = getDistance3D(searchPoint, smallestLayer)
+                tdis = getDistance(searchPoint,smallestLayer)
             
             if tree[0] != exclude and tree[0] != searchPoint:
                 #checks if current node is closer than found
-                if self.dimensions == 2:
-                    tdis1 = getDistance2D(searchPoint,node)
-                else:
-                    tdis1 = getDistance3D(searchPoint,node)
+                tdis1 = getDistance(searchPoint,node)
                 if tdis1 < tdis and tdis1 != 0:
                     smallestLayer = node
                     tdis = tdis1
@@ -225,16 +169,10 @@ class kdTree:
                 if tdis3 <= tdis and tdis3 != 0:
                     tPoint = self.getNearR(searchPoint,exclude,tree[1], depth + 1)
             if tPoint != None and tPoint != []:
-                if self.dimensions == 2:
-                    tdis2 = getDistance2D(searchPoint,tPoint)
-                else:
-                    tdis2 = getDistance3D(searchPoint,tPoint)
+                tdis2 = getDistance(searchPoint,tPoint)
                 if tdis2 < tdis and tdis2 != 0:
                     smallestLayer = tPoint
                     tdis = tdis2
-            
-            
-               
         return smallestLayer
                     
                 

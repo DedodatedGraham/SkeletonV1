@@ -11,8 +11,8 @@ import scipy
 import pandas as pd
 import time
 
-from DataStructures import kdTree,getDistance2D,getDistance3D,normalize2D,normalize3D
-from Skeletize import checkRepeat,getRadius2D,getRadius3D
+from DataStructures import kdTree
+from Skeletize import checkRepeat,getRadius,getDistance,normalize
 
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
@@ -24,12 +24,16 @@ class SkeleNet:
     rnd = 0
 ###INITALIZERS
     def __init__(self, points,*,norms = []):
+        #Solve variables, certain parts of these can be thrown away later on depending id heap is heavy
         self.IntPoints = []
         self.NormPoints = []
         self.MasterTag = []
         self.tagKey = []
         self.tpoints = []
         self.tnorms = []
+        #Final Variables (for now depending on how we later edit this information)
+        self.SkelePoints = []
+        self.SeleRad = []
         #Determining type of points given
         if isinstance(points,str):    
             with open(points,'r') as csvfile:
@@ -39,8 +43,7 @@ class SkeleNet:
                     if size == 4:#2D w/ no tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
-                            self.NormPoints.append([float(row[2]),float(row[3])]) 
-                            self.MasterTag.append(randint(0,3))
+                            self.NormPoints.append([float(row[2]),float(row[3])])
                     elif size == 5:#2D w/ tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
@@ -74,27 +77,27 @@ class SkeleNet:
         #Gets normals if needed then normalizes the entire vectors
         if not(len(self.NormPoints) > 1):
             self.getNorms()#Caution, normals only acurate to locals and perfect shapes and such, use for Smooth Points
-            
-        if self.dim == 2:
-            self.NormPoints = normalize2D(self.NormPoints)
-        else:
-            self.NormPoints = normalize3D(self.NormPoints)
+
+        self.NormPoints = normalize(self.NormPoints)
         
-        self.tag()
+        if len(self.MasterTag > 0):
+            self.__tag()
 
 ###MAIN FUNCTIONS
-    def skeletize(self,key : int,animate : bool):
+    def skeletize(self,key : int,*,animate : bool = False):
         #Skeletize takes in 
         #FROM INPUT
         #key is the specific index of tpoints and tnorms, allows for
         #parallel capabilities in splitting apart skeleton tasks 
+        #Also allows the class to have an array being filled by different tags
         #FROM CLASS
         #points, the given plain list of points [x,y] for 2D case
         #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
         #then returns 2 things
         # finPoints = [[x1,y1],...] of skeleton points
         # finR = [r1,...] of the radius of each skeleton point
-        
+        self.SkelePoints.append([])
+        self.SkeleRad.append([])
         self.threshDistance = []
         print('Skeletizing #{}...'.format(key))
         pts = []
@@ -113,10 +116,7 @@ class SkeleNet:
         i = 0
         while i < 3:
             tpt = self.tpoints[key][randint(0, len(self.tpoints[key]))]
-            if self.dim == 2:
-                tot += getDistance2D(tpt,tree.getNearR(tpt,[]))
-            else:
-                tot += getDistance3D(tpt,tree.getNearR(tpt,[]))
+            tot += getDistance(tpt,tree.getNearR(tpt,[]))
             i += 1
         self.threshDistance.append(tot / 3)
         
@@ -130,27 +130,39 @@ class SkeleNet:
             tempr = []
             if index == 0:
                 prnd = self.tpoints[key][randint(1, len(self.tpoints[key]))]
-                tempr.append(np.round(getRadius2D(point,prnd,norm),6))
+                tempr.append(np.round(getRadius(point,prnd,norm),6))
             else:
                 tempr.append(guessr)
             i = 0
             centerp = []
-            centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
+            if self.dim == 2:
+                centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
+            else:
+                centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
             testp = []
             testp.append(prnd)
             case = False
             #Main loop for each points solve
             while not case:
+                #Refinement of skeleton point
                 testp.append(tree.getNearR(centerp[len(centerp) - 1],point))
+                tempr.append(np.round(getRadius(point,testp[index + 1],norm),6))
                 if self.dim == 2:
-                    tempr.append(np.round(getRadius2D(point,testp[index + 1],norm),6))                
                     centerp.append([float(point[0]-norm[0]*tempr[i+1]),float(point[1]-norm[1]*tempr[i+1])])
                 else:
-                    tempr.append(np.round(getRadius3D(point,testp[index + 1], norm),6))
                     centerp.append([float(point[0]-norm[0]*tempr[i+1]),float(point[1]-norm[1]*tempr[i+1]),float(point[2]-norm[2]*tempr[i+1])])
                 leng = len(tempr) - 1
+                
+                #Checking for completeion
                 if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < 0.00001:
-                    
+                    if getDistance(point, testp[leng]) < tempr[leng]:
+                        self.SkelePoints[key].append(centerp[leng - 1])
+                        self.SkeleRad[key].append(tempr[leng - 1])
+                    else:
+                        self.SkelePoints[key].append(centerp[leng])
+                        self.SkeleRad[key].append(tempr[leng])
+                    case = True 
+                elif:
                 
                 i += 1
             
@@ -159,7 +171,10 @@ class SkeleNet:
                 
                 
                 
-    def tag(self):
+    
+        
+###MISC FUCNTIONS FOR SKELENET
+    def __tag(self):
         i = 0
         #Organizing Points means going through and seperating everything by tag
         while i < len(self.IntPoints):
@@ -186,10 +201,8 @@ class SkeleNet:
                 self.tpoints[0].append(self.IntPoints[i])
                 self.tnorms[0].append(self.NormPoints[i])
             i += 1
-        
-###MISC FUCNTIONS FOR SKELENET
-    
-    def getNorms(self):
+            
+    def __getNorms(self):
         tree = kdTree(self.IntPoints,self.dim)
         for point in self.IntPoints:
             if self.dim == 2:#2D Norms
@@ -211,7 +224,7 @@ class SkeleNet:
     def plot(self,mode : [1] = [],*,norm = True):
         index = 0
         tt = 0
-        while index < len(mode)
+        while index < len(mode):
             print("Plotting {}".format(mode[index]))
             #Mode 0 -> output to degbug of normals of each point
             if mode == 0:
@@ -242,7 +255,7 @@ class SkeleNet:
                 tt += (et - st)
             #Mode 1 is for outputting final points
             elif mode == 1:
-            
+                return
             
             
         

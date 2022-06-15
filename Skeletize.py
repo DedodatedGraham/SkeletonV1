@@ -17,7 +17,7 @@ import scipy
 import pandas as pd
 
 
-from DataStructures import normalize2D, normalize3D, kdTree, getDistance2D, getDistance3D
+from DataStructures import kdTree
 
 def checkRepeat(check : list):
     n = 2 #order of repeat
@@ -35,16 +35,20 @@ def checkRepeat(check : list):
     return a , n
 
 
-def getRadius2D(point1, point2 , norm) -> float:
+def getRadius(point1, point2 , norm) -> float:
     #First finds theta
-    dist = getDistance2D(point1,point2)
-    
-    #Next calculate the midpoint
-    mvec = [point2[0] - point1[0],point2[1] - point1[1]]
-    
-    #Then find dot product of the norm and mvec
-    dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1]
-
+    dim = len(point1)
+    dist = getDistance(point1,point2)
+    if dim == 2:
+        #Next calculate the midpoint
+        mvec = [point2[0] - point1[0],point2[1] - point1[1]]
+        #Then find dot product of the norm and mvec
+        dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1]
+    else:
+        #Next calculate the midpoint
+        mvec = [point2[0] - point1[0],point2[1] - point1[1],point2[2] - point1[2]]
+        #Then find dot product of the norm and mvec
+        dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1] + mvec[2]*-1*norm[2]
     #Next finds theta
     theta = np.arccos(min(1,dot/dist))
 
@@ -53,23 +57,36 @@ def getRadius2D(point1, point2 , norm) -> float:
     
     return radius
 
-def getRadius3D(point1,point2,norm) -> float:
-    #First finds theta
-    dist = getDistance3D(point1,point2)
-    
-    #Next calculate the midpoint
-    mvec = [point2[0] - point1[0],point2[1] - point1[1],point2[2] - point1[2]]
-    
-    #Then find dot product of the norm and mvec
-    dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1] + mvec[2]*-1*norm[2]
+def normalize(points : list) -> list:
+    i = 0
+    retpoints = []
+    dim = len(points[0])
+    while i < len(points):
+        tempx = points[i][0]
+        tempy = points[i][1]
+        if dim == 2:
+            normalize = 1/np.sqrt(np.power(tempx,2)+np.power(tempy,2))
+            tempx = tempx * normalize
+            tempy = tempy * normalize
+            retpoints.append([tempx,tempy])
+        else:
+            tempz = points[i][2]
+            normalize = 1/np.sqrt(np.power(tempx,2)+np.power(tempy,2)+np.power(tempz,2))
+            tempx = tempx * normalize
+            tempy = tempy * normalize
+            tempz = tempz * normalize
+            retpoints.append([tempx,tempy,tempz])
+        i = i + 1
+    return retpoints
 
-    #Next finds theta
-    theta = np.arccos(min(1,dot/dist))
-
-    #Finally finds radius
-    radius = np.abs(dist / (2 * np.cos(theta)))
+def getDistance(point1, point2) -> float:
+    if len(point1) == 2:
+        return np.sqrt(pow(np.abs(point1[0]-point2[0]),2) + pow(np.abs(point1[1]-point2[1]),2))
+    else:
+        return np.sqrt(np.abs(pow(point1[0]-point2[0],2)) + np.abs(pow(point1[1]-point2[1],2))+np.abs(pow(point1[2]-point2[2],2)))
     
-    return radius
+
+
 
 
 def thin2D(opts : list, measured : list, finPts : list, finR : list, pointDis):
@@ -327,86 +344,3 @@ def Skeletize2D(points : list, norms : list,start : int, stop : int):
     # print('points with distance less than radius',countbreak)
     return fin2Points,fin2R, anim, animd
 
-def Skeletize3D(points : list, norms : list):
-    #skeletize takes in 
-    #points, the given plain list of points [x,y,z] for 3D case
-    #norms, a list of not yet normalized normal points [n_z,n_y,n_z] here for 3D case
-    
-    #then returns 2 things
-    # finPoints = [[x,y,z],...] of skeleton points
-    # finR = [r1,r2,...] of the radius of each skeleton point
-    
-   
-    
-    pts = []
-    i = 0
-    while i < len(points):
-        pts.append(points[i])
-        i = i + 1
-        
-    norms = normalize3D(norms)
-    tree = kdTree(pts, 3)
-    
-    #setting the distance threshhold
-    close = tree.getNearR(points[0],points[0])
-    threshDistance = getDistance3D(points[0],close)
-    
-    finPoints = []#list of skeletized points
-    finR = []#radius values of each point
-    index = 1
-    guessr = 0
-    for point in points:
-        tempr = []
-        if index == 1:
-            pcross = points[randint(index,len(points))]
-            tempr.append(getRadius3D(point,pcross,norms[index - 1]))
-        else:
-            # print('guessr',guessr)
-            tempr.append(guessr)
-        
-        i = 0
-        centerp = []
-        testp = []
-        case = False
-        
-        #solve loop
-        while not case:
-            centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1]),float(point[2]-norms[index-1][2]*tempr[len(tempr)-1])])
-            testp = tree.getNearR(centerp[len(centerp)-1], point)
-            tempr.append(np.round(getRadius3D(point, testp, norms[index - 1]),6))
-            leng = len(tempr)-1
-            
-            if tempr[leng] < 2 * threshDistance:
-                case = True
-            
-            #cases for cacthing when stuck  
-            if tempr[leng] == tempr[leng - 1] and i > 1:
-                centerp.append([float(point[0]-norms[index-1][0]*tempr[len(tempr)-1]),float(point[1]-norms[index-1][1]*tempr[len(tempr)-1]),float(point[2]-norms[index-1][2]*tempr[len(tempr)-1])])
-                finPoints.append(centerp[len(centerp)-1])
-                finR.append(tempr[leng])
-                case = True
-            #going back and fourth from two radii    
-            if i >= 3:
-                if tempr[i] == tempr[i-2] and tempr[i-1] == tempr[i-3]:
-                    if tempr[i] > tempr[i-1]:
-                        finPoints.append(centerp[i-1])
-                        finR.append(tempr[i-1])
-                        case = True
-                    else:
-                        finPoints.append(centerp[i])
-                        finR.append(tempr[i])
-                        case = True
-                
-            i = i + 1
-            
-        #guess values
-        if index  != len(points):
-            guessr = finR[len(finR)-1] * 100        
-        index = index + 1
-        
-    
-        
-    #returns important values 
-        
-    
-    return finPoints,finR
