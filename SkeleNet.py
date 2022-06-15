@@ -3,7 +3,6 @@ from random  import randint
 from sys import float_repr_style
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 from mpl_toolkits import mplot3d
 import numpy as np
 import csv
@@ -252,7 +251,6 @@ class SkeleNet:
     def plot(self,mode : list = [],*,norm = True,tag = 'None'):
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        # ax.set_aspect('equal')
         
         index = 0
         tt = 0
