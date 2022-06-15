@@ -31,15 +31,10 @@ IntPoints = []
 TestPoints = []
 NormPoints = []
 
-fig = plt.figure()
-ax = plt.subplot(111)
-plt.xlim(xmin,xmax)
-plt.ylim(ymin,ymax)
 
-
-net = SkeleNet('spiral.dat')
-net.skeletize()
-net.plot(1)
+net = SkeleNet('interface_points_070000.dat')
+net.skeletize(0)
+net.plot([1])
 
 
 # testX = []

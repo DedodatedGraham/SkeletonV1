@@ -33,7 +33,7 @@ class SkeleNet:
         self.tnorms = []
         #Final Variables (for now depending on how we later edit this information)
         self.SkelePoints = []
-        self.SeleRad = []
+        self.SkeleRad = []
         #Determining type of points given
         if isinstance(points,str):    
             with open(points,'r') as csvfile:
@@ -44,6 +44,7 @@ class SkeleNet:
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
                             self.NormPoints.append([float(row[2]),float(row[3])])
+                            self.MasterTag.append(0)
                     elif size == 5:#2D w/ tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
@@ -80,7 +81,7 @@ class SkeleNet:
 
         self.NormPoints = normalize(self.NormPoints)
         
-        if len(self.MasterTag > 0):
+        if len(self.MasterTag) > 0:
             self.__tag()
 
 ###MAIN FUNCTIONS
@@ -96,6 +97,7 @@ class SkeleNet:
         #then returns 2 things
         # finPoints = [[x1,y1],...] of skeleton points
         # finR = [r1,...] of the radius of each skeleton point
+        ts = time.time()
         self.SkelePoints.append([])
         self.SkeleRad.append([])
         self.threshDistance = []
@@ -146,7 +148,7 @@ class SkeleNet:
             while not case:
                 #Refinement of skeleton point
                 testp.append(tree.getNearR(centerp[len(centerp) - 1],point))
-                tempr.append(np.round(getRadius(point,testp[index + 1],norm),6))
+                tempr.append(np.round(getRadius(point,testp[i + 1],norm),6))
                 if self.dim == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[i+1]),float(point[1]-norm[1]*tempr[i+1])])
                 else:
@@ -154,7 +156,7 @@ class SkeleNet:
                 leng = len(tempr) - 1
                 
                 #Checking for completeion
-                if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < 0.00001:
+                if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < self.threshDistance[key]:
                     if getDistance(point, testp[leng]) < tempr[leng]:
                         self.SkelePoints[key].append(centerp[leng - 1])
                         self.SkeleRad[key].append(tempr[leng - 1])
@@ -162,12 +164,38 @@ class SkeleNet:
                         self.SkelePoints[key].append(centerp[leng])
                         self.SkeleRad[key].append(tempr[leng])
                     case = True 
-                elif:
-                
+                elif i > 1 and getDistance(point, testp[leng]) < tempr[leng]:
+                    self.SkelePoints[key].append(centerp[leng - 1])
+                    self.SkeleRad[key].append(tempr[leng - 1])
+                    case = True
+                elif i > 3:
+                    #Really only comes up with perfect shapes,
+                    #but always a possibility to happen
+                   repeat, order = checkRepeat(tempr)
+                   if repeat:
+                       n = 0
+                       p = 0
+                       sml = 0.0
+                       while p < order:
+                           if p == 0:
+                               sml = tempr[len(tempr) - (order)]
+                           else:
+                               tmp = tempr[len(tempr)-(order - p)]
+                               if tmp < sml:
+                                   sml = tempr[len(tempr)-(order-p)]
+                                   n = len(tempr) - (order - p)
+                           p = p + 1
+                       print('Repeat')
+                       self.SkeleRad[key].append(sml)
+                       self.SkelePoints[key].append(centerp[n])
+                       case = True 
                 i += 1
-            
-            
+            if index != len(self.tpoints[key]) - 1:
+                guessr = self.threshDistance[key] * len(self.tpoints[key])
             index += 1
+        te = time.time()
+        tt = te - ts
+        print('Skeleton #{} took {} minuites and {} seconds'.format(key,(tt) // 60,(tt) % 60))
                 
                 
                 
@@ -221,13 +249,17 @@ class SkeleNet:
 
 ####ImageProcessing
 
-    def plot(self,mode : [1] = [],*,norm = True):
+    def plot(self,mode : list = [],*,norm = True,tag = 'None'):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # ax.set_aspect('equal')
+        
         index = 0
         tt = 0
         while index < len(mode):
             print("Plotting {}".format(mode[index]))
             #Mode 0 -> output to degbug of normals of each point
-            if mode == 0:
+            if mode[index] == 0:
                 st = time.time()
                 tx = []
                 ty = []
@@ -253,9 +285,30 @@ class SkeleNet:
                     i += 1
                 et = time.time()
                 tt += (et - st)
-            #Mode 1 is for outputting final points
-            elif mode == 1:
-                return
+            #Mode 1 is for outputting final points for every tag
+            elif mode[index] == 1:
+                if not isinstance(tag,int):
+                    i = 0
+                    tx = []
+                    ty = []
+                    while i < len(self.IntPoints):    
+                        tx.append(self.IntPoints[i][0])
+                        ty.append(self.IntPoints[i][1])
+                        i += 1
+                    plt.scatter(tx,ty,)
+                    i = 0
+                    while i < len(self.SkelePoints):
+                        j = 0
+                        tx = []
+                        ty = []
+                        while j < len(self.SkelePoints[i]):
+                            tx.append(self.SkelePoints[i][j][0])
+                            ty.append(self.SkelePoints[i][j][1])
+                            j += 1
+                        plt.scatter(tx,ty)
+                        i += 1
+            index += 1        
+
             
             
         
