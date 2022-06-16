@@ -32,6 +32,6 @@ TestPoints = []
 NormPoints = []
 
 
-net = SkeleNet('interface_points_070000.dat')
-net.skeletize(0)
+net = SkeleNet('spiral.dat')
+net.solve()
 net.plot([1])

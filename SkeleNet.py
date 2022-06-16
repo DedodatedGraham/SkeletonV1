@@ -30,25 +30,30 @@ class SkeleNet:
         self.tagKey = []
         self.tpoints = []
         self.tnorms = []
+        self.threshDistance = []
         #Final Variables (for now depending on how we later edit this information)
         self.SkelePoints = []
         self.SkeleRad = []
+        self.tagged = False
         #Determining type of points given
         if isinstance(points,str):    
             with open(points,'r') as csvfile:
                 data = csv.reader(csvfile, delimiter = ' ')
                 for row in data:
+                    
                     size = len(row)
-                    if size == 4:#2D w/ no tag
+                    if str(row[0]) == 'x':#if title
+                        a = 1    
+                    elif size == 4:#2D w/ no tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
                             self.NormPoints.append([float(row[2]),float(row[3])])
-                            self.MasterTag.append(0)
                     elif size == 5:#2D w/ tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
                             self.NormPoints.append([float(row[2]),float(row[3])]) 
-                            self.MasterTag.append(int(row[4]))
+                            self.MasterTag.append(int(row[4]) - 1)
+                            self.tagged = True
                     elif size == 6:#3D w/ no tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
@@ -57,7 +62,8 @@ class SkeleNet:
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
                             self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
-                            self.MasterTag.append(int(row[6]))
+                            self.MasterTag.append(int(row[6]) - 1)
+                            self.tagged =  True
             csvfile.close()
             
         elif isinstance(points,list):
@@ -78,13 +84,31 @@ class SkeleNet:
         if not(len(self.NormPoints) > 1):
             self.getNorms()#Caution, normals only acurate to locals and perfect shapes and such, use for Smooth Points
 
-        self.NormPoints = normalize(self.NormPoints)
+        temp  = normalize(self.NormPoints)
+        self.NormPoints = []
+        self.NormPoints = temp
         
-        if len(self.MasterTag) > 0:
+        if self.tagged:
             self.__tag()
+        else:
+            self.tpoints.append(self.IntPoints)
+            self.tnorms.append(self.NormPoints)
 
 ###MAIN FUNCTIONS
-    def skeletize(self,key : int,*,animate : bool = False):
+    def solve(self):
+        #Solves for all taggs individually
+        #will be paralled in the future
+        if self.tagged:
+            i = 0
+            while i < len(self.tpoints):
+                self.__skeletize(i)
+                i += 1
+        else:
+            self.__skeletize(0)
+        
+
+
+    def __skeletize(self,key : int,*,animate : bool = False):
         #Skeletize takes in 
         #FROM INPUT
         #key is the specific index of tpoints and tnorms, allows for
@@ -99,7 +123,6 @@ class SkeleNet:
         ts = time.time()
         self.SkelePoints.append([])
         self.SkeleRad.append([])
-        self.threshDistance = []
         print('Skeletizing #{}...'.format(key))
         pts = []
         
@@ -116,11 +139,12 @@ class SkeleNet:
         tot = 0
         i = 0
         while i < 3:
-            tpt = self.tpoints[key][randint(0, len(self.tpoints[key]))]
+            tpt = self.tpoints[key][randint(0, len(self.tpoints[key]) - 1)]
             tot += getDistance(tpt,tree.getNearR(tpt,[]))
             i += 1
         self.threshDistance.append(tot / 3)
-        
+        print(self.threshDistance[key])       
+ 
         ##START OF SOLVE
         index = 0
         guessr = 0
@@ -130,7 +154,7 @@ class SkeleNet:
             norm = self.tnorms[key][index]
             tempr = []
             if index == 0:
-                prnd = self.tpoints[key][randint(1, len(self.tpoints[key]))]
+                prnd = self.tpoints[key][randint(1, len(self.tpoints[key]) - 1)]
                 tempr.append(np.round(getRadius(point,prnd,norm),6))
             else:
                 tempr.append(guessr)
@@ -285,7 +309,7 @@ class SkeleNet:
                 tt += (et - st)
             #Mode 1 is for outputting final points for every tag
             elif mode[index] == 1:
-                if not isinstance(tag,int):
+                if self.tagged:
                     i = 0
                     tx = []
                     ty = []
@@ -293,8 +317,9 @@ class SkeleNet:
                         tx.append(self.IntPoints[i][0])
                         ty.append(self.IntPoints[i][1])
                         i += 1
-                    plt.scatter(tx,ty,)
+                    plt.scatter(tx,ty)
                     i = 0
+                    #theta = np.linspace(0,2*np.pi)
                     while i < len(self.SkelePoints):
                         j = 0
                         tx = []
@@ -302,9 +327,32 @@ class SkeleNet:
                         while j < len(self.SkelePoints[i]):
                             tx.append(self.SkelePoints[i][j][0])
                             ty.append(self.SkelePoints[i][j][1])
+                            #plt.plot(tx[j] + np.cos(theta) * self.SkeleRad[i][j],ty[j] + np.sin(theta) * self.SkeleRad[i][j],color = 'blue')
                             j += 1
                         plt.scatter(tx,ty)
                         i += 1
+                else:
+                    i = 0
+                    tx = []
+                    ty = []
+                    while i < len(self.IntPoints):    
+                        tx.append(self.IntPoints[i][0])
+                        ty.append(self.IntPoints[i][1])
+                        i += 1
+                    plt.scatter(tx,ty)
+                    i = 0
+                    tx = []
+                    ty = []
+                    #theta = np.linspace(0,2*np.pi)
+                    while i < len(self.SkelePoints[0]):
+                        tx.append(self.SkelePoints[0][i][0])
+                        ty.append(self.SkelePoints[0][i][1])
+                        #plt.plot(tx[i] + np.cos(theta) * self.SkeleRad[0][i],ty[i] + np.sin(theta) * self.SkeleRad[0][i],color = 'blue')
+                        i += 1
+                    plt.scatter(tx,ty)
+                plt.savefig('Output.png')
+
+
             index += 1        
 
             
