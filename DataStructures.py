@@ -176,11 +176,60 @@ class kdTree:
         return smallestLayer
                     
                 
+    def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0)
+        #Returns all the points which lie inside a give area arround a certain point
+        #Mode 0 => Square area, point in center, side = 2 * dim
+        #Mode 1 => Circle area, point in center, rad  = dim
+        retPoints = []
+        axis = depth % self.dimensions
+        if depth == 0:
+            tree = self.tree
+        node = tree[0]        
         
-        
-        
-        
+        if node == 'Full':
+            i = 1
+            while i < len(tree):
+                if mode == 0:
+                    if tree[i][0] >= point[0] - dim and tree[i][0] <= point[0] + dim:
+                        if tree[i][1] >= point[1] - dim and tree[i][1] <= point[1] + dim:
+                            if self.dmensions == 2 or (self.dimensions == 3 and tree[i][2] >= point[2] - dim and tree[i][2] <= point[2] + dim):
+                                retPoints.append(tree[i])
+                else:
+                    if getDistance(point,tree[i]) <= dim:
+                        retPoints.append(tree[i])
+                i += 1
+        else:
+            #Uses square to obtain all possible sections that might be needed
+            #mode only comes into play when searching at bottom layers, however adding the node points 
+            #will still depend on mode  
+            pts = []
+            if point[axis] - dim > node[axis]:
+                pts = getInR(point,dim,mode,tree[2],depth + 1)
+            elif point[axis] + dim < node[axis]:
+                pts = getInR(point,dim,mode,tree[1],depth + 1)
+            else:
+                pts1 = getInR(point,dim,mode,tree[1],depth + 1)
+                pts2 = getInR(point,dim,mode,tree[2],depth + 1)
+                pts.append(point for point in pts1)
+                pts.append(point for point in pts2)
+                #Note only needs to check node here
+                if mode == 0:
+                    if node[0] >= point[0] - dim and node[0] <= point[0] + dim:
+                        if node[1] >= point[1] - dim and node[1] <= point[1] + dim:
+                            if self.dmensions == 2 or (self.dimensions == 3 and node[2] >= point[2] - dim and node[2] <= point[2] + dim):
+                                pts.append(node)
+                else:
+                    if getDistance(point,node) <= dim:
+                        pts.append(node)
                 
+            if len(pts) > 0:
+                i = 0
+                while i < len(pts):
+                    retPoints.append(pts[i])
+                    i += 1
+        return retPoints
+
+
     def treeLines2D(self,bounds : list,onode : list = [],side : int = 0,tree : list = [],depth : int = 0) -> list:
         #input: bounds format [[top left] , [bottom right]], both with [x,y]
         #output: [ [a1x,a1y] , [a2x,a2y] , [b1x,b1y] , [b2x,b2y] , ...] coupled points

@@ -35,3 +35,6 @@ NormPoints = []
 net = SkeleNet('spiral.dat')
 net.solve()
 net.plot([1])
+
+
+
