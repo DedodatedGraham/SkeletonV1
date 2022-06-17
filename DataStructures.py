@@ -176,7 +176,7 @@ class kdTree:
         return smallestLayer
                     
                 
-    def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0)
+    def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0):
         #Returns all the points which lie inside a give area arround a certain point
         #Mode 0 => Square area, point in center, side = 2 * dim
         #Mode 1 => Circle area, point in center, rad  = dim

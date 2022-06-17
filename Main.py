@@ -32,7 +32,7 @@ TestPoints = []
 NormPoints = []
 
 
-net = SkeleNet('spiral.dat')
+net = SkeleNet('vof_points_norm.dat')
 net.solve()
 net.plot([1])
 
