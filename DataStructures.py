@@ -204,12 +204,12 @@ class kdTree:
             #will still depend on mode  
             pts = []
             if point[axis] - dim > node[axis]:
-                pts = getInR(point,dim,mode,tree[2],depth + 1)
+                pts = self.getInR(point,dim,mode,tree[2],depth + 1)
             elif point[axis] + dim < node[axis]:
-                pts = getInR(point,dim,mode,tree[1],depth + 1)
+                pts = self.getInR(point,dim,mode,tree[1],depth + 1)
             else:
-                pts1 = getInR(point,dim,mode,tree[1],depth + 1)
-                pts2 = getInR(point,dim,mode,tree[2],depth + 1)
+                pts1 = self.getInR(point,dim,mode,tree[1],depth + 1)
+                pts2 = self.getInR(point,dim,mode,tree[2],depth + 1)
                 pts.append(point for point in pts1)
                 pts.append(point for point in pts2)
                 #Note only needs to check node here
@@ -230,7 +230,8 @@ class kdTree:
         return retPoints
 
 
-    def treeLines2D(self,bounds : list,onode : list = [],side : int = 0,tree : list = [],depth : int = 0) -> list:
+    def treeLines(self,bounds : list,onode : list = [],side : int = 0,tree : list = [],depth : int = 0) -> list:
+        #Works for 2D 
         #input: bounds format [[top left] , [bottom right]], both with [x,y]
         #output: [ [a1x,a1y] , [a2x,a2y] , [b1x,b1y] , [b2x,b2y] , ...] coupled points
         ret = []
@@ -248,14 +249,14 @@ class kdTree:
                     ret.append([node[0],onode[1]])
                     ret.append([node[0],bounds[1][1]])
                 boundsleft = [bounds[0],[node[0],bounds[1][1]]]
-                left = self.treeLines2D(boundsleft,node,1,tree[1],depth + 1)
+                left = self.treeLines(boundsleft,node,1,tree[1],depth + 1)
                 if left != None:
                     i = 0
                     while i < len(left):
                         ret.append([left[i][0],left[i][1]])
                         i = i + 1
                 boundsright = [[node[0],bounds[0][1]],bounds[1]]
-                right = self.treeLines2D(boundsright,node,0,tree[2],depth + 1)
+                right = self.treeLines(boundsright,node,0,tree[2],depth + 1)
                 if right != None:
                     i = 0 
                     while i < len(right):
@@ -271,14 +272,14 @@ class kdTree:
                     ret.append([onode[0],node[1]])
                     ret.append([bounds[0][0],node[1]])
                 boundsleft = [[bounds[0][0],node[1]],bounds[1]]
-                left = self.treeLines2D(boundsleft,node,1,tree[1],depth + 1)
+                left = self.treeLines(boundsleft,node,1,tree[1],depth + 1)
                 i = 0
                 if left != None:
                     while i < len(left):
                         ret.append([left[i][0],left[i][1]])
                         i = i + 1
                 boundsright = [bounds[0],[bounds[1][0],node[0]]]
-                right = self.treeLines2D(boundsright,node,0,tree[2],depth + 1)
+                right = self.treeLines(boundsright,node,0,tree[2],depth + 1)
                 if right != None:
                     i = 0
                     while i < len(right):

@@ -95,9 +95,17 @@ class SkeleNet:
             self.tnorms.append(self.NormPoints)
 
 ###MAIN FUNCTIONS
-    def solve(self):
+    def solve(self,animate : bool = False):
         #Solves for all taggs individually
         #will be paralled in the future
+        if animate:
+            self.animate = True
+            self.acp = []
+            self.atp = []
+            self.arad = []
+        else:
+            self.animate = False
+        
         if self.tagged:
             i = 0
             while i < len(self.tpoints):
@@ -108,7 +116,7 @@ class SkeleNet:
         
 
 
-    def __skeletize(self,key : int,*,animate : bool = False):
+    def __skeletize(self,key : int):
         #Skeletize takes in 
         #FROM INPUT
         #key is the specific index of tpoints and tnorms, allows for
@@ -142,9 +150,8 @@ class SkeleNet:
             tpt = self.tpoints[key][randint(0, len(self.tpoints[key]) - 1)]
             tot += getDistance(tpt,tree.getNearR(tpt,[]))
             i += 1
-        self.threshDistance.append(tot / 3)
-        print(self.threshDistance[key])       
- 
+        self.threshDistance.append(tot / 3) 
+            
         ##START OF SOLVE
         index = 0
         guessr = 0
@@ -153,44 +160,96 @@ class SkeleNet:
             #finding inital temp radius
             norm = self.tnorms[key][index]
             tempr = []
-            if index == 0:
-                prnd = self.tpoints[key][randint(1, len(self.tpoints[key]) - 1)]
-                tempr.append(np.round(getRadius(point,prnd,norm),6))
-            else:
-                tempr.append(guessr)
             i = 0
             centerp = []
-            if self.dim == 2:
-                centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
-            else:
-                centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
             testp = []
-            testp.append(prnd)
+            
             case = False
+            
+            #Setup animate
+            if self.animate:
+                if index ==  0:
+                    self.acp.append([])
+                    self.atp.append([])
+                    self.arad.append([])
             #Main loop for each points solve
             while not case:
-                #Refinement of skeleton point
-                testp.append(tree.getNearR(centerp[len(centerp) - 1],point))
-                tempr.append(np.round(getRadius(point,testp[i + 1],norm),6))
-                if self.dim == 2:
-                    centerp.append([float(point[0]-norm[0]*tempr[i+1]),float(point[1]-norm[1]*tempr[i+1])])
-                else:
-                    centerp.append([float(point[0]-norm[0]*tempr[i+1]),float(point[1]-norm[1]*tempr[i+1]),float(point[2]-norm[2]*tempr[i+1])])
+                if i == 0:
+                    #Inital
+                    if index == 0:
+                        prnd = self.tpoints[key][randint(1, len(self.tpoints[key]) - 1)]
+                        tempr.append(np.round(getRadius(point,prnd,norm),6))
+                    else:
+                        tempr.append(guessr)
+                        
+                    if self.dim == 2:
+                        centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
+                    else:
+                        centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
+                    testp.append(point)
+                else:   
+                    #Refinement of skeleton point
+                    testp.append(tree.getNearR(centerp[len(centerp) - 1],point))
+                    tempr.append(np.round(getRadius(point,testp[i],norm),6))
+                    if self.dim == 2:
+                        centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
+                    else:
+                        centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i]),float(point[2]-norm[2]*tempr[i])])
                 leng = len(tempr) - 1
                 
+                #Capture animation data
+                if self.animate:
+                    if i == 0:
+                        self.acp[key].append([])
+                        self.atp[key].append([])
+                        self.arad[key].append([])
+                        self.acp[key][index].append(centerp[0])
+                        self.atp[key][index].append(testp[0])
+                        self.arad[key][index].append(tempr[0])
+                    self.acp[key][index].append(centerp[leng])
+                    self.atp[key][index].append(testp[leng])
+                    self.arad[key][index].append(tempr[leng])
+                    
                 #Checking for completeion
+                
+                #Convergence check
                 if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < self.threshDistance[key]:
-                    if getDistance(point, testp[leng]) < tempr[leng]:
+                    if tempr[leng] < (self.threshDistance[key]) or getDistance(point, testp[leng]) < tempr[leng]:
                         self.SkelePoints[key].append(centerp[leng - 1])
                         self.SkeleRad[key].append(tempr[leng - 1])
+                        #Show backstep in animation
+                        if self.animate:
+                            self.acp[key][index].append(centerp[leng - 1])
+                            self.atp[key][index].append(testp[leng - 1])
+                            self.arad[key][index].append(tempr[leng - 1])
                     else:
                         self.SkelePoints[key].append(centerp[leng])
                         self.SkeleRad[key].append(tempr[leng])
+                    
                     case = True 
+                
+                #Overshooting  
+                elif i > 1 and tempr[leng] < (self.threshDistance[key]):
+                    self.SkelePoints[key].append(centerp[leng - 1])
+                    self.SkeleRad[key].append(tempr[leng - 1])
+                    #Show backstep in animation
+                    if self.animate:
+                        self.acp[key][index].append(centerp[leng - 1])
+                        self.atp[key][index].append(testp[leng - 1])
+                        self.arad[key][index].append(tempr[leng - 1])
+                    case = True
                 elif i > 1 and getDistance(point, testp[leng]) < tempr[leng]:
                     self.SkelePoints[key].append(centerp[leng - 1])
                     self.SkeleRad[key].append(tempr[leng - 1])
+                    #Show backstep in animation
+                    if self.animate:
+                        self.acp[key][index].append(centerp[leng - 1])
+                        self.atp[key][index].append(testp[leng - 1])
+                        self.arad[key][index].append(tempr[leng - 1])
                     case = True
+                
+                
+                #Repeat check
                 elif i > 3:
                     #Really only comes up with perfect shapes,
                     #but always a possibility to happen
@@ -275,13 +334,16 @@ class SkeleNet:
     def plot(self,mode : list = [],*,norm = True,tag = 'None'):
         fig = plt.figure()
         ax = fig.add_subplot(111)
+        theta = np.linspace(0,2*np.pi,100)
         
         index = 0
         tt = 0
         while index < len(mode):
             print("Plotting {}".format(mode[index]))
+            
             #Mode 0 -> output to degbug of normals of each point
             if mode[index] == 0:
+                plt.clf()
                 st = time.time()
                 tx = []
                 ty = []
@@ -307,8 +369,11 @@ class SkeleNet:
                     i += 1
                 et = time.time()
                 tt += (et - st)
+                
             #Mode 1 is for outputting final points for every tag
             elif mode[index] == 1:
+                plt.clf()
+                st = time.time()
                 if self.tagged:
                     i = 0
                     tx = []
@@ -351,8 +416,64 @@ class SkeleNet:
                         i += 1
                     plt.scatter(tx,ty)
                 plt.savefig('Output.png')
-
-
+                et = time.time()
+                tt += (et - st)
+            #Mode2 is for Animating the process of solving
+            elif mode[index] == 2:
+                st = time.time()
+                svnum = 0
+                plt.clf()
+                path = os.getcwd()
+                tag = 6
+                i = 0
+                case = True
+                path = path + "/AnimationData/"
+                while case:
+                    tpath = path + f'{i:04d}' + '/'
+                    if not(os.path.isdir(tpath)):
+                        case = False
+                        path = tpath
+                        os.mkdir(tpath)
+                    i += 1
+                i = 0
+                tx = []
+                ty = []
+                while i < len(self.IntPoints):    
+                    tx.append(self.IntPoints[i][0])
+                    ty.append(self.IntPoints[i][1])
+                    i += 1
+                sx = []
+                sy = []
+                while tag < len(self.acp):
+                    i = 0
+                    while i < len(self.acp[tag]):
+                        j = 0
+                        while j < len(self.acp[tag][i]):
+                            plt.clf()
+                            plt.xlim(0,0.5)
+                            plt.ylim(0,0.5)
+                            plt.scatter(tx,ty,5,color='green')
+                            if len(sx) > 0:
+                                plt.scatter(sx,sy,5,color='orange')
+                            plt.plot([self.acp[tag][i][j][0],self.tpoints[tag][i][0]],[self.acp[tag][i][j][1],self.tpoints[tag][i][1]])
+                            plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
+                            plt.scatter(self.acp[tag][i][j][0],self.acp[tag][i][j][1],5,color='purple')
+                            plt.scatter(self.atp[tag][i][j][0],self.atp[tag][i][j][1],5,color='red')
+                            plt.scatter(self.tpoints[tag][i][0],self.tpoints[tag][i][1],5,color='blue')
+                            plt.title('{},radius : {}, distance : {}'.format(i,self.arad[tag][i][j],getDistance(self.tpoints[tag][i],self.atp[tag][i][j])))
+                            
+                            plt.savefig(path + '{:04d}.png'.format(svnum))
+                            svnum += 1
+                            j += 1
+                        sx.append(self.acp[tag][i][j - 1][0])
+                        sy.append(self.acp[tag][i][j - 1][1])
+                        i += 1
+                        if i == 9999:
+                            break
+                    tag += 1
+                    
+                et = time.time()
+                tt += (et - st)
             index += 1        
 
             

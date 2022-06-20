@@ -33,8 +33,8 @@ NormPoints = []
 
 
 net = SkeleNet('vof_points_norm.dat')
-net.solve()
-net.plot([1])
+net.solve(True)
+net.plot([1,2])
 
 
 
