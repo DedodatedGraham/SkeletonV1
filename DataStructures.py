@@ -21,7 +21,7 @@ from Skeletize import getDistance
 
 class kdTree:
     
-    def __init__(self,points : list, dim : int):
+    def __init__(self,points : list, dim : int, * ,  rads : list = []):
         
     #for sorting points along an axis
         self.PointsList = []
@@ -30,8 +30,11 @@ class kdTree:
             self.PointsList.append(points[i])
             i = i + 1
         self.dimensions = dim
-        self.tree = self.makeTree(self.PointsList,0)
-        
+        if len(rads) > 0:
+            #Passes rads, any value you would want returned with tree/point
+            self.tree = self.makeTree(self.PointsList,0)
+        else:
+            self.tree = self.makeTree(self.PointsList,0)
     def sort(self,points : list, dimension) -> list:
         
        
@@ -287,3 +290,46 @@ class kdTree:
                         i = i + 1
         if ret != []:
             return ret
+
+
+class SkelePoint:
+#This is a class which has a point which holds x,y,z and r
+
+    def __init__(self,point : list, rad : float):
+        self.x = point[0]
+        self.y = point[1]
+        self.r = rad
+        if len(point) == 3:
+            self.z = point[2]
+            self.dimensions = 3
+        else:
+            self.dimensions = 2
+        self.ordered = False
+    
+    def getPoint(self):
+        if self.dimensions == 2:
+            return [self.x,self.y]
+        else:
+            return [self.x,self.y,self.z]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

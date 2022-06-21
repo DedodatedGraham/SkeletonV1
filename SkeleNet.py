@@ -10,7 +10,7 @@ import scipy
 import pandas as pd
 import time
 
-from DataStructures import kdTree
+from DataStructures import kdTree, SkelePoint
 from Skeletize import checkRepeat,getRadius,getDistance,normalize
 
 class SkeleNet:
@@ -114,8 +114,24 @@ class SkeleNet:
         else:
             self.__skeletize(0)
         
-
-
+    def order(self):
+        #This function will go through all of the points 
+        t = 0
+        self.OPoints = []#Ordered Points(Contain radius for later)
+        while t < len(self.SkelePoints):
+            i = 0
+            self.OPoints.append([])
+            while i < len(self.SkelePoints[t]):
+                self.OPoints[t].append(SkelePoint(self.SkelePoints[t][i],self.SkeleRad[t][i]))
+                i += 1
+            t += 1
+        
+        #Orders Them Now.
+        t = 0
+        while t < len(self.OPoints): 
+            i = 0
+            t += 1
+        
     def __skeletize(self,key : int):
         #Skeletize takes in 
         #FROM INPUT
@@ -128,7 +144,7 @@ class SkeleNet:
         #then returns 2 things
         # finPoints = [[x1,y1],...] of skeleton points
         # finR = [r1,...] of the radius of each skeleton point
-        ts = time.time()
+        ts = time.time() 
         self.SkelePoints.append([])
         self.SkeleRad.append([])
         print('Skeletizing #{}...'.format(key))
@@ -214,7 +230,7 @@ class SkeleNet:
                 
                 #Convergence check
                 if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < self.threshDistance[key]:
-                    if tempr[leng] < (self.threshDistance[key]) or getDistance(point, testp[leng]) < tempr[leng]:
+                    if tempr[leng] < (self.threshDistance[key] / 2) or getDistance(point, testp[leng]) < tempr[leng]:
                         self.SkelePoints[key].append(centerp[leng - 1])
                         self.SkeleRad[key].append(tempr[leng - 1])
                         #Show backstep in animation
@@ -229,7 +245,7 @@ class SkeleNet:
                     case = True 
                 
                 #Overshooting  
-                elif i > 1 and tempr[leng] < (self.threshDistance[key]):
+                elif i > 1 and tempr[leng] < (self.threshDistance[key] / 2):
                     self.SkelePoints[key].append(centerp[leng - 1])
                     self.SkeleRad[key].append(tempr[leng - 1])
                     #Show backstep in animation
@@ -277,7 +293,7 @@ class SkeleNet:
             index += 1
         te = time.time()
         tt = te - ts
-        print('Skeleton #{} took {} minuites and {} seconds'.format(key,(tt) // 60,(tt) % 60))
+        print('Skeleton  #{} took {} minuites and {} seconds'.format(key,(tt) // 60,(tt) % 60))
                 
                 
                 
@@ -331,7 +347,7 @@ class SkeleNet:
 
 ####ImageProcessing
 
-    def plot(self,mode : list = [],*,norm = True,tag = 'None'):
+    def plot(self,mode : list = [],*,norm = True,tag = 'None',start : int = 0,stop : int = 9999):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         theta = np.linspace(0,2*np.pi,100)
@@ -382,7 +398,7 @@ class SkeleNet:
                         tx.append(self.IntPoints[i][0])
                         ty.append(self.IntPoints[i][1])
                         i += 1
-                    plt.scatter(tx,ty)
+                    plt.scatter(tx,ty,5,color='blue')
                     i = 0
                     #theta = np.linspace(0,2*np.pi)
                     while i < len(self.SkelePoints):
@@ -394,7 +410,7 @@ class SkeleNet:
                             ty.append(self.SkelePoints[i][j][1])
                             #plt.plot(tx[j] + np.cos(theta) * self.SkeleRad[i][j],ty[j] + np.sin(theta) * self.SkeleRad[i][j],color = 'blue')
                             j += 1
-                        plt.scatter(tx,ty)
+                        plt.scatter(tx,ty,5)
                         i += 1
                 else:
                     i = 0
@@ -404,7 +420,7 @@ class SkeleNet:
                         tx.append(self.IntPoints[i][0])
                         ty.append(self.IntPoints[i][1])
                         i += 1
-                    plt.scatter(tx,ty)
+                    plt.scatter(tx,ty,5,color='blue')
                     i = 0
                     tx = []
                     ty = []
@@ -414,7 +430,7 @@ class SkeleNet:
                         ty.append(self.SkelePoints[0][i][1])
                         #plt.plot(tx[i] + np.cos(theta) * self.SkeleRad[0][i],ty[i] + np.sin(theta) * self.SkeleRad[0][i],color = 'blue')
                         i += 1
-                    plt.scatter(tx,ty)
+                    plt.scatter(tx,ty,5)
                 plt.savefig('Output.png')
                 et = time.time()
                 tt += (et - st)
@@ -424,7 +440,7 @@ class SkeleNet:
                 svnum = 0
                 plt.clf()
                 path = os.getcwd()
-                tag = 6
+                tag = 0
                 i = 0
                 case = True
                 path = path + "/AnimationData/"
@@ -445,10 +461,11 @@ class SkeleNet:
                 sx = []
                 sy = []
                 while tag < len(self.acp):
-                    i = 0
+                    i = start
                     while i < len(self.acp[tag]):
                         j = 0
                         while j < len(self.acp[tag][i]):
+                            #print(tag, '/', len(self.acp),' ', i '/' , len(self.acp[tag], ' ', j ))
                             plt.clf()
                             plt.xlim(0,0.5)
                             plt.ylim(0,0.5)
@@ -456,6 +473,7 @@ class SkeleNet:
                             if len(sx) > 0:
                                 plt.scatter(sx,sy,5,color='orange')
                             plt.plot([self.acp[tag][i][j][0],self.tpoints[tag][i][0]],[self.acp[tag][i][j][1],self.tpoints[tag][i][1]])
+                            plt.plot([self.atp[tag][i][j][0],self.tpoints[tag][i][0]],[self.atp[tag][i][j][1],self.tpoints[tag][i][1]])
                             plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
                             plt.scatter(self.acp[tag][i][j][0],self.acp[tag][i][j][1],5,color='purple')
                             plt.scatter(self.atp[tag][i][j][0],self.atp[tag][i][j][1],5,color='red')
@@ -468,7 +486,7 @@ class SkeleNet:
                         sx.append(self.acp[tag][i][j - 1][0])
                         sy.append(self.acp[tag][i][j - 1][1])
                         i += 1
-                        if i == 9999:
+                        if i == stop:
                             break
                     tag += 1
                     
