@@ -32,96 +32,105 @@ class kdTree:
         self.dimensions = dim
         if len(rads) > 0:
             #Passes rads, any value you would want returned with tree/point
-            self.tree = self.makeTree(self.PointsList,0)
+            self.tree,self.rad = self.makeTree(self.PointsList,0,rads)
         else:
             self.tree = self.makeTree(self.PointsList,0)
-    def sort(self,points : list, dimension) -> list:
-        
-       
+            
+    def sort(self,points : list, dimension,rads = []) -> list:
         for i in range(len(points)):
             min_i = i
             for j in range(i+1,len(points)):
                 if points[j][dimension] < points[min_i][dimension]:
                     min_i = j
             points[i],points[min_i] = points[min_i],points[i]
-        
-        return points
+            if len(rads) > 0:
+                rads[i],rads[min_i] = rads[min_i],rads[i]
+        if len(rads) > 0:
+            return points,rads    
+        else:
+            return points
     
     #contructs the tree    
-    def makeTree(self,points:list, depth : int) -> list:
+    def makeTree(self,points:list, depth : int,rads : list = []):
         finTree = []
+        getRads = False
+        if len(rads) > 0:
+            finRadT = []
+            getRads = True
         #designed to never have empty leafs
-        if self.dimensions == 2:#formatting for 2D
-            if len(points) > 5 and depth < 100:
-                axis = depth % self.dimensions #gets axis to divide along
-                points = self.sort(points,axis)
-                
-                
-                mid = len(points) // 2
-                finTree.append([points[mid][0],points[mid][1]])#choses node point
-                pointsl = []
-                i = 0
-                while i < mid:
-                    pointsl.append([points[i][0] , points[i][1]])
-                    i = i + 1
-                finTree.append(self.makeTree(pointsl,depth+1))#gets roots(Left of node)
-                
-                pointsr = []
-                i = mid + 1
-                
-                while i < len(points):
-                    pointsr.append([points[i][0] , points[i][1]])
-                    i = i + 1
-                finTree.append(self.makeTree(pointsr,depth+1))#(right of node)
-                
+        if len(points) > 5 and depth < 100:
+            axis = depth % self.dimensions #gets axis to divide along
+            if getRads:
+                points,rads = self.sort(points,axis,rads)    
             else:
-                #add in all points, if small amount of points or too deep
-                i = 0
-                finTree.append('Full')#marks a bottom layer
-                while i < len(points):
-                    finTree.append([points[i][0],points[i][1]])
-                    i = i + 1
-        else:
-            if len(points) > 5 and depth < 100:
-                axis = depth % self.dimensions #gets axis to divide along
                 points = self.sort(points,axis)
-                
-                
-                mid = len(points) // 2
-                finTree.append([points[mid][0],points[mid][1],points[mid][2]])#choses node point
-                pointsl = []
-                i = 0
-                while i < mid:
-                    pointsl.append([points[i][0] , points[i][1] , points[i][2]])
-                    i = i + 1
-                finTree.append(self.makeTree(pointsl,depth+1))#gets roots(Left of node)
-                
-                pointsr = []
-                i = mid + 1
-                
-                while i < len(points):
-                    pointsr.append([points[i][0] , points[i][1] , points[i][2]])
-                    i = i + 1
-                finTree.append(self.makeTree(pointsr,depth+1))#(right of node)
-                
-            else:
-                #add in all points, if small amount of points or too deep
-                i = 0
-                finTree.append('Full')#marks a bottom layer
-                while i < len(points):
-                    finTree.append([points[i][0],points[i][1],points[i][2]])
-                    i = i + 1
             
-        return finTree
-    
+            
+            mid = len(points) // 2
+            finTree.append(points[mid])#choses node point
+            if getRads:
+                finRadT.append(rads[mid])
+                radsl = []
+                radsr = []
+            pointsl = []
+            i = 0
+            while i < mid:
+                pointsl.append(points[i])
+                if getRads:
+                    radsl.append(rads[i])
+                i = i + 1
+            if getRads:
+                tempt,tempr = self.makeTree(pointsl, depth + 1,radsl)
+                finTree.append(tempt)
+                finRadT.append(tempr)
+            else:
+                finTree.append(self.makeTree(pointsl,depth+1))#gets roots(Left of node)
+            
+            pointsr = []
+            i = mid + 1
+            
+            while i < len(points):
+                pointsr.append(points[i])
+                if getRads:
+                    radsr.append(rads[i])
+                i = i + 1
+            if getRads:
+                tempt,tempr = self.makeTree(pointsr, depth + 1,radsr)
+                finTree.append(tempt)
+                finRadT.append(tempr)
+            else:
+                finTree.append(self.makeTree(pointsr,depth+1))#(right of node)
+            
+        else:
+            #add in all points, if small amount of points or too deep
+            i = 0
+            finTree.append('Full')#marks a bottom layer
+            if getRads:
+                finRadT.append('Full')
+            while i < len(points):
+                finTree.append(points[i])
+                if getRads:
+                    finRadT.append(rads[i])
+                i = i + 1
+        
+        if not getRads:   
+            return finTree
+        else:
+            return finTree , finRadT
       
     #searches tree              
-    def getNearR(self,searchPoint : list , exclude : list ,tree : list = [], depth : int = 0):
+    def getNearR(self,searchPoint : list , exclude : list ,tree : list = [], depth : int = 0,*,getRads : bool = False, rtree : list = []):
         smallestLayer = []
+        if getRads:
+            smallestr = []
         dmin = 0
         if depth == 0:
-            tree= self.tree
+            tree = self.tree
+            if getRads:
+                rtree = self.rad
         node = tree[0]
+        if getRads:
+            rnode = rtree[0]
         axis = depth % self.dimensions
         if node == 'Full':
             #if searching on a bottom Layer, will brute force
@@ -132,16 +141,22 @@ class kdTree:
                     if i == 1:
                         dmin = getDistance(searchPoint, tree[1])
                         smallestLayer = tree[1]
+                        if getRads:
+                            smallestr = rtree[1]
                     dtemp = getDistance(searchPoint,tree[i])
                     if dtemp < dmin and dtemp != 0:
                         dmin = dtemp
                         smallestLayer = tree[i]
+                        if getRads:
+                            smallestr = tree[i]
                 i = i + 1
         else:
-            
             if searchPoint[axis] <= tree[0][axis]:
                 #want to go deeper to the left
-                smallestLayer = self.getNearR(searchPoint,exclude,tree[1], depth + 1)
+                if getRads:
+                    smallestLayer,smallestr = self.getNearR(searchPoint,exclude,tree[1],depth + 1,True,rtree[1])
+                else:
+                    smallestLayer = self.getNearR(searchPoint,exclude,tree[1], depth + 1)
             else:
                 #want to go deeper to the right
                 smallestLayer = self.getNearR(searchPoint,exclude,tree[2], depth + 1)
@@ -176,7 +191,10 @@ class kdTree:
                 if tdis2 < tdis and tdis2 != 0:
                     smallestLayer = tPoint
                     tdis = tdis2
-        return smallestLayer
+        if getRads:
+            return smallestLayer,smallestr
+        else:
+            return smallestLayer
                     
                 
     def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0):

@@ -113,24 +113,18 @@ class SkeleNet:
                 i += 1
         else:
             self.__skeletize(0)
+        self.order()
         
     def order(self):
         #This function will go through all of the points 
         t = 0
-        self.OPoints = []#Ordered Points(Contain radius for later)
+        Otrees = []#Ordered Points(Contain radius for later)
         while t < len(self.SkelePoints):
-            i = 0
-            self.OPoints.append([])
-            while i < len(self.SkelePoints[t]):
-                self.OPoints[t].append(SkelePoint(self.SkelePoints[t][i],self.SkeleRad[t][i]))
-                i += 1
+            Otrees.append(kdTree(self.SkelePoints[t], self.dim,rads=self.SkeleRad[t]))
             t += 1
         
-        #Orders Them Now.
-        t = 0
-        while t < len(self.OPoints): 
-            i = 0
-            t += 1
+        
+        
         
     def __skeletize(self,key : int):
         #Skeletize takes in 
@@ -430,7 +424,7 @@ class SkeleNet:
                         ty.append(self.SkelePoints[0][i][1])
                         #plt.plot(tx[i] + np.cos(theta) * self.SkeleRad[0][i],ty[i] + np.sin(theta) * self.SkeleRad[0][i],color = 'blue')
                         i += 1
-                    plt.scatter(tx,ty,5)
+                    plt.scatter(tx,ty,5,color='orange')
                 plt.savefig('Output.png')
                 et = time.time()
                 tt += (et - st)
