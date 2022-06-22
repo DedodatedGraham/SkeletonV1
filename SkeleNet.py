@@ -122,8 +122,8 @@ class SkeleNet:
         while t < len(self.SkelePoints):
             Otrees.append(kdTree(self.SkelePoints[t], self.dim,rads=self.SkeleRad[t]))
             t += 1
-        
-        
+        pt,r = Otrees[0].getNearR(self.SkelePoints[0][1], self.SkelePoints[0][1],getRads=True)
+        print(pt,r)
         
         
     def __skeletize(self,key : int):
@@ -459,7 +459,7 @@ class SkeleNet:
                     while i < len(self.acp[tag]):
                         j = 0
                         while j < len(self.acp[tag][i]):
-                            #print(tag, '/', len(self.acp),' ', i '/' , len(self.acp[tag], ' ', j ))
+                            print(tag, '/', len(self.acp),' ', i ,'/' , len(self.acp[tag]), ' ', j , '/', len(self.acp[tag][i]))
                             plt.clf()
                             plt.xlim(0,0.5)
                             plt.ylim(0,0.5)

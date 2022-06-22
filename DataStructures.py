@@ -154,12 +154,15 @@ class kdTree:
             if searchPoint[axis] <= tree[0][axis]:
                 #want to go deeper to the left
                 if getRads:
-                    smallestLayer,smallestr = self.getNearR(searchPoint,exclude,tree[1],depth + 1,True,rtree[1])
+                    smallestLayer,smallestr = self.getNearR(searchPoint,exclude,tree[1],depth + 1,getRads=True,rtree=rtree[1])
                 else:
                     smallestLayer = self.getNearR(searchPoint,exclude,tree[1], depth + 1)
             else:
                 #want to go deeper to the right
-                smallestLayer = self.getNearR(searchPoint,exclude,tree[2], depth + 1)
+                if getRads:
+                    smallestLayer,smallestr = self.getNearR(searchPoint,exclude,tree[2],depth + 1,getRads=True,rtree=rtree[2])
+                else:
+                    smallestLayer = self.getNearR(searchPoint,exclude,tree[2], depth + 1)
             #gets the current closest points distance before checks
             if smallestLayer == None or smallestLayer == []:
                 tdis = 10000000000
@@ -171,6 +174,8 @@ class kdTree:
                 tdis1 = getDistance(searchPoint,node)
                 if tdis1 < tdis and tdis1 != 0:
                     smallestLayer = node
+                    if getRads:
+                        smallestr = rnode
                     tdis = tdis1
                 
             #checks if the circle crosses the plane and needs to check other leafs on the other side
@@ -181,15 +186,23 @@ class kdTree:
             if searchPoint[axis] <= tree[0][axis]:
                 tdis3 = node[axis] - searchPoint[axis]
                 if tdis3 <= tdis and tdis3 != 0:
-                    tPoint = self.getNearR(searchPoint,exclude,tree[2], depth + 1)
+                    if getRads:
+                        tPoint,tRad = self.getNearR(searchPoint, exclude,tree[2],depth + 1,getRads=True,rtree=rtree[2])    
+                    else:
+                        tPoint = self.getNearR(searchPoint,exclude,tree[2], depth + 1)
             else:
                 tdis3 = searchPoint[axis] - node[axis]
                 if tdis3 <= tdis and tdis3 != 0:
-                    tPoint = self.getNearR(searchPoint,exclude,tree[1], depth + 1)
+                    if getRads:
+                        tPoint,tRad = self.getNearR(searchPoint, exclude,tree[1],depth + 1,getRads=True,rtree=rtree[1])    
+                    else:
+                        tPoint = self.getNearR(searchPoint,exclude,tree[1], depth + 1)
             if tPoint != None and tPoint != []:
                 tdis2 = getDistance(searchPoint,tPoint)
                 if tdis2 < tdis and tdis2 != 0:
                     smallestLayer = tPoint
+                    if getRads:
+                        smallestr = tRad
                     tdis = tdis2
         if getRads:
             return smallestLayer,smallestr
@@ -197,16 +210,20 @@ class kdTree:
             return smallestLayer
                     
                 
-    def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0):
+    def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0,*,getRads : bool = False,rtree : list = []):
         #Returns all the points which lie inside a give area arround a certain point
         #Mode 0 => Square area, point in center, side = 2 * dim
         #Mode 1 => Circle area, point in center, rad  = dim
         retPoints = []
+        if getRads:
+            retR = []
         axis = depth % self.dimensions
         if depth == 0:
             tree = self.tree
+            if getRads:
+                rtree = self.rad
+                rnode = rtree[0]
         node = tree[0]        
-        
         if node == 'Full':
             i = 1
             while i < len(tree):
@@ -215,40 +232,67 @@ class kdTree:
                         if tree[i][1] >= point[1] - dim and tree[i][1] <= point[1] + dim:
                             if self.dmensions == 2 or (self.dimensions == 3 and tree[i][2] >= point[2] - dim and tree[i][2] <= point[2] + dim):
                                 retPoints.append(tree[i])
+                                if getRads:
+                                    retR.append(rtree[i])
                 else:
                     if getDistance(point,tree[i]) <= dim:
                         retPoints.append(tree[i])
+                        if getRads:
+                            retR.append(rtree[i])
                 i += 1
         else:
             #Uses square to obtain all possible sections that might be needed
             #mode only comes into play when searching at bottom layers, however adding the node points 
             #will still depend on mode  
             pts = []
+            rads = []
             if point[axis] - dim > node[axis]:
-                pts = self.getInR(point,dim,mode,tree[2],depth + 1)
+                if getRads:
+                    pts,rads = self.getInR(point,dim,mode,tree[2],depth + 1, getRads=True,rtree = rtree[2])
+                else:
+                    pts = self.getInR(point,dim,mode,tree[2],depth + 1)
             elif point[axis] + dim < node[axis]:
-                pts = self.getInR(point,dim,mode,tree[1],depth + 1)
+                if getRads:
+                    pts,rads = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
+                else:
+                    pts = self.getInR(point,dim,mode,tree[1],depth + 1)
             else:
-                pts1 = self.getInR(point,dim,mode,tree[1],depth + 1)
-                pts2 = self.getInR(point,dim,mode,tree[2],depth + 1)
+                if getRads:
+                    pts1,rad1 = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
+                    pts2,rad2 = self.getInR(point,dim,mode,tree[2],depth + 1, getRads = True, rtree = rtree[2])
+                else:
+                    pts1 = self.getInR(point,dim,mode,tree[1],depth + 1)
+                    pts2 = self.getInR(point,dim,mode,tree[2],depth + 1)
                 pts.append(point for point in pts1)
                 pts.append(point for point in pts2)
+                if getRads:
+                    rads.append(r for r in rad1)
+                    rads.append(r for r in rad2)
                 #Note only needs to check node here
                 if mode == 0:
                     if node[0] >= point[0] - dim and node[0] <= point[0] + dim:
                         if node[1] >= point[1] - dim and node[1] <= point[1] + dim:
                             if self.dmensions == 2 or (self.dimensions == 3 and node[2] >= point[2] - dim and node[2] <= point[2] + dim):
                                 pts.append(node)
+                                if getRads:
+                                    rads.append(rnode)
                 else:
                     if getDistance(point,node) <= dim:
                         pts.append(node)
+                        if getRads:
+                            rads.append(rnode)
                 
             if len(pts) > 0:
                 i = 0
                 while i < len(pts):
                     retPoints.append(pts[i])
+                    if getRads:
+                        retR.append(rads[i])
                     i += 1
-        return retPoints
+        if getRads:
+            return retPoints,retR
+        else:
+            return retPoints
 
 
     def treeLines(self,bounds : list,onode : list = [],side : int = 0,tree : list = [],depth : int = 0) -> list:
