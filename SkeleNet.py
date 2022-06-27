@@ -119,19 +119,94 @@ class SkeleNet:
         #This function will go through all of the points 
         st = time.time()
         t = 0
-        Otrees = []
+        self.Otrees = []
         #Created the needed Trees to fidn the direction 
         while t < len(self.SkelePoints):
-            Otrees.append(kdTree(self.SkelePoints[t], self.dim,rads=self.SkeleRad[t]))
+            self.Otrees.append(kdTree(self.SkelePoints[t], self.dim,rads=self.SkeleRad[t]))
+            self.orderR(t)
             t += 1
-        #
+        #This method is designed to search, order, and reduce the skeleton points into simple informat
+        #Using a Depth-First Search It will recreate surfaces  
         
+        
+
         et = time.time()
         tt = et - st
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
         
-        
-        
+    def orderR(self,key : int,depth : int = 0,point : list = [],rad : float = 0):
+        #First grabs a random point from the given Skeleton data to take as the Original Point
+        Local = []#local describes all points within a 10*threshdistance range
+        Localr = []#locals radii
+
+        capNodes = []#location of nodes
+        capRad = []#radii of nodes
+        throwNodes = []#points might throwout but not sure yet
+        throwRad = []#radii of potential throw points
+
+        if depth == 0:
+            point =  self.SkelePoints[key][randint(0,len(self.SkelePoints[key] - 1))]
+        Local,Localr = self.Otrees[key].getInR(point,self.TreshDistance[key] * 10,getRads = True)
+        leng = len(Local)
+        if not (leng == 0):
+            #Check for closeness
+            avgx = 0
+            avgr = 0
+            avgy = 0
+            avgz = 0
+            i = 0
+            while i < leng:
+                avgx += Local[i][0]
+                avgy += Local[i][1]
+                avgr += Localr[i]
+                if self.dim == 3:
+                    avgz += Local[i][2]
+            avgx = avgx/leng
+            avgy = avgy/leng
+            avgr = avgr/leng
+            if self.dim == 3:
+                avgz = avgz/leng
+            if(np.abs(avgx - point[0]) < self.threshdistance[key]):
+                if(np.abs(avgy - point[1]) < self.threshdistance[key]):
+                    if(np.abs(max(Localr)-min(Localr)) < self.threshdistance[key]):
+                        if self.dim == 3:
+                            if(np.abs(avgz - point[2]) < self.threshdistance[key]):
+                                capNodes.append([avgx,avgy,avgz])
+                                capRad.append(avgr)                        
+                        else:
+                            capNodes.append([avgx,avgy])
+                            capRad.append(avgr)
+            #The Next step is getting directional information and determining branches nearby 
+            #First creating realitive direction vectors
+            i = 0
+            n = 8#n determines how many sub divisions there are
+            dirv = []
+            while i < n:
+                theta = i * (2 * np.pi / n)
+                if self.dim == 2:
+                    dirv.append([np.cos(theta),np.sin(theta)])
+                else:
+                    j = 0
+                    while j < n:
+                        phi = j * (2 * np.pi / n) 
+                        dirv.append([np.sin(theta)*np.cos(phi),np.sin(theta)*np.sin(phi),np.cos(theta)])
+                        j += 1
+                i += 1
+        else:
+            if depth == 0:
+                #If isolated and start, attempt a better start
+                self.orderR(key)
+            else:
+                #Point is isolated, and should be taged for destruction consideration at the end
+                throwNodes.append(point)
+                throwRad.append(rad)
+
+           
+        #Returning of data, does differnet things depending on what stage it is on
+       # if depth == 0:
+       #     
+       # else:
+            
     def __skeletize(self,key : int):
         #Skeletize takes in 
         #FROM INPUT
