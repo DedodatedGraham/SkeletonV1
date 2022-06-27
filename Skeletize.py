@@ -56,6 +56,20 @@ def getRadius(point1, point2 , norm) -> float:
     
     return radius
 
+def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
+    
+    i = 0
+    inside = 0
+    while i < len(vec1):
+        inside += (vec1[i] * vec2[i])
+        i += 1
+    if inside == 0:
+        theta = np.pi / 2
+    else:
+        inside = inside / (len1 * len2) 
+        theta = np.arccos(inside)
+    return theta
+
 def normalize(points : list) -> list:
     i = 0
     retpoints = []

@@ -117,13 +117,19 @@ class SkeleNet:
         
     def order(self):
         #This function will go through all of the points 
+        st = time.time()
         t = 0
-        Otrees = []#Ordered Points(Contain radius for later)
+        Otrees = []
+        #Created the needed Trees to fidn the direction 
         while t < len(self.SkelePoints):
             Otrees.append(kdTree(self.SkelePoints[t], self.dim,rads=self.SkeleRad[t]))
             t += 1
-        pt,r = Otrees[0].getNearR(self.SkelePoints[0][1], self.SkelePoints[0][1],getRads=True)
-        print(pt,r)
+        #
+        
+        et = time.time()
+        tt = et - st
+        print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
+        
         
         
     def __skeletize(self,key : int):
@@ -365,8 +371,6 @@ class SkeleNet:
                 i = 0
                 while i < len(self.IntPoints):
                     print(i,'/',len(self.IntPoints) - 1)
-                    plt.xlim(-0.3,0.2)
-                    plt.ylim(-0.3,0.2)
                     plt.scatter(tx,ty)
                     plt.scatter(self.IntPoints[i][0],self.IntPoints[i][1]) 
                     if norm == False:
@@ -461,8 +465,6 @@ class SkeleNet:
                         while j < len(self.acp[tag][i]):
                             print(tag, '/', len(self.acp),' ', i ,'/' , len(self.acp[tag]), ' ', j , '/', len(self.acp[tag][i]))
                             plt.clf()
-                            plt.xlim(0,0.5)
-                            plt.ylim(0,0.5)
                             plt.scatter(tx,ty,5,color='green')
                             if len(sx) > 0:
                                 plt.scatter(sx,sy,5,color='orange')
@@ -486,6 +488,42 @@ class SkeleNet:
                     
                 et = time.time()
                 tt += (et - st)
+                
+            if mode[index] == 3:
+                pt = []
+                plt.clf()
+                plt.xlim(0.5,1.1)
+                plt.ylim(0.1,0.9)
+                i = 0
+                tx = []
+                ty = []
+                while i < len(self.IntPoints):
+                    tx.append(self.IntPoints[i][0])
+                    ty.append(self.IntPoints[i][1])
+                    i += 1
+                plt.scatter(tx,ty,5)
+                plt.scatter(0.9,0.7)
+                tx = []
+                ty = []
+                tx.append(0.9)
+                ty.append(0.7)
+                tx.append(0.9 + 1000 * -np.cos(3 * np.pi / 8))
+                tx.append(0.9 + 1000 * -np.cos(np.pi / 8))
+                ty.append(0.7 + 1000 * -np.sin(3 * np.pi / 8))
+                ty.append(0.7 + 1000 * -np.sin(np.pi / 8))
+                plt.plot([tx[0],tx[1]],[ty[0],ty[1]])
+                plt.plot([tx[0],tx[2]],[ty[0],ty[2]])
+                i = 0
+                tx = []
+                ty = []
+                theta = np.linspace(0, np.pi * 2)
+                while i < len(pt):
+                    tx.append(pt[i][0])
+                    ty.append(pt[i][1])
+                    plt.scatter(tx[i],ty[i],5)
+                    # plt.plot(tx[i] + r[i] * np.cos(theta),ty[i] + r[i] * np.sin(theta),5)
+                    i += 1
+                plt.savefig('SearchRecovery.png')
             index += 1        
 
             
