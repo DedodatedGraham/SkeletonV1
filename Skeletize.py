@@ -66,7 +66,7 @@ def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
     if inside == 0:
         theta = np.pi / 2
     else:
-        inside = inside / (len1 * len2) 
+        inside = np.round(inside / (len1 * len2),6) 
         theta = np.arccos(inside)
     return theta
 
@@ -97,4 +97,12 @@ def getDistance(point1, point2) -> float:
         return np.sqrt(pow(np.abs(point1[0]-point2[0]),2) + pow(np.abs(point1[1]-point2[1]),2))
     else:
         return np.sqrt(np.abs(pow(point1[0]-point2[0],2)) + np.abs(pow(point1[1]-point2[1],2))+np.abs(pow(point1[2]-point2[2],2)))
+    
+def getPoint(point : list, vec : list):
+    ret = []
+    i = 0
+    while i < len(point):
+        ret.append(point[i] + vec[i])
+        i += 1
+    return ret
     

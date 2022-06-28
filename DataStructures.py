@@ -215,14 +215,14 @@ class kdTree:
         #Mode 0 => Square area, point in center, side = 2 * dim
         #Mode 1 => Circle area, point in center, rad  = dim
         retPoints = []
-        if getRads:
-            retR = []
         axis = depth % self.dimensions
         if depth == 0:
             tree = self.tree
             if getRads:
                 rtree = self.rad
-                rnode = rtree[0]
+        if getRads:
+            retR = []
+            rnode = rtree[0]
         node = tree[0]        
         if node == 'Full':
             i = 1

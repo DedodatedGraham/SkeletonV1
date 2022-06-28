@@ -11,7 +11,7 @@ import pandas as pd
 import time
 
 from DataStructures import kdTree, SkelePoint
-from Skeletize import checkRepeat,getRadius,getDistance,normalize
+from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
 
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
@@ -145,8 +145,8 @@ class SkeleNet:
         throwRad = []#radii of potential throw points
 
         if depth == 0:
-            point =  self.SkelePoints[key][randint(0,len(self.SkelePoints[key] - 1))]
-        Local,Localr = self.Otrees[key].getInR(point,self.TreshDistance[key] * 10,getRads = True)
+            point =  self.SkelePoints[key][randint(0,len(self.SkelePoints[key]) - 1)]
+        Local,Localr = self.Otrees[key].getInR(point,self.threshDistance[key] * 2,1,getRads = True)
         leng = len(Local)
         if not (leng == 0):
             #Check for closeness
@@ -161,21 +161,24 @@ class SkeleNet:
                 avgr += Localr[i]
                 if self.dim == 3:
                     avgz += Local[i][2]
+                i += 1
             avgx = avgx/leng
             avgy = avgy/leng
             avgr = avgr/leng
             if self.dim == 3:
                 avgz = avgz/leng
-            if(np.abs(avgx - point[0]) < self.threshdistance[key]):
-                if(np.abs(avgy - point[1]) < self.threshdistance[key]):
-                    if(np.abs(max(Localr)-min(Localr)) < self.threshdistance[key]):
+            #determines if node is colapseable  
+            if(np.abs(avgx - point[0]) < self.threshDistance[key]):
+                if(np.abs(avgy - point[1]) < self.threshDistance[key]):
+                    if(np.abs(max(Localr)-min(Localr)) < self.threshDistance[key]):
                         if self.dim == 3:
-                            if(np.abs(avgz - point[2]) < self.threshdistance[key]):
+                            if(np.abs(avgz - point[2]) < self.threshDistance[key]):
                                 capNodes.append([avgx,avgy,avgz])
                                 capRad.append(avgr)                        
                         else:
                             capNodes.append([avgx,avgy])
                             capRad.append(avgr)
+                            
             #The Next step is getting directional information and determining branches nearby 
             #First creating realitive direction vectors
             i = 0
@@ -184,14 +187,203 @@ class SkeleNet:
             while i < n:
                 theta = i * (2 * np.pi / n)
                 if self.dim == 2:
-                    dirv.append([np.cos(theta),np.sin(theta)])
+                    dirv.append([np.round(np.cos(theta),6),np.round(np.sin(theta),6)])
                 else:
                     j = 0
                     while j < n:
-                        phi = j * (2 * np.pi / n) 
-                        dirv.append([np.sin(theta)*np.cos(phi),np.sin(theta)*np.sin(phi),np.cos(theta)])
+                        #isnt great, needs fixes for 3D
+                        phi = j * (2 * np.pi / n)
+                        dirv.append([np.round(np.sin(theta)*np.cos(phi),6),np.round(np.sin(theta)*np.sin(phi),6),np.round(np.cos(theta),6)])
                         j += 1
                 i += 1
+                
+            #Deletes repeat vectors
+            if self.dim == 3:
+                tdirv = []
+                #Needs to thin off extra vectors
+                i = 0
+                leng = len(dirv)
+                while i < leng:
+                    j = i + 1
+                    case = False
+                    if i == leng - 1:
+                        case = True
+                    else:
+                        while j < leng:
+                            if dirv[i] == dirv[j]:
+                                case = False
+                                break
+                            else:
+                                case = True
+                            j += 1
+                    if case:
+                        tdirv.append(dirv[i])
+                    i += 1
+                dirv = tdirv
+            tempdir = []
+            
+            #gets points in directions
+            for vec in dirv:
+                #Gets 20 closeest points in each direction
+                i = 0
+                while i < len(vec):
+                    if vec[i] == -0.0:
+                        vec[i] = 0.0
+                    i += 1
+                tempdir.append(self.Otrees[key].getVectorR(point,vec,10,getRads=True))
+            
+            checkedtags = []
+            emptytags = []#Empty tags are nodes that should be ignored alltogether as they have no points
+            combtags = []#Comb tags is a collection of connected tags
+            isotags = []#Iso tags give us a good idea of if there is a branch
+            case = True
+            
+            #Sorts collections into connected pieces, isolated pieces, and empty pieces.
+            #isolated collections must have some sort of branch, as no other options could exist at given step
+            current = 0
+            while case:
+                checkedtags.append(current)
+                #Checks for empty directions and marks them, grabs next point
+                if len(tempdir[current][0]) == 0:
+                    emptytags.append(current)
+                #If node is not empty, should determine if there is connected pieces or the direction is isolated
+                else:
+                    
+                    #Collect nearby tags. if they are empy tag them as such now, if they have points, attach them to nearby's
+                    neartags = []
+                   
+                    i = 0
+                    while i < len(dirv):
+                        if np.abs(getAngle(dirv[current],dirv[i],getDistance(point,getPoint(point,dirv[current])),getDistance(point, getPoint(point,dirv[i]))) - np.pi / 4) < self.threshDistance[key]:
+                            neartags.append(i)
+                        i += 1
+                    
+                    #Sorts through the nearby ones, adding it to 
+                    skipped = []
+                    empties = 0
+                    for tag in neartags:
+                        #Prevents reChecking Points, If skipping will add to 
+                        j = 0
+                        skip = True
+                        while j < len(checkedtags):
+                            if tag == checkedtags[j]:
+                                skipped.append(tag)
+                                if len(tempdir[tag][0]) == 0:
+                                    empties += 1
+                                skip = False
+                                break
+                            j += 1
+                        if skip:
+                            checkedtags.append(tag)
+                            if len(tempdir[tag][0]) == 0:
+                                emptytags.append(tag)
+                                empties += 1
+                            else:
+                                if len(combtags) == 0:
+                                    combtags.append([])
+                                    combtags[0].append(tag)
+                                    combtags[0].append(current)
+                                else:
+                                    j = 0
+                                    found = False
+                                    while j < len(combtags):
+                                        k = 0
+                                        if not(len(skipped) == 0):
+                                            while k < len(combtags[j]):
+                                                p = 0
+                                                while p < len(skipped):
+                                                    if combtags[j][k] == current or combtags[j][k] == skipped[p]:
+                                                        combtags[j].append(tag)
+                                                        found = True
+                                                        break
+                                                    p += 1
+                                                if found:
+                                                    break
+                                                k += 1
+                                        else:
+                                            while k < len(combtags[j]):
+                                                if combtags[j][k] == current:
+                                                    combtags[j].append(tag)
+                                                    found = True
+                                                    break
+                                                k += 1
+                                        if found:
+                                            break
+                                        j += 1
+                                    if not(found):
+                                        combtags.append([])
+                                        combtags[len(combtags) - 1].append(current)
+                                        combtags[len(combtags) - 1].append(tag)
+                    if len(skipped) > 0:
+                        i = 0
+                        found = False
+                        while i < len(skipped):
+                            j = 0
+                            while j < len(combtags):
+                                k = 0
+                                while k < len(combtags[j]):
+                                    if combtags[j][k] == skipped[i]:
+                                        found = True
+                                        combtags[j].append(current)
+                                        break
+                                    k += 1
+                                if found:
+                                    break
+                                j += 1
+                            if found:
+                                break
+                            i += 1
+                    if empties == len(neartags):
+                        isotags.append(current)
+                if len(checkedtags) == len(tempdir):
+                    #Only triggers when all points have been checked
+                    case = False
+                else:
+                    i = 0
+                    while i < len(tempdir):
+                        j = 0
+                        det = False
+                        while j < len(checkedtags):
+                            if i == checkedtags[j]:
+                                i += 1
+                                det = False
+                                break
+                            else:
+                                det = True
+                            j += 1
+                        if i == len(checkedtags) or det:
+                            current = i 
+                            break
+            
+            
+            #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
+            #Iso's will be treated as simple branches and stepped out if close enough
+            lengiso = len(isotags)
+            if lengiso > 0:
+                #See if the next points are about near the average next step
+                i = 0
+                while i < lengiso:
+                    isopts,isorads = tempdir[isotags[i]]
+                    j = 0
+                    #Gets locational average of n-10 closest points.
+                    avgx = 0
+                    avgy = 0
+                    avgz = 0
+                    while j < len(isopts):
+                        avgx += isopts[i][0]
+                        avgy += isopts[i][1]
+                        if self.dim == 3:
+                            avgz += isopts[i][2]
+                        j += 1
+                    avg = []
+                    avgx = avgx / len(isopts)
+                    avg.append(avgx)
+                    avgy = avgy / len(isopts)
+                    avg.append(avgy)
+                    if self.dim == 3:
+                        avgz = avgz / len(isopts)
+                        avg.append(avgz)
+                    #Regardless of the average, we must step along the branch as there are unmarked points
         else:
             if depth == 0:
                 #If isolated and start, attempt a better start
@@ -203,9 +395,9 @@ class SkeleNet:
 
            
         #Returning of data, does differnet things depending on what stage it is on
-       # if depth == 0:
-       #     
-       # else:
+        # if not(depth == 0):
+            
+       
             
     def __skeletize(self,key : int):
         #Skeletize takes in 
