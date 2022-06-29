@@ -356,7 +356,7 @@ class SkeleNet:
                             break
             
             
-
+            print(point,'isos',isotags,'combs',combtags)
             #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
             #Iso's will be treated as simple branches and stepped out if close enough
             branchPoints = []
@@ -381,15 +381,17 @@ class SkeleNet:
                                 minpoint = tpoint
                                 mindis = tdis
                         q += 1
-                    
+                    if mindis < 2 * self.threshDistance[key]:
+                        
                     i += 1
+
             lengcomb = len(combtags)
             if lengcomb > 0:
                 #Determines which leafs get close enough to the point to be branches, as thats all we care about 
                 i = 0
                 while i < lengcomb:
                     j = 0
-                    while j < len(combotags[i]):
+                    while j < len(combtags[i]):
                         combpts,combrads = tempdir[combtags[i][j]]
                         q = 0
                         mindis = 0
@@ -405,8 +407,8 @@ class SkeleNet:
                                     minpoint = tpoint
                                     mindis = tdis
                             q += 1
-                        if mindis < self.threshDistance[key]:
-
+                        if mindis < 2 * self.threshDistance[key]:
+                            
                         j += 1
                     i += 1
                     
