@@ -134,7 +134,7 @@ class SkeleNet:
         tt = et - st
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
         
-    def orderR(self,key : int,depth : int = 0,point : list = [],rad : float = 0):
+    def orderR(self,key : int,depth : int = 0,point : list = [],direction : list = [],rad : float = 0):
         #First grabs a random point from the given Skeleton data to take as the Original Point
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
@@ -356,34 +356,61 @@ class SkeleNet:
                             break
             
             
+
             #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
             #Iso's will be treated as simple branches and stepped out if close enough
+            branchPoints = []
+            
             lengiso = len(isotags)
             if lengiso > 0:
                 #See if the next points are about near the average next step
                 i = 0
                 while i < lengiso:
                     isopts,isorads = tempdir[isotags[i]]
+                    q = 0
+                    mindis = 0
+                    minpoint = []
+                    while q < len(isopts):
+                        tpoint = isopts[q]
+                        tdis = getDistance(point,tpoint)
+                        if q == 0:
+                            mindis = tdis
+                            minpoint = tpoint
+                        else:
+                            if tdis < mindis:
+                                minpoint = tpoint
+                                mindis = tdis
+                        q += 1
+                    
+                    i += 1
+            lengcomb = len(combtags)
+            if lengcomb > 0:
+                #Determines which leafs get close enough to the point to be branches, as thats all we care about 
+                i = 0
+                while i < lengcomb:
                     j = 0
-                    #Gets locational average of n-10 closest points.
-                    avgx = 0
-                    avgy = 0
-                    avgz = 0
-                    while j < len(isopts):
-                        avgx += isopts[i][0]
-                        avgy += isopts[i][1]
-                        if self.dim == 3:
-                            avgz += isopts[i][2]
+                    while j < len(combotags[i]):
+                        combpts,combrads = tempdir[combtags[i][j]]
+                        q = 0
+                        mindis = 0
+                        minpoint = []
+                        while q < len(combpts):
+                            tpoint = combpts[q]
+                            tdis = getDistance(point,tpoint)
+                            if q == 0:
+                                mindis = tdis
+                                minpoint = tpoint
+                            else:
+                                if tdis < mindis:
+                                    minpoint = tpoint
+                                    mindis = tdis
+                            q += 1
+                        if mindis < self.threshDistance[key]:
+
                         j += 1
-                    avg = []
-                    avgx = avgx / len(isopts)
-                    avg.append(avgx)
-                    avgy = avgy / len(isopts)
-                    avg.append(avgy)
-                    if self.dim == 3:
-                        avgz = avgz / len(isopts)
-                        avg.append(avgz)
-                    #Regardless of the average, we must step along the branch as there are unmarked points
+                    i += 1
+                    
+                    
         else:
             if depth == 0:
                 #If isolated and start, attempt a better start
