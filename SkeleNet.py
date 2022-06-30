@@ -235,7 +235,7 @@ class SkeleNet:
                 i = 0
                 while i < len(vec):
                     if not(depth == 0):
-                        lpvec.append(lastPoint[i] - point[i])
+                        lpvec.append(lastNode[i] - point[i])
                     if vec[i] == -0.0:
                         vec[i] = 0.0
                     if not(depth == 0):
@@ -243,7 +243,7 @@ class SkeleNet:
                     i += 1
                 tempdir.append(self.Otrees[key].getVectorR(point,vec,10,getRads=True))
                 if not(depth == 0):
-                    if getAngle(lpvec,vec,getDistance(point,lastPoint),getDistance(point,vecpoint)) < np.pi / 8:
+                    if getAngle(lpvec,vec,getDistance(point,lastNode),getDistance(point,vecpoint)) < np.pi / 8:
                         lasttag = q
                 q += 1
             checkedtags = []
@@ -349,6 +349,7 @@ class SkeleNet:
                             i += 1
                     if empties == len(neartags):
                         isotags.append(current)
+                    print(current,skipped)
                 if len(checkedtags) == len(tempdir):
                     #Only triggers when all points have been checked
                     case = False
@@ -380,7 +381,6 @@ class SkeleNet:
                 #See if the next points are about near the average next step
                 i = 0
                 while i < lengiso:
-                    print(i)
                     if not(isotags[i] == lasttag):
                         isopts,isorads = tempdir[isotags[i]]
                         q = 0
@@ -421,7 +421,6 @@ class SkeleNet:
                 while i < lengcomb:
                     j = 0
                     while j < len(combtags[i]):
-                        print(i,j)
                         if not(combtags[i][j] == lasttag):
                             combpts,combrads = tempdir[combtags[i][j]]
                             q = 0
@@ -675,11 +674,9 @@ class SkeleNet:
 ####ImageProcessing
 
     def plot(self,mode : list = [],*,norm = True,tag = 'None',start : int = 0,stop : int = 9999):
-        stt = time.time()
         fig = plt.figure()
         ax = fig.add_subplot(111)
         theta = np.linspace(0,2*np.pi,100)
-        sttq = time.time() 
         index = 0
         tt = 0
         while index < len(mode):
@@ -846,15 +843,5 @@ class SkeleNet:
             tt += (et - st)
             index += 1        
 
-            
-            
-        
-        
-        
-        ett = time.time()
-        ttt = (ett - stt)
-        tttq = (ett  - sttq)
-        print(ttt // 60, ttt % 60)
-        print(tttq // 60, tttq % 60)
         print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 
