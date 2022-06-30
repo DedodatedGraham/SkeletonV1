@@ -96,6 +96,7 @@ class SkeleNet:
 
 ###MAIN FUNCTIONS
     def solve(self,animate : bool = False):
+        st = time.time()
         #Solves for all taggs individually
         #will be paralled in the future
         if animate:
@@ -114,6 +115,9 @@ class SkeleNet:
         else:
             self.__skeletize(0)
         self.order()
+        et = time.time()
+        tt = (et - st)
+        print('Total Solve took: {} Minuites {} Seconds'.format(tt // 60, tt % 60))
         
     def order(self):
         #This function will go through all of the points 
@@ -221,17 +225,27 @@ class SkeleNet:
                     i += 1
                 dirv = tdirv
             tempdir = []
-            
+            lasttag = -1
+            q = 0
             #gets points in directions
             for vec in dirv:
+                lpvec = []
+                vecpoint = []
                 #Gets 20 closeest points in each direction
                 i = 0
                 while i < len(vec):
+                    if not(depth == 0):
+                        lpvec.append(lastPoint[i] - point[i])
                     if vec[i] == -0.0:
                         vec[i] = 0.0
+                    if not(depth == 0):
+                        vecpoint.append(point[i] + vec[i])
                     i += 1
                 tempdir.append(self.Otrees[key].getVectorR(point,vec,10,getRads=True))
-            
+                if not(depth == 0):
+                    if getAngle(lpvec,vec,getDistance(point,lastPoint),getDistance(point,vecpoint)) < np.pi / 8:
+                        lasttag = q
+                q += 1
             checkedtags = []
             emptytags = []#Empty tags are nodes that should be ignored alltogether as they have no points
             combtags = []#Comb tags is a collection of connected tags
@@ -366,39 +380,14 @@ class SkeleNet:
                 #See if the next points are about near the average next step
                 i = 0
                 while i < lengiso:
-                    isopts,isorads = tempdir[isotags[i]]
-                    q = 0
-                    mindis = 0
-                    minpoint = []
-                    while q < len(isopts):
-                        tpoint = isopts[q]
-                        tdis = getDistance(point,tpoint)
-                        if q == 0:
-                            mindis = tdis
-                            minpoint = tpoint
-                        else:
-                            if tdis < mindis:
-                                minpoint = tpoint
-                                mindis = tdis
-                        q += 1
-                    #Iso points must always continue. even if its one point and far away. it will tag for destruction
-                    #So we dont care if it is close enough. We will step regardless, errors will be located later.
-                    
-                    i += 1
-
-            lengcomb = len(combtags)
-            if lengcomb > 0:
-                #Determines which leafs get close enough to the point to be branches, as thats all we care about 
-                i = 0
-                while i < lengcomb:
-                    j = 0
-                    while j < len(combtags[i]):
-                        combpts,combrads = tempdir[combtags[i][j]]
+                    print(i)
+                    if not(isotags[i] == lasttag):
+                        isopts,isorads = tempdir[isotags[i]]
                         q = 0
                         mindis = 0
                         minpoint = []
-                        while q < len(combpts):
-                            tpoint = combpts[q]
+                        while q < len(isopts):
+                            tpoint = isopts[q]
                             tdis = getDistance(point,tpoint)
                             if q == 0:
                                 mindis = tdis
@@ -408,9 +397,49 @@ class SkeleNet:
                                     minpoint = tpoint
                                     mindis = tdis
                             q += 1
-                        if mindis < 2 * self.threshDistance[key]:
-                        #Need to find if there are multiple skeletons stemming from this one node or just one. 
-                        
+                        #Iso points must always continue. even if its one point and far away. it will tag for destruction
+                        #So we dont care if it is close enough. We will step regardless, errors will be located later.
+                        #If the distance is less than 4 * thresh, we step along that vector and get nearest. if its more
+                        #than that, we will just go directly to that point
+                        if mindis < 4 * self.threshDistance[key]:
+                            travelvec = []
+                            temppoint = []
+                            q = 0
+                            while q < len(minpoint):
+                                travelvec.append(minpoint[q] - point[q])
+                                temppoint.append(point[q] + travelvec[q] * 4 * self.threshDistance[key])
+                                q += 1
+                            newNodes.append(self.Otrees[key].getNearR(temppoint,point))
+                        else:
+                            newNodes.append(minpoint)
+                    i += 1
+
+            lengcomb = len(combtags)
+            if lengcomb > 0:
+                #Determines which leafs get close enough to the point to be branches, as thats all we care about 
+                i = 0
+                while i < lengcomb:
+                    j = 0
+                    while j < len(combtags[i]):
+                        print(i,j)
+                        if not(combtags[i][j] == lasttag):
+                            combpts,combrads = tempdir[combtags[i][j]]
+                            q = 0
+                            mindis = 0
+                            minpoint = []
+                            while q < len(combpts):
+                                tpoint = combpts[q]
+                                tdis = getDistance(point,tpoint)
+                                if q == 0:
+                                    mindis = tdis
+                                    minpoint = tpoint
+                                else:
+                                    if tdis < mindis:
+                                        minpoint = tpoint
+                                        mindis = tdis
+                                q += 1
+                            #if mindis < 4 * self.threshDistance[key]:
+                                
                         j += 1
                     i += 1
                     
@@ -646,19 +675,19 @@ class SkeleNet:
 ####ImageProcessing
 
     def plot(self,mode : list = [],*,norm = True,tag = 'None',start : int = 0,stop : int = 9999):
+        stt = time.time()
         fig = plt.figure()
         ax = fig.add_subplot(111)
         theta = np.linspace(0,2*np.pi,100)
-        
+        sttq = time.time() 
         index = 0
         tt = 0
         while index < len(mode):
             print("Plotting {}".format(mode[index]))
-            
+            st = time.time()
             #Mode 0 -> output to degbug of normals of each point
             if mode[index] == 0:
                 plt.clf()
-                st = time.time()
                 tx = []
                 ty = []
                 i = 0
@@ -679,13 +708,10 @@ class SkeleNet:
                     plt.savefig(save)
                     plt.clf()
                     i += 1
-                et = time.time()
-                tt += (et - st)
                 
             #Mode 1 is for outputting final points for every tag
             elif mode[index] == 1:
                 plt.clf()
-                st = time.time()
                 if self.tagged:
                     i = 0
                     tx = []
@@ -728,11 +754,8 @@ class SkeleNet:
                         i += 1
                     plt.scatter(tx,ty,5,color='orange')
                 plt.savefig('Output.png')
-                et = time.time()
-                tt += (et - st)
             #Mode2 is for Animating the process of solving
             elif mode[index] == 2:
-                st = time.time()
                 svnum = 0
                 plt.clf()
                 path = os.getcwd()
@@ -783,9 +806,6 @@ class SkeleNet:
                         if i == stop:
                             break
                     tag += 1
-                    
-                et = time.time()
-                tt += (et - st)
                 
             if mode[index] == 3:
                 pt = []
@@ -822,6 +842,8 @@ class SkeleNet:
                     # plt.plot(tx[i] + r[i] * np.cos(theta),ty[i] + r[i] * np.sin(theta),5)
                     i += 1
                 plt.savefig('SearchRecovery.png')
+            et = time.time()
+            tt += (et - st)
             index += 1        
 
             
@@ -829,6 +851,10 @@ class SkeleNet:
         
         
         
-        
+        ett = time.time()
+        ttt = (ett - stt)
+        tttq = (ett  - sttq)
+        print(ttt // 60, ttt % 60)
+        print(tttq // 60, tttq % 60)
         print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 

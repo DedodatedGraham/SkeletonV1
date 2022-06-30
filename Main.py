@@ -17,6 +17,8 @@ import DataStructures
 from DataStructures import kdTree
 from SkeleNet import SkeleNet
 
+st = time.time()
+
 plt.rcParams['figure.dpi'] = 300
 
 theta = np.linspace(0,2*np.pi,100)
@@ -38,3 +40,7 @@ net = SkeleNet('interface_points_070000.dat')
 net.solve(False)
 net.plot([1])
 
+et = time.time()
+tt = et - st
+
+print('Total time to Complete: {} Minuites {} Seconds'.format(tt // 60, tt % 60))
