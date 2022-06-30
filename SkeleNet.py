@@ -150,7 +150,7 @@ class SkeleNet:
 
         if depth == 0:
             point =  self.SkelePoints[key][randint(0,len(self.SkelePoints[key]) - 1)]
-        Local,Localr = self.Otrees[key].getInR(point,self.threshDistance[key] * 2,1,getRads = True)
+        Local,Localr = self.Otrees[key].getInR(point,self.threshDistance[key],1,getRads = True)
         leng = len(Local)
         if not (leng == 0):
             #Check for closeness
@@ -171,18 +171,12 @@ class SkeleNet:
             avgr = avgr/leng
             if self.dim == 3:
                 avgz = avgz/leng
-            #determines if node is colapseable  
-            if(np.abs(avgx - point[0]) < self.threshDistance[key]):
-                if(np.abs(avgy - point[1]) < self.threshDistance[key]):
-                    if(np.abs(max(Localr)-min(Localr)) < self.threshDistance[key]):
-                        if self.dim == 3:
-                            if(np.abs(avgz - point[2]) < self.threshDistance[key]):
-                                capNodes.append([avgx,avgy,avgz])
-                                capRad.append(avgr)                        
-                        else:
-                            capNodes.append([avgx,avgy])
-                            capRad.append(avgr)
-                            
+            if self.dim == 3:
+                capNodes.append([avgx,avgy,avgz])
+            else:
+                capNodes.append([avgx,avgy])
+            capRad.append(avgr) 
+            
             #The Next step is getting directional information and determining branches nearby 
             #First creating realitive direction vectors
             i = 0
@@ -259,6 +253,7 @@ class SkeleNet:
                 checkedtags.append(current)
                 #Checks for empty directions and marks them, grabs next point
                 if len(tempdir[current][0]) == 0:
+                    print(current,'empty')
                     emptytags.append(current)
                 #If node is not empty, should determine if there is connected pieces or the direction is isolated
                 else:
@@ -275,6 +270,7 @@ class SkeleNet:
                     #Sorts through the nearby ones, adding it to 
                     skipped = []
                     empties = 0
+                    skips = 0
                     for tag in neartags:
                         #Prevents reChecking Points, If skipping will add to 
                         j = 0
@@ -285,12 +281,14 @@ class SkeleNet:
                                 if len(tempdir[tag][0]) == 0:
                                     empties += 1
                                 skip = False
+                                skips += 1
                                 break
                             j += 1
                         if skip:
                             checkedtags.append(tag)
                             if len(tempdir[tag][0]) == 0:
                                 emptytags.append(tag)
+                                print(tag,'empty')
                                 empties += 1
                             else:
                                 if len(combtags) == 0:
@@ -347,9 +345,54 @@ class SkeleNet:
                             if found:
                                 break
                             i += 1
+                        if len(combtags) > 1:
+                            #Needs to check if needs to merge nodes
+                            mergenodes = []
+                            k = 0
+                            while k < len(skipped):
+                                j = 0
+                                while j < len(combtags):
+                                    testmerge = False
+                                    q = 0
+                                    while q < len(combtags[j]):
+                                        if combtags[j][q] == skipped[k]:
+                                            mergenodes.append(j)
+                                            testmerge = True
+                                            break
+                                        q += 1
+                                    if testmerge:
+                                        break
+                                    j += 1
+                                k += 1
+                            print(len(mergenodes))
+                            if len(mergenodes) > 1:
+                                print('merged')
+                                tempnew = []
+                                k = 0
+                                while k < len(mergenodes):
+                                    q = 0
+                                    while q < len(combtags[mergenodes[k]]):
+                                        tempnew.append(combtags[mergenodes[k]][q])
+                                        q += 1
+                                    k += 1
+                                tempcomb = []
+                                k = 0
+                                while k < len(combtags):
+                                    q = 0
+                                    keep = True
+                                    while q < len(mergenodes):
+                                        if k == mergenodes[q]:
+                                            keep = False
+                                            break
+                                        q += 1
+                                    if keep:
+                                        tempcomb.append(combtags[k])
+                                    k += 1
+                                tempcomb.append(tempnew)
+                                combtags = tempcomb
                     if empties == len(neartags):
                         isotags.append(current)
-                    print(current,skipped)
+                    print(current,skipped,neartags)
                 if len(checkedtags) == len(tempdir):
                     #Only triggers when all points have been checked
                     case = False
