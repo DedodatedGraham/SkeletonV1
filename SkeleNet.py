@@ -134,7 +134,7 @@ class SkeleNet:
         tt = et - st
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
         
-    def orderR(self,key : int,depth : int = 0,point : list = [],direction : list = [],rad : float = 0):
+    def orderR(self,key : int,depth : int = 0,point : list = [],lastNode : list = [],rad : float = 0):
         #First grabs a random point from the given Skeleton data to take as the Original Point
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
@@ -359,7 +359,7 @@ class SkeleNet:
             print(point,'isos',isotags,'combs',combtags)
             #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
             #Iso's will be treated as simple branches and stepped out if close enough
-            branchPoints = []
+            newNodes = []
             
             lengiso = len(isotags)
             if lengiso > 0:
@@ -381,8 +381,9 @@ class SkeleNet:
                                 minpoint = tpoint
                                 mindis = tdis
                         q += 1
-                    if mindis < 2 * self.threshDistance[key]:
-                        
+                    #Iso points must always continue. even if its one point and far away. it will tag for destruction
+                    #So we dont care if it is close enough. We will step regardless, errors will be located later.
+                    
                     i += 1
 
             lengcomb = len(combtags)
@@ -408,7 +409,8 @@ class SkeleNet:
                                     mindis = tdis
                             q += 1
                         if mindis < 2 * self.threshDistance[key]:
-                            
+                        #Need to find if there are multiple skeletons stemming from this one node or just one. 
+                        
                         j += 1
                     i += 1
                     
