@@ -253,7 +253,6 @@ class SkeleNet:
                 checkedtags.append(current)
                 #Checks for empty directions and marks them, grabs next point
                 if len(tempdir[current][0]) == 0:
-                    print(current,'empty')
                     emptytags.append(current)
                 #If node is not empty, should determine if there is connected pieces or the direction is isolated
                 else:
@@ -288,7 +287,6 @@ class SkeleNet:
                             checkedtags.append(tag)
                             if len(tempdir[tag][0]) == 0:
                                 emptytags.append(tag)
-                                print(tag,'empty')
                                 empties += 1
                             else:
                                 if len(combtags) == 0:
@@ -363,8 +361,7 @@ class SkeleNet:
                                     if testmerge:
                                         break
                                     j += 1
-                                k += 1
-                            print(len(mergenodes))
+                                k += 1 
                             if len(mergenodes) > 1:
                                 print('merged')
                                 tempnew = []
@@ -392,7 +389,6 @@ class SkeleNet:
                                 combtags = tempcomb
                     if empties == len(neartags):
                         isotags.append(current)
-                    print(current,skipped,neartags)
                 if len(checkedtags) == len(tempdir):
                     #Only triggers when all points have been checked
                     case = False
@@ -414,7 +410,7 @@ class SkeleNet:
                             break
             
             
-            print(point,'isos',isotags,'combs',combtags)
+            #print(point,'isos',isotags,'combs',combtags)
             #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
             #Iso's will be treated as simple branches and stepped out if close enough
             newNodes = []
