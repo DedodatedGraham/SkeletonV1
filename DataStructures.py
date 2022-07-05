@@ -564,30 +564,110 @@ class kdTree:
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
-    def __init__(self,dimensions,inpts : list,bounds : list,*,inrad : list):
+    def __init__(self,inpts,node:list,width: float,*,inrad : list):
         #Bounds are stored in a node(center [x,y,z]), heigh and width
-        self.dim = dimensions
+        self.state = False
+        if len(inpts[0]) == 2:
+            self.dim = 2
+        else:
+            self.dim = 3
         if self.dim == 2:
             self.maxpts = 4
         else:
             self.maxpts = 8
-        skelepts = []        
-        i = 0
-        while i < len(inpts):
-            if len(inrad) > 0:
-                skelepts.append(SkelePoint(inpts[i],inrad[i]))    
-            else:
-                skelepts.append(SkelePoint(inpts[i]))
-            i += 1
-        if len(skelepts) < self.maxpts:
-            self.subdivide(skelepts)
-            
-    def subdivide(self,pts,depth : int = 0):
-        mat = [-1/2,1/2]
-        if self.dim == 2:
-            leaf.append()
+        #Defining skele Points
+        self.skelepts = []
+        if isinstance(inpts[0],list):
+            i = 0
+            while i < len(inpts):
+                if len(inrad) > 0:
+                    self.skelepts.append(SkelePoint(inpts[i],inrad[i]))    
+                else:
+                    self.skelepts.append(SkelePoint(inpts[i]))
+                i += 1
         else:
-            
+            i = 0
+            while i < len(inpts):
+                self.skelepts.append(inpts[i])
+                i += 1
+        #Defining other important elements
+        self.node = node
+        self.width = width
+        #If there are too many points, will subdivide
+        if len(self.skelepts) > self.maxpts:
+            self.state = True
+            self.subdivide()
+    def subdivide(self,pts):
+        #Creates the nodes for the new Quad/oct trees, and sorts points to their appropiate node
+        self.leafs = []
+        nodes = []
+        points = []
+        if self.dim == 2:
+            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width])
+            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] - 0.5 * self.width])
+            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] + 0.5 * self.width])
+            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] - 0.5 * self.width])
+            points.append([])
+            points.append([])
+            points.append([])
+            points.append([])
+            i = 0
+            while i < len(self.skelepts):
+                if self.skelepts[i].x > self.node[0] and self.skelepts[i].y > self.node[1]:
+                    points[0].append(self.skelepts[i])
+                elif self.skelepts[i].x > self.node[0] and self.skelepts[i].y < self.node[1]:
+                    points[1].append(self.skelepts[i])
+                elif self.skelepts[i].x < self.node[0] and self.skelepts[i].y > self.node[1]:
+                    points[2].append(self.skelepts[i])
+                else:
+                    points[3].append(self.skelepts[i])
+                i += 1
+        else:
+            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] + 0.5 * self.width])
+            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] - 0.5 * self.width])
+            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] + 0.5 * self.width])
+            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] - 0.5 * self.width])
+            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] + 0.5 * self.width])
+            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] - 0.5 * self.width])
+            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] + 0.5 * self.width])
+            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] - 0.5 * self.width])
+            points.append([])
+            points.append([])
+            points.append([])
+            points.append([])
+            points.append([])
+            points.append([])
+            points.append([])
+            points.append([])
+            i = 0
+            while i < len(self.skelepts):
+                if self.skelepts[i].x > self.node[0] and self.skelepts[i].y > self.node[1] and self.skelepts[i].z > self.node[2]:
+                    points[0].append(self.skelepts[i])
+                elif self.skelepts[i].x > self.node[0] and self.skelepts[i].y > self.node[1] and self.skelepts[i].z < self.node[2]:
+                    points[1].append(self.skelepts[i])
+                elif self.skelepts[i].x > self.node[0] and self.skelepts[i].y < self.node[1] and self.skelepts[i].z > self.node[2]:
+                    points[2].append(self.skelepts[i])
+                elif self.skelepts[i].x > self.node[0] and self.skelepts[i].y < self.node[1] and self.skelepts[i].z < self.node[2]:
+                    points[3].append(self.skelepts[i])
+                elif self.skelepts[i].x < self.node[0] and self.skelepts[i].y > self.node[1] and self.skelepts[i].z > self.node[2]:
+                    points[4].append(self.skelepts[i])
+                elif self.skelepts[i].x < self.node[0] and self.skelepts[i].y > self.node[1] and self.skelepts[i].z < self.node[2]:
+                    points[5].append(self.skelepts[i])
+                elif self.skelepts[i].x < self.node[0] and self.skelepts[i].y < self.node[1] and self.skelepts[i].z > self.node[2]:
+                    points[6].append(self.skelepts[i])
+                else:
+                    points[7].append(self.skelepts[i])
+                i += 1
+        i = 0
+        while i < len(nodes):
+            leafs.append(SplitTree(points[i], nodes[i], width / 2))
+            i += 1
+        self.skelepts = []
+        
+        
+    def addpoints(self,*,point : list = [], points : list = []):
+        
+    
         
 
 
@@ -616,6 +696,7 @@ class SkelePoint:
 
     def getCase(self):
         return self.case
+    
     
     
 
