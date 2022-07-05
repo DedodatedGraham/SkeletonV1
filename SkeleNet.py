@@ -147,7 +147,7 @@ class SkeleNet:
         capRad = []#radii of nodes
         throwNodes = []#points might throwout but not sure yet
         throwRad = []#radii of potential throw points
-
+        
         if depth == 0:
             point =  self.SkelePoints[key][randint(0,len(self.SkelePoints[key]) - 1)]
         Local,Localr = self.Otrees[key].getInR(point,self.threshDistance[key],1,getRads = True)
@@ -440,13 +440,13 @@ class SkeleNet:
                         #So we dont care if it is close enough. We will step regardless, errors will be located later.
                         #If the distance is less than 4 * thresh, we step along that vector and get nearest. if its more
                         #than that, we will just go directly to that point
-                        if mindis < 4 * self.threshDistance[key]:
+                        if mindis < 2 * self.threshDistance[key]:
                             travelvec = []
                             temppoint = []
                             q = 0
                             while q < len(minpoint):
                                 travelvec.append(minpoint[q] - point[q])
-                                temppoint.append(point[q] + travelvec[q] * 4 * self.threshDistance[key])
+                                temppoint.append(point[q] + travelvec[q] * 2 * self.threshDistance[key])
                                 q += 1
                             newNodes.append(self.Otrees[key].getNearR(temppoint,point))
                         else:
@@ -476,7 +476,18 @@ class SkeleNet:
                                         minpoint = tpoint
                                         mindis = tdis
                                 q += 1
-                            #if mindis < 4 * self.threshDistance[key]:
+                            if mindis < 2 * self.threshDistance[key]:
+                                #We want to capture a branch here
+                                travelvec = []
+                                temppoint = []
+                                q = 0
+                                while q < len(minpoint):
+                                    travelvec.append(minpoint[q] - point[q])
+                                    temppoint.append(point[q] + travelvec[q] * 2 * self.threshDistance[key])
+                                    q += 1
+                                newNodes.append(self.Otrees[key].getNearR(temppoint,point))
+                            elif len(combpts) < 3 and getDistance(point, minpoint) < 20 * self.threshDistance[key]:
+                                newNodes.append(minpoint)
                                 
                         j += 1
                     i += 1

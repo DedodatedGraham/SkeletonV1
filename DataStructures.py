@@ -561,10 +561,40 @@ class kdTree:
             return ret
 
 
+
+class SplitTree:
+    #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
+    def __init__(self,dimensions,inpts : list,bounds : list,*,inrad : list):
+        #Bounds are stored in a node(center [x,y,z]), heigh and width
+        self.dim = dimensions
+        if self.dim == 2:
+            self.maxpts = 4
+        else:
+            self.maxpts = 8
+        skelepts = []        
+        i = 0
+        while i < len(inpts):
+            if len(inrad) > 0:
+                skelepts.append(SkelePoint(inpts[i],inrad[i]))    
+            else:
+                skelepts.append(SkelePoint(inpts[i]))
+            i += 1
+        if len(skelepts) < self.maxpts:
+            self.subdivide(skelepts)
+            
+    def subdivide(self,pts,depth : int = 0):
+        mat = [-1/2,1/2]
+        if self.dim == 2:
+            leaf.append()
+        else:
+            
+        
+
+
 class SkelePoint:
 #This is a class which has a point which holds x,y,z and r
 
-    def __init__(self,point : list, rad : float):
+    def __init__(self,point : list,*, rad : float,case : bool = False):
         self.x = point[0]
         self.y = point[1]
         self.r = rad
@@ -581,8 +611,13 @@ class SkelePoint:
         else:
             return [self.x,self.y,self.z]
 
+    def getRad(self):
+        return self.r
 
-
+    def getCase(self):
+        return self.case
+    
+    
 
 
 
