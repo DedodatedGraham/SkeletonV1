@@ -10,7 +10,7 @@ import scipy
 import pandas as pd
 import time
 
-from DataStructures import kdTree, SkelePoint
+from DataStructures import kdTree,SplitTree, SkelePoint
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
 
 class SkeleNet:
@@ -124,6 +124,7 @@ class SkeleNet:
         st = time.time()
         t = 0
         self.Otrees = []
+        self.Strees = []
         #Created the needed Trees to fidn the direction 
         while t < len(self.SkelePoints):
             self.Otrees.append(kdTree(self.SkelePoints[t], self.dim,rads=self.SkeleRad[t]))
@@ -138,18 +139,20 @@ class SkeleNet:
         tt = et - st
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
         
-    def orderR(self,key : int,depth : int = 0,point : list = [],lastNode : list = [],rad : float = 0):
+    def orderR(self,key : int,depth : int = 0,point : list = [],lastNode : list = []):
         #First grabs a random point from the given Skeleton data to take as the Original Point
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
 
-        capNodes = []#location of nodes
-        capRad = []#radii of nodes
+
         throwNodes = []#points might throwout but not sure yet
         throwRad = []#radii of potential throw points
         
         if depth == 0:
             point =  self.SkelePoints[key][randint(0,len(self.SkelePoints[key]) - 1)]
+            
+            
+            
         Local,Localr = self.Otrees[key].getInR(point,self.threshDistance[key],1,getRads = True)
         leng = len(Local)
         if not (leng == 0):
@@ -171,11 +174,32 @@ class SkeleNet:
             avgr = avgr/leng
             if self.dim == 3:
                 avgz = avgz/leng
-            if self.dim == 3:
-                capNodes.append([avgx,avgy,avgz])
+                nodep = [avgx,avgy,avgz]
             else:
-                capNodes.append([avgx,avgy])
-            capRad.append(avgr) 
+                nodep = [avgx,avgy]
+
+                
+            #Boot up the stack if unmade
+            if len(self.Strees) == key:
+                #Find Maxbounds
+                if self.dim == 2:
+                    maxx = self.Otrees[key].getNearR([1000,0],[])[0]
+                    minx = self.Otrees[key].getNearR([-1000,0],[])[0]
+                    maxy = self.Otrees[key].getNearR([0,1000],[])[1]
+                    miny = self.Otrees[key].getNearR([0,-1000],[])[1]
+                    width = max(np.abs(maxx - minx),np.abs(maxy - miny))
+                    self.Strees.append(SplitTree([nodep],[0,0], width, inrad = [avgr]))
+                else:
+                    maxx = self.Otrees[key].getNearR([1000,0,0],[])[0]
+                    minx = self.Otrees[key].getNearR([-1000,0,0],[])[0]
+                    maxy = self.Otrees[key].getNearR([0,1000,0],[])[1]
+                    miny = self.Otrees[key].getNearR([0,-1000,0],[])[1]
+                    maxz = self.Otrees[key].getNearR([0,0,1000],[])[2]
+                    minz = self.Otrees[key].getNearR([0,0,-1000],[])[2]
+                    width = max(np.abs(maxx - minx),np.abs(maxy - miny),np.abs(maxz - minz))
+                    self.Strees.append(SplitTree([nodep],[0,0,0], width, inrad = [avgr]))
+            else:
+                self.Strees[key].addpoints(nodep,rads = [avgr])
             
             #The Next step is getting directional information and determining branches nearby 
             #First creating realitive direction vectors
@@ -219,7 +243,7 @@ class SkeleNet:
                     i += 1
                 dirv = tdirv
             tempdir = []
-            lasttag = -1
+            lasttag = 10000000
             q = 0
             #gets points in directions
             for vec in dirv:
@@ -412,7 +436,7 @@ class SkeleNet:
             
             #print(point,'isos',isotags,'combs',combtags)
             #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
-            #Iso's will be treated as simple branches and stepped out if close enough
+            #Iso's will be treated as simple branches and stepped out upon
             newNodes = []
             
             lengiso = len(isotags)
@@ -427,6 +451,7 @@ class SkeleNet:
                         minpoint = []
                         while q < len(isopts):
                             tpoint = isopts[q]
+                            
                             tdis = getDistance(point,tpoint)
                             if q == 0:
                                 mindis = tdis
@@ -441,6 +466,7 @@ class SkeleNet:
                         #If the distance is less than 4 * thresh, we step along that vector and get nearest. if its more
                         #than that, we will just go directly to that point
                         if mindis < 2 * self.threshDistance[key]:
+                            print('rip')
                             travelvec = []
                             temppoint = []
                             q = 0
@@ -488,11 +514,19 @@ class SkeleNet:
                                 newNodes.append(self.Otrees[key].getNearR(temppoint,point))
                             elif len(combpts) < 3 and getDistance(point, minpoint) < 20 * self.threshDistance[key]:
                                 newNodes.append(minpoint)
-                                
                         j += 1
                     i += 1
-                    
-                    
+            i = 0
+            print('isos',len(isotags),isotags,'combs',len(combtags),combtags)
+            print('steps',len(newNodes),self.threshDistance[key])
+            print('point',point,'Nodes',newNodes)
+            while i < len(newNodes):
+                if not(self.Strees[key].exists(newNodes[i],self.threshDistance[key])):
+                    #this node hasnt been visited yet(verified with stack), should take a step in that direction
+                    print('oh')
+                    output = self.orderR(key,depth + 1,newNodes[i],point)
+                i += 1
+                             
         else:
             if depth == 0:
                 #If isolated and start, attempt a better start
@@ -500,10 +534,8 @@ class SkeleNet:
             else:
                 #Point is isolated, and should be taged for destruction consideration at the end
                 throwNodes.append(point)
-                throwRad.append(rad)
 
-           
-        #Returning of data, does differnet things depending on what stage it is on
+        #Returning of data, does different things depending on what stage it is on
         # if not(depth == 0):
             
        

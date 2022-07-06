@@ -581,7 +581,7 @@ class SplitTree:
             i = 0
             while i < len(inpts):
                 if len(inrad) > 0:
-                    self.skelepts.append(SkelePoint(inpts[i],inrad[i]))    
+                    self.skelepts.append(SkelePoint(inpts[i],rad = inrad[i]))    
                 else:
                     self.skelepts.append(SkelePoint(inpts[i]))
                 i += 1
@@ -753,7 +753,107 @@ class SplitTree:
                 self.leafs[7].addpoints(h)
             
                 
-        
+    def exists(self,point : list,tolerance : float,depth : int = 0):
+        if self.state == True:
+            #Go Deeper
+            if self.dim == 2:
+                if point[0] > self.node[0] and point[1] > self.node[1]:
+                    ret,dep = self.leafs[0].exists(point,depth + 1)
+                elif point[0] > self.node[0] and point[1] < self.node[1]:
+                    ret,dep = self.leafs[1].exists(point,depth + 1)
+                elif point[0] < self.node[0] and point[1] > self.node[1]:
+                    ret,dep = self.leafs[2].exists(point,depth + 1)
+                else:
+                    ret,dep = self.leafs[3].exists(point,depth + 1)
+            else:
+                if point[0] > self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
+                    ret,dep = self.leafs[0].exists(point,depth + 1)
+                elif point[0] > self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
+                    ret,dep = self.leafs[1].exists(point,depth + 1)
+                elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
+                    ret,dep = self.leafs[2].exists(point,depth + 1)
+                elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] < self.node[2]:
+                    ret,dep = self.leafs[3].exists(point,depth + 1)
+                elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
+                    ret,dep = self.leafs[4].exists(point,depth + 1)
+                elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
+                    ret,dep = self.leafs[5].exists(point,depth + 1)
+                elif point[0] < self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
+                    ret,dep = self.leafs[6].exists(point,depth + 1)
+                else:
+                    ret,dep = self.leafs[7].exists(point,depth + 1)
+            if ret == False and dep - depth < 2:
+                if self.dim == 2:
+                    ret0,dep0 = self.leafs[0].exists(point,depth + 1)
+                    ret1,dep1 = self.leafs[1].exists(point,depth + 1)
+                    ret2,dep2 = self.leafs[2].exists(point,depth + 1)
+                    ret3,dep3 = self.leafs[3].exists(point,depth + 1)
+                    if ret0 == True:
+                        dep = dep0
+                        ret = True
+                    elif ret1 == True:
+                        dep = dep1
+                        ret = True
+                    elif ret2 == True:
+                        dep = dep2
+                        ret = True
+                    elif ret3 == True:
+                        dep = dep3
+                        ret = True
+                else:
+                    ret0,dep0 = self.leafs[0].exists(point,depth + 1)
+                    ret1,dep1 = self.leafs[1].exists(point,depth + 1)
+                    ret2,dep2 = self.leafs[2].exists(point,depth + 1)
+                    ret3,dep3 = self.leafs[3].exists(point,depth + 1)
+                    ret4,dep4 = self.leafs[4].exists(point,depth + 1)
+                    ret5,dep5 = self.leafs[5].exists(point,depth + 1)
+                    ret6,dep6 = self.leafs[6].exists(point,depth + 1)
+                    ret7,dep7 = self.leafs[7].exists(point,depth + 1)
+                    if ret0 == True:
+                        dep = dep0
+                        ret = True
+                    elif ret1 == True:
+                        dep = dep1
+                        ret = True
+                    elif ret2 == True:
+                        dep = dep2
+                        ret = True
+                    elif ret3 == True:
+                        dep = dep3
+                        ret = True
+                    elif ret4 == True:
+                        dep = dep4
+                        ret = True
+                    elif ret5 == True:
+                        dep = dep5
+                        ret = True
+                    elif ret6 == True:
+                        dep = dep6
+                        ret = True
+                    elif ret7 == True:
+                        dep = dep7
+                        ret = True
+        else:
+            #Search here for it. 
+            i = 0
+            cdis = 0
+            cpoint = []
+            while i < len(self.skelepts):
+                #Gets closest point in container to the search
+                if i == 0:
+                    cpoint = self.skelepts[i].getPoint()
+                    cdis = getDistance(point, cpoint)
+                else:
+                    tpoint = self.skelepts[i].getPoint()
+                    tdis = getDistance(point, tpoint)
+                    if tdis < cdis:
+                        cpoint = tpoint
+                        cdis = tdis
+                if cdis < tolerance:
+                    return True, depth
+                i += 1
+            return False, depth
+        return ret,dep
 
 
 class SkelePoint:
