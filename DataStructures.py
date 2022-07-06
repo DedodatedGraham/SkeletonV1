@@ -597,7 +597,8 @@ class SplitTree:
         if len(self.skelepts) > self.maxpts:
             self.state = True
             self.subdivide()
-    def subdivide(self,pts):
+            
+    def subdivide(self):
         #Creates the nodes for the new Quad/oct trees, and sorts points to their appropiate node
         self.leafs = []
         nodes = []
@@ -660,14 +661,98 @@ class SplitTree:
                 i += 1
         i = 0
         while i < len(nodes):
-            leafs.append(SplitTree(points[i], nodes[i], width / 2))
+            self.leafs.append(SplitTree(points[i], nodes[i], self.width / 2))
             i += 1
         self.skelepts = []
         
-        
-    def addpoints(self,*,point : list = [], points : list = []):
-        
-    
+    def addpoints(self, points : list = [],*,rads : list = []):
+        #First checks if the current leaf has been subdivided yet
+        if isinstance(points[0], float):
+            points = [points]
+        if not(self.state):
+            if len(self.skelepts) + len(points) > self.maxpts:
+                #If points more, than subdivide.
+                self.state = True
+                i = 0
+                while i < len(points):
+                    if isinstance(points[i],type(SkelePoint)):
+                        self.skelepts.append(points[i])
+                    else:
+                        if len(rads) == 0:
+                            self.skelepts.append(SkelePoint(points[i]))
+                        else:
+                            self.skelepts.append(SkelePoint(points[i],rad = rads[i]))
+                    i += 1
+                self.subdivide()
+            else:
+                i = 0
+                while i < len(points):
+                    if isinstance(points[i],type(SkelePoint)):
+                        self.skelepts.append(points[i])
+                    else:
+                        if len(rads) == 0:
+                            self.skelepts.append(SkelePoint(points[i]))
+                        else:
+                            self.skelepts.append(SkelePoint(points[i],rad = rads[i]))
+                    i += 1
+                
+        else:
+            if isinstance(points[0],list):
+                tpts = []
+                i = 0
+                while i < len(points):
+                    if len(rads) == 0:
+                        tpts.append(SkelePoint(points[i]))
+                    else:
+                        tpts.append(SkelePoint(points[i],rad=rads[i]))
+                    i += 1
+                points = tpts
+            i = 0
+            ne,se,nw,sw,a,b,c,d,e,f,g,h = []
+            while i < len(points):
+                if self.dim == 2:
+                    if points[i].x > self.node[0] and points[i].y > self.node[1]:
+                        ne.append(points[i])
+                    elif points[i].x > self.node[0] and points[i].y < self.node[1]:
+                        se.append(points[i])
+                    elif points[i].x < self.node[0] and points[i].y > self.node[1]:
+                        nw.append(points[i])
+                    else:
+                        sw.append(points[i])
+                else:
+                    if points[i].x > self.node[0] and points[i].y > self.node[1] and points[i].z > self.node[2]:
+                        a.append(points[i])
+                    elif points[i].x > self.node[0] and points[i].y > self.node[1] and points[i].z < self.node[2]:
+                        b.append(points[i])
+                    elif points[i].x > self.node[0] and points[i].y < self.node[1] and points[i].z > self.node[2]:
+                        c.append(points[i])
+                    elif points[i].x > self.node[0] and points[i].y < self.node[1] and points[i].z < self.node[2]:
+                        d.append(points[i])
+                    elif points[i].x < self.node[0] and points[i].y > self.node[1] and points[i].z > self.node[2]:
+                        e.append(points[i])
+                    elif points[i].x < self.node[0] and points[i].y > self.node[1] and points[i].z < self.node[2]:
+                        f.append(points[i])
+                    elif points[i].x < self.node[0] and points[i].y < self.node[1] and points[i].z > self.node[2]:
+                        g.append(points[i])
+                    else:
+                        h.append(points[i])
+                i += 1
+            if self.dim == 2:
+                self.leafs[0].addpoints(ne)
+                self.leafs[1].addpoints(se)
+                self.leafs[2].addpoints(nw)
+                self.leafs[3].addpoints(sw)
+            else:
+                self.leafs[0].addpoints(a)
+                self.leafs[1].addpoints(b)
+                self.leafs[2].addpoints(c)
+                self.leafs[3].addpoints(d)
+                self.leafs[4].addpoints(e)
+                self.leafs[5].addpoints(f)
+                self.leafs[6].addpoints(g)
+                self.leafs[7].addpoints(h)
+            
+                
         
 
 
