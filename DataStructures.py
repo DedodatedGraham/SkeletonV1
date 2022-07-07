@@ -672,93 +672,118 @@ class SplitTree:
             i += 1
         self.skelepts = []
         
-    def addpoints(self, points : list = [],*,rads : list = []):
+    def addpoints(self, points : list = [],*,rads : float = 0.0):
+        
         #First checks if the current leaf has been subdivided yet
-        if isinstance(points[0], float):
-            points = [points]
-            rads = [rads]
         if not(self.state):
             if len(self.skelepts) + len(points) > self.maxpts:
                 #If points more, than subdivide.
                 self.state = True
-                i = 0
-                while i < len(points):
-                    if isinstance(points[i],SkelePoint):
-                        self.skelepts.append(points[i])
+                
+                if isinstance(points,SkelePoint):
+                    self.skelepts.append(points)
+                else:
+                    if rads == 0.0:
+                        self.skelepts.append(SkelePoint(points))
                     else:
-                        if len(rads) == 0:
-                            self.skelepts.append(SkelePoint(points[i]))
-                        else:
-                            self.skelepts.append(SkelePoint(points[i],rad = rads[i]))
-                    i += 1
+                        self.skelepts.append(SkelePoint(points,rad = rads))
                 self.subdivide()
             else:
-                i = 0
-                while i < len(points):
-                    if isinstance(points[i],SkelePoint):
-                        self.skelepts.append(points[i])
-                    else:
-                        if len(rads) == 0:
-                            self.skelepts.append(SkelePoint(points[i]))
-                        else:
-                            self.skelepts.append(SkelePoint(points[i],rad = rads[i]))
-                    i += 1
+                if rads == 0.0:
+                    if not(len(points) == 0):
+                        self.skelepts.append(SkelePoint(points))
+                else:
+                    print(points,rads)
+                    self.skelepts.append(SkelePoint(points,rad = rads))
                 
-        else:
-            if isinstance(points[0],list):
-                tpts = []
-                i = 0
-                while i < len(points):
-                    if len(rads) == 0:
-                        tpts.append(SkelePoint(points[i]))
-                    else:
-                        tpts.append(SkelePoint(points[i],rad=rads[i]))
-                    i += 1
-                points = tpts
+        elif not(len(points) == 0):
             i = 0
-            ne,se,nw,sw,a,b,c,d,e,f,g,h = []
+            ne,se,nw,sw,a,b,c,d,e,f,g,h = [],[],[],[],[],[],[],[],[],[],[],[]
+            ner,ser,nwr,swr,ar,br,cr,dr,er,fr,gr,hr = 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+            if isinstance(points[0], float):
+                points = [points]
             while i < len(points):
                 if self.dim == 2:
-                    if points[i].x > self.node[0] and points[i].y > self.node[1]:
-                        ne.append(points[i])
-                    elif points[i].x > self.node[0] and points[i].y < self.node[1]:
-                        se.append(points[i])
-                    elif points[i].x < self.node[0] and points[i].y > self.node[1]:
-                        nw.append(points[i])
+                    if points[i][0] > self.node[0] and points[i][1] > self.node[1]:
+                        ne = points[i]
+                        if not(rads == 0.0):
+                            ner = rads
+                    elif points[i][0] > self.node[0] and points[i][1] < self.node[1]:
+                        se = points[i]
+                        if not(rads == 0.0):
+                            ser = rads
+                    elif points[i][0] < self.node[0] and points[i][1] > self.node[1]:
+                        nw = points[i]
+                        if not(rads == 0.0):
+                            nwr = rads
                     else:
-                        sw.append(points[i])
+                        sw = points[i]
+                        if not(rads == 0.0):
+                            swr = rads
                 else:
-                    if points[i].x > self.node[0] and points[i].y > self.node[1] and points[i].z > self.node[2]:
-                        a.append(points[i])
-                    elif points[i].x > self.node[0] and points[i].y > self.node[1] and points[i].z < self.node[2]:
-                        b.append(points[i])
-                    elif points[i].x > self.node[0] and points[i].y < self.node[1] and points[i].z > self.node[2]:
-                        c.append(points[i])
-                    elif points[i].x > self.node[0] and points[i].y < self.node[1] and points[i].z < self.node[2]:
-                        d.append(points[i])
-                    elif points[i].x < self.node[0] and points[i].y > self.node[1] and points[i].z > self.node[2]:
-                        e.append(points[i])
-                    elif points[i].x < self.node[0] and points[i].y > self.node[1] and points[i].z < self.node[2]:
-                        f.append(points[i])
-                    elif points[i].x < self.node[0] and points[i].y < self.node[1] and points[i].z > self.node[2]:
-                        g.append(points[i])
+                    if points[i][0] > self.node[0] and points[i][1] > self.node[1] and points[i][2] > self.node[2]:
+                        a = points[i]
+                        if not(rads == 0.0):
+                            ar = rads
+                    elif points[i][0] > self.node[0] and points[i][1] > self.node[1] and points[i][2] < self.node[2]:
+                        b = points[i]
+                        if not(rads == 0.0):
+                            br = rads
+                    elif points[i][0] > self.node[0] and points[i][1] < self.node[1] and points[i][2] > self.node[2]:
+                        c = points[i]
+                        if not(rads == 0.0):
+                            cr = rads
+                    elif points[i][0] > self.node[0] and points[i][1] < self.node[1] and points[i][2] < self.node[2]:
+                        d = points[i]
+                        if not(rads == 0.0):
+                            dr = rads
+                    elif points[i][0] < self.node[0] and points[i][1] > self.node[1] and points[i][2] > self.node[2]:
+                        e = points[i]
+                        if not(rads == 0.0):
+                            er = rads
+                    elif points[i][0] < self.node[0] and points[i][1] > self.node[1] and points[i][2] < self.node[2]:
+                        f = points[i]
+                        if not(rads == 0.0):
+                            fr = rads
+                    elif points[i][0] < self.node[0] and points[i][1] < self.node[1] and points[i][2] > self.node[2]:
+                        g = points[i]
+                        if not(rads == 0.0):
+                            gr = rads
                     else:
-                        h.append(points[i])
+                        h = points[i]
+                        if not(rads == 0.0):
+                            hr = rads
                 i += 1
             if self.dim == 2:
-                self.leafs[0].addpoints(ne)
-                self.leafs[1].addpoints(se)
-                self.leafs[2].addpoints(nw)
-                self.leafs[3].addpoints(sw)
+                if not(rads == 0.0):
+                    self.leafs[0].addpoints(ne,rads=ner)
+                    self.leafs[1].addpoints(se,rads=ser)
+                    self.leafs[2].addpoints(nw,rads=nwr)
+                    self.leafs[3].addpoints(sw,rads=swr)
+                else:
+                    self.leafs[0].addpoints(ne)
+                    self.leafs[1].addpoints(se)
+                    self.leafs[2].addpoints(nw)
+                    self.leafs[3].addpoints(sw)
             else:
-                self.leafs[0].addpoints(a)
-                self.leafs[1].addpoints(b)
-                self.leafs[2].addpoints(c)
-                self.leafs[3].addpoints(d)
-                self.leafs[4].addpoints(e)
-                self.leafs[5].addpoints(f)
-                self.leafs[6].addpoints(g)
-                self.leafs[7].addpoints(h)
+                if not(rads == 0.0):
+                    self.leafs[0].addpoints(a,rads=ar)
+                    self.leafs[1].addpoints(b,rads=br)
+                    self.leafs[2].addpoints(c,rads=cr)
+                    self.leafs[3].addpoints(d,rads=dr)
+                    self.leafs[4].addpoints(e,rads=er)
+                    self.leafs[5].addpoints(f,rads=fr)
+                    self.leafs[6].addpoints(g,rads=gr)
+                    self.leafs[7].addpoints(h,rads=hr)
+                else:
+                    self.leafs[0].addpoints(a)
+                    self.leafs[1].addpoints(b)
+                    self.leafs[2].addpoints(c)
+                    self.leafs[3].addpoints(d)
+                    self.leafs[4].addpoints(e)
+                    self.leafs[5].addpoints(f)
+                    self.leafs[6].addpoints(g)
+                    self.leafs[7].addpoints(h)
             
                 
     def exists(self,point : list,tolerance : float,depth : int = 0):
@@ -766,36 +791,36 @@ class SplitTree:
             #Go Deeper
             if self.dim == 2:
                 if point[0] > self.node[0] and point[1] > self.node[1]:
-                    ret,dep = self.leafs[0].exists(point,depth + 1)
+                    ret,dep = self.leafs[0].exists(point,tolerance,depth + 1)
                 elif point[0] > self.node[0] and point[1] < self.node[1]:
-                    ret,dep = self.leafs[1].exists(point,depth + 1)
+                    ret,dep = self.leafs[1].exists(point,tolerance,depth + 1)
                 elif point[0] < self.node[0] and point[1] > self.node[1]:
-                    ret,dep = self.leafs[2].exists(point,depth + 1)
+                    ret,dep = self.leafs[2].exists(point,tolerance,depth + 1)
                 else:
-                    ret,dep = self.leafs[3].exists(point,depth + 1)
+                    ret,dep = self.leafs[3].exists(point,tolerance,depth + 1)
             else:
                 if point[0] > self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
-                    ret,dep = self.leafs[0].exists(point,depth + 1)
+                    ret,dep = self.leafs[0].exists(point,tolerance,depth + 1)
                 elif point[0] > self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
-                    ret,dep = self.leafs[1].exists(point,depth + 1)
+                    ret,dep = self.leafs[1].exists(point,tolerance,depth + 1)
                 elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
-                    ret,dep = self.leafs[2].exists(point,depth + 1)
+                    ret,dep = self.leafs[2].exists(point,tolerance,depth + 1)
                 elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] < self.node[2]:
-                    ret,dep = self.leafs[3].exists(point,depth + 1)
+                    ret,dep = self.leafs[3].exists(point,tolerance,depth + 1)
                 elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
-                    ret,dep = self.leafs[4].exists(point,depth + 1)
+                    ret,dep = self.leafs[4].exists(point,tolerance,depth + 1)
                 elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
-                    ret,dep = self.leafs[5].exists(point,depth + 1)
+                    ret,dep = self.leafs[5].exists(point,tolerance,depth + 1)
                 elif point[0] < self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
-                    ret,dep = self.leafs[6].exists(point,depth + 1)
+                    ret,dep = self.leafs[6].exists(point,tolerance,depth + 1)
                 else:
-                    ret,dep = self.leafs[7].exists(point,depth + 1)
+                    ret,dep = self.leafs[7].exists(point,tolerance,depth + 1)
             if ret == False and dep - depth < 2:
                 if self.dim == 2:
-                    ret0,dep0 = self.leafs[0].exists(point,depth + 1)
-                    ret1,dep1 = self.leafs[1].exists(point,depth + 1)
-                    ret2,dep2 = self.leafs[2].exists(point,depth + 1)
-                    ret3,dep3 = self.leafs[3].exists(point,depth + 1)
+                    ret0,dep0 = self.leafs[0].exists(point,tolerance,depth + 1)
+                    ret1,dep1 = self.leafs[1].exists(point,tolerance,depth + 1)
+                    ret2,dep2 = self.leafs[2].exists(point,tolerance,depth + 1)
+                    ret3,dep3 = self.leafs[3].exists(point,tolerance,depth + 1)
                     if ret0 == True:
                         dep = dep0
                         ret = True
@@ -809,14 +834,14 @@ class SplitTree:
                         dep = dep3
                         ret = True
                 else:
-                    ret0,dep0 = self.leafs[0].exists(point,depth + 1)
-                    ret1,dep1 = self.leafs[1].exists(point,depth + 1)
-                    ret2,dep2 = self.leafs[2].exists(point,depth + 1)
-                    ret3,dep3 = self.leafs[3].exists(point,depth + 1)
-                    ret4,dep4 = self.leafs[4].exists(point,depth + 1)
-                    ret5,dep5 = self.leafs[5].exists(point,depth + 1)
-                    ret6,dep6 = self.leafs[6].exists(point,depth + 1)
-                    ret7,dep7 = self.leafs[7].exists(point,depth + 1)
+                    ret0,dep0 = self.leafs[0].exists(point,tolerance,depth + 1)
+                    ret1,dep1 = self.leafs[1].exists(point,tolerance,depth + 1)
+                    ret2,dep2 = self.leafs[2].exists(point,tolerance,depth + 1)
+                    ret3,dep3 = self.leafs[3].exists(point,tolerance,depth + 1)
+                    ret4,dep4 = self.leafs[4].exists(point,tolerance,depth + 1)
+                    ret5,dep5 = self.leafs[5].exists(point,tolerance,depth + 1)
+                    ret6,dep6 = self.leafs[6].exists(point,tolerance,depth + 1)
+                    ret7,dep7 = self.leafs[7].exists(point,tolerance,depth + 1)
                     if ret0 == True:
                         dep = dep0
                         ret = True
@@ -858,7 +883,6 @@ class SplitTree:
                         cpoint = tpoint
                         cdis = tdis
                 if cdis < tolerance:
-                    # print('flag',point,cpoint,cdis)
                     return True, depth
                 i += 1
             return False, depth
@@ -871,12 +895,12 @@ class SplitTree:
             while i < len(self.leafs):
                 self.leafs[i].plot()
                 i += 1
-            plt.scatter(self.node[0],self.node[1],color='purple')
+            # plt.scatter(self.node[0],self.node[1],color='purple')
         else:
-            plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
-            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
+            # plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            # plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            # plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
+            # plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
             if len(self.skelepts) > 0:
                 i = 0
                 tx = []

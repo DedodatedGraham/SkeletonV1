@@ -140,6 +140,7 @@ class SkeleNet:
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
         
     def orderR(self,key : int,depth : int = 0,point : list = [],lastNode : list = []):
+        print()
         #First grabs a random point from the given Skeleton data to take as the Original Point
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
@@ -393,7 +394,6 @@ class SkeleNet:
                                     j += 1
                                 k += 1 
                             if len(mergenodes) > 1:
-                                # print('merged')
                                 tempnew = []
                                 k = 0
                                 while k < len(mergenodes):
@@ -485,10 +485,8 @@ class SkeleNet:
                                 temppoint.append(point[q] + travelvec[q] * 2 * self.threshDistance[key])
                                 q += 1
                             newNodes.append(self.Otrees[key].getNearR(temppoint,point))
-                            # print('less-iso',getDistance(point, temppoint))
                         else:
                             newNodes.append(minpoint)
-                            # print('greater-iso',getDistance(point, minpoint))
 
                     i += 1
 
@@ -529,7 +527,6 @@ class SkeleNet:
                                     temppoint.append(point[q] + travelvec[q] * 2 * self.threshDistance[key])
                                     q += 1
                                 newNodes.append(self.Otrees[key].getNearR(temppoint,point))
-                                # print('less-comb',getDistance(point, temppoint))
                             elif len(combpts) < 3 and getDistance(point, minpoint) < 20 * self.threshDistance[key]:
                                 newNodes.append(minpoint)
                         j += 1
@@ -537,7 +534,6 @@ class SkeleNet:
             i = 0
             while i < len(newNodes):
                 exists,dep = self.Strees[key].exists(newNodes[i],self.threshDistance[key])
-                print('going to node({}) from depth({})'.format(i,depth),newNodes[i],getDistance(point, newNodes[i]),self.threshDistance[key],exists)
                 if not(exists):
                     #this node hasnt been visited yet(verified with stack), should take a step in that direction
                     output = self.orderR(key,depth + 1,newNodes[i],point)
