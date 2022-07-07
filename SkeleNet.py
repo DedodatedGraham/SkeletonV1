@@ -936,8 +936,8 @@ class SkeleNet:
             elif mode[index] == 4:
                 #This is the figure which can display the quadtree along with its nodes
                 plt.clf()
-                plt.xlim(0.5,1.1)
-                plt.ylim(0.1,0.9)
+                plt.xlim(0.2,0.8)
+                plt.ylim(0.2,0.8)
                 i = 0
                 tx = []
                 ty = []

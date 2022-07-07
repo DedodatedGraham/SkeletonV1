@@ -693,7 +693,6 @@ class SplitTree:
                     if not(len(points) == 0):
                         self.skelepts.append(SkelePoint(points))
                 else:
-                    print(points,rads)
                     self.skelepts.append(SkelePoint(points,rad = rads))
                 
         elif not(len(points) == 0):
@@ -895,12 +894,12 @@ class SplitTree:
             while i < len(self.leafs):
                 self.leafs[i].plot()
                 i += 1
-            # plt.scatter(self.node[0],self.node[1],color='purple')
+            plt.scatter(self.node[0],self.node[1],color='purple')
         else:
-            # plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            # plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            # plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
-            # plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
+            plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
+            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
             if len(self.skelepts) > 0:
                 i = 0
                 tx = []
