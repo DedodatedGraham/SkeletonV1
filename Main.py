@@ -38,7 +38,7 @@ net = SkeleNet('interface_points_070000.dat')
 #net = SkeleNet('spiral.dat')
 #net = SkeleNet('vof_points_norm1.dat')
 net.solve(False)
-net.plot([1])
+net.plot([1,4])
 
 et = time.time()
 tt = et - st

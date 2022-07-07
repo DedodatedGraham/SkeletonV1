@@ -564,32 +564,39 @@ class kdTree:
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
-    def __init__(self,inpts,node:list,width: float,*,inrad : list):
+    def __init__(self,inpts,node:list,width: float,*,inrad : list = [],dim : int = 0):
         #Bounds are stored in a node(center [x,y,z]), heigh and width
         self.state = False
-        if len(inpts[0]) == 2:
-            self.dim = 2
+        if not(dim == 2 or dim == 3):
+            if isinstance(inpts[0],SkelePoint):
+                self.dim = inpts[0].dimensions
+            else:
+                if len(inpts[0]) == 2:
+                    self.dim = 2
+                else:
+                    self.dim = 3
         else:
-            self.dim = 3
+            self.dim = dim
         if self.dim == 2:
             self.maxpts = 4
         else:
             self.maxpts = 8
         #Defining skele Points
         self.skelepts = []
-        if isinstance(inpts[0],list):
-            i = 0
-            while i < len(inpts):
-                if len(inrad) > 0:
-                    self.skelepts.append(SkelePoint(inpts[i],rad = inrad[i]))    
-                else:
-                    self.skelepts.append(SkelePoint(inpts[i]))
-                i += 1
-        else:
-            i = 0
-            while i < len(inpts):
-                self.skelepts.append(inpts[i])
-                i += 1
+        if not(len(inpts) == 0):
+            if isinstance(inpts[0],list):
+                i = 0
+                while i < len(inpts):
+                    if len(inrad) > 0:
+                        self.skelepts.append(SkelePoint(inpts[i],rad = inrad[i]))    
+                    else:
+                        self.skelepts.append(SkelePoint(inpts[i]))
+                    i += 1
+            else:
+                i = 0
+                while i < len(inpts):
+                    self.skelepts.append(inpts[i])
+                    i += 1
         #Defining other important elements
         self.node = node
         self.width = width
@@ -661,7 +668,7 @@ class SplitTree:
                 i += 1
         i = 0
         while i < len(nodes):
-            self.leafs.append(SplitTree(points[i], nodes[i], self.width / 2))
+            self.leafs.append(SplitTree(points[i], nodes[i], self.width / 2,dim=self.dim))
             i += 1
         self.skelepts = []
         
@@ -669,13 +676,14 @@ class SplitTree:
         #First checks if the current leaf has been subdivided yet
         if isinstance(points[0], float):
             points = [points]
+            rads = [rads]
         if not(self.state):
             if len(self.skelepts) + len(points) > self.maxpts:
                 #If points more, than subdivide.
                 self.state = True
                 i = 0
                 while i < len(points):
-                    if isinstance(points[i],type(SkelePoint)):
+                    if isinstance(points[i],SkelePoint):
                         self.skelepts.append(points[i])
                     else:
                         if len(rads) == 0:
@@ -687,7 +695,7 @@ class SplitTree:
             else:
                 i = 0
                 while i < len(points):
-                    if isinstance(points[i],type(SkelePoint)):
+                    if isinstance(points[i],SkelePoint):
                         self.skelepts.append(points[i])
                     else:
                         if len(rads) == 0:
@@ -850,11 +858,36 @@ class SplitTree:
                         cpoint = tpoint
                         cdis = tdis
                 if cdis < tolerance:
+                    # print('flag',point,cpoint,cdis)
                     return True, depth
                 i += 1
             return False, depth
         return ret,dep
-
+    
+    def plot(self):
+        if self.state == True:
+            #If the figure is subdivided
+            i = 0
+            while i < len(self.leafs):
+                self.leafs[i].plot()
+                i += 1
+            plt.scatter(self.node[0],self.node[1],color='purple')
+        else:
+            plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
+            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
+            if len(self.skelepts) > 0:
+                i = 0
+                tx = []
+                ty = []
+                while i < len(self.skelepts):
+                    tx.append(self.skelepts[i].x)
+                    ty.append(self.skelepts[i].y)
+                    i += 1
+                plt.scatter(tx,ty,5,color='green')
+        
+        
 
 class SkelePoint:
 #This is a class which has a point which holds x,y,z and r

@@ -91,8 +91,8 @@ class SkeleNet:
         if self.tagged:
             self.__tag()
         else:
-            self.tpoints.append(self.IntPoints)
-            self.tnorms.append(self.NormPoints)
+            self.tpoints = [self.IntPoints]
+            self.tnorms = [self.NormPoints]
 
 ###MAIN FUNCTIONS
     def solve(self,animate : bool = False):
@@ -144,7 +144,7 @@ class SkeleNet:
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
 
-
+        print(depth)
         throwNodes = []#points might throwout but not sure yet
         throwRad = []#radii of potential throw points
         
@@ -183,23 +183,29 @@ class SkeleNet:
             if len(self.Strees) == key:
                 #Find Maxbounds
                 if self.dim == 2:
-                    maxx = self.Otrees[key].getNearR([1000,0],[])[0]
-                    minx = self.Otrees[key].getNearR([-1000,0],[])[0]
-                    maxy = self.Otrees[key].getNearR([0,1000],[])[1]
-                    miny = self.Otrees[key].getNearR([0,-1000],[])[1]
-                    width = max(np.abs(maxx - minx),np.abs(maxy - miny))
-                    self.Strees.append(SplitTree([nodep],[0,0], width, inrad = [avgr]))
+                    minx,miny,maxx,maxy=self.tpoints[key][0][0],self.tpoints[key][0][1],self.tpoints[key][0][0],self.tpoints[key][0][1]
+                    for pt in self.tpoints[key]:
+                        maxx = pt[0] if pt[0] > maxx else maxx
+                        maxy = pt[1] if pt[1] > maxy else maxy
+                        minx = pt[0] if pt[0] < minx else minx
+                        miny = pt[1] if pt[1] < miny else miny
+                    center = [minx + (maxx-minx) / 2,miny + (maxy-miny) / 2]
+                    width = max(np.abs(maxx-minx),np.abs(maxy-miny))
+                    self.Strees.append(SplitTree([nodep],center, width / 2, inrad = [avgr]))
                 else:
-                    maxx = self.Otrees[key].getNearR([1000,0,0],[])[0]
-                    minx = self.Otrees[key].getNearR([-1000,0,0],[])[0]
-                    maxy = self.Otrees[key].getNearR([0,1000,0],[])[1]
-                    miny = self.Otrees[key].getNearR([0,-1000,0],[])[1]
-                    maxz = self.Otrees[key].getNearR([0,0,1000],[])[2]
-                    minz = self.Otrees[key].getNearR([0,0,-1000],[])[2]
-                    width = max(np.abs(maxx - minx),np.abs(maxy - miny),np.abs(maxz - minz))
-                    self.Strees.append(SplitTree([nodep],[0,0,0], width, inrad = [avgr]))
+                    minx,miny,minz,maxx,maxy,maxz=self.tpoints[key][0][0],self.tpoints[key][0][1],self.tpoints[key][0][2],self.tpoints[key][0][0],self.tpoints[key][0][1],self.tpoints[key][0][2]
+                    for pt in self.tpoints[key]:
+                        maxx = pt[0] if pt[0] > maxx else maxx
+                        maxy = pt[1] if pt[1] > maxy else maxy
+                        maxz = pt[2] if pt[2] > maxz else maxz
+                        minx = pt[0] if pt[0] < minx else minx
+                        miny = pt[1] if pt[1] < miny else miny
+                        minz = pt[2] if pt[2] < minz else minz
+                    center = [minx + (maxx-minx) / 2,miny + (maxy-miny) / 2,minz + (maxz-minz) / 2]
+                    width = max(np.abs(maxx-minx),np.abs(maxy-miny),np.abs(maxz-minz))
+                    self.Strees.append(SplitTree([nodep],[0,0,0], width / 2, inrad = [avgr]))
             else:
-                self.Strees[key].addpoints(nodep,rads = [avgr])
+                self.Strees[key].addpoints(nodep,rads = avgr)
             
             #The Next step is getting directional information and determining branches nearby 
             #First creating realitive direction vectors
@@ -387,7 +393,7 @@ class SkeleNet:
                                     j += 1
                                 k += 1 
                             if len(mergenodes) > 1:
-                                print('merged')
+                                # print('merged')
                                 tempnew = []
                                 k = 0
                                 while k < len(mergenodes):
@@ -434,7 +440,7 @@ class SkeleNet:
                             break
             
             
-            #print(point,'isos',isotags,'combs',combtags)
+            print(point,'isos',isotags,'combs',combtags)
             #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
             #Iso's will be treated as simple branches and stepped out upon
             newNodes = []
@@ -461,22 +467,29 @@ class SkeleNet:
                                     minpoint = tpoint
                                     mindis = tdis
                             q += 1
+
                         #Iso points must always continue. even if its one point and far away. it will tag for destruction
                         #So we dont care if it is close enough. We will step regardless, errors will be located later.
                         #If the distance is less than 4 * thresh, we step along that vector and get nearest. if its more
                         #than that, we will just go directly to that point
                         if mindis < 2 * self.threshDistance[key]:
-                            print('rip')
                             travelvec = []
                             temppoint = []
                             q = 0
                             while q < len(minpoint):
                                 travelvec.append(minpoint[q] - point[q])
+                                q += 1
+                            [travelvec] = normalize([travelvec])
+                            q = 0
+                            while q < len(minpoint):
                                 temppoint.append(point[q] + travelvec[q] * 2 * self.threshDistance[key])
                                 q += 1
                             newNodes.append(self.Otrees[key].getNearR(temppoint,point))
+                            # print('less-iso',getDistance(point, temppoint))
                         else:
                             newNodes.append(minpoint)
+                            # print('greater-iso',getDistance(point, minpoint))
+
                     i += 1
 
             lengcomb = len(combtags)
@@ -509,21 +522,24 @@ class SkeleNet:
                                 q = 0
                                 while q < len(minpoint):
                                     travelvec.append(minpoint[q] - point[q])
+                                    q += 1
+                                [travelvec] = normalize([travelvec])
+                                q = 0
+                                while q < len(minpoint):
                                     temppoint.append(point[q] + travelvec[q] * 2 * self.threshDistance[key])
                                     q += 1
                                 newNodes.append(self.Otrees[key].getNearR(temppoint,point))
+                                # print('less-comb',getDistance(point, temppoint))
                             elif len(combpts) < 3 and getDistance(point, minpoint) < 20 * self.threshDistance[key]:
                                 newNodes.append(minpoint)
                         j += 1
                     i += 1
             i = 0
-            print('isos',len(isotags),isotags,'combs',len(combtags),combtags)
-            print('steps',len(newNodes),self.threshDistance[key])
-            print('point',point,'Nodes',newNodes)
             while i < len(newNodes):
-                if not(self.Strees[key].exists(newNodes[i],self.threshDistance[key])):
+                exists,dep = self.Strees[key].exists(newNodes[i],self.threshDistance[key])
+                print('going to node({}) from depth({})'.format(i,depth),newNodes[i],getDistance(point, newNodes[i]),self.threshDistance[key],exists)
+                if not(exists):
                     #this node hasnt been visited yet(verified with stack), should take a step in that direction
-                    print('oh')
                     output = self.orderR(key,depth + 1,newNodes[i],point)
                 i += 1
                              
@@ -886,7 +902,7 @@ class SkeleNet:
                             break
                     tag += 1
                 
-            if mode[index] == 3:
+            elif mode[index] == 3:
                 pt = []
                 plt.clf()
                 plt.xlim(0.5,1.1)
@@ -921,6 +937,24 @@ class SkeleNet:
                     # plt.plot(tx[i] + r[i] * np.cos(theta),ty[i] + r[i] * np.sin(theta),5)
                     i += 1
                 plt.savefig('SearchRecovery.png')
+            elif mode[index] == 4:
+                #This is the figure which can display the quadtree along with its nodes
+                plt.clf()
+                plt.xlim(0.5,1.1)
+                plt.ylim(0.1,0.9)
+                i = 0
+                tx = []
+                ty = []
+                while i < len(self.IntPoints):
+                    tx.append(self.IntPoints[i][0])
+                    ty.append(self.IntPoints[i][1])
+                    i += 1
+                plt.scatter(tx,ty,5)
+                i = 0
+                while i < len(self.Strees):
+                    self.Strees[i].plot()
+                    i+= 1
+                plt.savefig('nodes.png')
             et = time.time()
             tt += (et - st)
             index += 1        
