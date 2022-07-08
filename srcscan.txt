@@ -1,0 +1,6 @@
+./kernprof -l /home/graham_garcia1/SkeletonV1/Main.py
+python3 -m line_profiler Main.py.lprof
+
+
+
+
