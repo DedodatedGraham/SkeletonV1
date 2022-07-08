@@ -5,16 +5,16 @@ Created on Thu Feb 17 16:22:45 2022
 @author: Graham Garcia
 """
 
-from random  import randint
-from sys import float_repr_style
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from mpl_toolkits import mplot3d
+# from random  import randint
+# from sys import float_repr_style
+# import matplotlib
+# import matplotlib.pyplot as plt
+# from matplotlib.animation import FuncAnimation
+# from mpl_toolkits import mplot3d
 import numpy as np
-import csv
-import scipy
-import pandas as pd
+# import csv
+# import scipy
+# import pandas as pd
 
 
 

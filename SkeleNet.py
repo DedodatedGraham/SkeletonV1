@@ -1,16 +1,16 @@
 import os
 from random  import randint
-from sys import float_repr_style
-import matplotlib
+# from sys import float_repr_style
+# import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
+# from mpl_toolkits import mplot3d
 import numpy as np
 import csv
-import scipy
-import pandas as pd
+# import scipy
+# import pandas as pd
 import time
 
-from DataStructures import kdTree,SplitTree, SkelePoint
+from DataStructures import kdTree,SplitTree
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
 
 class SkeleNet:
@@ -140,11 +140,9 @@ class SkeleNet:
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
         
     def orderR(self,key : int,depth : int = 0,point : list = [],lastNode : list = []):
-        print()
         #First grabs a random point from the given Skeleton data to take as the Original Point
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
-
         print(depth)
         throwNodes = []#points might throwout but not sure yet
         throwRad = []#radii of potential throw points
@@ -440,7 +438,6 @@ class SkeleNet:
                             break
             
             
-            print(point,'isos',isotags,'combs',combtags)
             #Now we have generalized vector collections, Empties will be ignored, combos will be considered together
             #Iso's will be treated as simple branches and stepped out upon
             newNodes = []
@@ -901,8 +898,8 @@ class SkeleNet:
             elif mode[index] == 3:
                 pt = []
                 plt.clf()
-                plt.xlim(0.5,1.1)
-                plt.ylim(0.1,0.9)
+                # plt.xlim(-.2,.2)
+                # plt.ylim(-.2,.2)
                 i = 0
                 tx = []
                 ty = []
@@ -936,8 +933,8 @@ class SkeleNet:
             elif mode[index] == 4:
                 #This is the figure which can display the quadtree along with its nodes
                 plt.clf()
-                plt.xlim(0.2,0.8)
-                plt.ylim(0.2,0.8)
+                plt.xlim(0.4,1.2)
+                plt.ylim(0.1,0.9)
                 i = 0
                 tx = []
                 ty = []
