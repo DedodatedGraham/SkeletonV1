@@ -13,6 +13,7 @@ import time
 from DataStructures import kdTree,SplitTree
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
 
+
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
     #It can intake a location of a data file, or even the straight points
@@ -118,7 +119,6 @@ class SkeleNet:
         et = time.time()
         tt = (et - st)
         print('Total Solve took: {} Minuites {} Seconds'.format(tt // 60, tt % 60))
-        
     def order(self):
         #This function will go through all of the points 
         st = time.time()
@@ -138,12 +138,10 @@ class SkeleNet:
         et = time.time()
         tt = et - st
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
-        
     def orderR(self,key : int,depth : int = 0,point : list = [],lastNode : list = []):
         #First grabs a random point from the given Skeleton data to take as the Original Point
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
-        print(depth)
         throwNodes = []#points might throwout but not sure yet
         throwRad = []#radii of potential throw points
         
@@ -547,8 +545,7 @@ class SkeleNet:
         #Returning of data, does different things depending on what stage it is on
         # if not(depth == 0):
             
-       
-            
+    @profile   
     def __skeletize(self,key : int):
         #Skeletize takes in 
         #FROM INPUT
@@ -931,6 +928,7 @@ class SkeleNet:
                     i += 1
                 plt.savefig('SearchRecovery.png')
             elif mode[index] == 4:
+                theta =  np.linspace(0,2*np.pi,100)
                 #This is the figure which can display the quadtree along with its nodes
                 plt.clf()
                 plt.xlim(0.4,1.2)
@@ -945,7 +943,7 @@ class SkeleNet:
                 plt.scatter(tx,ty,5)
                 i = 0
                 while i < len(self.Strees):
-                    self.Strees[i].plot()
+                    self.Strees[i].plot(theta)
                     i+= 1
                 plt.savefig('nodes.png')
             et = time.time()

@@ -1,7 +1,7 @@
 # from random  import randint
 # from sys import float_repr_style
 # import matplotlib
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # import matplotlib.animation as animation
 # from matplotlib.animation import FuncAnimation
 # from mpl_toolkits import mplot3d
@@ -20,7 +20,7 @@ from SkeleNet import SkeleNet
 
 st = time.time()
 
-# plt.rcParams['figure.dpi'] = 300
+plt.rcParams['figure.dpi'] = 300
 
 #theta = np.linspace(0,2*np.pi,100)
 
@@ -31,7 +31,7 @@ ymax = 0.2
 
 tstart = time.time()
 
-net = SkeleNet('interface_points_070000.dat')
+net = SkeleNet('/home/graham_garcia1/SkeletonV1/interface_points_070000.dat')
 #net = SkeleNet('spiral.dat')
 #net = SkeleNet('vof_points_norm1.dat')
 net.solve(False)

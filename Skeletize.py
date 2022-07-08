@@ -55,7 +55,6 @@ def getRadius(point1, point2 , norm) -> float:
     radius = np.abs(dist / (2 * np.cos(theta)))
     
     return radius
-
 def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
     
     i = 0
@@ -66,7 +65,9 @@ def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
     if inside == 0:
         theta = np.pi / 2
     else:
-        inside = np.round(inside / (len1 * len2),6) 
+        inside = inside / (len1 * len2)
+        if inside > 1 or inside < -1:
+            inside = np.round(inside,6) 
         theta = np.arccos(inside)
     return theta
 

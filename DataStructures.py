@@ -300,8 +300,7 @@ class kdTree:
             return retPoints,retR
         else:
             return retPoints
-
-    
+    @profile
     def getVectorR(self,point : list,vec : list,n : int,tree : list = [],depth : int = 0,*,getRads : bool = False,rtree : list = [],scan = np.pi / 4):
         #Get vector will get the closest n number of points to the search point
         #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
@@ -887,19 +886,19 @@ class SplitTree:
             return False, depth
         return ret,dep
     
-    def plot(self):
+    def plot(self,theta : list):
         if self.state == True:
             #If the figure is subdivided
             i = 0
             while i < len(self.leafs):
-                self.leafs[i].plot()
+                self.leafs[i].plot(theta)
                 i += 1
-            plt.scatter(self.node[0],self.node[1],color='purple')
+            #plt.scatter(self.node[0],self.node[1],color='purple')
         else:
-            plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
-            plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
+            #plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            #plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
+            #plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
+            #plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
             if len(self.skelepts) > 0:
                 i = 0
                 tx = []
@@ -907,6 +906,7 @@ class SplitTree:
                 while i < len(self.skelepts):
                     tx.append(self.skelepts[i].x)
                     ty.append(self.skelepts[i].y)
+                    plt.plot(self.skelepts[i].x + np.cos(theta) * self.skelepts[i].r,self.skelepts[i].y + np.sin(theta) * self.skelepts[i].r,5,color='red')
                     i += 1
                 plt.scatter(tx,ty,5,color='green')
         
