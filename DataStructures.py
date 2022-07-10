@@ -300,7 +300,6 @@ class kdTree:
             return retPoints,retR
         else:
             return retPoints
-    @profile
     def getVectorR(self,point : list,vec : list,n : int,tree : list = [],depth : int = 0,*,getRads : bool = False,rtree : list = [],scan = np.pi / 4):
         #Get vector will get the closest n number of points to the search point
         #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be

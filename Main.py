@@ -30,8 +30,8 @@ ymin = -0.3
 ymax = 0.2
 
 tstart = time.time()
-
-net = SkeleNet('/home/graham_garcia1/SkeletonV1/interface_points_070000.dat')
+#/home/graham_garcia1/SkeletonV1/
+net = SkeleNet('interface_points_070000.dat')
 #net = SkeleNet('spiral.dat')
 #net = SkeleNet('vof_points_norm1.dat')
 net.solve(False)

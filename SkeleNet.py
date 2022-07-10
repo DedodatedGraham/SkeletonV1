@@ -545,7 +545,7 @@ class SkeleNet:
         #Returning of data, does different things depending on what stage it is on
         # if not(depth == 0):
             
-    @profile   
+    
     def __skeletize(self,key : int):
         #Skeletize takes in 
         #FROM INPUT
@@ -931,8 +931,8 @@ class SkeleNet:
                 theta =  np.linspace(0,2*np.pi,100)
                 #This is the figure which can display the quadtree along with its nodes
                 plt.clf()
-                plt.xlim(0.4,1.2)
-                plt.ylim(0.1,0.9)
+                plt.xlim(0.5,0.6)
+                plt.ylim(0.65,0.85)
                 i = 0
                 tx = []
                 ty = []
