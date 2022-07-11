@@ -581,7 +581,7 @@ class SkeleNet:
             tot += getDistance(tpt,tree.getNearR(tpt,[]))
             i += 1
         self.threshDistance.append(tot / 3) 
-            
+        print('thresh',self.threshDistance)    
         ##START OF SOLVE
         index = 0
         guessr = 0
@@ -643,8 +643,9 @@ class SkeleNet:
                 #Checking for completeion
                 
                 #Convergence check
+                dist = getDistance(point,testp[leng])
                 if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < self.threshDistance[key]:
-                    if tempr[leng] < (self.threshDistance[key] / 2) or getDistance(point, testp[leng]) < tempr[leng]:
+                    if np.abs(tempr[leng] - dist) < self.threshDistance[key] or tempr[leng] < (self.threshDistance[key] / 2) or getDistance(point, testp[leng]) < tempr[leng]:
                         self.SkelePoints[key].append(centerp[leng - 1])
                         self.SkeleRad[key].append(tempr[leng - 1])
                         #Show backstep in animation
@@ -931,8 +932,8 @@ class SkeleNet:
                 theta =  np.linspace(0,2*np.pi,100)
                 #This is the figure which can display the quadtree along with its nodes
                 plt.clf()
-                plt.xlim(0.5,0.6)
-                plt.ylim(0.65,0.85)
+                plt.xlim(0,.8)
+                plt.ylim(0,.5)
                 i = 0
                 tx = []
                 ty = []
