@@ -24,18 +24,13 @@ plt.rcParams['figure.dpi'] = 300
 
 #theta = np.linspace(0,2*np.pi,100)
 
-xmin = -0.3
-xmax = 0.2
-ymin = -0.3
-ymax = 0.2
-
 tstart = time.time()
 #/home/graham_garcia1/SkeletonV1/
-net = SkeleNet('interface_points_070000.dat')
+#net = SkeleNet('interface_points_070000.dat')
 #net = SkeleNet('spiral.dat')
-#net = SkeleNet('vof_points_norms.dat')
+net = SkeleNet('vof_points_norms.dat')
 net.solve(False)
-net.plot([1,4])
+net.plot([1,4,5])
 
 et = time.time()
 tt = et - st
