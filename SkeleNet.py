@@ -539,9 +539,9 @@ class SkeleNet:
                 if not(exists):
                     #this node hasnt been visited yet(verified with stack), should take a step in that direction
                     output.append(self.orderR(key,depth + 1,newNodes[i],point))    
-                    self.orderData[len(self.orderData) - 1].append([[point[0],newNodes[i][0]],[point[1],newNodes[i][1]]])
-                branches += 1#This counts all the connected branches at this point. branches can also be connected in a
-                             #later state if needed
+                    branches += 1#This counts all the connected branches at this point. branches can also be connected in a
+                                 #later state if needed
+                self.orderData[len(self.orderData) - 1].append([[point[0],newNodes[i][0]],[point[1],newNodes[i][1]]])            
                 i += 1
         else:
             print('LENGTH=0')
@@ -551,20 +551,26 @@ class SkeleNet:
             if not(exists):
                 output.append(self.orderR(key,depth + 1,closestp,point))
                 
-        
-        if branches == 0:
+        if depth == 0:
+        #Weve reached the final layer, time to pull up.  
+        elif branches == 0:
             print(depth,'Error, No Where To Go')
+            #No Branches is a bad thing anywhere
         elif branches == 1:
             #This is a complete Stop point. it has gone the deepend it can go. 
             print(depth,'Node')
-            
+            return([nodep,avgr])
         elif branches > 2:
             #3 or more branches means bifurication
             print(depth,'Node,{} Branches'.format(branches))
+            #We have a node
+            startnode = node
             
         else:
             #2 branches, should continue onwards
             print(depth,'2 Branch')
+            output.append([nodep,avgr])
+            return output
         
     def __skeletize(self,key : int):
         #Skeletize takes in 
