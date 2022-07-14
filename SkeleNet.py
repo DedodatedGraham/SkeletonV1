@@ -531,6 +531,7 @@ class SkeleNet:
                 i += 1
         #Here we gather information from further down the line, if leng = 0 and there are no iso tags, then the program mostlikely didnt step
         output = []
+        extra = []
         self.orderData.append([])
         if not(leng == 0 or (leng == 0 and len(isotags) == 0)):
             i = 0
@@ -538,7 +539,10 @@ class SkeleNet:
                 exists,dep = self.Strees[key].exists(newNodes[i],self.threshDistance[key])
                 if not(exists):
                     #this node hasnt been visited yet(verified with stack), should take a step in that direction
-                    output.append(self.orderR(key,depth + 1,newNodes[i],point))    
+                    out, ex = self.orderR(key,depth + 1,newNodes[i],point)   
+                    output.append(out)
+                    if len(ex) > 0:
+                        extra.append(ex)
                     branches += 1#This counts all the connected branches at this point. branches can also be connected in a
                                  #later state if needed
                 self.orderData[len(self.orderData) - 1].append([[point[0],newNodes[i][0]],[point[1],newNodes[i][1]]])            
@@ -549,28 +553,31 @@ class SkeleNet:
             closestp = self.Otrees[key].getNearR(point,[])
             exists,dep = self.Strees[key].exists(closestp,self.threshDistance[key])
             if not(exists):
-                output.append(self.orderR(key,depth + 1,closestp,point))
-                
-        if depth == 0:
-        #Weve reached the final layer, time to pull up.  
-        elif branches == 0:
-            print(depth,'Error, No Where To Go')
+                out,ex = self.orderR(key,depth + 1,closestp,point)
+                output.append(out)
+                if len(ex) > 0:
+                    extra.append(ex)
+        print(depth,output)
+        if branches == 0:
+            #print(depth,'Error, No Where To Go')
             #No Branches is a bad thing anywhere
+            return output,extra
         elif branches == 1:
-            #This is a complete Stop point. it has gone the deepend it can go. 
-            print(depth,'Node')
-            return([nodep,avgr])
+            #This is a complete Stop point. it has gone the deepest it can go. 
+            #print(depth,'Node')
+            print('test',[nodep,avgr])
+            return [nodep,avgr], extra
         elif branches > 2:
             #3 or more branches means bifurication
-            print(depth,'Node,{} Branches'.format(branches))
-            #We have a node
-            startnode = node
-            
+            #print(depth,'Node,{} Branches'.format(branches))
+            #We have a node, so we want to go through each of the branches and undue them
+            startnode = nodep
+            i = 0
         else:
             #2 branches, should continue onwards
-            print(depth,'2 Branch')
+            #print(depth,'2 Branch')
             output.append([nodep,avgr])
-            return output
+            return output, extra
         
     def __skeletize(self,key : int):
         #Skeletize takes in 
