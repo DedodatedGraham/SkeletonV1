@@ -685,9 +685,9 @@ class SplitTree:
             tp = []
             while i < len(points):
                 if len(rads) > 0:
-                    tp.append(SkelePoint(points[i],rad=rads[i]))
+                    tp.append(SkelePoint(points[i],rad=rads[i],connections=1))
                 else:
-                    tp.append(SkelePoint(points[i]))
+                    tp.append(SkelePoint(points[i],connections=1))
                 i += 1
             points = tp
         self.count += len(points)
@@ -844,10 +844,62 @@ class SplitTree:
                         cpoint = tpoint
                         cdis = tdis
                 if cdis < tolerance:
+                    self.skelepts[i].addConnection()
                     return True, depth
                 i += 1
             return False, depth
         return ret,dep
+    
+    def getConnections(self, point : list):
+        if self.state == True:
+            #Go Deeper
+            if self.dim == 2:
+                if point[0] > self.node[0] and point[1] > self.node[1]:
+                    ret = self.leafs[0].getConnections(point)
+                elif point[0] > self.node[0] and point[1] < self.node[1]:
+                    ret = self.leafs[1].getConnections(point)
+                elif point[0] < self.node[0] and point[1] > self.node[1]:
+                    ret = self.leafs[2].getConnections(point)
+                else:
+                    ret = self.leafs[3].getConnections(point)
+            else:
+                if point[0] > self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
+                    ret = self.leafs[0].getConnections(point)
+                elif point[0] > self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
+                    ret = self.leafs[0].getConnections(point)
+                elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
+                    ret = self.leafs[0].getConnections(point)
+                elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] < self.node[2]:
+                    ret = self.leafs[0].getConnections(point)
+                elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
+                    ret = self.leafs[0].getConnections(point)
+                elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
+                    ret = self.leafs[0].getConnections(point)
+                elif point[0] < self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
+                    ret = self.leafs[0].getConnections(point)
+                else:
+                    ret = self.leafs[0].getConnections(point)
+        else:
+            #Search here for it. 
+            i = 0
+            j = 0 
+            cdis = 0
+            cpoint = []
+            while i < len(self.skelepts):
+                #Gets closest point in container to the search
+                if i == 0:
+                    cpoint = self.skelepts[i].getPoint()
+                    cdis = getDistance(point, cpoint)
+                else:
+                    tpoint = self.skelepts[i].getPoint()
+                    tdis = getDistance(point, tpoint)
+                    if tdis < cdis:
+                        cpoint = tpoint
+                        cdis = tdis
+                        j = i
+                i += 1
+            return self.skelepts[j].connections
+        return ret
     
     def plot(self,theta : list):
         if self.state == True:
@@ -878,10 +930,11 @@ class SplitTree:
 class SkelePoint:
 #This is a class which has a point which holds x,y,z and r
 
-    def __init__(self,point : list,*, rad : float,case : bool = False):
+    def __init__(self,point : list,*, rad : float,connections : int = 0):
         self.x = point[0]
         self.y = point[1]
         self.r = rad
+        self.connections = connections
         if len(point) == 3:
             self.z = point[2]
             self.dimensions = 3
@@ -898,8 +951,9 @@ class SkelePoint:
     def getRad(self):
         return self.r
 
-    def getCase(self):
-        return self.case
+    def addConnection(self):
+        self.connections += 1
+    
     
     
     
