@@ -13,6 +13,8 @@ import time
 from DataStructures import kdTree,SplitTree
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
 
+from itertools import cycle
+cycol = cycle('bgrcmk')
 
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
@@ -127,11 +129,56 @@ class SkeleNet:
         self.Otrees = []
         self.Strees = []
         self.delpoints = []
+        self.orderpoints = []
         #Created the needed Trees to fidn the direction 
         while t < len(self.SkelePoints):
             self.Otrees.append(kdTree(self.SkelePoints[t], self.dim,rads=self.SkeleRad[t]))
             ret,extra = self.orderR(t)
-            self.delpoints.append(extra[0])
+            i = 0
+            extra[1].append([])
+            ends = []
+            while i < len(ret):
+                #There should be two matching points close to eachother in the return, could be n number of lists tho, but there would be an equal point.
+                ends.append(ret[i][0][0])
+                ends.append(ret[i][len(ret[i]) - 1][0])
+                i += 1
+            i = 0
+            closeends = []
+            while i < len(ends):
+                j = i + 1
+                while j < len(ends):
+                    if getDistance(ends[i], ends[j]) < 5 * self.threshDistance[t]:
+                        closeends.append(ends[i])
+                        closeends.append(ends[j])
+                    j += 1
+                i += 1
+            i = 0
+            while i < len(ret):
+                if i == 0:
+                    q = 0
+                    while q < len(closeends):
+                        if closeends[q] == ret[i][0][0]:
+                            ret[i].reverse()
+                            break
+                        q += 1
+                    q = 0
+                    while q < len(ret[i]):
+                        extra[1][len(extra[1]) - 1].append(ret[i][q])
+                        q += 1
+                else:
+                    q = 0
+                    while q < len(closeends):
+                        if closeends[q] == ret[i][len(ret[i]) - 1][0]:
+                            ret[i].reverse()
+                            break
+                        q += 1
+                    q = 0
+                    while q < len(ret[i]):
+                        extra[1][len(extra[1]) - 1].append(ret[i][q])
+                        q += 1
+                i += 1
+            print(extra[1][len(extra[1]) - 1])
+            self.orderpoints = extra[1]
             t += 1
         #This method is designed to search, order, and reduce the skeleton points into simple informat
         #Using a Depth-First Search It will recreate surfaces  
@@ -142,11 +189,10 @@ class SkeleNet:
         tt = et - st
         print('Ordering took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
     def orderR(self,key : int,depth : int = 0,point : list = [],lastNode : list = []):
+        
         #First grabs a random point from the given Skeleton data to take as the Original Point
         Local = []#local describes all points within a 10*threshdistance range
         Localr = []#locals radii
-        throwNodes = []#points might throwout but not sure yet
-        throwRad = []#radii of potential throw points
         
         if depth == 0:
             point =  self.SkelePoints[key][randint(0,len(self.SkelePoints[key]) - 1)]
@@ -179,8 +225,7 @@ class SkeleNet:
             nodep = [avgx,avgy,avgz]
         else:
             nodep = [avgx,avgy]
-
-            
+  
         #Boot up the stack if unmade
         if len(self.Strees) == key:
             #Find Maxbounds
@@ -534,52 +579,45 @@ class SkeleNet:
                         branches += 1
                     j += 1
                 i += 1
+                
         #Here we gather information from further down the line, if leng = 0 and there are no iso tags, then the program mostlikely didnt step
         output = []
         extra = []
-        self.orderData.append([])
+        visited = []
         if not((lengv == 0 and len(isotags) == 0)):
             i = 0
             while i < len(newNodes):
                 exists,dep = self.Strees[key].exists(newNodes[i],self.threshDistance[key])
                 if not(exists):
                     #this node hasnt been visited yet(verified with stack), should take a step in that direction
-                    out, ex = self.orderR(key,depth + 1,newNodes[i],point)   
+                    visited.append(newNodes[i])
+                    out, ex = self.orderR(key,depth + 1,newNodes[i],point)
                     for o in out:
                         output.append(o)
-                    lex = len(ex)
-                    lextra = len(extra)
-                    if lex > 0:
-                        if lex == 1:
-                            if lextra == 0:
-                                extra.append(ex[0])
-                            else:
-                                j = 0
-                                while j < len(ex[0]):
-                                    extra[0].append(ex[0][j])
-                                    j += 1
-                        elif lex == 2:
-                            if lextra == 0:
-                                extra.append(ex[0])
-                                extra.append(ex[1])
-                            elif lextra == 1:
-                                j = 0
-                                while j < len(ex[0]):
-                                    extra[0].append(ex[0][j])
-                                    j += 1
-                                extra.append(ex[1])
-                            else:
-                                j = 0
-                                while j < len(ex[0]):
-                                    extra[0].append(ex[0][j])
-                                    j += 1
-                                j = 0
-                                while j < len(ex[1]):
-                                    extra[1].append(ex[1][j])
-                                    j += 1
+                    q = len(extra)
+                    while q < 2:
+                        extra.append([])
+                        q += 1
+                    for e in ex[1]:
+                        extra[0].append(e)
+                    for e in ex[1]:
+                        extra[1].append(e)
+                    dotest = True
+                    j = 0
+                    while j < len(extra[0]):
+                        if extra[0][j] == newNodes[i]:
+                            dotest = False
+                            break
+                        j += 1
+                    if dotest:
+                        q = 0
+                        while q < len(output):
+                            #Tags all 'LastPoints' which may be too big of a differing radius 
+                            if np.abs(output[q][len(output[q]) - 1][1] - avgr) > self.threshDistance[key] * 5:
+                                extra[0].append(output[q][len(output[q]) - 1][0])
+                            q += 1
                     branches += 1#This counts all the connected branches at this point. branches can also be connected in a
-                                 #later state if needed
-                    self.orderData[len(self.orderData) - 1].append([[point[0],newNodes[i][0]],[point[1],newNodes[i][1]]])            
+                                 #later state if needed         
                 i += 1
         else:
             print('LENGTH=0')
@@ -587,93 +625,109 @@ class SkeleNet:
             closestp = self.Otrees[key].getNearR(point,[])
             exists,dep = self.Strees[key].exists(closestp,self.threshDistance[key])
             if not(exists):
+                visited.append(closestp)
                 out, ex = self.orderR(key,depth + 1,closestp,point)   
                 for o in out:
                     output.append(o)
-                lex = len(ex)
-                lextra = len(extra)
-                if lex > 0:
-                    if lex == 1:
-                        if lextra == 0:
-                            extra.append(ex[0])
-                        else:
-                            j = 0
-                            while j < len(ex[0]):
-                                extra[0].append(ex[0][j])
-                                j += 1
-                    elif lex == 2:
-                        if lextra == 0:
-                            extra.append(ex[0])
-                            extra.append(ex[1])
-                        elif lextra == 1:
-                            j = 0
-                            while j < len(ex[0]):
-                                extra[0].append(ex[0][j])
-                                j += 1
-                            extra.append(ex[1])
-                        else:
-                            j = 0
-                            while j < len(ex[0]):
-                                extra[0].append(ex[0][j])
-                                j += 1
-                            j = 0
-                            while j < len(ex[1]):
-                                extra[1].append(ex[1][j])
-                                j += 1
-                self.orderData[len(self.orderData) - 1].append([[point[0],closestp[0]],[point[1],closestp[1]]])
+                q = len(extra)
+                while q < 2:
+                    extra.append([])
+                    q += 1
+                for e in ex[1]:
+                    extra[0].append(e)
+                for e in ex[1]:
+                    extra[1].append(e)
+                j = 0
+                dotest = True
+                while j < len(extra[0]):
+                    if extra[0][j] == closestp:
+                        dotest = False
+                        break
+                    j += 1
+                if dotest:
+                    q = 0
+                    while q < len(output):
+                        if np.abs(output[q][len(output[q]) - 1][1] - avgr) > self.threshDistance[key] * 5:
+                            extra[0].append(output[q][len(output[q]) - 1][0])
+                        q += 1
+                            
+                            
+        #Output layerd in [node point, radius],.. until a 3 section point is found.
+        #Extra is stored in [[flagged points],[found branches]], branches => [[branch, 0],[branch,00],[branch, 01]..ect]
+        #For further clarity a branch is then [[StartPoint(w rad?)],[EndPoint(w rad?)],[Location Coef],[Rad Coef]]
+        #However now, a branch is just a collection of the [nodepoint,radius]
+        # print()
+        # print('visited',visited)
         if branches == 0:
             print(depth,'Error, No Where To Go')
             #No Branches is a bad thing anywhere; this shouldnt happen
         elif branches == 1:
+            # print(depth,point,'stop')
             #This is a complete Stop point. it has gone the deepest it can go. 
             #Adds a flag if not close to anything
+            i = len(extra)
+            while i < 2:
+                extra.append([])
+                i += 1
             if lengv == 1:
-                if len(extra) == 0:
-                    extra.append([])
                 extra[0].append(nodep)
-                print(nodep,'isolated')
-            elif np.abs(self.Strees[key].getConnections(nodep) - branches) > 1:
-                #these points are also bad(more attemps than actual), so flag
-                if len(extra) == 0:
-                    extra.append([])
-                extra[0].append(nodep)
-                print(nodep,'connections')
-            return [nodep,avgr], extra
+            return [[[nodep,avgr]]], extra
         elif branches > 2:
             #3 or more branches means some sort of node branching
+            # print(depth,'split')
+            i = len(extra)
+            while i < 2:
+                extra.append([])
+                i += 1
             if lengv == 1:
-                if len(extra) == 0:
-                    extra.append([])
                 extra[0].append(nodep)
-                print(nodep,'isolated')
-            elif np.abs(self.Strees[key].getConnections(nodep) - branches) > 1:
-                #these points are also bad(more attemps than actual), so flag
-                if len(extra) == 0:
-                    extra.append([])
-                extra[0].append(nodep)
-                print(nodep,'connections')
-            #Right now even if flagged as bad, still makes a node, anything deeper than this node will be thrown away.
-            #This is subject to change through testing
-            #The next step is to pull back all the data, 
             
-            
-            
+            #First gathers nodes its gone to, stores a list of all and ones we want to visit
+            j = 0
+            comparenodes = []
+            startnodes = []
+            while j < len(visited):
+                tnodec = self.Strees[key].getConnections(visited[j],getpoint=True).getPoint()
+                startnodes.append(tnodec)
+                i = 0
+                flagged = False
+                while i < len(extra[0]):
+                    if extra[0][i] == tnodec:
+                        flagged = True
+                        self.delpoints.append(tnodec)
+                        break
+                    i += 1
+                if not(flagged):
+                    comparenodes.append(tnodec)
+                j += 1
+            # print('comparenodes',comparenodes)
+            #Now we search through the outputs and add in the branches we want
+            i = 0
+            while i < len(output):
+                j = 0
+                while j < len(comparenodes):
+                    if output[i][len(output[i]) - 1][0] == comparenodes[j]:
+                        #This is a part we want to save
+                        extra[1].append(output[i])
+                        break
+                    j += 1
+                i += 1
+            output = []
+            output.append([[nodep,avgr]])
+            extra[0] = []
+            # print('extra',extra[1])
             return output, extra
         else:
+            # print(depth,'continue')
             #2 branches, should continue onwards
             #adds flag if not close to anything
+            i = len(extra)
+            while i < 2:
+                extra.append([])
+                i += 1
             if lengv == 1:
-                if len(extra) == 0:
-                    extra.append([])
                 extra[0].append(nodep)
-                print(nodep,'isolated')
-            elif np.abs(self.Strees[key].getConnections(nodep) - branches) > 1:
-                #these points are also bad(more attemps than actual), so flag
-                if len(extra) == 0:
-                    extra.append([])
-                extra[0].append(nodep)
-                print(nodep,'connections')
-            output.append([nodep,avgr])
+            output[0].append([nodep,avgr])
             return output, extra
         
     def __skeletize(self,key : int):
@@ -1098,19 +1152,22 @@ class SkeleNet:
                     ty.append(self.IntPoints[i][1])
                     i += 1
                 plt.scatter(tx,ty,5)
+                #plot the sections
                 i = 0
-                while i < len(self.orderData):
+                while i < len(self.orderpoints):
                     j = 0
-                    while j < len(self.orderData[i]):
-                        plt.plot(self.orderData[i][j][0],self.orderData[i][j][1],5,color='red')
+                    tx = []
+                    ty = []
+                    while j < len(self.orderpoints[i]):
+                        tx.append(self.orderpoints[i][j][0][0])
+                        ty.append(self.orderpoints[i][j][0][1])
                         j += 1
+                    plt.plot(tx,ty,5,color=next(cycol))
                     i += 1
+                
                 i = 0
                 while i < len(self.delpoints):
-                    j = 0
-                    while j < len(self.delpoints[i]):
-                        plt.scatter(self.delpoints[i][j][0],self.delpoints[i][j][1],10,color='green')
-                        j += 1
+                    plt.scatter(self.delpoints[i][0],self.delpoints[i][1],10,color='black')
                     i += 1
                 plt.savefig('orderLines.png')
             et = time.time()

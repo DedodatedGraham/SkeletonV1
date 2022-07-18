@@ -850,35 +850,35 @@ class SplitTree:
             return False, depth
         return ret,dep
     
-    def getConnections(self, point : list):
+    def getConnections(self, point : list,*,getpoint = False):
         if self.state == True:
             #Go Deeper
             if self.dim == 2:
                 if point[0] > self.node[0] and point[1] > self.node[1]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 elif point[0] > self.node[0] and point[1] < self.node[1]:
-                    ret = self.leafs[1].getConnections(point)
+                    ret = self.leafs[1].getConnections(point,getpoint=getpoint)
                 elif point[0] < self.node[0] and point[1] > self.node[1]:
-                    ret = self.leafs[2].getConnections(point)
+                    ret = self.leafs[2].getConnections(point,getpoint=getpoint)
                 else:
-                    ret = self.leafs[3].getConnections(point)
+                    ret = self.leafs[3].getConnections(point,getpoint=getpoint)
             else:
                 if point[0] > self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 elif point[0] > self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 elif point[0] > self.node[0] and point[1] < self.node[1] and point[2] < self.node[2]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] > self.node[2]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 elif point[0] < self.node[0] and point[1] > self.node[1] and point[2] < self.node[2]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 elif point[0] < self.node[0] and point[1] < self.node[1] and point[2] > self.node[2]:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
                 else:
-                    ret = self.leafs[0].getConnections(point)
+                    ret = self.leafs[0].getConnections(point,getpoint=getpoint)
         else:
             #Search here for it. 
             i = 0
@@ -898,8 +898,13 @@ class SplitTree:
                         cdis = tdis
                         j = i
                 i += 1
-            return self.skelepts[j].connections
+            if getpoint:
+                return self.skelepts[j]    
+            else:
+                return self.skelepts[j].connections
         return ret
+    
+    
     
     def plot(self,theta : list):
         if self.state == True:
