@@ -26,9 +26,9 @@ plt.rcParams['figure.dpi'] = 300
 
 tstart = time.time()
 #/home/graham_garcia1/SkeletonV1/
-#net = SkeleNet('interface_points_070000.dat')
+net = SkeleNet('interface_points_070000.dat')
 #net = SkeleNet('spiral.dat')
-net = SkeleNet('vof_points_norms.dat')
+# net = SkeleNet('vof_points_norms.dat')
 # net = SkeleNet('bagdrop.dat')
 net.solve(False)
 net.plot([1,4,5])

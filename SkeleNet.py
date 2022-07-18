@@ -3,6 +3,7 @@ from random  import randint
 # from sys import float_repr_style
 # import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
 # from mpl_toolkits import mplot3d
 import numpy as np
 import csv
@@ -177,7 +178,6 @@ class SkeleNet:
                         extra[1][len(extra[1]) - 1].append(ret[i][q])
                         q += 1
                 i += 1
-            print(extra[1][len(extra[1]) - 1])
             self.orderpoints = extra[1]
             t += 1
         #This method is designed to search, order, and reduce the skeleton points into simple informat
@@ -1140,8 +1140,10 @@ class SkeleNet:
             elif mode[index] == 5:
                 #Plots Connections of the Ordering
                 plt.clf()
-                plt.xlim(0.1,0.65)
-                plt.ylim(.05,.4)
+                # plt.xlim(0.35,0.8)
+                # plt.ylim(-0.05,0.5)
+                # plt.xlim(0,0.5)
+                # plt.ylim(0,0.5)
                 # plt.xlim(0.5,1.1)
                 # plt.ylim(0.1,0.9)
                 i = 0
@@ -1153,22 +1155,25 @@ class SkeleNet:
                     i += 1
                 plt.scatter(tx,ty,5)
                 #plot the sections
+                tx = []
+                ty = []
+                tr = []
                 i = 0
                 while i < len(self.orderpoints):
                     j = 0
-                    tx = []
-                    ty = []
                     while j < len(self.orderpoints[i]):
                         tx.append(self.orderpoints[i][j][0][0])
                         ty.append(self.orderpoints[i][j][0][1])
+                        tr.append(self.orderpoints[i][j][1])
                         j += 1
-                    plt.plot(tx,ty,5,color=next(cycol))
                     i += 1
-                
+                sc = plt.scatter(tx,ty,5,c=tr,cmap='winter')
+                plt.colorbar(sc)
                 i = 0
                 while i < len(self.delpoints):
                     plt.scatter(self.delpoints[i][0],self.delpoints[i][1],10,color='black')
                     i += 1
+                plt.show()
                 plt.savefig('orderLines.png')
             et = time.time()
             tt += (et - st)
