@@ -772,7 +772,7 @@ class SkeleNet:
         guessr = 0
         prnd = []
         for point in self.tpoints[key]:
-            print(index)
+            print(index,'/',len(self.IntPoints))
             #finding inital temp radius
             norm = self.tnorms[key][index]
             tempr = []

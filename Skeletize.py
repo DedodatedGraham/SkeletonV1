@@ -92,7 +92,6 @@ def normalize(points : list) -> list:
             retpoints.append([tempx,tempy,tempz])
         i = i + 1
     return retpoints
-@profile
 def getDistance(point1, point2) -> float:
     x = point1[0] - point2[0]
     y = point1[1] - point2[1]

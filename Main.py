@@ -29,9 +29,9 @@ linep = True
 
 #theta = np.linspace(0,2*np.pi,100)
 tstart = time.time()
-link = 'interface_points_070000.dat'
+#link = 'interface_points_070000.dat'
 #link = 'spiral.dat'
-#link = 'vof_points_norm_0650.dat'
+link = 'vof_points_norm_0650.dat'
 #link = 't06.dat'
 #link = 'bagdrop.dat'
 if linep:

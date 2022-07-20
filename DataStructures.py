@@ -70,7 +70,6 @@ def partition(points : list , dimension : int , first : int , last : int , rads 
         rads[right] = tempr
     return right
 class kdTree:
-    @profile    
     def __init__(self,points : list, dim : int, * ,  rads : list = []):
         
     #for sorting points along an axis
@@ -108,7 +107,6 @@ class kdTree:
         
     
     #contructs the tree    
-    @profile    
     def makeTree(self,points:list, depth : int,rads : list = []):
         if depth == 0:
             st = time.time()
@@ -183,7 +181,6 @@ class kdTree:
             return finTree , finRadT
       
     #searches tree              
-    @profile    
     def getNearR(self,searchPoint : list , exclude : list ,tree : list = [], depth : int = 0,*,getRads : bool = False, rtree : list = []):
         smallestLayer = []
         if getRads:
@@ -275,7 +272,6 @@ class kdTree:
             return smallestLayer
                     
                 
-    @profile    
     def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0,*,getRads : bool = False,rtree : list = []):
         #Returns all the points which lie inside a give area arround a certain point
         #Mode 0 => Square area, point in center, side = 2 * dim
@@ -367,7 +363,6 @@ class kdTree:
         else:
             return retPoints
     
-    @profile    
     def getVectorR(self,point : list,vec : list,n : int,tree : list = [],depth : int = 0,*,getRads : bool = False,rtree : list = [],scan = np.pi / 4):
         #Get vector will get the closest n number of points to the search point
         #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
