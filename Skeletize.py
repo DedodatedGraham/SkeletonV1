@@ -92,12 +92,15 @@ def normalize(points : list) -> list:
             retpoints.append([tempx,tempy,tempz])
         i = i + 1
     return retpoints
-
+@profile
 def getDistance(point1, point2) -> float:
+    x = point1[0] - point2[0]
+    y = point1[1] - point2[1]
     if len(point1) == 2:
-        return np.sqrt(pow(np.abs(point1[0]-point2[0]),2) + pow(np.abs(point1[1]-point2[1]),2))
+        return (x ** 2 + y ** 2) ** 0.5
     else:
-        return np.sqrt(np.abs(pow(point1[0]-point2[0],2)) + np.abs(pow(point1[1]-point2[1],2))+np.abs(pow(point1[2]-point2[2],2)))
+        z = point1[2] - point2[2]
+        return (x ** 2 + y ** 2 + z ** 2) ** 0.5
     
 def getPoint(point : list, vec : list):
     ret = []

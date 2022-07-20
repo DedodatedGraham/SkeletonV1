@@ -1,5 +1,6 @@
 # from random  import randint
 # from sys import float_repr_style
+import sys
 # import matplotlib
 import matplotlib.pyplot as plt
 # import matplotlib.animation as animation
@@ -18,18 +19,24 @@ import time
 from SkeleNet import SkeleNet
 from DataStructures import quicksort
 
+
+sys.setrecursionlimit(10000)
 st = time.time()
 
 plt.rcParams['figure.dpi'] = 300
 
+linep = True
+
 #theta = np.linspace(0,2*np.pi,100)
 tstart = time.time()
-#/home/graham_garcia1/SkeletonV1/
-# net = SkeleNet('interface_points_070000.dat')
-#net = SkeleNet('spiral.dat')
-net = SkeleNet('vof_points_norm_0650.dat')
-# net = SkeleNet('t06.dat')
-# net = SkeleNet('bagdrop.dat')
+link = 'interface_points_070000.dat'
+#link = 'spiral.dat'
+#link = 'vof_points_norm_0650.dat'
+#link = 't06.dat'
+#link = 'bagdrop.dat'
+if linep:
+    link = '/home/graham_garcia1/SkeletonV1/' + link
+net = SkeleNet(link)
 net.solve(False)
 net.plot([1,4,5])
 net.savedat()

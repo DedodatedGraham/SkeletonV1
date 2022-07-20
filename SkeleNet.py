@@ -729,7 +729,7 @@ class SkeleNet:
                 extra[0].append(nodep)
             output[0].append([nodep,avgr])
             return output, extra
-        
+    
     def __skeletize(self,key : int):
         #Skeletize takes in 
         #FROM INPUT
