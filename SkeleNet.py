@@ -8,7 +8,7 @@ from matplotlib.collections import LineCollection
 import numpy as np
 import csv
 # import scipy
-# import pandas as pd
+import pandas as pd
 import time
 
 from DataStructures import kdTree,SplitTree
@@ -755,6 +755,7 @@ class SkeleNet:
         while i < len(self.tpoints[key]):
             pts.append(self.tpoints[key][i])
             i += 1
+        
         tree = kdTree(pts,self.dim)        
         #Threshdistance averages 3 random points distance incase there is 
         #An adaptive Mesh so it can capture good threshold 
@@ -771,6 +772,7 @@ class SkeleNet:
         guessr = 0
         prnd = []
         for point in self.tpoints[key]:
+            print(index)
             #finding inital temp radius
             norm = self.tnorms[key][index]
             tempr = []
@@ -1181,3 +1183,19 @@ class SkeleNet:
 
         print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 
+    def savedat(self):
+        i = 0
+        tx = []
+        ty = []
+        tz = []
+        tr = []
+        while i < len(self.orderpoints):
+            j = 0
+            while j < len(self.orderpoints[i]):
+                tx.append(np.round(self.orderpoints[i][j][0][0],6))
+                ty.append(np.round(self.orderpoints[i][j][0][1],6))
+                tr.append(np.round(self.orderpoints[i][j][1],6))
+                j += 1
+            i += 1
+        output = pd.DataFrame({'x':tx,'y':ty,'r':tr})
+        output[1:].to_csv('SkeleSave.dat',index=False)

@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 # from matplotlib.animation import FuncAnimation
 # from mpl_toolkits import mplot3d
 import numpy as np
+import time
 # import csv
 # import scipy
 # import pandas as pd
@@ -19,6 +20,55 @@ import numpy as np
 
 from Skeletize import getDistance, getAngle
 
+def quicksort(points : list , dimension : int , rads : list = []):
+    if len(rads) > 0:
+        return quicksortrunner(points,dimension,0,len(points)-1,rads=rads)
+    else:
+        return quicksortrunner(points,dimension,0,len(points)-1)
+
+
+def quicksortrunner(points : list , dimension : int , first : int , last : int , rads : list = [],depth : int = 0):
+    # print('sorting',depth)
+    if first<last:
+        if len(rads) > 0:
+            splitpoint = partition(points,dimension,first,last,rads=rads)
+            quicksortrunner(points, dimension, first, splitpoint - 1,rads=rads,depth=depth+1)
+            quicksortrunner(points, dimension, splitpoint + 1,last,rads=rads,depth=depth+1)
+            return points,rads
+        else:
+            splitpoint = partition(points,dimension,first,last)
+            quicksortrunner(points, dimension, first, splitpoint - 1,depth=depth+1)
+            quicksortrunner(points, dimension, splitpoint + 1,last,depth=depth+1)
+            return points
+            
+def partition(points : list , dimension : int , first : int , last : int , rads : list = []):
+    pivot = points[first][dimension]
+    left = first + 1
+    right = last
+    done = False
+    while not done:
+        while left <= right and points[left][dimension] <= pivot:
+            left += 1
+        while right >= left and points[right][dimension] >= pivot:
+            right -= 1
+        if right < left:
+            done = True
+        else:
+            temp = points[left]
+            points[left] = points[right]
+            points[right] = temp
+            if len(rads) > 0:
+                tempr = rads[left]
+                rads[left] = rads[right]
+                rads[right] = tempr
+    temp = points[first]
+    points[first] = points[right]
+    points[right] = temp
+    if len(rads) > 0:
+        tempr = rads[first]
+        rads[first] = rads[right]
+        rads[right] = tempr
+    return right
 class kdTree:
     
     def __init__(self,points : list, dim : int, * ,  rads : list = []):
@@ -39,34 +89,41 @@ class kdTree:
         else:
             self.tree = self.makeTree(self.PointsList,0)
             
-    def sort(self,points : list, dimension,rads = []) -> list:
-        for i in range(len(points)):
-            min_i = i
-            for j in range(i+1,len(points)):
-                if points[j][dimension] < points[min_i][dimension]:
-                    min_i = j
-            points[i],points[min_i] = points[min_i],points[i]
-            if len(rads) > 0:
-                rads[i],rads[min_i] = rads[min_i],rads[i]
-        if len(rads) > 0:
-            return points,rads    
-        else:
-            return points
+    # def sort(self,points : list, dimension,rads = []) -> list:
+        #Normal Sort, SLOW : -> Quicksort
+        # for i in range(len(points)):
+        #     print(i)
+        #     min_i = i
+        #     for j in range(i+1,len(points)):
+        #         if points[j][dimension] < points[min_i][dimension]:
+        #             min_i = j
+        #     points[i],points[min_i] = points[min_i],points[i]
+        #     if len(rads) > 0:
+        #         rads[i],rads[min_i] = rads[min_i],rads[i]
+        # if len(rads) > 0:
+        #     return points,rads    
+        # else:
+        #     return points
+        
+        
     
     #contructs the tree    
     def makeTree(self,points:list, depth : int,rads : list = []):
+        if depth == 0:
+            st = time.time()
+            print(depth,'Initiating k-d,Tree')
         finTree = []
         getRads = False
         if len(rads) > 0:
             finRadT = []
             getRads = True
         #designed to never have empty leafs
-        if len(points) > 5 and depth < 100:
+        if len(points) > 5:
             axis = depth % self.dimensions #gets axis to divide along
             if getRads:
-                points,rads = self.sort(points,axis,rads)    
+                points,rads = quicksort(points,axis,rads)    
             else:
-                points = self.sort(points,axis)
+                points = quicksort(points,axis)
                
             
             mid = len(points) // 2
@@ -103,7 +160,10 @@ class kdTree:
                 finRadT.append(tempr)
             else:
                 finTree.append(self.makeTree(pointsr,depth+1))#(right of node)
-            
+            if depth == 0:
+                et = time.time()
+                tt = et - st
+                print('k-d tree took {} minuites and {} seconds to make'.format(tt // 60,tt % 60))
         else:
             #add in all points, if small amount of points or too deep
             i = 0
