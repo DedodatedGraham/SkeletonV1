@@ -53,22 +53,22 @@ class SkeleNet:
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
                             self.NormPoints.append([float(row[2]),float(row[3])])
+                            self.MasterTag.append(0)
                     elif size == 5:#2D w/ tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1])])
                             self.NormPoints.append([float(row[2]),float(row[3])]) 
                             self.MasterTag.append(int(row[4]) - 1)
-                            self.tagged = True
                     elif size == 6:#3D w/ no tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
                             self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
+                            self.MasterTag.append(0)
                     elif size == 7:#3D w/ tag
                         if randint(0,10) >= self.rnd:
                             self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
                             self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
                             self.MasterTag.append(int(row[6]) - 1)
-                            self.tagged =  True
             csvfile.close()
             
         elif isinstance(points,list):
@@ -79,8 +79,7 @@ class SkeleNet:
                     self.NormPoints.append(norm)
         
 
-        
-        if len(points[0]) == 3:
+        if len(self.IntPoints[0]) == 3:
             self.dim = 3
         else:
             self.dim = 2
@@ -93,11 +92,7 @@ class SkeleNet:
         self.NormPoints = []
         self.NormPoints = temp
         
-        if self.tagged:
-            self.__tag()
-        else:
-            self.tpoints = [self.IntPoints]
-            self.tnorms = [self.NormPoints]
+        self.__tag()
 
 ###MAIN FUNCTIONS
     def solve(self,animate : bool = False):
@@ -112,14 +107,11 @@ class SkeleNet:
         else:
             self.animate = False
         
-        if self.tagged:
-            i = 0
-            while i < len(self.tpoints):
-                self.__skeletize(i)
-                i += 1
-        else:
-            self.__skeletize(0)
-        self.order()
+        i = 0
+        while i < len(self.tpoints):
+            self.__skeletize(i)
+            i += 1
+        # self.order()
         et = time.time()
         tt = (et - st)
         print('Total Solve took: {} Minuites {} Seconds'.format(tt // 60, tt % 60))
@@ -747,7 +739,8 @@ class SkeleNet:
         self.SkeleRad.append([])
         print('Skeletizing #{}...'.format(key))
         pts = []
-        
+        avgt = 0
+        numt = 0
         ##INITAL SETTING UP METHOD
         #removes the connection between input points and output ponts
         #When not doing this kd-tree skews points for some reason?
@@ -756,7 +749,7 @@ class SkeleNet:
             pts.append(self.tpoints[key][i])
             i += 1
         
-        tree = kdTree(pts,self.dim)        
+        tree = kdTree(pts)        
         #Threshdistance averages 3 random points distance incase there is 
         #An adaptive Mesh so it can capture good threshold 
         tot = 0
@@ -772,6 +765,7 @@ class SkeleNet:
         guessr = 0
         prnd = []
         for point in self.tpoints[key]:
+            stt = time.time()
             print(index,'/',len(self.IntPoints))
             #finding inital temp radius
             norm = self.tnorms[key][index]
@@ -889,6 +883,10 @@ class SkeleNet:
                        self.SkelePoints[key].append(centerp[n])
                        case = True 
                 i += 1
+            avgt += (time.time() - stt)
+            numt += 1
+            if index % 10 == 0:
+                print('average time per step is {} Minuites and {} seconds'.format((avgt/numt) // 60,(avgt/numt) % 60))
             if index != len(self.tpoints[key]) - 1:
                 guessr = self.threshDistance[key] * len(self.tpoints[key])
             index += 1
@@ -947,7 +945,6 @@ class SkeleNet:
                 return    
 
 ####ImageProcessing
-
     def plot(self,mode : list = [],*,norm = True,tag = 'None',start : int = 0,stop : int = 9999):
         fig = plt.figure()
         ax = fig.add_subplot(111)
@@ -1183,19 +1180,36 @@ class SkeleNet:
 
         print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 
-    def savedat(self):
+    def savedat(self,mode : int = 0):
         i = 0
         tx = []
         ty = []
         tz = []
         tr = []
-        while i < len(self.orderpoints):
-            j = 0
-            while j < len(self.orderpoints[i]):
-                tx.append(np.round(self.orderpoints[i][j][0][0],6))
-                ty.append(np.round(self.orderpoints[i][j][0][1],6))
-                tr.append(np.round(self.orderpoints[i][j][1],6))
-                j += 1
-            i += 1
-        output = pd.DataFrame({'x':tx,'y':ty,'r':tr})
+        if mode == 0:
+            while i < len(self.orderpoints):
+                j = 0
+                while j < len(self.orderpoints[i]):
+                    tx.append(self.orderpoints[i][j][0][0])
+                    ty.append(self.orderpoints[i][j][0][1])
+                    if self.dim == 3:
+                        tz.append(self.orderpoints[i][j][0][2])
+                    tr.append(self.orderpoints[i][j][1])
+                    j += 1
+                i += 1
+        elif mode == 1:
+            while i < len(self.SkelePoints):
+                j = 0
+                while j < len(self.SkelePoints[i]):
+                    tx.append(self.SkelePoints[i][j][0])
+                    ty.append(self.SkelePoints[i][j][1])
+                    if self.dim == 3:
+                        tz.append(self.SkelePoints[i][j][2])
+                    tr.append(self.SkeleRad[i][j])
+                    j += 1
+                i += 1
+        if self.dim == 2:
+            output = pd.DataFrame({'x':tx,'y':ty,'r':tr})
+        else:
+            output = pd.DataFrame({'x':tx,'y':ty,'z':tz,'r':tr})
         output[1:].to_csv('SkeleSave.dat',index=False)
