@@ -345,10 +345,17 @@ class SkeleNet:
             i += 1
         i = 0
         while i < len(self.tpoints):
+            setthresh = []
+            temptree = []
+            j = 0
+            while j < len(self.divpts[i]):
+                setthresh.append(self.threshDistance[i])
+                temptree.append(self.tree[i])
+                j += 1
             if self.animate:
-                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],self.threshDistance[i],self.tree[i],animate = True)
+                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,animate = True)
             else:
-                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],self.threshDistance[i],self.tree[i])
+                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree)
             print(results)
             i += 1
         # self.order()
