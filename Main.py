@@ -27,20 +27,20 @@ if __name__ == '__main__':
     
     plt.rcParams['figure.dpi'] = 300
     
-    linep = False
+    linep = True
     
     
-    link = 'interface_points_070000.dat'
+    # link = 'interface_points_070000.dat'
     # link = 'spiral.dat'
-    # link = 'vof_points_norm_0650.dat'
+    link = 'vof_points_norm_0650.dat'
     # link = 't06.dat'
     # link = 'bagdrop.dat'
     if linep:
         link = '/home/graham_garcia1/SkeletonV1/' + link
     net = SkeleNet(link)
-    net.solve(True)
-    net.plot([1])
+    net.solve(False)
     net.savedat(1)
+    net.plot([1])
     
     et = time.time()
     tt = et - st

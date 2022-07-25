@@ -2,6 +2,8 @@ import os
 from random  import randint
 # from sys import float_repr_style
 # import matplotlib
+import matplotlib
+matplotlib.use('GTK3Agg') 
 import matplotlib.pyplot as plt
 # from mpl_toolkits import mplot3d
 import numpy as np
@@ -14,11 +16,11 @@ from pathos.multiprocessing import ProcessingPool
 
 from DataStructures import kdTree,SplitTree
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
-
+from mpl_toolkits import mplot3d
 from itertools import cycle
 cycol = cycle('bgrcmk')
 
-def skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTree,*,animate : bool = False):
+def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,animate : bool = False,cpuid : int = -1,tag : int = -1):
     #Skeletize takes in 
     #FROM INPUT
     #key is the specific index of tpoints and tnorms, allows for
@@ -36,6 +38,8 @@ def skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTr
     #     self.SkeleRad.append([])
     #     print('Skeletizing #{}...'.format(key))
     
+    
+
     ##INITAL SETTING UP METHOD
     #removes the connection between input points and output ponts
     #When not doing this kd-tree skews points for some reason?
@@ -63,7 +67,6 @@ def skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTr
     i = 0
     for point in pts:
         stt = time.time()
-        # print(index,'/',len(pts) - 1)
         #finding inital temp radius
         norm = nrms[index]
         tempr = []
@@ -73,12 +76,14 @@ def skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTr
  
         case = False
  
+        print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1)
         #Main loop for each points solve
         while not case:
             if i == 0:
                 #Inital
                 if index == 0:
                     prnd = pts[randint(1,len(pts) - 1)]
+                    print(point,prnd)
                     tempr.append(np.round(getRadius(point,prnd,norm),6))
                 else:
                     tempr.append(guessr)
@@ -101,7 +106,7 @@ def skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTr
                     print()
                     
                 tempr.append(np.round(getRadius(point,testp[i],norm),6))
-                if self.dim == 2:
+                if dim == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
                 else:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i]),float(point[2]-norm[2]*tempr[i])])
@@ -188,11 +193,11 @@ def skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTr
             i += 1
         avgt += (time.time() - stt)
         numt += 1
-        # if index % 10 == 0:
-            # print('average time per step is {} Minuites and {} seconds'.format((avgt/numt) // 60,(avgt/numt) % 60))
+        if index % 10 == 0:
+            print('average time per step is {} Minuites and {} seconds'.format((avgt/numt) // 60,(avgt/numt) % 60))
         if index != len(points) - 1:
             guessr = threshDistance * len(points)
-    index += 1
+        index += 1
     te = time.time()
     tt = te - ts
     print('Skeleton took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
@@ -225,7 +230,7 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = mp.cpu_count() - 2 #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 2,18) #Will Always allow 2 Cores to remain unused
         print('We have {} CPU\'s Available'.format(self.cpuavail))
         self.pool = ProcessingPool(nodes=self.cpuavail)
         #Determining type of points given
@@ -348,16 +353,36 @@ class SkeleNet:
         while i < len(self.tpoints):
             setthresh = []
             temptree = []
+            ani = []
+            cpuid = []
+            cputag = []
             j = 0
             while j < len(self.divpts[i]):
                 setthresh.append(self.threshDistance[i])
                 temptree.append(self.tree[i])
+                ani.append(self.animate)
+                cpuid.append(j)
+                cputag.append(i)
                 j += 1
             if self.animate:
-                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,animate = True)
+                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
             else:
-                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree)
-            print(results)
+                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
+            for data in results:
+                t0 = data[0]
+                t1 = data[1]
+                if self.animate:
+                    t2 = data[2]
+                    t3 = data[3]
+                    t4 = data[4]
+                if len(self.SkelePoints) == i:
+                    self.SkelePoints.append([])
+                    self.SkeleRad.append([])
+                j = 0
+                while j < len(t0):
+                    self.SkelePoints[i].append(t0[j])
+                    self.SkeleRad[i].append(t1[j])
+                    j += 1
             i += 1
         # self.order()
         et = time.time()
@@ -1024,11 +1049,12 @@ class SkeleNet:
             else:#3D Norms
                 return    
 
-####ImageProcessing
+    ####ImageProcessing
     def plot(self,mode : list = [],*,norm = True,tag = 'None',start : int = 0,stop : int = 9999):
+        sst = time.time()
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        theta = np.linspace(0,2*np.pi,100)
+        #theta = np.linspace(0,2*np.pi,100)
         index = 0
         tt = 0
         while index < len(mode):
@@ -1061,31 +1087,57 @@ class SkeleNet:
             #Mode 1 is for outputting final points for every tag
             elif mode[index] == 1:
                 plt.clf()
-                plt.xlim(0.5,1)
-                plt.ylim(0,1)
-                i = 0
-                tx = []
-                ty = []
-                while i < len(self.IntPoints):    
-                    tx.append(self.IntPoints[i][0])
-                    ty.append(self.IntPoints[i][1])
-                    i += 1
-                plt.scatter(tx,ty,5,color='blue')
-                i = 0
-                #theta = np.linspace(0,2*np.pi)
-                while i < len(self.SkelePoints):
-                    j = 0
+                #plt.xlim(0.5,1)
+                #plt.ylim(0,1)
+                if self.dim == 2:
+                    i = 0
                     tx = []
                     ty = []
-                    while j < len(self.SkelePoints[i]):
-                        tx.append(self.SkelePoints[i][j][0])
-                        ty.append(self.SkelePoints[i][j][1])
-                        #plt.plot(tx[j] + np.cos(theta) * self.SkeleRad[i][j],ty[j] + np.sin(theta) * self.SkeleRad[i][j],color = 'blue')
-                        j += 1
-                    plt.scatter(tx,ty,5)
-                    i += 1
-                
-                    plt.scatter(tx,ty,5,color='orange')
+                    while i < len(self.IntPoints):    
+                        tx.append(self.IntPoints[i][0])
+                        ty.append(self.IntPoints[i][1])
+                        i += 1
+                    plt.scatter(tx,ty,5,color='blue')
+                    i = 0
+                    #theta = np.linspace(0,2*np.pi)
+                    while i < len(self.SkelePoints):
+                        j = 0
+                        tx = []
+                        ty = []
+                        while j < len(self.SkelePoints[i]):
+                            tx.append(self.SkelePoints[i][j][0])
+                            ty.append(self.SkelePoints[i][j][1])
+                            #plt.plot(tx[j] + np.cos(theta) * self.SkeleRad[i][j],ty[j] + np.sin(theta) * self.SkeleRad[i][j],color = 'blue')
+                            j += 1
+                        i += 1
+                        plt.scatter(tx,ty,5,color='orange')
+                else:
+                    ax = plt.axes(projection='3d')
+                    i = 0
+                    tx = []
+                    ty = []
+                    tz = []
+                    while i < len(self.IntPoints):
+                        tx.append(self.IntPoints[i][0])
+                        ty.append(self.IntPoints[i][1])
+                        tz.append(self.IntPoints[i][2])
+                        i += 1
+                    ax.scatter3D(tx,ty,tz,5,color='red')
+                    i = 0
+                    while i < len(self.SkelePoints):
+                        j = 0
+                        tx = []
+                        ty = []
+                        tz = []
+                        tr = []
+                        while j < len(self.SkelePoints[i]):
+                            tx.append(self.SkelePonts[i][j][0])
+                            ty.append(self.SkelePonts[i][j][1])
+                            tz.append(self.SkelePonts[i][j][2])
+                            tr.append(self.SkeleRad[i][j])
+                            j += 1
+                        ax.scatter3D(tx,ty,tz,5,c=tr,cmap='winter')
+                        i += 1
                 plt.savefig('Output.png')
             #Mode2 is for Animating the process of solving
             elif mode[index] == 2:
@@ -1240,10 +1292,14 @@ class SkeleNet:
             et = time.time()
             tt += (et - st)
             index += 1        
-
+        eet = time.time()
+        tttt = eet - sst
+        print('abstime {} minuites {} seconds'.format(tttt // 60, tttt % 60))
         print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 
     def savedat(self,mode : int = 0):
+        print('Saving ... Please Wait')
+        st = time.time()
         i = 0
         tx = []
         ty = []
@@ -1276,3 +1332,6 @@ class SkeleNet:
         else:
             output = pd.DataFrame({'x':tx,'y':ty,'z':tz,'r':tr})
         output[1:].to_csv('SkeleSave.dat',index=False)
+        et = time.time()
+        tt = et - st
+        print('Save Complete! Took {} Minuites and {} Seconds'.format(tt // 60, tt % 60))
