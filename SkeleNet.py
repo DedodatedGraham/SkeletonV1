@@ -43,9 +43,9 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavil = mp.cpu_count() - 2 #Will Always allow 2 Cores to remain unused
+        self.cpuavail = mp.cpu_count() - 2 #Will Always allow 2 Cores to remain unused
         print('We have {} CPU\'s Available'.format(self.cpuavail))
-        self.pool = ParallelPool(nodes=self.cpuavail)
+        self.pool = ProcessingPool(nodes=self.cpuavail)
         #Determining type of points given
         if isinstance(points,str):    
             with open(points,'r') as csvfile:
@@ -101,7 +101,7 @@ class SkeleNet:
         self.__tag()
 
 ###MAIN FUNCTIONS
-    def __skeletize(self,key : int,points : list,norms : list,st:int,stp:int):
+    def __skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTree,*,animate : bool = False):
         #Skeletize takes in 
         #FROM INPUT
         #key is the specific index of tpoints and tnorms, allows for
@@ -114,22 +114,30 @@ class SkeleNet:
         # finPoints = [[x1,y1],...] of skeleton points
         # finR = [r1,...] of the radius of each skeleton point
         ts = time.time()
-        if len(self.SkelePoints) != key + 1:
-            self.SkelePoints.append([])
-            self.SkeleRad.append([])
-            print('Skeletizing #{}...'.format(key))
+        # if len(self.SkelePoints) != key + 1:
+        #     self.SkelePoints.append([])
+        #     self.SkeleRad.append([])
+        #     print('Skeletizing #{}...'.format(key))
+        
         ##INITAL SETTING UP METHOD
         #removes the connection between input points and output ponts
         #When not doing this kd-tree skews points for some reason?
-        tree = self.tree[key]
         avgt = 0
         numt = 0
+        dim = len(points[0])
         ##START OF SOLVE
         index = 0
         guessr = 0
         prnd = []
         pts = []
         nrms = []
+        #For parallelizing, we must give it everything it needs. 
+        SkelePoints = []
+        SkeleRad = []
+        if animate:
+            acp = []
+            atp = []
+            arad = []
         i = 0
         while i < len(points):
             pts.append(points[i])
@@ -148,12 +156,6 @@ class SkeleNet:
      
             case = False
      
-            #Setup animate
-            if self.animate:
-                if index ==  0:
-                    self.acp.append([])
-                    self.atp.append([])
-                    self.arad.append([])
             #Main loop for each points solve
             while not case:
                 if i == 0:
@@ -164,7 +166,7 @@ class SkeleNet:
                     else:
                         tempr.append(guessr)
                         
-                    if self.dim == 2:
+                    if dim == 2:
                         centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
                     else:
                         centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
@@ -189,56 +191,57 @@ class SkeleNet:
                 leng = len(tempr) - 1
                 
                                 #Capture animation data
-                if self.animate:
+                if animate:
                     if i == 0:
-                        self.acp[key].append([])
-                        self.atp[key].append([])
-                        self.arad[key].append([])
-                        self.acp[key][index].append(centerp[0])
-                        self.atp[key][index].append(testp[0])
-                        self.arad[key][index].append(tempr[0])
-                    self.acp[key][index].append(centerp[leng])
-                    self.atp[key][index].append(testp[leng])
-                    self.arad[key][index].append(tempr[leng])
-                    
+                        acp.append([])
+                        atp.append([])
+                        arad.append([])
+                        acp[index].append(centerp[0])
+                        atp[index].append(testp[0])
+                        arad[index].append(tempr[0])
+                    else:
+                        acp[index].append(centerp[leng])
+                        atp[index].append(testp[leng])
+                        arad[index].append(tempr[leng])
+                        
                 #Checking for completeion
                 
                 #Convergence check
                 dist = getDistance(point,testp[leng])
-                if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < self.threshDistance[key]:
-                    if np.abs(tempr[leng] - dist) < self.threshDistance[key] or tempr[leng] < (self.threshDistance[key] / 2) or getDistance(point, testp[leng]) < tempr[leng]:
-                        self.SkelePoints[key].append(centerp[leng - 1])
-                        self.SkeleRad[key].append(tempr[leng - 1])
+                if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
+                    if np.abs(tempr[leng] - dist) < threshDistance or tempr[leng] < (threshDistance / 2) or getDistance(point, testp[leng]) < tempr[leng]:
+                        SkelePoints.append(centerp[leng - 1])
+                        SkeleRad.append(tempr[leng - 1])
                         #Show backstep in animation
-                        if self.animate:
-                            self.acp[key][index].append(centerp[leng - 1])
-                            self.atp[key][index].append(testp[leng - 1])
-                            self.arad[key][index].append(tempr[leng - 1])
+                        if animate:
+                            acp[index].append(centerp[leng - 1])
+                            atp[index].append(testp[leng - 1])
+                            arad[index].append(tempr[leng - 1])
                     else:
                         # print('norm')
-                        self.SkelePoints[key].append(centerp[leng])
-                        self.SkeleRad[key].append(tempr[leng])
+                        SkelePoints.append(centerp[leng])
+                        SkeleRad.append(tempr[leng])
                     
                     case = True 
                 
                 #Overshooting  
-                elif i > 1 and tempr[leng] < (self.threshDistance[key] / 2):
-                    self.SkelePoints[key].append(centerp[leng - 1])
-                    self.SkeleRad[key].append(tempr[leng - 1])
+                elif i > 1 and tempr[leng] < (threshDistance / 2):
+                    SkelePoints.append(centerp[leng - 1])
+                    SkeleRad.append(tempr[leng - 1])
                     #Show backstep in animation
-                    if self.animate:
-                        self.acp[key][index].append(centerp[leng - 1])
-                        self.atp[key][index].append(testp[leng - 1])
-                        self.arad[key][index].append(tempr[leng - 1])
+                    if animate:
+                        acp[index].append(centerp[leng - 1])
+                        atp[index].append(testp[leng - 1])
+                        arad[index].append(tempr[leng - 1])
                     case = True
                 elif i > 1 and getDistance(point, testp[leng]) < tempr[leng]:
-                    self.SkelePoints[key].append(centerp[leng - 1])
-                    self.SkeleRad[key].append(tempr[leng - 1])
+                    SkelePoints.append(centerp[leng - 1])
+                    SkeleRad.append(tempr[leng - 1])
                     #Show backstep in animation
-                    if self.animate:
-                        self.acp[key][index].append(centerp[leng - 1])
-                        self.atp[key][index].append(testp[leng - 1])
-                        self.arad[key][index].append(tempr[leng - 1])
+                    if animate:
+                        acp[index].append(centerp[leng - 1])
+                        atp[index].append(testp[leng - 1])
+                        arad[index].append(tempr[leng - 1])
                     case = True
                 
                 
@@ -262,20 +265,24 @@ class SkeleNet:
                            p = p + 1
                        print('Repeat')
                        print(point,testp,tempr,centerp)
-                       self.SkeleRad[key].append(sml)
-                       self.SkelePoints[key].append(centerp[n])
+                       SkeleRad.append(sml)
+                       SkelePoints.append(centerp[n])
                        case = True 
                 i += 1
             avgt += (time.time() - stt)
             numt += 1
             # if index % 10 == 0:
                 # print('average time per step is {} Minuites and {} seconds'.format((avgt/numt) // 60,(avgt/numt) % 60))
-            if index != len(self.tpoints[key]) - 1:
-                guessr = self.threshDistance[key] * len(self.tpoints[key])
+            if index != len(points) - 1:
+                guessr = threshDistance * len(points)
         index += 1
         te = time.time()
         tt = te - ts
-        print('Skeleton  #{} took {} minuites and {} seconds'.format(key,(tt) // 60,(tt) % 60))
+        print('Skeleton took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
+        if animate:
+            return SkelePoints,SkeleRad,acp,atp,arad
+        else:
+            return SkelePoints,SkeleRad
 
     def solve(self,animate : bool = False):
         st = time.time()
@@ -324,13 +331,13 @@ class SkeleNet:
             self.divnrms.append([])
             strt.append([])
             stp.append([])
-            while j < self.cpuavil:
+            while j < self.cpuavail:
                 self.divpts[i].append([])
                 self.divnrms[i].append([])
-                q = int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavil))
-                strt[i].append(int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavil)))
-                stp[i].append(int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavil)))
-                while q < int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavil)):
+                q = int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail))
+                strt[i].append(int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail)))
+                stp[i].append(int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)))
+                while q < int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)):
                     self.divpts[i][j].append(self.tpoints[i][q])
                     self.divnrms[i][j].append(self.tnorms[i][q])
                     q += 1
@@ -338,14 +345,11 @@ class SkeleNet:
             i += 1
         i = 0
         while i < len(self.tpoints):
-            #Here we take each point and divide it
-            # j = 0
-            # while j < len(self.divpts[i]):
-            #     self.__skeletize(i,self.divpts[i][j],self.divnrms[i][j],strt[i][j],stp[i][j])
-            #     j += 1
-            njobs = len(self.divpts[i])
-            processes = []
-            results = self.pool.map(self.__skeletize,i,self.divpts[i],self.divnrms[i],strt[i],stp[i])
+            if self.animate:
+                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],self.threshDistance[i],self.tree[i],animate = True)
+            else:
+                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],self.threshDistance[i],self.tree[i])
+            print(results)
             i += 1
         # self.order()
         et = time.time()
