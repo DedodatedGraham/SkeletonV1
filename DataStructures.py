@@ -105,34 +105,42 @@ class kdTree:
             self.leafR = kdTree(pointsr,depth + 1,dimensions=self.dimensions)
         else:
             self.split = False
-            self.points = points
+            i = 0
+            self.points = []
+            while i < len(points):
+                self.points.append(points[i])
+                i += 1
         if depth == 0:
             et = time.time()
             tt = et - st
             print('k-d tree took {} minuites and {} seconds to make'.format(tt // 60,tt % 60))
     def getNearR(self,searchPoint : list, exclude : list,*,getRads : bool = False):
-        # print('Searching {}'.format(self.depth))
-        dmin = 0.0
-        pmin = SkelePoint([0,0,0])
+        
+        dmin = 100000
         if self.split:
+            pmin = self.node
             #If needs to go further
-            # print(searchPoint,self.axis)
             if searchPoint[self.axis] <= self.node.getAxis(self.axis):
-                pmin,dmin =  self.leafL.getNearR(searchPoint, exclude)
+                tpmin,dmin =  self.leafR.getNearR(searchPoint, exclude)
+                if tpmin != 0:
+                    pmin = tpmin
                 #Next checks node point and sees if its closer, overwrites if so
-                if not(self.node.getPoint() == searchPoint) and not(self.node.getPoint() == exclude):
+                if not(self.node.locEx(searchPoint)) and not(self.node.locEx(exclude)):
                     ndis = getDistance(searchPoint, self.node.getPoint())
                     if ndis < dmin:
                         pmin = self.node
                         dmin =  ndis
                 tdis = self.node.getAxis(self.axis) - searchPoint[self.axis]
-                if tdis <= dmin and not(tdis == 0.0):
-                    pmin1,dmin1 =  self.leafR.getNearR(searchPoint, exclude)
-                    if dmin1 < dmin:
-                        dmin = dmin1
-                        pmin = pmin1
+                if tdis <= dmin:
+                    pmin1,dmin1 =  self.leafL.getNearR(searchPoint, exclude)
+                    if not(pmin1 == 0) and not(pmin1.locEx(searchPoint)) and not(pmin1.locEx(exclude)):
+                        if dmin1 < dmin:
+                            dmin = dmin1
+                            pmin = pmin1
             else:
-                pmin,dmin =  self.leafR.getNearR(searchPoint, exclude) 
+                tpmin,dmin =  self.leafL.getNearR(searchPoint, exclude) 
+                if tpmin != 0:
+                    pmin = tpmin
                 #Next checks node point and sees if its closer, overwrites if so
                 if not(self.node.getPoint() == searchPoint) and not(self.node.getPoint() == exclude):
                     ndis = getDistance(searchPoint, self.node.getPoint())
@@ -140,27 +148,31 @@ class kdTree:
                         pmin = self.node
                         dmin =  ndis
                 tdis = searchPoint[self.axis] - self.node.getAxis(self.axis)
-                if tdis <= dmin and not(tdis == 0.0):
+                if tdis <= dmin:
                     pmin1,dmin1 =  self.leafR.getNearR(searchPoint, exclude)
-                    if dmin1 < dmin and not(dmin1) == 0:
-                        dmin = dmin1
-                        pmin = pmin1
+                    if not(pmin1 == 0) and not(pmin1.locEx(searchPoint)) and not(pmin1.locEx(exclude)):
+                        if dmin1 < dmin and not(dmin1) == 0:
+                            dmin = dmin1
+                            pmin = pmin1
+                            
+        
         else:
             #If at the lowest
             i = 0
             while i < len(self.points):
-                if dmin == 0.0:
-                    if not(self.points[i] == exclude) and not(self.points[i] == searchPoint):
+                if i == 0:
+                    if not(self.points[i].locEx(exclude)) and not(self.points[i].locEx(searchPoint)):
                         dmin = getDistance(searchPoint,self.points[i].getPoint())
                         pmin = self.points[i]
                 else:
-                   if not(self.points[i] == exclude) and not(self.points[i] == searchPoint):
+                   if not(self.points[i].locEx(exclude)) and not(self.points[i].locEx(searchPoint)):
                        tmin = getDistance(searchPoint,self.points[i].getPoint())
                        if tmin < dmin:
                            dmin = tmin
                            pmin = self.points[i]
                 i += 1
-        # print('pmin', pmin)
+            if not('pmin' in locals()):
+                pmin = 0
         if self.depth == 0:
             if getRads:
                 return pmin.getPoint(),pmin.getRad()
@@ -1097,16 +1109,17 @@ class SkelePoint:
 #This is a class which has a point which holds x,y,z and r
 
     def __init__(self,point : list,*, rad : float = 0.0,connections : int = 0):
-        self.x = point[0]
-        self.y = point[1]
-        self.r = rad
-        self.connections = connections
-        if len(point) == 3:
-            self.z = point[2]
-            self.dimensions = 3
-        else:
-            self.dimensions = 2
-        self.ordered = False
+        if len(point) != 0:
+            self.x = point[0]
+            self.y = point[1]
+            self.r = rad
+            self.connections = connections
+            if len(point) == 3:
+                self.z = point[2]
+                self.dimensions = 3
+            else:
+                self.dimensions = 2
+            self.ordered = False
     
     def getPoint(self):
         if self.dimensions == 2:
@@ -1129,7 +1142,24 @@ class SkelePoint:
             if dim == 2:
                 return self.z
     
-    
+    def locEx(self,point):
+        if point == 0:
+            return False
+        elif isinstance(point,list):
+            if len(point) == 0:
+                return False
+            i = 0
+            while i < self.dimensions:
+                if self.getAxis(i) != point[i]:
+                    return False
+                i += 1
+        else:
+            i = 0
+            while i < self.dimensions:
+                if self.getAxis(i) != point.getAxis(i):
+                    return False
+                i += 1
+        return True
     
 
 

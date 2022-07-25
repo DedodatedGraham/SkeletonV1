@@ -50,7 +50,7 @@ def getRadius(point1, point2 , norm) -> float:
         dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1] + mvec[2]*-1*norm[2]
     #Next finds theta
     theta = np.arccos(min(1,dot/dist))
-
+    # print(dot,dist,point1,point2)
     #Finally finds radius
     radius = np.abs(dist / (2 * np.cos(theta)))
     
@@ -73,19 +73,24 @@ def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
 
 def normalize(points : list) -> list:
     i = 0
-    retpoints = []
-    dim = len(points[0])
+    pts = []
     while i < len(points):
-        tempx = points[i][0]
-        tempy = points[i][1]
+        pts.append(points[i])
+        i += 1
+    i = 0
+    retpoints = []
+    dim = len(pts[0])
+    while i < len(pts):
+        tempx = pts[i][0]
+        tempy = pts[i][1]
         if dim == 2:
-            normalize = 1/np.sqrt(np.power(tempx,2)+np.power(tempy,2))
+            normalize = 1/((tempx * tempx + tempy * tempy) ** 0.5)
             tempx = tempx * normalize
             tempy = tempy * normalize
             retpoints.append([tempx,tempy])
         else:
-            tempz = points[i][2]
-            normalize = 1/np.sqrt(np.power(tempx,2)+np.power(tempy,2)+np.power(tempz,2))
+            tempz = pts[i][2]
+            normalize = 1/((tempx*tempx + tempy*tempy+tempz*tempz) ** 0.5)
             tempx = tempx * normalize
             tempy = tempy * normalize
             tempz = tempz * normalize
