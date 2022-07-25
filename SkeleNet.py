@@ -18,6 +18,189 @@ from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, get
 from itertools import cycle
 cycol = cycle('bgrcmk')
 
+def skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTree,*,animate : bool = False):
+    #Skeletize takes in 
+    #FROM INPUT
+    #key is the specific index of tpoints and tnorms, allows for
+    #parallel capabilities in splitting apart skeleton tasks 
+    #Also allows the class to have an array being filled by different tags
+    #FROM CLASS
+    #points, the given plain list of points [x,y] for 2D case
+    #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
+    #then returns 2 things
+    # finPoints = [[x1,y1],...] of skeleton points
+    # finR = [r1,...] of the radius of each skeleton point
+    ts = time.time()
+    # if len(self.SkelePoints) != key + 1:
+    #     self.SkelePoints.append([])
+    #     self.SkeleRad.append([])
+    #     print('Skeletizing #{}...'.format(key))
+    
+    ##INITAL SETTING UP METHOD
+    #removes the connection between input points and output ponts
+    #When not doing this kd-tree skews points for some reason?
+    avgt = 0
+    numt = 0
+    dim = len(points[0])
+    ##START OF SOLVE
+    index = 0
+    guessr = 0
+    prnd = []
+    pts = []
+    nrms = []
+    #For parallelizing, we must give it everything it needs. 
+    SkelePoints = []
+    SkeleRad = []
+    if animate:
+        acp = []
+        atp = []
+        arad = []
+    i = 0
+    while i < len(points):
+        pts.append(points[i])
+        nrms.append(norms[i])
+        i += 1
+    i = 0
+    for point in pts:
+        stt = time.time()
+        # print(index,'/',len(pts) - 1)
+        #finding inital temp radius
+        norm = nrms[index]
+        tempr = []
+        i = 0
+        centerp = []
+        testp = []
+ 
+        case = False
+ 
+        #Main loop for each points solve
+        while not case:
+            if i == 0:
+                #Inital
+                if index == 0:
+                    prnd = pts[randint(1,len(pts) - 1)]
+                    tempr.append(np.round(getRadius(point,prnd,norm),6))
+                else:
+                    tempr.append(guessr)
+                    
+                if dim == 2:
+                    centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
+                else:
+                    centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
+                testp.append(point)
+            else:   
+                #Refinement of skeleton point
+                testp.append(tree.getNearR(centerp[len(centerp) - 1],point))
+                if testp[len(testp) - 1] == point:
+                    print()
+                    print('error',index,i)
+                    print('centers',centerp)
+                    print('testp',testp)
+                    print('rads',tempr)
+                    print('Point',point,'Norm',norm)
+                    print()
+                    
+                tempr.append(np.round(getRadius(point,testp[i],norm),6))
+                if self.dim == 2:
+                    centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
+                else:
+                    centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i]),float(point[2]-norm[2]*tempr[i])])
+            leng = len(tempr) - 1
+            
+                            #Capture animation data
+            if animate:
+                if i == 0:
+                    acp.append([])
+                    atp.append([])
+                    arad.append([])
+                    acp[index].append(centerp[0])
+                    atp[index].append(testp[0])
+                    arad[index].append(tempr[0])
+                else:
+                    acp[index].append(centerp[leng])
+                    atp[index].append(testp[leng])
+                    arad[index].append(tempr[leng])
+                    
+            #Checking for completeion
+            
+            #Convergence check
+            dist = getDistance(point,testp[leng])
+            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
+                if np.abs(tempr[leng] - dist) < threshDistance or tempr[leng] < (threshDistance / 2) or getDistance(point, testp[leng]) < tempr[leng]:
+                    SkelePoints.append(centerp[leng - 1])
+                    SkeleRad.append(tempr[leng - 1])
+                    #Show backstep in animation
+                    if animate:
+                        acp[index].append(centerp[leng - 1])
+                        atp[index].append(testp[leng - 1])
+                        arad[index].append(tempr[leng - 1])
+                else:
+                    # print('norm')
+                    SkelePoints.append(centerp[leng])
+                    SkeleRad.append(tempr[leng])
+                
+                case = True 
+            
+            #Overshooting  
+            elif i > 1 and tempr[leng] < (threshDistance / 2):
+                SkelePoints.append(centerp[leng - 1])
+                SkeleRad.append(tempr[leng - 1])
+                #Show backstep in animation
+                if animate:
+                    acp[index].append(centerp[leng - 1])
+                    atp[index].append(testp[leng - 1])
+                    arad[index].append(tempr[leng - 1])
+                case = True
+            elif i > 1 and getDistance(point, testp[leng]) < tempr[leng]:
+                SkelePoints.append(centerp[leng - 1])
+                SkeleRad.append(tempr[leng - 1])
+                #Show backstep in animation
+                if animate:
+                    acp[index].append(centerp[leng - 1])
+                    atp[index].append(testp[leng - 1])
+                    arad[index].append(tempr[leng - 1])
+                case = True
+            
+            
+            #Repeat check
+            elif i > 3:
+                #Really only comes up with perfect shapes,
+                #but always a possibility to happen
+               repeat, order = checkRepeat(tempr)
+               if repeat:
+                   n = 0
+                   p = 0
+                   sml = 0.0
+                   while p < order:
+                       if p == 0:
+                           sml = tempr[len(tempr) - (order)]
+                       else:
+                           tmp = tempr[len(tempr)-(order - p)]
+                           if tmp < sml:
+                               sml = tempr[len(tempr)-(order-p)]
+                               n = len(tempr) - (order - p)
+                       p = p + 1
+                   print('Repeat')
+                   print(point,testp,tempr,centerp)
+                   SkeleRad.append(sml)
+                   SkelePoints.append(centerp[n])
+                   case = True 
+            i += 1
+        avgt += (time.time() - stt)
+        numt += 1
+        # if index % 10 == 0:
+            # print('average time per step is {} Minuites and {} seconds'.format((avgt/numt) // 60,(avgt/numt) % 60))
+        if index != len(points) - 1:
+            guessr = threshDistance * len(points)
+    index += 1
+    te = time.time()
+    tt = te - ts
+    print('Skeleton took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
+    if animate:
+        return SkelePoints,SkeleRad,acp,atp,arad
+    else:
+        return SkelePoints,SkeleRad
+
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
     #It can intake a location of a data file, or even the straight points
@@ -100,188 +283,7 @@ class SkeleNet:
         self.__tag()
 
 ###MAIN FUNCTIONS
-    def __skeletize(self,points : list,norms : list,threshDistance : float,tree : kdTree,*,animate : bool = False):
-        #Skeletize takes in 
-        #FROM INPUT
-        #key is the specific index of tpoints and tnorms, allows for
-        #parallel capabilities in splitting apart skeleton tasks 
-        #Also allows the class to have an array being filled by different tags
-        #FROM CLASS
-        #points, the given plain list of points [x,y] for 2D case
-        #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
-        #then returns 2 things
-        # finPoints = [[x1,y1],...] of skeleton points
-        # finR = [r1,...] of the radius of each skeleton point
-        ts = time.time()
-        # if len(self.SkelePoints) != key + 1:
-        #     self.SkelePoints.append([])
-        #     self.SkeleRad.append([])
-        #     print('Skeletizing #{}...'.format(key))
-        
-        ##INITAL SETTING UP METHOD
-        #removes the connection between input points and output ponts
-        #When not doing this kd-tree skews points for some reason?
-        avgt = 0
-        numt = 0
-        dim = len(points[0])
-        ##START OF SOLVE
-        index = 0
-        guessr = 0
-        prnd = []
-        pts = []
-        nrms = []
-        #For parallelizing, we must give it everything it needs. 
-        SkelePoints = []
-        SkeleRad = []
-        if animate:
-            acp = []
-            atp = []
-            arad = []
-        i = 0
-        while i < len(points):
-            pts.append(points[i])
-            nrms.append(norms[i])
-            i += 1
-        i = 0
-        for point in pts:
-            stt = time.time()
-            # print(index,'/',len(pts) - 1)
-            #finding inital temp radius
-            norm = nrms[index]
-            tempr = []
-            i = 0
-            centerp = []
-            testp = []
-     
-            case = False
-     
-            #Main loop for each points solve
-            while not case:
-                if i == 0:
-                    #Inital
-                    if index == 0:
-                        prnd = pts[randint(1,len(pts) - 1)]
-                        tempr.append(np.round(getRadius(point,prnd,norm),6))
-                    else:
-                        tempr.append(guessr)
-                        
-                    if dim == 2:
-                        centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
-                    else:
-                        centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
-                    testp.append(point)
-                else:   
-                    #Refinement of skeleton point
-                    testp.append(tree.getNearR(centerp[len(centerp) - 1],point))
-                    if testp[len(testp) - 1] == point:
-                        print()
-                        print('error',index,i)
-                        print('centers',centerp)
-                        print('testp',testp)
-                        print('rads',tempr)
-                        print('Point',point,'Norm',norm)
-                        print()
-                        
-                    tempr.append(np.round(getRadius(point,testp[i],norm),6))
-                    if self.dim == 2:
-                        centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
-                    else:
-                        centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i]),float(point[2]-norm[2]*tempr[i])])
-                leng = len(tempr) - 1
-                
-                                #Capture animation data
-                if animate:
-                    if i == 0:
-                        acp.append([])
-                        atp.append([])
-                        arad.append([])
-                        acp[index].append(centerp[0])
-                        atp[index].append(testp[0])
-                        arad[index].append(tempr[0])
-                    else:
-                        acp[index].append(centerp[leng])
-                        atp[index].append(testp[leng])
-                        arad[index].append(tempr[leng])
-                        
-                #Checking for completeion
-                
-                #Convergence check
-                dist = getDistance(point,testp[leng])
-                if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
-                    if np.abs(tempr[leng] - dist) < threshDistance or tempr[leng] < (threshDistance / 2) or getDistance(point, testp[leng]) < tempr[leng]:
-                        SkelePoints.append(centerp[leng - 1])
-                        SkeleRad.append(tempr[leng - 1])
-                        #Show backstep in animation
-                        if animate:
-                            acp[index].append(centerp[leng - 1])
-                            atp[index].append(testp[leng - 1])
-                            arad[index].append(tempr[leng - 1])
-                    else:
-                        # print('norm')
-                        SkelePoints.append(centerp[leng])
-                        SkeleRad.append(tempr[leng])
-                    
-                    case = True 
-                
-                #Overshooting  
-                elif i > 1 and tempr[leng] < (threshDistance / 2):
-                    SkelePoints.append(centerp[leng - 1])
-                    SkeleRad.append(tempr[leng - 1])
-                    #Show backstep in animation
-                    if animate:
-                        acp[index].append(centerp[leng - 1])
-                        atp[index].append(testp[leng - 1])
-                        arad[index].append(tempr[leng - 1])
-                    case = True
-                elif i > 1 and getDistance(point, testp[leng]) < tempr[leng]:
-                    SkelePoints.append(centerp[leng - 1])
-                    SkeleRad.append(tempr[leng - 1])
-                    #Show backstep in animation
-                    if animate:
-                        acp[index].append(centerp[leng - 1])
-                        atp[index].append(testp[leng - 1])
-                        arad[index].append(tempr[leng - 1])
-                    case = True
-                
-                
-                #Repeat check
-                elif i > 3:
-                    #Really only comes up with perfect shapes,
-                    #but always a possibility to happen
-                   repeat, order = checkRepeat(tempr)
-                   if repeat:
-                       n = 0
-                       p = 0
-                       sml = 0.0
-                       while p < order:
-                           if p == 0:
-                               sml = tempr[len(tempr) - (order)]
-                           else:
-                               tmp = tempr[len(tempr)-(order - p)]
-                               if tmp < sml:
-                                   sml = tempr[len(tempr)-(order-p)]
-                                   n = len(tempr) - (order - p)
-                           p = p + 1
-                       print('Repeat')
-                       print(point,testp,tempr,centerp)
-                       SkeleRad.append(sml)
-                       SkelePoints.append(centerp[n])
-                       case = True 
-                i += 1
-            avgt += (time.time() - stt)
-            numt += 1
-            # if index % 10 == 0:
-                # print('average time per step is {} Minuites and {} seconds'.format((avgt/numt) // 60,(avgt/numt) % 60))
-            if index != len(points) - 1:
-                guessr = threshDistance * len(points)
-        index += 1
-        te = time.time()
-        tt = te - ts
-        print('Skeleton took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
-        if animate:
-            return SkelePoints,SkeleRad,acp,atp,arad
-        else:
-            return SkelePoints,SkeleRad
+    
 
     def solve(self,animate : bool = False):
         st = time.time()
@@ -352,9 +354,9 @@ class SkeleNet:
                 temptree.append(self.tree[i])
                 j += 1
             if self.animate:
-                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,animate = True)
+                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,animate = True)
             else:
-                results = self.pool.map(self.__skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree)
+                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree)
             print(results)
             i += 1
         # self.order()
