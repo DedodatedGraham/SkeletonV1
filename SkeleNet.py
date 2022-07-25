@@ -23,7 +23,6 @@ class SkeleNet:
     #It can intake a location of a data file, or even the straight points
     #Then itll process then and output different figures for different things
     #Can also Produce different shapes and stuff
-    
     rnd = 0
 ###INITALIZERS
     def __init__(self, points,*,norms = []):
