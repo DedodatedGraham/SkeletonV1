@@ -10,7 +10,7 @@ import csv
 import pandas as pd
 import time
 import multiprocessing as mp
-from pathos.multiprocessing import ProcessingPool as Pool
+from pathos.multiprocessing import ProcessingPool
 
 from DataStructures import kdTree,SplitTree
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
@@ -44,6 +44,8 @@ class SkeleNet:
         
         #Multiprocessing ideas
         self.cpuavil = mp.cpu_count() - 2 #Will Always allow 2 Cores to remain unused
+        print('We have {} CPU\'s Available'.format(self.cpuavail))
+        self.pool = ParallelPool(nodes=self.cpuavail)
         #Determining type of points given
         if isinstance(points,str):    
             with open(points,'r') as csvfile:
@@ -342,14 +344,8 @@ class SkeleNet:
             #     self.__skeletize(i,self.divpts[i][j],self.divnrms[i][j],strt[i][j],stp[i][j])
             #     j += 1
             njobs = len(self.divpts[i])
-            p = Pool()
             processes = []
-            j = 0
-            while j < njobs:
-                p.map(self.__skeletize,[i,self.divpts[i][j],self.divnrms[i][j],strt[i][j],stp[i][j]])
-                processes.append(p)
-                j += 2
-            [x.start() for x in processes]
+            results = self.pool.map(self.__skeletize,i,self.divpts[i],self.divnrms[i],strt[i],stp[i])
             i += 1
         # self.order()
         et = time.time()
