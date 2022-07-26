@@ -15,7 +15,6 @@ import time
 # import csv
 # import scipy
 # import pandas as pd
-
 # import numpy as np
 
 from Skeletize import getDistance, getAngle
@@ -114,6 +113,7 @@ class kdTree:
             et = time.time()
             tt = et - st
             print('k-d tree took {} minuites and {} seconds to make'.format(tt // 60,tt % 60))
+    @profile
     def getNearR(self,searchPoint : list, exclude : list,*,getRads : bool = False):
         
         dmin = 100000

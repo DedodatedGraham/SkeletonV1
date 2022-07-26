@@ -3,7 +3,6 @@ from random  import randint
 # from sys import float_repr_style
 # import matplotlib
 import matplotlib
-matplotlib.use('GTK3Agg') 
 import matplotlib.pyplot as plt
 # from mpl_toolkits import mplot3d
 import numpy as np
@@ -37,7 +36,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
     #     self.SkelePoints.append([])
     #     self.SkeleRad.append([])
     #     print('Skeletizing #{}...'.format(key))
-    
     
 
     ##INITAL SETTING UP METHOD
@@ -243,25 +241,21 @@ class SkeleNet:
                     if str(row[0]) == 'x':#if title
                         a = 1    
                     elif size == 4:#2D w/ no tag
-                        if randint(0,10) >= self.rnd:
-                            self.IntPoints.append([float(row[0]),float(row[1])])
-                            self.NormPoints.append([float(row[2]),float(row[3])])
-                            self.MasterTag.append(0)
+                        self.IntPoints.append([float(row[0]),float(row[1])])
+                        self.NormPoints.append([float(row[2]),float(row[3])])
+                        self.MasterTag.append(0)
                     elif size == 5:#2D w/ tag
-                        if randint(0,10) >= self.rnd:
-                            self.IntPoints.append([float(row[0]),float(row[1])])
-                            self.NormPoints.append([float(row[2]),float(row[3])]) 
-                            self.MasterTag.append(int(row[4]) - 1)
+                        self.IntPoints.append([float(row[0]),float(row[1])])
+                        self.NormPoints.append([float(row[2]),float(row[3])]) 
+                        self.MasterTag.append(int(row[4]) - 1)
                     elif size == 6:#3D w/ no tag
-                        if randint(0,10) >= self.rnd:
-                            self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
-                            self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
-                            self.MasterTag.append(0)
+                        self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
+                        self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
+                        self.MasterTag.append(0)
                     elif size == 7:#3D w/ tag
-                        if randint(0,10) >= self.rnd:
-                            self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
-                            self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
-                            self.MasterTag.append(int(row[6]) - 1)
+                        self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
+                        self.NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
+                        self.MasterTag.append(int(row[6]) - 1)
             csvfile.close()
             
         elif isinstance(points,list):
@@ -1178,7 +1172,7 @@ class SkeleNet:
                                 plt.scatter(sx,sy,5,color='orange')
                             plt.plot([self.acp[tag][i][j][0],self.tpoints[tag][i][0]],[self.acp[tag][i][j][1],self.tpoints[tag][i][1]])
                             plt.plot([self.atp[tag][i][j][0],self.tpoints[tag][i][0]],[self.atp[tag][i][j][1],self.tpoints[tag][i][1]])
-                            plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
+                            # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
                             plt.scatter(self.acp[tag][i][j][0],self.acp[tag][i][j][1],5,color='purple')
                             plt.scatter(self.atp[tag][i][j][0],self.atp[tag][i][j][1],5,color='red')
                             plt.scatter(self.tpoints[tag][i][0],self.tpoints[tag][i][1],5,color='blue')
