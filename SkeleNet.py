@@ -19,6 +19,7 @@ from mpl_toolkits import mplot3d
 from itertools import cycle
 cycol = cycle('bgrcmk')
 
+
 def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,animate : bool = False,cpuid : int = -1,tag : int = -1):
     #Skeletize takes in 
     #FROM INPUT
@@ -74,9 +75,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
  
         case = False
  
-        print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1)
+        print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
         while not case:
+            print(i)
             if i == 0:
                 #Inital
                 if index == 0:

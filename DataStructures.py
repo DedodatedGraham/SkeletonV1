@@ -19,6 +19,7 @@ import time
 
 from Skeletize import getDistance, getAngle
 
+
 def quicksort(points : list , dimension : int):
     #  **Points are Skeleton Points**
     return quicksortrunner(points,dimension,0,len(points)-1)
@@ -58,8 +59,9 @@ def partition(points : list , dimension : int , first : int , last : int ):
 
 
 class kdTree:
+    # @profile
     def __init__(self , points : list , depth : int = 0 , * , rads : list = [],dimensions : int = 0):
-        # print('making {}'.format(depth))
+        print('making {}'.format(depth))
         #first converts to skeleton points
         if not(dimensions == 0):
             self.dimensions = dimensions
@@ -76,8 +78,8 @@ class kdTree:
                     tp.append(SkelePoint(points[i]))
                 i += 1
             points = tp
-            ett = time.time()
-            ttt = ett - st
+            # ett = time.time()
+            # ttt = ett - st
             # print('point conversion took {} minuites and {} seconds to make {} SkelePoints'.format(ttt // 60,ttt % 60, len(points)))
         self.depth = depth
         #Next is the actual process of creating the struct
@@ -86,7 +88,7 @@ class kdTree:
             self.axis = depth % self.dimensions
             stt = time.time()
             points = quicksort(points,self.axis)
-            ttt = time.time() -  stt
+            # ttt = time.time() -  stt
             # print('quicksearch took {} minuites and {} seconds to sort {} SkelePoints'.format(ttt // 60,ttt % 60, len(points)))
             mid = len(points) // 2
             self.node = points[mid]
@@ -113,9 +115,9 @@ class kdTree:
             et = time.time()
             tt = et - st
             print('k-d tree took {} minuites and {} seconds to make'.format(tt // 60,tt % 60))
-    @profile
+    # @profile
     def getNearR(self,searchPoint : list, exclude : list,*,getRads : bool = False):
-        
+        # print('searching...')
         dmin = 100000
         if self.split:
             pmin = self.node
@@ -125,7 +127,7 @@ class kdTree:
                 if tpmin != 0:
                     pmin = tpmin
                 #Next checks node point and sees if its closer, overwrites if so
-                if not(self.node.locEx(searchPoint)) and not(self.node.locEx(exclude)):
+                if not(self.node.getPoint() == searchPoint) and not(self.node.getPoint() == exclude):
                     ndis = getDistance(searchPoint, self.node.getPoint())
                     if ndis < dmin:
                         pmin = self.node
@@ -133,7 +135,7 @@ class kdTree:
                 tdis = self.node.getAxis(self.axis) - searchPoint[self.axis]
                 if tdis <= dmin:
                     pmin1,dmin1 =  self.leafL.getNearR(searchPoint, exclude)
-                    if not(pmin1 == 0) and not(pmin1.locEx(searchPoint)) and not(pmin1.locEx(exclude)):
+                    if not(pmin1 == 0) and not(pmin1.getPoint() == searchPoint) and not(pmin1.getPoint() == exclude):
                         if dmin1 < dmin:
                             dmin = dmin1
                             pmin = pmin1
@@ -150,7 +152,7 @@ class kdTree:
                 tdis = searchPoint[self.axis] - self.node.getAxis(self.axis)
                 if tdis <= dmin:
                     pmin1,dmin1 =  self.leafR.getNearR(searchPoint, exclude)
-                    if not(pmin1 == 0) and not(pmin1.locEx(searchPoint)) and not(pmin1.locEx(exclude)):
+                    if not(pmin1 == 0) and not(pmin1.getPoint() == searchPoint) and not(pmin1.getPoint() == exclude):
                         if dmin1 < dmin and not(dmin1) == 0:
                             dmin = dmin1
                             pmin = pmin1
@@ -161,11 +163,11 @@ class kdTree:
             i = 0
             while i < len(self.points):
                 if i == 0:
-                    if not(self.points[i].locEx(exclude)) and not(self.points[i].locEx(searchPoint)):
+                    if not(self.points[i].getPoint() == exclude) and not(self.points[i].getPoint() == searchPoint):
                         dmin = getDistance(searchPoint,self.points[i].getPoint())
                         pmin = self.points[i]
                 else:
-                   if not(self.points[i].locEx(exclude)) and not(self.points[i].locEx(searchPoint)):
+                   if not(self.points[i].getPoint() == exclude) and not(self.points[i].getPoint() == searchPoint):
                        tmin = getDistance(searchPoint,self.points[i].getPoint())
                        if tmin < dmin:
                            dmin = tmin
@@ -1120,7 +1122,7 @@ class SkelePoint:
             else:
                 self.dimensions = 2
             self.ordered = False
-    
+    # @profile
     def getPoint(self):
         if self.dimensions == 2:
             return [self.x,self.y]
@@ -1141,18 +1143,15 @@ class SkelePoint:
         elif self.dimensions == 3:
             if dim == 2:
                 return self.z
-    
+    # @profile
     def locEx(self,point):
         if point == 0:
             return False
         elif isinstance(point,list):
             if len(point) == 0:
                 return False
-            i = 0
-            while i < self.dimensions:
-                if self.getAxis(i) != point[i]:
-                    return False
-                i += 1
+            pt = self.getPoint()
+            return pt == point
         else:
             i = 0
             while i < self.dimensions:

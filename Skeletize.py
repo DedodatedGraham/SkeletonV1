@@ -55,6 +55,7 @@ def getRadius(point1, point2 , norm) -> float:
     radius = np.abs(dist / (2 * np.cos(theta)))
     
     return radius
+# @profile
 def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
     
     i = 0
@@ -81,6 +82,7 @@ def normalize(points : list) -> list:
     retpoints = []
     dim = len(pts[0])
     while i < len(pts):
+        print('normalizing {}'.format(i))
         tempx = pts[i][0]
         tempy = pts[i][1]
         if dim == 2:
@@ -97,6 +99,7 @@ def normalize(points : list) -> list:
             retpoints.append([tempx,tempy,tempz])
         i = i + 1
     return retpoints
+# @profile
 def getDistance(point1, point2) -> float:
     x = point1[0] - point2[0]
     y = point1[1] - point2[1]
@@ -105,7 +108,7 @@ def getDistance(point1, point2) -> float:
     else:
         z = point1[2] - point2[2]
         return (x ** 2 + y ** 2 + z ** 2) ** 0.5
-    
+
 def getPoint(point : list, vec : list):
     ret = []
     i = 0

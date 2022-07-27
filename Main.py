@@ -16,7 +16,8 @@ import time
 # import Skeletize
 # import DataStructures 
 # from DataStructures import kdTree
-from SkeleNet import SkeleNet
+from SkeleNet import SkeleNet,skeletize
+from Skeletize import normalize, getDistance
 from DataStructures import kdTree
 #theta = np.linspace(0,2*np.pi,100)
 
@@ -38,8 +39,9 @@ link = r'\vof_points_norm_0650.dat'
     # link = r'\t06.dat'
     # link = r'\bagdrop.dat'
 if linep:
-    source = os.getcwd()
+    source = os.path.dirname(os.path.abspath(__file__))
     link = source + link
+    
 #     net = SkeleNet(link)
 #     net.solve(False)
 #     net.savedat(1)
@@ -68,9 +70,23 @@ with open(link,'r') as csvfile:
             IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
             NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
 tree = kdTree(IntPoints)
+norms = normalize(NormPoints)
+tot = 0
+tpt = []
+j = 0
+while j < min(20,len(IntPoints)):
+    tpt = IntPoints[randint(0, len(IntPoints) - 1)]
+    tot += getDistance(tpt,tree.getNearR(tpt,[]))
+    j += 1
+threshDistance = tot / min(20,len(IntPoints)) 
+pts = []
+nrms = []
 i = 0
-while i < 100:
-    print(kdTree.getNearR(IntPoints[randint(0,len(IntPoints) - 1)] + 0.01 * randint(0,100),[]))
-    i += 1
+while i < len(IntPoints):
+    print(i)
+    pts.append(IntPoints[i])
+    nrms.append(norms[i])
+    i += randint(20,5000)
+out = skeletize(pts,nrms, threshDistance, tree)
     
                 
