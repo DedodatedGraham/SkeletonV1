@@ -193,7 +193,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         numt += 1
         if index % 10 == 0:
             tat = avgt / numt
-            print('CPUID:{} TAG:{} || T-Time:{}h:{}m:{}s || A-Time:{}m:{}s || {}/{} {}%-Done'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60, avgt % 3600) % 60,tat // 60,tat % 60,index + 1,len(points), ((index + 1) / (len(points))))
+            print('CPUID:{} TAG:{} || T-Time:{}h:{}m:{}s || A-Time:{}m:{}s || {}/{} {}%-Done'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,index + 1,len(points), ((index + 1) / (len(points)))))
         if index != len(points) - 1:
             guessr = threshDistance * len(points)
         index += 1
