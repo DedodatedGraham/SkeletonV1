@@ -72,18 +72,16 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         i = 0
         centerp = []
         testp = []
- 
+        #print(index,cpuid) 
         case = False
  
         print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
         while not case:
-            print(i)
             if i == 0:
                 #Inital
                 if index == 0:
                     prnd = pts[randint(1,len(pts) - 1)]
-                    print(point,prnd)
                     tempr.append(np.round(getRadius(point,prnd,norm),6))
                 else:
                     tempr.append(guessr)
@@ -194,7 +192,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         avgt += (time.time() - stt)
         numt += 1
         if index % 10 == 0:
-            print('average time per step is {} Minuites and {} seconds'.format((avgt/numt) // 60,(avgt/numt) % 60))
+            tat = avgt / numt
+            print('CPUID:{} TAG:{} || T-Time:{}h:{}m:{}s || A-Time:{}m:{}s || {}/{} {}%-Done'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60, avgt % 3600) % 60,tat // 60,tat % 60,index + 1,len(points), ((index + 1) / (len(points))))
         if index != len(points) - 1:
             guessr = threshDistance * len(points)
         index += 1
@@ -230,7 +229,7 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = min(mp.cpu_count() - 2,18) #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 2,12) #Will Always allow 2 Cores to remain unused
         print('We have {} CPU\'s Available'.format(self.cpuavail))
         self.pool = ProcessingPool(nodes=self.cpuavail)
         #Determining type of points given
