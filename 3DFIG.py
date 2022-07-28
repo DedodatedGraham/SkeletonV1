@@ -37,7 +37,7 @@ with open('SkeleSave.dat','r') as csvfile:
             tz.append(z)
             tr.append(r)
                         
-with open('vof_points_norm_0650.dat','r') as csvfile:
+with open('vof_points_norm_0135.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     ttx = []
     tty = []
@@ -46,12 +46,14 @@ with open('vof_points_norm_0650.dat','r') as csvfile:
     for row in data:
         if str(row[0]) == 'x':
             a = 0
-        else:
-            # print(i)
+        elif len(row) == 7:
+            print(i)
             i += 1
-            ttx.append(float(row[0]))
-            tty.append(float(row[1]))
-            ttz.append(float(row[2]))
+            print(row)
+            if not(int(row[6]) < 0):
+                ttx.append(float(row[0]))
+                tty.append(float(row[1]))
+                ttz.append(float(row[2]))
 
 #Next We Do the Actual Plotting 
 fig = plt.figure()
