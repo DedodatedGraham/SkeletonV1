@@ -76,7 +76,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         testp = []
         #print(index,cpuid) 
         case = False
-        #print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
+        # print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
         while not case:
             if i == 0:

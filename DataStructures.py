@@ -188,7 +188,6 @@ class kdTree:
             #however it will store node value and compare on the way out if a given node is a better point than something returned
             if depth == 0:
                 self.l = 0
-            
             retPoints = []
             retDist = []
             axis = depth % self.dimensions
@@ -286,9 +285,9 @@ class kdTree:
                         mat.append([])
                         mat[2].append(vec[1] * np.sin(scan / 2) + vec[2] * np.cos(scan / 2))
                         mat[2].append(vec[1] * np.sin(-scan / 2) + vec[2] * np.cos(-scan / 2))
-                if node[axis] < point[axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
+                if node.getAxis(axis) < point[axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
                     retPoints,retDist = self.leafR.getVectorR(point, vec, n, depth + 1, scan = scan)
-                elif node[axis] > point[axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
+                elif node.getAxis(axis) > point[axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
                     #point on left side of axis and positive vector
                     retPoints,retDist = self.leafL.getVectorR(point, vec, n, depth + 1, scan = scan)
                 else:
@@ -310,12 +309,12 @@ class kdTree:
                         tretPoints.append(retPointsr[i])
                         tretDist.append(retDistr[i])
                         i += 1
-                    ntheta = getAngle(vec,nvec,getDistance(point,tp1),getDistance(point,node))
+                    ntheta = getAngle(vec,nvec,getDistance(point,tp1),getDistance(point,node.getPoint()))
                     #gets the node point if it falls inside the criteria
                     if ntheta < (scan / 2): 
                         self.l += 1
                         tretPoints.append(node)
-                        tretDist.append(getDistance(point,node))
+                        tretDist.append(getDistance(point,node.getPoint()))
                     #Finally aquires the best n# of points from big list
                     i = 0
                     while i < len(tretPoints):
