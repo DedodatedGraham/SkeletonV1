@@ -86,7 +86,6 @@ class kdTree:
         if len(points) > 5:
             self.split = True
             self.axis = depth % self.dimensions
-            stt = time.time()
             points = quicksort(points,self.axis)
             # ttt = time.time() -  stt
             # print('quicksearch took {} minuites and {} seconds to sort {} SkelePoints'.format(ttt // 60,ttt % 60, len(points)))
@@ -183,6 +182,180 @@ class kdTree:
         else:
             return pmin,dmin
         
+    def getVectorR(self,point : list,vec : list,n : int,depth : int = 0,*,getRads : bool = False,scan = np.pi / 4):
+            #Get vector will get the closest n number of points to the search point
+            #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
+            #however it will store node value and compare on the way out if a given node is a better point than something returned
+            if depth == 0:
+                self.l = 0
+            
+            retPoints = []
+            retDist = []
+            axis = depth % self.dimensions
+            node = self.node
+            if getRads:
+                retR = []
+            if not(self.split):
+                i = 0
+                while i < len(self.points):
+                    #each point it first checks the angle between the vectors.
+                    j = 0
+                    cvec = []
+                    tpoint = []
+                    while j < len(vec):
+                        cvec.append(self.points[i].getAxis(j) - point[j])
+                        tpoint.append(point[j] + vec[j])
+                        j += 1
+                    tdis = getDistance(point,self.points[i].getPoint())
+                    theta = getAngle(vec,cvec,getDistance(point,tpoint),tdis)
+                    if theta  < (scan / 2):
+                        #Within vector distance
+                        if len(retPoints) < n:
+                            self.l += 1
+                            retPoints.append(self.points[i])
+                            retDist.append(tdis)
+                        else:
+                            j = 0
+                            tagj = 0
+                            mtdis = -1
+                            while j < len(retPoints):
+                                if tdis < retDist[j] and retDist[j] > mtdis:
+                                    tagj = j
+                                    mtdis = retDist[j]
+                                j += 1
+                            if not(mtdis == -1):
+                                retPoints[tagj] = self.points[i]
+                                retDist[tagj] = tdis 
+                    i += 1
+            else:
+                #First want to see if the vector only reaches a specific leaf of the tree
+                i = 0
+                vecax = []
+                tp1 = []
+                tp2 = []
+                nvec = []
+                while i < len(point):
+                    if not(i == axis):
+                        vecax.append(1)
+                    else:
+                        vecax.append(0)
+                    tp1.append(point[i] + vec[i])
+                    tp2.append(point[i] + vecax[i])
+                    nvec.append(node[i] - point[i])
+                    i += 1
+                theta = getAngle(vec,vecax,getDistance(point,tp1),getDistance(point,tp2))
+                mat = []
+                if self.dimensions == 2:
+                    mat.append([])
+                    mat[0].append(vec[0] * np.cos(scan / 2) - vec[1] * np.sin(scan / 2))
+                    mat[0].append(vec[0] * np.cos(-scan / 2) - vec[1] * np.sin(-scan / 2))
+                    mat.append([])
+                    mat[1].append(vec[0] * np.sin(scan / 2) + vec[1] * np.cos(scan / 2))
+                    mat[1].append(vec[0] * np.sin(-scan / 2) +vec[1] * np.cos(-scan / 2))
+                else:
+                    if axis == 0:
+                        #X axis rotation
+                        mat.append([])
+                        mat[0].append(vec[0] * np.cos(scan / 2) - vec[1] * np.sin(scan / 2))
+                        mat[0].append(vec[0] * np.cos(-scan / 2) - vec[1]  * np.sin(-scan / 2))
+                        mat.append([])
+                        mat[1].append(vec[0] * np.sin(scan / 2) + vec[1] * np.cos(scan / 2))
+                        mat[1].append(vec[0] * np.sin(-scan / 2) + vec[1] * np.cos(-scan / 2))
+                        mat.append([])
+                        mat[2].append(vec[2])
+                        mat[2].append(vec[2])
+                    elif axis == 1:
+                        #Y axis rotation
+                        mat.append([])
+                        mat[0].append(vec[0] * np.cos(scan / 2) + vec[2] * np.sin(scan / 2))
+                        mat[0].append(vec[0] * np.cos(-scan / 2) + vec[2]  * np.sin(-scan / 2))
+                        mat.append([])
+                        mat[1].append(vec[1])
+                        mat[1].append(vec[1])
+                        mat.append([])
+                        mat[2].append(-vec[0] * np.sin(scan / 2) + vec[2] * np.cos(scan / 2))
+                        mat[2].append(-vec[0] * np.sin(-scan / 2) + vec[2] * np.cos(-scan / 2))
+                    else:
+                        #Z axis rotation
+                        mat.append([])
+                        mat[0].append(vec[0])
+                        mat[0].append(vec[0])
+                        mat.append([])
+                        mat[1].append(vec[1] * np.cos(scan / 2) - vec[2] * np.sin(scan / 2))
+                        mat[1].append(vec[1] * np.cos(-scan / 2) - vec[2] * np.sin(-scan / 2))
+                        mat.append([])
+                        mat[2].append(vec[1] * np.sin(scan / 2) + vec[2] * np.cos(scan / 2))
+                        mat[2].append(vec[1] * np.sin(-scan / 2) + vec[2] * np.cos(-scan / 2))
+                if node[axis] < point[axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
+                    retPoints,retDist = self.leafR.getVectorR(point, vec, n, depth + 1, scan = scan)
+                elif node[axis] > point[axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
+                    #point on left side of axis and positive vector
+                    retPoints,retDist = self.leafL.getVectorR(point, vec, n, depth + 1, scan = scan)
+                else:
+                    tretPoints = []
+                    tretDist = []
+                    retPointsl = []
+                    retPointsr = []
+                    retDistl = []
+                    retDistr = []
+                    retPointsl,retDistl = self.leafL.getVectorR(point, vec, n,depth + 1, scan = scan)
+                    retPointsr,retDistr = self.leafR.getVectorR(point, vec, n,depth + 1, scan = scan)
+                    i = 0
+                    while i < len(retPointsl):
+                        tretPoints.append(retPointsl[i])
+                        tretDist.append(retDistl[i])
+                        i += 1
+                    i = 0
+                    while i < len(retPointsr):
+                        tretPoints.append(retPointsr[i])
+                        tretDist.append(retDistr[i])
+                        i += 1
+                    ntheta = getAngle(vec,nvec,getDistance(point,tp1),getDistance(point,node))
+                    #gets the node point if it falls inside the criteria
+                    if ntheta < (scan / 2): 
+                        self.l += 1
+                        tretPoints.append(node)
+                        tretDist.append(getDistance(point,node))
+                    #Finally aquires the best n# of points from big list
+                    i = 0
+                    while i < len(tretPoints):
+                        if i < n:
+                            retPoints.append(tretPoints[i])
+                            retDist.append(tretDist[i])
+                        else:
+                            tdis = tretDist[i]
+                            j = 0
+                            tagj = 0
+                            mtdis = -1
+                            while j < len(retPoints):
+                                
+                                if tdis < retDist[j] and retDist[j] > mtdis:
+                                    tagj = j
+                                    mtdis = retDist[j]
+                                j += 1
+                            if not(mtdis == -1):
+                                retPoints[tagj] = tretPoints[i]
+                                retDist[tagj] = tdis 
+                        i += 1
+                    
+            if depth == 0:
+                j = 0
+                trp = []
+                trad = []
+                while j < len(retPoints):
+                    trp.append(retPoints[j].getPoint())
+                    if getRads:
+                        trad.append(retPoints[j].getRad())
+                    j += 1
+                if getRads:
+                    return trp, trad
+                else:
+                    return trp
+            else:
+                if getRads:
+                    return retPoints,retDist, retR
+                else:
+                    return retPoints,retDist
         
 # class kdTree:
 #     def __init__(self,points : list, dim : int, * ,  rads : list = []):

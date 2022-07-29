@@ -76,9 +76,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         testp = []
         #print(index,cpuid) 
         case = False
-        across = []
-        crossed = True
-        step = threshDistance
         #print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
         while not case:
@@ -160,14 +157,25 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     arad[index].append(tempr[leng - 1])
                 case = True
             elif i > 1 and dist  < tempr[leng] + threshDistance:
-                SkelePoints.append(centerp[leng - 1])
-                SkeleRad.append(tempr[leng - 1])
-                #Show backstep in animation
-                if animate:
-                    acp[index].append(centerp[leng - 1])
-                    atp[index].append(testp[leng - 1])
-                    arad[index].append(tempr[leng - 1])
-                case = True
+                #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
+                crossdis = 0
+                tpoint = []
+                j = 0
+                while j < len(point):
+                    tpoint.append(point[j] + norm[j] * threshDistance)
+                    j += 1
+                crossp = tree.getVectorR(tpoint,norm,1,scan = (np.pi / 8))
+                crossdis = getDistance(point,crossp)
+                print('crossed from {} to {}'.format(point,crossp))
+                if getDistance(point,centerp[leng]) < crossdis:
+                    SkelePoints.append(centerp[leng - 1])
+                    SkeleRad.append(tempr[leng - 1])
+                    #Show backstep in animation
+                    if animate:
+                        acp[index].append(centerp[leng - 1])
+                        atp[index].append(testp[leng - 1])
+                        arad[index].append(tempr[leng - 1])
+                    case = True
             
             
             #Repeat check
