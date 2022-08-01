@@ -186,12 +186,9 @@ class kdTree:
             #Get vector will get the closest n number of points to the search point
             #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
             #however it will store node value and compare on the way out if a given node is a better point than something returned
-            if depth == 0:
-                self.l = 0
             retPoints = []
             retDist = []
             axis = depth % self.dimensions
-            node = self.node
             if getRads:
                 retR = []
             if not(self.split):
@@ -210,7 +207,6 @@ class kdTree:
                     if theta  < (scan / 2):
                         #Within vector distance
                         if len(retPoints) < n:
-                            self.l += 1
                             retPoints.append(self.points[i])
                             retDist.append(tdis)
                         else:
@@ -227,6 +223,7 @@ class kdTree:
                                 retDist[tagj] = tdis 
                     i += 1
             else:
+                node = self.node
                 #First want to see if the vector only reaches a specific leaf of the tree
                 i = 0
                 vecax = []
@@ -240,7 +237,7 @@ class kdTree:
                         vecax.append(0)
                     tp1.append(point[i] + vec[i])
                     tp2.append(point[i] + vecax[i])
-                    nvec.append(node[i] - point[i])
+                    nvec.append(node.getAxis(i) - point[i])
                     i += 1
                 theta = getAngle(vec,vecax,getDistance(point,tp1),getDistance(point,tp2))
                 mat = []
@@ -312,7 +309,6 @@ class kdTree:
                     ntheta = getAngle(vec,nvec,getDistance(point,tp1),getDistance(point,node.getPoint()))
                     #gets the node point if it falls inside the criteria
                     if ntheta < (scan / 2): 
-                        self.l += 1
                         tretPoints.append(node)
                         tretDist.append(getDistance(point,node.getPoint()))
                     #Finally aquires the best n# of points from big list

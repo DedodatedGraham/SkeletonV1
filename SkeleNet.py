@@ -21,6 +21,7 @@ cycol = cycle('bgrcmk')
 
 
 def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,animate : bool = False,cpuid : int = -1,tag : int = -1):
+    print('process{} started'.format(cpuid))
     #Skeletize takes in 
     #FROM INPUT
     #key is the specific index of tpoints and tnorms, allows for
@@ -45,11 +46,11 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
     avgt = 0
     numt = 0
     dim = len(points[0])
+    guessr = threshDistance * len(points) * 10
     ##START OF SOLVE
     index = 0
-    guessr = 0
     lenptso = len(str(len(points)))
-
+    avgstep = 0
     prnd = []
     pts = []
     nrms = []
@@ -81,14 +82,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         while not case:
             if i == 0:
                 #Inital
-                if index == 0:
-                    prnd = pts[randint(1,len(pts) - 1)]
-                    tempr.append(np.round(getRadius(point,prnd,norm),6))
-                else:
-                    tempr.append(guessr)
+                tempr.append(guessr)
                 if tempr[0] < 0.015:
                     print(index,'flag')
-                if dim == 2:
+                if len(points[0]) == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
                 else:
                     centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
@@ -111,7 +108,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 else:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i]),float(point[2]-norm[2]*tempr[i])])
             leng = len(tempr) - 1
-            
                             #Capture animation data
             if animate:
                 if i == 0:
@@ -156,17 +152,20 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     atp[index].append(testp[leng - 1])
                     arad[index].append(tempr[leng - 1])
                 case = True
-            elif i > 1 and dist  < tempr[leng] + threshDistance:
+            elif i > 0 and dist  < tempr[leng] + threshDistance:
                 #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
                 crossdis = 0
                 tpoint = []
+                tnorm = []
                 j = 0
                 while j < len(point):
-                    tpoint.append(point[j] + norm[j] * threshDistance)
+                    tnorm.append(norm[j] * -1)
+                    tpoint.append(point[j] + tnorm[j] * threshDistance)
                     j += 1
-                crossp = tree.getVectorR(tpoint,norm,1,scan = (np.pi / 8))
-                crossdis = getDistance(point,crossp)
-                print('crossed from {} to {}'.format(point,crossp))
+                crossp = tree.getVectorR(tpoint,tnorm,1,scan = (np.pi / 8))
+                if len(crossp) > 0:
+                    [crossp] = crossp 
+                    crossdis = getDistance(point,crossp)
                 if getDistance(point,centerp[leng]) < crossdis:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
@@ -203,13 +202,12 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                    case = True 
             i += 1
         avgt += (time.time() - stt)
+        avgstep += len(tempr)
         numt += 1
         if index % 10 == 0:
             tat = avgt / numt
-            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100))
-        
-        if index != len(points) - 1:
-            guessr = threshDistance * len(points)
+            sat = avgstep / numt
+            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat)))) 
         index += 1
     te = time.time()
     tt = te - ts
@@ -243,7 +241,7 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = min(mp.cpu_count() - 4,8) #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 4,28) #Will Always allow 2 Cores to remain unused
         if self.cpuavail == 0:
             self.cpuavail = 1
         print('We have {} CPU\'s Available'.format(self.cpuavail))
@@ -376,10 +374,7 @@ class SkeleNet:
                 cputag.append(i)
                 j += 1
             print('booting processes...')
-            if self.animate:
-                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
-            else:
-                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
+            results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
             print('done')
             for data in results:
                 t0 = data[0]
@@ -1087,15 +1082,47 @@ class SkeleNet:
         sst = time.time()
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        #theta = np.linspace(0,2*np.pi,100)
+        theta = np.linspace(0,2*np.pi,100)
         index = 0
         tt = 0
+        i = 0
+        xmax = -10
+        xmin = 10
+        ymax = -10
+        ymin = 10
+        while i < len(self.IntPoints):
+            if self.IntPoints[i][0] > xmax:
+                xmax = self.IntPoints[i][0]
+            if self.IntPoints[i][0] < xmin:
+                xmin = self.IntPoints[i][0]
+            if self.IntPoints[i][1] > ymax:
+                ymax = self.IntPoints[i][1]
+            if self.IntPoints[i][1] < ymin:
+                ymin = self.IntPoints[i][1]
+            i += 1
+        xmax = np.round(xmax,1)
+        xmin = np.round(xmin,1)
+        ymax = np.round(ymax,1)
+        ymin = np.round(ymin,1)
+        xdis = xmax - xmin
+        ydis = ymax - ymin
+        if xdis > ydis:
+            ycent = (ymax + ymin) / 2
+            ymin = ycent - xdis / 2
+            ymax = ycent + xdis / 2
+        else:
+            xcent = (xmax + xmin) / 2
+            xmin = xcent - ydis / 2
+            xmax = xcent + ydis / 2
+        print([xmax,xmin],[ymax,ymin])
         while index < len(mode):
             print("Plotting {}".format(mode[index]))
             st = time.time()
             #Mode 0 -> output to degbug of normals of each point
             if mode[index] == 0:
                 plt.clf()
+                plt.xlim(xmin,xmax)
+                plt.ylim(ymin,ymax)
                 tx = []
                 ty = []
                 i = 0
@@ -1115,13 +1142,15 @@ class SkeleNet:
                     save = os.getcwd() + "\Debug\Debug{:04d}.png".format(i)
                     plt.savefig(save)
                     plt.clf()
+                    plt.xlim(xmin,xmax)
+                    plt.ylim(ymin,ymax)
                     i += 1
                 
             #Mode 1 is for outputting final points for every tag
             elif mode[index] == 1:
                 plt.clf()
-                #plt.xlim(0.5,1)
-                #plt.ylim(0,1)
+                plt.xlim(xmin,xmax)
+                plt.ylim(ymin,ymax)
                 if self.dim == 2:
                     i = 0
                     tx = []
@@ -1137,13 +1166,19 @@ class SkeleNet:
                         j = 0
                         tx = []
                         ty = []
+                        tr = []
                         while j < len(self.SkelePoints[i]):
                             tx.append(self.SkelePoints[i][j][0])
                             ty.append(self.SkelePoints[i][j][1])
-                            #plt.plot(tx[j] + np.cos(theta) * self.SkeleRad[i][j],ty[j] + np.sin(theta) * self.SkeleRad[i][j],color = 'blue')
+                            tr.append(self.SkeleRad[i][j])
                             j += 1
                         i += 1
                         plt.scatter(tx,ty,5,color='orange')
+                        plt.savefig('OutputNoRad.png')
+                        j = 0
+                        while j < len(tx):
+                            plt.plot(tx[j] + np.cos(theta) * tr[j],ty[j] + np.sin(theta) * tr[j],5,color='green')
+                            j += 1
                 else:
                     ax = plt.axes(projection='3d')
                     i = 0
@@ -1176,6 +1211,8 @@ class SkeleNet:
             elif mode[index] == 2:
                 svnum = 0
                 plt.clf()
+                plt.xlim(xmin,xmax)
+                plt.ylim(ymin,ymax)
                 path = os.getcwd()
                 tag = 0
                 i = 0
@@ -1203,8 +1240,8 @@ class SkeleNet:
                         j = 0
                         while j < len(self.acp[tag][i]):
                             plt.clf()
-                            plt.xlim(0.1,0.5)
-                            plt.ylim(0,0.4)
+                            plt.xlim(xmin,xmax)
+                            plt.ylim(ymin,ymax)
                             print(tag, '/', len(self.acp),' ', i ,'/' , len(self.acp[tag]), ' ', j , '/', len(self.acp[tag][i]))
                             plt.scatter(tx,ty,5,color='green')
                             if len(sx) > 0:
@@ -1230,8 +1267,8 @@ class SkeleNet:
             elif mode[index] == 3:
                 pt = []
                 plt.clf()
-                # plt.xlim(-.2,.2)
-                # plt.ylim(-.2,.2)
+                plt.xlim(xmin,xmax)
+                plt.ylim(ymin,ymax)
                 i = 0
                 tx = []
                 ty = []
@@ -1266,10 +1303,8 @@ class SkeleNet:
                 theta =  np.linspace(0,2*np.pi,100)
                 #This is the figure which can display the quadtree along with its nodes
                 plt.clf()
-                plt.xlim(0.1,0.65)
-                plt.ylim(.05,.4)
-                # plt.xlim(0.5,1.1)
-                # plt.ylim(0.1,0.9)
+                plt.xlim(xmin,xmax)
+                plt.ylim(ymin,ymax)
                 i = 0
                 tx = []
                 ty = []
@@ -1287,12 +1322,8 @@ class SkeleNet:
             elif mode[index] == 5:
                 #Plots Connections of the Ordering
                 plt.clf()
-                # plt.xlim(0.35,0.8)
-                # plt.ylim(-0.05,0.5)
-                # plt.xlim(0,0.5)
-                # plt.ylim(0,0.5)
-                # plt.xlim(0.5,1.1)
-                # plt.ylim(0.1,0.9)
+                plt.xlim(xmin,xmax)
+                plt.ylim(ymin,ymax)
                 i = 0
                 tx = []
                 ty = []
