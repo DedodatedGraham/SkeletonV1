@@ -19,7 +19,7 @@ from mpl_toolkits import mplot3d
 from itertools import cycle
 cycol = cycle('bgrcmk')
 
-
+# @profile
 def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,animate : bool = False,cpuid : int = -1,tag : int = -1):
     print('process{} started'.format(cpuid))
     #Skeletize takes in 
@@ -164,8 +164,9 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     j += 1
                 crossp = tree.getVectorR(tpoint,tnorm,1,scan = (np.pi / 8))
                 if len(crossp) > 0:
-                    [crossp] = crossp 
+                    crossp = crossp[0] 
                     crossdis = getDistance(point,crossp)
+                print(crossp)
                 if getDistance(point,centerp[leng]) < crossdis:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
@@ -245,7 +246,6 @@ class SkeleNet:
         if self.cpuavail == 0:
             self.cpuavail = 1
         print('We have {} CPU\'s Available'.format(self.cpuavail))
-        self.pool = ProcessingPool(nodes=self.cpuavail)
         #Determining type of points given
         if isinstance(points,str):    
             with open(points,'r') as csvfile:
@@ -359,7 +359,8 @@ class SkeleNet:
                 j += 1  
             i += 1
         i = 0
-        while i < len(self.tpoints):
+        while i < len(self.tpoints):    
+            self.pool = ProcessingPool(nodes=self.cpuavail)
             setthresh = []
             temptree = []
             ani = []

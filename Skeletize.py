@@ -17,7 +17,7 @@ import numpy as np
 # import pandas as pd
 
 
-
+# @profile
 def checkRepeat(check : list):
     n = 2 #order of repeat
     a = False
@@ -33,7 +33,7 @@ def checkRepeat(check : list):
         n = n + 1
     return a , n
 
-
+# @profile
 def getRadius(point1, point2 , norm) -> float:
     #First finds theta
     dim = len(point1)
@@ -71,7 +71,7 @@ def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
             inside = np.round(inside,6) 
         theta = np.arccos(inside)
     return theta
-
+# @profile
 def normalize(points : list) -> list:
     i = 0
     pts = []
@@ -82,7 +82,6 @@ def normalize(points : list) -> list:
     retpoints = []
     dim = len(pts[0])
     while i < len(pts):
-        print('normalizing {}'.format(i))
         tempx = pts[i][0]
         tempy = pts[i][1]
         if dim == 2:
@@ -108,7 +107,7 @@ def getDistance(point1, point2) -> float:
     else:
         z = point1[2] - point2[2]
         return (x ** 2 + y ** 2 + z ** 2) ** 0.5
-
+# @profile
 def getPoint(point : list, vec : list):
     ret = []
     i = 0

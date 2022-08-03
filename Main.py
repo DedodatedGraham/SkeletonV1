@@ -24,18 +24,18 @@ from DataStructures import kdTree
 
 
 if __name__ == '__main__':
-    # __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
+    __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
     sys.setrecursionlimit(10000)
     st = time.time()
     
     plt.rcParams['figure.dpi'] = 300
-    
+
     linep = True
     
     
-    # link = r'/interface_points_070000.dat'
+    link = r'\interface_points_070000.dat'
     # link = r'/spiral.dat'
-    link = r'/vof_points_norm_0650.dat'
+    # link = r'\vof_points_norm_0650.dat'
     # link = r'\t06.dat'
     # link = r'/vof_points_norms.dat'
     # link = r'\bagdrop.dat'
@@ -86,7 +86,7 @@ if __name__ == '__main__':
 #     print(i)
 #     pts.append(IntPoints[i])
 #     nrms.append(norms[i])
-#     i += randint(20,5000)
+#     i += randint(20,2500)
 # out = skeletize(pts,nrms, threshDistance, tree)
-#     
-#                 
+    
+                

@@ -19,12 +19,12 @@ import time
 
 from Skeletize import getDistance, getAngle
 
-
+# @profile
 def quicksort(points : list , dimension : int):
     #  **Points are Skeleton Points**
     return quicksortrunner(points,dimension,0,len(points)-1)
 
-
+# @profile
 def quicksortrunner(points : list , dimension : int , first : int , last : int , rads : list = [],depth : int = 0):
     # print('sorting',depth)
     if first<last:
@@ -32,7 +32,7 @@ def quicksortrunner(points : list , dimension : int , first : int , last : int ,
         quicksortrunner(points, dimension, first, splitpoint - 1,depth=depth+1)
         quicksortrunner(points, dimension, splitpoint + 1,last,depth=depth+1)
         return points
-            
+# @profile           
 def partition(points : list , dimension : int , first : int , last : int ):
     pivot = points[first].getAxis(dimension)
     left = first + 1
@@ -181,7 +181,7 @@ class kdTree:
                 return pmin.getPoint()
         else:
             return pmin,dmin
-        
+    # @profile    
     def getVectorR(self,point : list,vec : list,n : int,depth : int = 0,*,getRads : bool = False,scan = np.pi / 4):
             #Get vector will get the closest n number of points to the search point
             #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
