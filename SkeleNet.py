@@ -93,16 +93,17 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 testp.append(point)
             else:   
                 #Refinement of skeleton point
-                # testp.append(tree.getNearR(centerp[len(centerp) - 1],point,cpuavail=cpuavail))
-                tpool = ThreadPool(cpuavail)
+                
+                # tpool = ThreadPool(cpuavail)
                 inputdat = []
                 inputdat.append([])
                 inputdat[0].append(centerp[len(centerp) - 1])
                 inputdat[0].append(point)
                 inputdat[0].append(False)
-                results = tpool.map(tree.getNearR,inputdat)
-                testp.append(results[0])
-                tpool.close()
+                # results = tpool.map(tree.getNearR,inputdat)
+                # testp.append(results[0])
+                # tpool.close()
+                testp.append(tree.getNearR(inputdat[0]))
                 if testp[len(testp) - 1] == point:
                     print()
                     print('error',index,i)
@@ -172,8 +173,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     tnorm.append(norm[j] * -1)
                     tpoint.append(point[j] + tnorm[j] * threshDistance)
                     j += 1
-                # crossp = tree.getVectorR(tpoint,tnorm,1,scan = (np.pi / 8),cpuavail=cpuavail)
-                tpool = ThreadPool(cpuavail)
+                
+                # tpool = ThreadPool(cpuavail)
                 inputdat = []
                 inputdat.append([])
                 inputdat[0].append(tpoint)
@@ -181,13 +182,16 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 inputdat[0].append(1)
                 inputdat[0].append(False)
                 inputdat[0].append((np.pi / 8))
-                results = tpool.map(tree.getVectorR,inputdat)
-                crossp = results[0]
-                tpool.close
+                # results = tpool.map(tree.getVectorR,inputdat)
+                # crossp = results[0]
+                # tpool.close
+                crossp = tree.getVectorR(inputdat[0])
+                
                 if len(crossp) > 0:
                     crossp = crossp[0] 
                     crossdis = getDistance(point,crossp)
-                print(crossp)
+                else:
+                    print(crossp,point)
                 if getDistance(point,centerp[leng]) < crossdis:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
@@ -265,7 +269,9 @@ class SkeleNet:
         #Multiprocessing ideas
         self.cpuavail = min(mp.cpu_count() - 4,28) #Will Always allow 2 Cores to remain unused
         if self.cpuavail == 0:
-            self.cpuavail = 1
+            self.cpuavail = mp.cpu_count() - 2
+        elif self.cpuavail < 0:
+            print('error computer not strong enough')
         print('We have {} CPU\'s Available'.format(self.cpuavail))
         #Determining type of points given
         if isinstance(points,str):    
@@ -356,83 +362,86 @@ class SkeleNet:
             i += 1
             
         
-        # self.divpts = []
-        # self.divnrms = []
-        # strt = []
-        # stp = []
-        # i = 0
-        # while i < len(self.tpoints):
-        #     j = 0
-        #     self.divpts.append([])
-        #     self.divnrms.append([])
-        #     strt.append([])
-        #     stp.append([])
-        #     while j < self.cpuavail:
-        #         self.divpts[i].append([])
-        #         self.divnrms[i].append([])
-        #         q = int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail))
-        #         strt[i].append(int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail)))
-        #         stp[i].append(int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)))
-        #         while q < int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)):
-        #             self.divpts[i][j].append(self.tpoints[i][q])
-        #             self.divnrms[i][j].append(self.tnorms[i][q])
-        #             q += 1
-        #         j += 1  
-        #     i += 1
+        self.divpts = []
+        self.divnrms = []
+        strt = []
+        stp = []
+        i = 0
+        while i < len(self.tpoints):
+            j = 0
+            self.divpts.append([])
+            self.divnrms.append([])
+            strt.append([])
+            stp.append([])
+            while j < self.cpuavail:
+                self.divpts[i].append([])
+                self.divnrms[i].append([])
+                q = int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail))
+                strt[i].append(int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail)))
+                stp[i].append(int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)))
+                while q < int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)):
+                    self.divpts[i][j].append(self.tpoints[i][q])
+                    self.divnrms[i][j].append(self.tnorms[i][q])
+                    q += 1
+                j += 1  
+            i += 1
         i = 0
         while i < len(self.tpoints):    
-            # self.pool = ProcessingPool(nodes=self.cpuavail)
-            # setthresh = []
-            # temptree = []
-            # ani = []
-            # cpuid = []
-            # cputag = []
-            # j = 0
-            # while j < len(self.divpts[i]):
-            #     setthresh.append(self.threshDistance[i])
-            #     temptree.append(self.tree[i])
-            #     ani.append(self.animate)
-            #     cpuid.append(j)
-            #     cputag.append(i)
-            #     j += 1
+            self.pool = ProcessingPool(nodes=self.cpuavail)
+            setthresh = []
+            temptree = []
+            ani = []
+            cpuid = []
+            cputag = []
+            j = 0
+            while j < len(self.divpts[i]):
+                setthresh.append(self.threshDistance[i])
+                temptree.append(self.tree[i])
+                ani.append(self.animate)
+                cpuid.append(j)
+                cputag.append(i)
+                j += 1
             print('booting processes...')
-            centp,rad = skeletize(self.tpoints[i], self.tnorms[i], self.threshDistance[i], self.tree[i],cpuavail = self.cpuavail)
-            # results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
+            # centp,rad = skeletize(self.tpoints[i], self.tnorms[i], self.threshDistance[i], self.tree[i],cpuavail = self.cpuavail)
+            # self.SkelePoints.append(centp)
+            # self.SkeleRad.append(rad)
+            #####
+            results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
             print('done')
-            # for data in results:
-            #     t0 = data[0]
-            #     t1 = data[1]
-            #     if self.animate:
-            #         t2 = data[2]
-            #         t3 = data[3]
-            #         t4 = data[4]
-            #     if len(self.SkelePoints) == i:
-            #         self.SkelePoints.append([])
-            #         self.SkeleRad.append([])
-            #     j = 0
-            #     while j < len(t0):
-            #         self.SkelePoints[i].append(t0[j])
-            #         self.SkeleRad[i].append(t1[j])
-            #         j += 1
-            #     if self.animate:
-            #         if len(self.acp) == i:
-            #             self.acp.append([])
-            #         if len(self.atp) == i:
-            #             self.atp.append([])
-            #         if len(self.arad) == i:
-            #             self.arad.append([])
-            #         j = 0
-            #         while j < len(t2):
-            #             self.acp[i].append(t2[j])
-            #             j += 1
-            #         j = 0
-            #         while j < len(t3):
-            #             self.atp[i].append(t3[j])
-            #             j += 1
-            #         j = 0
-            #         while j < len(t4):
-            #             self.arad[i].append(t4[j])
-            #             j += 1
+            for data in results:
+                t0 = data[0]
+                t1 = data[1]
+                if self.animate:
+                    t2 = data[2]
+                    t3 = data[3]
+                    t4 = data[4]
+                if len(self.SkelePoints) == i:
+                    self.SkelePoints.append([])
+                    self.SkeleRad.append([])
+                j = 0
+                while j < len(t0):
+                    self.SkelePoints[i].append(t0[j])
+                    self.SkeleRad[i].append(t1[j])
+                    j += 1
+                if self.animate:
+                    if len(self.acp) == i:
+                        self.acp.append([])
+                    if len(self.atp) == i:
+                        self.atp.append([])
+                    if len(self.arad) == i:
+                        self.arad.append([])
+                    j = 0
+                    while j < len(t2):
+                        self.acp[i].append(t2[j])
+                        j += 1
+                    j = 0
+                    while j < len(t3):
+                        self.atp[i].append(t3[j])
+                        j += 1
+                    j = 0
+                    while j < len(t4):
+                        self.arad[i].append(t4[j])
+                        j += 1
             i += 1
             self.pool.close()
         # self.order()
@@ -1113,6 +1122,9 @@ class SkeleNet:
         xmin = 10
         ymax = -10
         ymin = 10
+        if self.dim == 3:
+            zmax = -10
+            zmin = 10
         while i < len(self.IntPoints):
             if self.IntPoints[i][0] > xmax:
                 xmax = self.IntPoints[i][0]
@@ -1122,22 +1134,53 @@ class SkeleNet:
                 ymax = self.IntPoints[i][1]
             if self.IntPoints[i][1] < ymin:
                 ymin = self.IntPoints[i][1]
+            if self.dim == 3:
+                if self.IntPoints[i][2] > zmax:
+                    zmax = self.IntPoints[i][2]
+                if self.IntPoints[i][2] < zmin:
+                    zmin = self.IntPoints[i][2]
             i += 1
-        xmax = np.round(xmax,1)
-        xmin = np.round(xmin,1)
-        ymax = np.round(ymax,1)
-        ymin = np.round(ymin,1)
+        xmax = np.round(xmax,3) + 0.01
+        xmin = np.round(xmin,3) - 0.01
+        ymax = np.round(ymax,3) + 0.01
+        ymin = np.round(ymin,3) - 0.01
         xdis = xmax - xmin
         ydis = ymax - ymin
-        if xdis > ydis:
-            ycent = (ymax + ymin) / 2
-            ymin = ycent - xdis / 2
-            ymax = ycent + xdis / 2
+        if self.dim == 3:
+            zmax = np.round(zmax,3) + 0.01
+            zmin = np.round(zmin,3) - 0.01  
+            zdis = zmax - zmin
+        if self.dim == 2:
+            if xdis > ydis:
+                ycent = (ymax + ymin) / 2
+                ymin = ycent - xdis / 2
+                ymax = ycent + xdis / 2
+            else:
+                xcent = (xmax + xmin) / 2
+                xmin = xcent - ydis / 2
+                xmax = xcent + ydis / 2
         else:
-            xcent = (xmax + xmin) / 2
-            xmin = xcent - ydis / 2
-            xmax = xcent + ydis / 2
-        print([xmax,xmin],[ymax,ymin])
+            if xdis > ydis and xdis > zdis:
+                ycent = (ymax + ymin) / 2
+                ymin = ycent - xdis / 2
+                ymax = ycent + xdis / 2
+                zcent = (zmax + zmin) / 2
+                zmin = zcent - xdis / 2
+                zmax = zcent + xdis / 2
+            elif ydis > xdis and ydis > zdis:
+                xcent = (xmax + xmin) / 2
+                xmin = xcent - ydis / 2
+                xmax = xcent + ydis / 2
+                zcent = (zmax + zmin) / 2
+                zmin = zcent - ydis / 2
+                zmax = zcent + ydis / 2
+            else:
+                xcent = (xmax + xmin) / 2
+                xmin = xcent - zdis / 2
+                xmax = xcent + zdis / 2
+                ycent = (ymax + ymin) / 2
+                ymin = ycent - zdis / 2
+                ymax = ycent + zdis / 2
         while index < len(mode):
             print("Plotting {}".format(mode[index]))
             st = time.time()
@@ -1146,6 +1189,8 @@ class SkeleNet:
                 plt.clf()
                 plt.xlim(xmin,xmax)
                 plt.ylim(ymin,ymax)
+                if self.dim == 3:
+                    plt.zlim(zmin,zmax)
                 tx = []
                 ty = []
                 i = 0
@@ -1167,6 +1212,8 @@ class SkeleNet:
                     plt.clf()
                     plt.xlim(xmin,xmax)
                     plt.ylim(ymin,ymax)
+                    if self.dim == 3:
+                        plt.zlim(zmin,zmax)
                     i += 1
                 
             #Mode 1 is for outputting final points for every tag
@@ -1174,6 +1221,8 @@ class SkeleNet:
                 plt.clf()
                 plt.xlim(xmin,xmax)
                 plt.ylim(ymin,ymax)
+                if self.dim == 3:
+                    plt.zlim(zmin,zmax)
                 if self.dim == 2:
                     i = 0
                     tx = []
@@ -1236,6 +1285,8 @@ class SkeleNet:
                 plt.clf()
                 plt.xlim(xmin,xmax)
                 plt.ylim(ymin,ymax)
+                if self.dim == 3:
+                    plt.zlim(zmin,zmax)
                 path = os.getcwd()
                 tag = 0
                 i = 0
@@ -1265,6 +1316,8 @@ class SkeleNet:
                             plt.clf()
                             plt.xlim(xmin,xmax)
                             plt.ylim(ymin,ymax)
+                            if self.dim == 3:
+                                plt.zlim(zmin,zmax)
                             print(tag, '/', len(self.acp),' ', i ,'/' , len(self.acp[tag]), ' ', j , '/', len(self.acp[tag][i]))
                             plt.scatter(tx,ty,5,color='green')
                             if len(sx) > 0:

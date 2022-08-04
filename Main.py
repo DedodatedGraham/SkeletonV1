@@ -46,7 +46,7 @@ if __name__ == '__main__':
     net = SkeleNet(link)
     net.solve(False)
     net.savedat(1)
-    net.plot([])
+    net.plot([1])
     
     et = time.time()
     tt = et - st
@@ -67,8 +67,12 @@ if __name__ == '__main__':
 #         if str(row[0]) == 'x':#if title
 #             a = 1    
 #         else:
-#             IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
-#             NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
+#             if len(row) > 5:
+#                 IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
+#                 NormPoints.append([float(row[3]),float(row[4]),float(row[5])])
+#             else:
+#                 IntPoints.append([float(row[0]),float(row[1])])
+#                 NormPoints.append([float(row[2]),float(row[3])])
 # tree = kdTree(IntPoints)
 # norms = normalize(NormPoints)
 # tot = 0
@@ -76,7 +80,10 @@ if __name__ == '__main__':
 # j = 0
 # while j < min(20,len(IntPoints)):
 #     tpt = IntPoints[randint(0, len(IntPoints) - 1)]
-#     tot += getDistance(tpt,tree.getNearR(tpt,[]))
+#     tts = time.time()
+#     tot += getDistance(tpt,tree.getNearR([tpt,[],False]))
+#     tte = time.time()
+#     print('thresh',j,'took {} secs'.format((tte - tts) % 60))
 #     j += 1
 # threshDistance = tot / min(20,len(IntPoints)) 
 # pts = []
@@ -86,7 +93,8 @@ if __name__ == '__main__':
 #     print(i)
 #     pts.append(IntPoints[i])
 #     nrms.append(norms[i])
-#     i += randint(20,2500)
+#     i += randint(20,10000)
+#     # i += randint(1,10)
 # out = skeletize(pts,nrms, threshDistance, tree)
     
                 

@@ -83,7 +83,7 @@ class kdTree:
             # print('point conversion took {} minuites and {} seconds to make {} SkelePoints'.format(ttt // 60,ttt % 60, len(points)))
         self.depth = depth
         #Next is the actual process of creating the struct
-        if len(points) > 5:
+        if len(points) > 100:
             self.split = True
             self.axis = depth % self.dimensions
             points = quicksort(points,self.axis,cpuavail=cpuavail)
@@ -197,14 +197,19 @@ class kdTree:
             #however it will store node value and compare on the way out if a given node is a better point than something returned
             
             if depth == 0:
-                getRads = inputdat[3]
-                if len(inputdat) > 4:
-                    scan = inputdat[4]
-                    if len(inputdat) > 5:
-                        cpuavail = inputdat[5]
+                if len(inputdat) > 3:
+                    getRads = inputdat[3]
+                    if len(inputdat) > 4:
+                        scan = inputdat[4]
+                        if len(inputdat) > 5:
+                            cpuavail = inputdat[5]
                 tin = []
                 tin.append(inputdat[0])
-                tin.append(inputdat[1])
+                tin.append([])
+                i = 0
+                while i < len(inputdat[1]):
+                    tin[1].append(inputdat[1][i])
+                    i += 1
                 tin.append(inputdat[2])
                 inputdat = tin
             retPoints = []
@@ -245,68 +250,78 @@ class kdTree:
                 node = self.node
                 #First want to see if the vector only reaches a specific leaf of the tree
                 i = 0
-                vecax = []
+                # vecax = []
                 tp1 = []
-                tp2 = []
+                # tp2 = []
                 nvec = []
                 while i < len(inputdat[0]):
-                    if not(i == axis):
-                        vecax.append(1)
-                    else:
-                        vecax.append(0)
+                    # if i == axis:
+                    #     vecax.append(1)
+                    # else:
+                    #     vecax.append(0)
                     tp1.append(inputdat[0][i] + inputdat[1][i])
-                    tp2.append(inputdat[0][i] + vecax[i])
+                    # tp2.append(inputdat[0][i] + vecax[i])
                     nvec.append(node.getAxis(i) - inputdat[0][i])
                     i += 1
-                theta = getAngle(inputdat[1],vecax,getDistance(inputdat[0],tp1),getDistance(inputdat[0],tp2))
-                mat = []
-                if self.dimensions == 2:
-                    mat.append([])
-                    mat[0].append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
-                    mat[0].append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1] * np.sin(-scan / 2))
-                    mat.append([])
-                    mat[1].append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
-                    mat[1].append(inputdat[1][0] * np.sin(-scan / 2) +inputdat[1][1] * np.cos(-scan / 2))
-                else:
-                    if axis == 0:
-                        #X axis rotation
-                        mat.append([])
-                        mat[0].append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
-                        mat[0].append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1]  * np.sin(-scan / 2))
-                        mat.append([])
-                        mat[1].append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
-                        mat[1].append(inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][1] * np.cos(-scan / 2))
-                        mat.append([])
-                        mat[2].append(inputdat[1][2])
-                        mat[2].append(inputdat[1][2])
-                    elif axis == 1:
-                        #Y axis rotation
-                        mat.append([])
-                        mat[0].append(inputdat[1][0] * np.cos(scan / 2) + inputdat[1][2] * np.sin(scan / 2))
-                        mat[0].append(inputdat[1][0] * np.cos(-scan / 2) + inputdat[1][2]  * np.sin(-scan / 2))
-                        mat.append([])
-                        mat[1].append(inputdat[1][1])
-                        mat[1].append(inputdat[1][1])
-                        mat.append([])
-                        mat[2].append(-inputdat[1][0] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
-                        mat[2].append(-inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
-                    else:
-                        #Z axis rotation
-                        mat.append([])
-                        mat[0].append(inputdat[1][0])
-                        mat[0].append(inputdat[1][0])
-                        mat.append([])
-                        mat[1].append(inputdat[1][1] * np.cos(scan / 2) - inputdat[1][2] * np.sin(scan / 2))
-                        mat[1].append(inputdat[1][1] * np.cos(-scan / 2) - inputdat[1][2] * np.sin(-scan / 2))
-                        mat.append([])
-                        mat[2].append(inputdat[1][1] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
-                        mat[2].append(inputdat[1][1] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
-                if node.getAxis(axis) < inputdat[0][axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
+                # theta = getAngle(inputdat[1],vecax,getDistance(inputdat[0],tp1),getDistance(inputdat[0],tp2))
+                # mat = []
+                # if self.dimensions == 2:
+                #     if axis == 0:
+                #         mat.append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
+                #         mat.append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1] * np.sin(-scan / 2))
+                #     else:
+                #         mat.append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
+                #         mat.append(inputdat[1][0] * np.sin(-scan / 2) +inputdat[1][1] * np.cos(-scan / 2))
+                # else:
+                #     if axis == 0:
+                #         #X axis rotation
+                #         mat.append([])
+                #         mat[0].append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
+                #         mat[0].append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1]  * np.sin(-scan / 2))
+                #         mat.append([])
+                #         mat[1].append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
+                #         mat[1].append(inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][1] * np.cos(-scan / 2))
+                #         mat.append([])
+                #         mat[2].append(inputdat[1][2])
+                #         mat[2].append(inputdat[1][2])
+                #     elif axis == 1:
+                #         #Y axis rotation
+                #         mat.append([])
+                #         mat[0].append(inputdat[1][0] * np.cos(scan / 2) + inputdat[1][2] * np.sin(scan / 2))
+                #         mat[0].append(inputdat[1][0] * np.cos(-scan / 2) + inputdat[1][2]  * np.sin(-scan / 2))
+                #         mat.append([])
+                #         mat[1].append(inputdat[1][1])
+                #         mat[1].append(inputdat[1][1])
+                #         mat.append([])
+                #         mat[2].append(-inputdat[1][0] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
+                #         mat[2].append(-inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
+                #     else:
+                #         #Z axis rotation
+                #         mat.append([])
+                #         mat[0].append(inputdat[1][0])
+                #         mat[0].append(inputdat[1][0])
+                #         mat.append([])
+                #         mat[1].append(inputdat[1][1] * np.cos(scan / 2) - inputdat[1][2] * np.sin(scan / 2))
+                #         mat[1].append(inputdat[1][1] * np.cos(-scan / 2) - inputdat[1][2] * np.sin(-scan / 2))
+                #         mat.append([])
+                #         mat[2].append(inputdat[1][1] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
+                #         mat[2].append(inputdat[1][1] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
+                # if depth == 0:
+                #     print()
+                #     print(mat,theta)
+                #     print(inputdat[0],inputdat[1])
+                if node.getAxis(axis) < inputdat[0][axis] and inputdat[1][axis] > 0:
+                    # print('GOING L',depth,axis)
+                    # print('point',inputdat[0],'norm',inputdat[1],'current node',self.node.getPoint())
+                    # print('Angle',theta,'vectors',mat)
                     retPoints,retDist = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                elif node.getAxis(axis) > inputdat[0][axis] and theta < max(mat[axis]) and theta < min(mat[axis]):
-                    #point on left side of axis and positive vector
+                elif node.getAxis(axis) > inputdat[0][axis] and inputdat[1][axis] < 0:
+                    # print('GOING R',depth,axis)
+                    # print('point',inputdat[0],'norm',inputdat[1],'current node',self.node.getPoint())
+                    # print('Angle',theta,'vectors',mat)
                     retPoints,retDist = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
                 else:
+                    # print('bruh',mat[axis])
                     tretPoints = []
                     tretDist = []
                     retPointsl = []
