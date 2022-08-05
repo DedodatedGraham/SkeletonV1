@@ -181,12 +181,11 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 inputdat[0].append(tnorm)
                 inputdat[0].append(1)
                 inputdat[0].append(False)
-                inputdat[0].append((np.pi / 8))
+                #inputdat[0].append((np.pi / 8))
                 # results = tpool.map(tree.getVectorR,inputdat)
                 # crossp = results[0]
                 # tpool.close
-                crossp = tree.getVectorR(inputdat[0])
-                
+                crossp = tree.getVectorR(inputdat[0]) 
                 if len(crossp) > 0:
                     crossp = crossp[0] 
                     crossdis = getDistance(point,crossp)
@@ -267,7 +266,7 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = min(mp.cpu_count() - 4,28) #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 2,28) #Will Always allow 2 Cores to remain unused
         if self.cpuavail == 0:
             self.cpuavail = mp.cpu_count() - 2
         elif self.cpuavail < 0:
