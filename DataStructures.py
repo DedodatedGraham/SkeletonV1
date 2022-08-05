@@ -315,18 +315,21 @@ class kdTree:
 
                 if node.getAxis(axis) < inputdat[0][axis] and inputdat[1][axis] > 0.1:
                     retPoints,retDist = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    if depth == 0 and len(retPoints) == 0:
+                    if depth < 3 and len(retPoints) == 0:
                         print()
-                        print('went left and shouldnt of ?')
+                        print('went left and shouldnt of ?',depth)
                         print('point',inputdat[0],'norm',inputdat[1])
                         print('node',node.getPoint())
+                        print('axis',axis)
+                        print()
                 elif node.getAxis(axis) > inputdat[0][axis] and inputdat[1][axis] < 0.1:
                     retPoints,retDist = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    if depth == 0 and len(retPoints) == 0:
+                    if depth < 3 and len(retPoints) == 0:
                         print()
-                        print('went right and shouldnt of ?')
+                        print('went right and shouldnt of ?',depth)
                         print('point',inputdat[0],'norm',inputdat[1])
                         print('node',node.getPoint())
+                        print()
                 else:
                     # print('bruh',mat[axis])
                     tretPoints = []

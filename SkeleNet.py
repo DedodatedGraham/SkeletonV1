@@ -266,9 +266,10 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = min(mp.cpu_count() - 2,28) #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 4,28) #Will Always allow 2 Cores to remain unused
         if self.cpuavail == 0:
-            self.cpuavail = mp.cpu_count() - 2
+            # self.cpuavail = mp.cpu_count() - 2
+            self.cpuavail = 1
         elif self.cpuavail < 0:
             print('error computer not strong enough')
         print('We have {} CPU\'s Available'.format(self.cpuavail))
