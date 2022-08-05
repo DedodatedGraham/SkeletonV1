@@ -340,6 +340,13 @@ class kdTree:
                     retDistr = []
                     retPointsl,retDistl = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
                     retPointsr,retDistr = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
+                    if depth == 0 and len(retPointsl) == 0 and len(retDistr) == 0:
+                        print()
+                        print('went Both and got nothin?',depth)
+                        print('point',inputdat[0],'norm',inputdat[1])
+                        print('node',node.getPoint())
+                        print('axis',axis)
+                        print()
                     i = 0
                     while i < len(retPointsl):
                         tretPoints.append(retPointsl[i])
