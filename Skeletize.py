@@ -5,7 +5,7 @@ Created on Thu Feb 17 16:22:45 2022
 @author: Graham Garcia
 """
 
-# from random  import randint
+from random  import randint,shuffle
 # from sys import float_repr_style
 # import matplotlib
 # import matplotlib.pyplot as plt
@@ -116,3 +116,28 @@ def getPoint(point : list, vec : list):
         i += 1
     return ret
     
+
+
+def randPN(points : list,norms : list ):
+    #This function is for randomizing data, for more closely related time..
+    i = 0
+    ret = []
+    #First ties points together
+    while i < len(points):
+        ret.append([])
+        ret[i].append(points[i])
+        ret[i].append(norms[i])
+        # print(ret[i])
+        i += 1
+    shuffle(ret)
+    i = 0
+    rp = []
+    rn = []
+    while i < len(ret):
+        rp.append(ret[i][0])
+        rn.append(ret[i][1])
+        i += 1
+    return rp,rn
+
+
+

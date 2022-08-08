@@ -14,7 +14,7 @@ import multiprocessing as mp
 from pathos.multiprocessing import ProcessingPool,ThreadPool
 
 from DataStructures import kdTree,SplitTree
-from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint
+from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint,randPN
 from mpl_toolkits import mplot3d
 from itertools import cycle
 cycol = cycle('bgrcmk')
@@ -235,7 +235,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
-            # print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat)))) 
+            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat)))) 
+        if index % 100 == 0:
+            est = tat * (len(points) - index)
+            print('CPUID:{:02d} TAG:{:02d} || Est-Time Left:{:04.2f}h:{:04.2f}m:{:04.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60))
         index += 1
     te = time.time()
     tt = te - ts
@@ -371,6 +374,7 @@ class SkeleNet:
         stp = []
         i = 0
         while i < len(self.tpoints):
+            rp,rn = randPN(self.tpoints[i],self.tnorms[i])
             j = 0
             self.divpts.append([])
             self.divnrms.append([])
