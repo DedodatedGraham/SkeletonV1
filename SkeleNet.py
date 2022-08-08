@@ -171,7 +171,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 j = 0
                 while j < len(point):
                     tnorm.append(norm[j] * -1)
-                    tpoint.append(point[j] + tnorm[j] * threshDistance)
+                    tpoint.append(point[j] + tnorm[j] * threshDistance / 2)
                     j += 1
                 
                 # tpool = ThreadPool(cpuavail)
@@ -211,12 +211,15 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                    n = 0
                    p = 0
                    sml = 0.0
+                   rc = True
                    while p < order:
-                       if p == 0:
-                           sml = tempr[len(tempr) - (order)]
+                       if rc:
+                           sml = tempr[len(tempr) - (order-p)]
+                           if sml > threshDistance:
+                               rc = False
                        else:
                            tmp = tempr[len(tempr)-(order - p)]
-                           if tmp < sml:
+                           if tmp < sml and tmp > threshDistance:
                                sml = tempr[len(tempr)-(order-p)]
                                n = len(tempr) - (order - p)
                        p = p + 1
@@ -232,7 +235,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
-            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat)))) 
+            # print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat)))) 
         index += 1
     te = time.time()
     tt = te - ts
@@ -266,7 +269,7 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = min(mp.cpu_count() - 2,28) #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 3,28) #Will Always allow 2 Cores to remain unused
         if self.cpuavail == 0:
             # self.cpuavail = mp.cpu_count() - 2
             self.cpuavail = 1
