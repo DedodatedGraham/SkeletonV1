@@ -272,7 +272,7 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = min(mp.cpu_count() - 3,28) #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 2,28) #Will Always allow 2 Cores to remain unused
         if self.cpuavail == 0:
             # self.cpuavail = mp.cpu_count() - 2
             self.cpuavail = 1
