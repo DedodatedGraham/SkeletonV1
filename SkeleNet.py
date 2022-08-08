@@ -181,7 +181,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 inputdat[0].append(tnorm)
                 inputdat[0].append(1)
                 inputdat[0].append(False)
-                #inputdat[0].append((np.pi / 8))
+                inputdat[0].append((np.pi / 2))
                 # results = tpool.map(tree.getVectorR,inputdat)
                 # crossp = results[0]
                 # tpool.close

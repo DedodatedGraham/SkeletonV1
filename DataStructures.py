@@ -315,7 +315,7 @@ class kdTree:
 
                 if node.getAxis(axis) < inputdat[0][axis] and inputdat[1][axis] > 0.1:
                     retPoints,retDist = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    if depth == 0 and len(retPoints) == 0:
+                    if depth < 2 and len(retPoints) == 0:
                         print()
                         print('went left and shouldnt of ?',depth)
                         print('point',inputdat[0],'norm',inputdat[1])
@@ -324,11 +324,12 @@ class kdTree:
                         print()
                 elif node.getAxis(axis) > inputdat[0][axis] and inputdat[1][axis] < 0.1:
                     retPoints,retDist = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    if depth == 0 and len(retPoints) == 0:
+                    if depth < 2 and len(retPoints) == 0:
                         print()
                         print('went right and shouldnt of ?',depth)
                         print('point',inputdat[0],'norm',inputdat[1])
                         print('node',node.getPoint())
+                        print('axis',axis)
                         print()
                 else:
                     # print('bruh',mat[axis])
@@ -340,7 +341,7 @@ class kdTree:
                     retDistr = []
                     retPointsl,retDistl = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
                     retPointsr,retDistr = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    if depth == 0 and len(retPointsl) == 0 and len(retDistr) == 0:
+                    if depth < 2 and len(retPointsl) == 0 and len(retDistr) == 0:
                         print()
                         print('went Both and got nothin?',depth)
                         print('point',inputdat[0],'norm',inputdat[1])
