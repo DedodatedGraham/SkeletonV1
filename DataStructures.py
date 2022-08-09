@@ -61,7 +61,7 @@ def partition(points : list , dimension : int , first : int , last : int , * , c
 class kdTree:
     # @profile
     def __init__(self , points : list , depth : int = 0 , * , rads : list = [],dimensions : int = 0,cpuavail : int = 1):
-        print('making {}'.format(depth))
+        #print('making {}'.format(depth))
         #first converts to skeleton points
         if not(dimensions == 0):
             self.dimensions = dimensions

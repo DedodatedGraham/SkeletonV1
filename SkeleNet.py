@@ -1,6 +1,7 @@
 import os
 from random  import randint
-# from sys import float_repr_style
+import sys
+from sys import float_repr_style
 # import matplotlib
 import matplotlib
 import matplotlib.pyplot as plt
@@ -21,7 +22,7 @@ cycol = cycle('bgrcmk')
 
 # @profile
 def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,animate : bool = False,cpuid : int = -1,tag : int = -1,*,cpuavail : int = 1):
-    print('process{} started'.format(cpuid))
+    print('process{} started'.format(cpuid),file=sys.stdout)
     #Skeletize takes in 
     #FROM INPUT
     #key is the specific index of tpoints and tnorms, allows for
@@ -235,10 +236,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
-            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat)))) 
+            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
         if index % 100 == 0:
             est = tat * (len(points) - index)
-            print('CPUID:{:02d} TAG:{:02d} || Est-Time Left:{:04.2f}h:{:04.2f}m:{:04.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60))
+            print('CPUID:{:02d} TAG:{:02d} || Est-Time Left:{:04.2f}h:{:04.2f}m:{:04.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
         index += 1
     te = time.time()
     tt = te - ts
@@ -278,7 +279,7 @@ class SkeleNet:
             self.cpuavail = 1
         elif self.cpuavail < 0:
             print('error computer not strong enough')
-        print('We have {} CPU\'s Available'.format(self.cpuavail))
+        print('We have {} CPU\'s Available'.format(self.cpuavail),file=sys.stdout)
         #Determining type of points given
         if isinstance(points,str):    
             with open(points,'r') as csvfile:
@@ -364,7 +365,7 @@ class SkeleNet:
                 tot += getDistance(tpt,self.tree[i].getNearR([tpt,[],False]))
                 j += 1
             self.threshDistance.append(tot / min(20,len(self.tpoints[i]))) 
-            print('thresh',self.threshDistance)  
+            print('thresh',self.threshDistance,file=sys.stdout)  
             i += 1
             
         
