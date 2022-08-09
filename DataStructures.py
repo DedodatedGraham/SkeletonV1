@@ -424,96 +424,85 @@ class kdTree:
                 return retPoints,retDist,steps
                     
                 
-#     def getInR(self,point : list, dim : float, mode : int,tree : list = [],depth : int = 0,*,getRads : bool = False,rtree : list = []):
-#         #Returns all the points which lie inside a give area arround a certain point
-#         #Mode 0 => Square area, point in center, side = 2 * dim
-#         #Mode 1 => Circle area, point in center, rad  = dim
-#         retPoints = []
-#         axis = depth % self.dimensions
-#         if depth == 0:
-#             tree = self.tree
-#             if getRads:
-#                 rtree = self.rad
-#         if getRads:
-#             retR = []
-#             rnode = rtree[0]
-#         node = tree[0]        
-#         if node == 'Full':
-#             i = 1
-#             while i < len(tree):
-#                 if mode == 0:
-#                     if tree[i][0] >= point[0] - dim and tree[i][0] <= point[0] + dim:
-#                         if tree[i][1] >= point[1] - dim and tree[i][1] <= point[1] + dim:
-#                             if self.dmensions == 2 or (self.dimensions == 3 and tree[i][2] >= point[2] - dim and tree[i][2] <= point[2] + dim):
-#                                 retPoints.append(tree[i])
-#                                 if getRads:
-#                                     retR.append(rtree[i])
-#                 else:
-#                     if getDistance(point,tree[i]) <= dim:
-#                         retPoints.append(tree[i])
-#                         if getRads:
-#                             retR.append(rtree[i])
-#                 i += 1
-#         else:
-#             #Uses square to obtain all possible sections that might be needed
-#             #mode only comes into play when searching at bottom layers, however adding the node points 
-#             #will still depend on mode  
-#             pts = []
-#             rads = []
-#             if point[axis] - dim > node[axis]:
-#                 if getRads:
-#                     pts,rads = self.getInR(point,dim,mode,tree[2],depth + 1, getRads=True,rtree = rtree[2])
-#                 else:
-#                     pts = self.getInR(point,dim,mode,tree[2],depth + 1)
-#             elif point[axis] + dim < node[axis]:
-#                 if getRads:
-#                     pts,rads = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
-#                 else:
-#                     pts = self.getInR(point,dim,mode,tree[1],depth + 1)
-#             else:
-#                 if getRads:
-#                     pts1,rad1 = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
-#                     pts2,rad2 = self.getInR(point,dim,mode,tree[2],depth + 1, getRads = True, rtree = rtree[2])
-#                 else:
-#                     pts1 = self.getInR(point,dim,mode,tree[1],depth + 1)
-#                     pts2 = self.getInR(point,dim,mode,tree[2],depth + 1)
-#                 i = 0
-#                 while i < len(pts1):
-#                     pts.append(pts1[i])
-#                     if getRads:
-#                         rads.append(rad1[i])
-#                     i += 1
-#                 i = 0
-#                 while i < len(pts2):
-#                     pts.append(pts2[i])
-#                     if getRads:
-#                         rads.append(rad2[i])
-#                     i += 1
-#                 #Note only needs to check node here
-#                 if mode == 0:
-#                     if node[0] >= point[0] - dim and node[0] <= point[0] + dim:
-#                         if node[1] >= point[1] - dim and node[1] <= point[1] + dim:
-#                             if self.dmensions == 2 or (self.dimensions == 3 and node[2] >= point[2] - dim and node[2] <= point[2] + dim):
-#                                 pts.append(node)
-#                                 if getRads:
-#                                     rads.append(rnode)
-#                 else:
-#                     if getDistance(point,node) <= dim:
-#                         pts.append(node)
-#                         if getRads:
-#                             rads.append(rnode)
-                
-#             if len(pts) > 0:
-#                 i = 0
-#                 while i < len(pts):
-#                     retPoints.append(pts[i])
-#                     if getRads:
-#                         retR.append(rads[i])
-#                     i += 1
-#         if getRads:
-#             return retPoints,retR
-#         else:
-#             return retPoints
+     def getInR(self,point : list, dim : float, mode : int,depth : int = 0,*,getRads : bool = False):
+         #Returns all the points which lie inside a give area arround a certain point
+         #Mode 0 => Square area, point in center, side = 2 * dim
+         #Mode 1 => Circle area, point in center, rad  = dim
+         retPoints = []
+         axis = depth % self.dimensions
+         node = self.node        
+         if not(self.split):
+             i = 1
+             while i < len(tree):
+                 if mode == 0:
+                     if tree[i][0] >= point[0] - dim and tree[i][0] <= point[0] + dim:
+                         if tree[i][1] >= point[1] - dim and tree[i][1] <= point[1] + dim:
+                             if self.dmensions == 2 or (self.dimensions == 3 and tree[i][2] >= point[2] - dim and tree[i][2] <= point[2] + dim):
+                                 retPoints.append(tree[i])
+                 else:
+                     if getDistance(point,tree[i]) <= dim:
+                         retPoints.append(tree[i])
+                 i += 1
+         else:
+             #Uses square to obtain all possible sections that might be needed
+             #mode only comes into play when searching at bottom layers, however adding the node points 
+             #will still depend on mode  
+             pts = []
+             rads = []
+             if point[axis] - dim > node[axis]:
+                 if getRads:
+                     pts,rads = self.getInR(point,dim,mode,tree[2],depth + 1, getRads=True,rtree = rtree[2])
+                 else:
+                     pts = self.getInR(point,dim,mode,tree[2],depth + 1)
+             elif point[axis] + dim < node[axis]:
+                 if getRads:
+                     pts,rads = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
+                 else:
+                     pts = self.getInR(point,dim,mode,tree[1],depth + 1)
+             else:
+                 if getRads:
+                     pts1,rad1 = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
+                     pts2,rad2 = self.getInR(point,dim,mode,tree[2],depth + 1, getRads = True, rtree = rtree[2])
+                 else:
+                     pts1 = self.getInR(point,dim,mode,tree[1],depth + 1)
+                     pts2 = self.getInR(point,dim,mode,tree[2],depth + 1)
+                 i = 0
+                 while i < len(pts1):
+                     pts.append(pts1[i])
+                     if getRads:
+                         rads.append(rad1[i])
+                     i += 1
+                 i = 0
+                 while i < len(pts2):
+                     pts.append(pts2[i])
+                     if getRads:
+                         rads.append(rad2[i])
+                     i += 1
+                 #Note only needs to check node here
+                 if mode == 0:
+                     if node[0] >= point[0] - dim and node[0] <= point[0] + dim:
+                         if node[1] >= point[1] - dim and node[1] <= point[1] + dim:
+                             if self.dmensions == 2 or (self.dimensions == 3 and node[2] >= point[2] - dim and node[2] <= point[2] + dim):
+                                 pts.append(node)
+                                 if getRads:
+                                     rads.append(rnode)
+                 else:
+                     if getDistance(point,node) <= dim:
+                         pts.append(node)
+                         if getRads:
+                             rads.append(rnode)
+               
+             if len(pts) > 0:
+                 i = 0
+                 while i < len(pts):
+                     retPoints.append(pts[i])
+                     if getRads:
+                         retR.append(rads[i])
+                     i += 1
+         if getRads:
+             return retPoints,retR
+         else:
+             return retPoints
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
