@@ -17,7 +17,7 @@ import time
 # import pandas as pd
 # import numpy as np
 
-from Skeletize import getDistance, getAngle
+from Skeletize import getDistance, getAngle, getDeviation
 
 # @profile
 def quicksort(points : list , dimension : int,*,cpuavail : int = 1):
@@ -191,240 +191,275 @@ class kdTree:
         else:
             return pmin,dmin
     # @profile    
-    def getVectorR(self,inputdat : list,*,depth : int = 0,scan = np.pi / 4,cpuavail : int = 1):
-            #Get vector will get the closest n number of points to the search point
-            #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
-            #however it will store node value and compare on the way out if a given node is a better point than something returned
+    # def getVectorR(self,inputdat : list,*,depth : int = 0,scan = np.pi / 4,cpuavail : int = 1):
+    #         #Get vector will get the closest n number of points to the search point
+    #         #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
+    #         #however it will store node value and compare on the way out if a given node is a better point than something returned
             
-            if depth == 0:
-                if len(inputdat) > 3:
-                    getRads = inputdat[3]
-                    if len(inputdat) > 4:
-                        scan = inputdat[4]
-                        if len(inputdat) > 5:
-                            cpuavail = inputdat[5]
-                tin = []
-                tin.append(inputdat[0])
-                tin.append([])
-                i = 0
-                while i < len(inputdat[1]):
-                    tin[1].append(inputdat[1][i])
-                    i += 1
-                tin.append(inputdat[2])
-                inputdat = tin
-            retPoints = []
-            retDist = []
-            axis = depth % self.dimensions
-            steps = ''
-            if not(self.split):
-                i = 0
-                while i < len(self.points):
-                    #each point it first checks the angle between the vectors.
-                    j = 0
-                    cvec = []
-                    tpoint = []
-                    while j < len(inputdat[1]):
-                        cvec.append(self.points[i].getAxis(j) - inputdat[0][j])
-                        tpoint.append(inputdat[0][j] + inputdat[1][j])
-                        j += 1
-                    tdis = getDistance(inputdat[0],self.points[i].getPoint())
-                    theta = getAngle(inputdat[1],cvec,getDistance(inputdat[0],tpoint),tdis)
-                    if theta  < (scan / 2):
-                        #Within vector distance
-                        if len(retPoints) < inputdat[2]:
-                            retPoints.append(self.points[i])
-                            retDist.append(tdis)
-                        else:
-                            j = 0
-                            tagj = 0
-                            mtdis = -1
-                            while j < len(retPoints):
-                                if tdis < retDist[j] and retDist[j] > mtdis:
-                                    tagj = j
-                                    mtdis = retDist[j]
-                                j += 1
-                            if not(mtdis == -1):
-                                retPoints[tagj] = self.points[i]
-                                retDist[tagj] = tdis 
-                    i += 1
-            else:
-                node = self.node
-                #First want to see if the vector only reaches a specific leaf of the tree
-                i = 0
-                # vecax = []
-                tp1 = []
-                # tp2 = []
-                nvec = []
-                while i < len(inputdat[0]):
-                    # if i == axis:
-                    #     vecax.append(1)
-                    # else:
-                    #     vecax.append(0)
-                    tp1.append(inputdat[0][i] + inputdat[1][i])
-                    # tp2.append(inputdat[0][i] + vecax[i])
-                    nvec.append(node.getAxis(i) - inputdat[0][i])
-                    i += 1
-                # theta = getAngle(inputdat[1],vecax,getDistance(inputdat[0],tp1),getDistance(inputdat[0],tp2))
-                # mat = []
-                # if self.dimensions == 2:
-                #     if axis == 0:
-                #         mat.append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
-                #         mat.append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1] * np.sin(-scan / 2))
-                #     else:
-                #         mat.append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
-                #         mat.append(inputdat[1][0] * np.sin(-scan / 2) +inputdat[1][1] * np.cos(-scan / 2))
-                # else:
-                #     if axis == 0:
-                #         #X axis rotation
-                #         mat.append([])
-                #         mat[0].append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
-                #         mat[0].append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1]  * np.sin(-scan / 2))
-                #         mat.append([])
-                #         mat[1].append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
-                #         mat[1].append(inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][1] * np.cos(-scan / 2))
-                #         mat.append([])
-                #         mat[2].append(inputdat[1][2])
-                #         mat[2].append(inputdat[1][2])
-                #     elif axis == 1:
-                #         #Y axis rotation
-                #         mat.append([])
-                #         mat[0].append(inputdat[1][0] * np.cos(scan / 2) + inputdat[1][2] * np.sin(scan / 2))
-                #         mat[0].append(inputdat[1][0] * np.cos(-scan / 2) + inputdat[1][2]  * np.sin(-scan / 2))
-                #         mat.append([])
-                #         mat[1].append(inputdat[1][1])
-                #         mat[1].append(inputdat[1][1])
-                #         mat.append([])
-                #         mat[2].append(-inputdat[1][0] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
-                #         mat[2].append(-inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
-                #     else:
-                #         #Z axis rotation
-                #         mat.append([])
-                #         mat[0].append(inputdat[1][0])
-                #         mat[0].append(inputdat[1][0])
-                #         mat.append([])
-                #         mat[1].append(inputdat[1][1] * np.cos(scan / 2) - inputdat[1][2] * np.sin(scan / 2))
-                #         mat[1].append(inputdat[1][1] * np.cos(-scan / 2) - inputdat[1][2] * np.sin(-scan / 2))
-                #         mat.append([])
-                #         mat[2].append(inputdat[1][1] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
-                #         mat[2].append(inputdat[1][1] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
-                # if depth == 0:
-                #     print()
-                #     print(mat,theta)
-                #     print(inputdat[0],inputdat[1])
+    #         if depth == 0:
+    #             if len(inputdat) > 3:
+    #                 getRads = inputdat[3]
+    #                 if len(inputdat) > 4:
+    #                     scan = inputdat[4]
+    #                     if len(inputdat) > 5:
+    #                         cpuavail = inputdat[5]
+    #             tin = []
+    #             tin.append(inputdat[0])
+    #             tin.append([])
+    #             i = 0
+    #             while i < len(inputdat[1]):
+    #                 tin[1].append(inputdat[1][i])
+    #                 i += 1
+    #             tin.append(inputdat[2])
+    #             inputdat = tin
+                
+    #         retPoints = []
+    #         retDist = []
+    #         axis = depth % self.dimensions
+    #         steps = ''
+    #         if not(self.split):
+    #             i = 0
+    #             while i < len(self.points):
+    #                 #each point it first checks the angle between the vectors.
+    #                 j = 0
+    #                 cvec = []
+    #                 tpoint = []
+    #                 while j < len(inputdat[1]):
+    #                     cvec.append(self.points[i].getAxis(j) - inputdat[0][j])
+    #                     tpoint.append(inputdat[0][j] + inputdat[1][j])
+    #                     j += 1
+    #                 tdis = getDistance(inputdat[0],self.points[i].getPoint())
+    #                 theta = getAngle(inputdat[1],cvec,getDistance(inputdat[0],tpoint),tdis)
+    #                 if theta  < (scan / 2):
+    #                     #Within vector distance
+    #                     if len(retPoints) < inputdat[2]:
+    #                         retPoints.append(self.points[i])
+    #                         retDist.append(tdis)
+    #                     else:
+    #                         j = 0
+    #                         tagj = 0
+    #                         mtdis = -1
+    #                         while j < len(retPoints):
+    #                             if tdis < retDist[j] and retDist[j] > mtdis:
+    #                                 tagj = j
+    #                                 mtdis = retDist[j]
+    #                             j += 1
+    #                         if not(mtdis == -1):
+    #                             retPoints[tagj] = self.points[i]
+    #                             retDist[tagj] = tdis 
+    #                 i += 1
+    #         else:
+    #             node = self.node
+    #             #First want to see if the vector only reaches a specific leaf of the tree
+    #             i = 0
+    #             # vecax = []
+    #             tp1 = []
+    #             # tp2 = []
+    #             nvec = []
+    #             while i < len(inputdat[0]):
+    #                 # if i == axis:
+    #                 #     vecax.append(1)
+    #                 # else:
+    #                 #     vecax.append(0)
+    #                 tp1.append(inputdat[0][i] + inputdat[1][i])
+    #                 # tp2.append(inputdat[0][i] + vecax[i])
+    #                 nvec.append(node.getAxis(i) - inputdat[0][i])
+    #                 i += 1
+    #             # theta = getAngle(inputdat[1],vecax,getDistance(inputdat[0],tp1),getDistance(inputdat[0],tp2))
+    #             # mat = []
+    #             # if self.dimensions == 2:
+    #             #     if axis == 0:
+    #             #         mat.append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
+    #             #         mat.append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1] * np.sin(-scan / 2))
+    #             #     else:
+    #             #         mat.append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
+    #             #         mat.append(inputdat[1][0] * np.sin(-scan / 2) +inputdat[1][1] * np.cos(-scan / 2))
+    #             # else:
+    #             #     if axis == 0:
+    #             #         #X axis rotation
+    #             #         mat.append([])
+    #             #         mat[0].append(inputdat[1][0] * np.cos(scan / 2) - inputdat[1][1] * np.sin(scan / 2))
+    #             #         mat[0].append(inputdat[1][0] * np.cos(-scan / 2) - inputdat[1][1]  * np.sin(-scan / 2))
+    #             #         mat.append([])
+    #             #         mat[1].append(inputdat[1][0] * np.sin(scan / 2) + inputdat[1][1] * np.cos(scan / 2))
+    #             #         mat[1].append(inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][1] * np.cos(-scan / 2))
+    #             #         mat.append([])
+    #             #         mat[2].append(inputdat[1][2])
+    #             #         mat[2].append(inputdat[1][2])
+    #             #     elif axis == 1:
+    #             #         #Y axis rotation
+    #             #         mat.append([])
+    #             #         mat[0].append(inputdat[1][0] * np.cos(scan / 2) + inputdat[1][2] * np.sin(scan / 2))
+    #             #         mat[0].append(inputdat[1][0] * np.cos(-scan / 2) + inputdat[1][2]  * np.sin(-scan / 2))
+    #             #         mat.append([])
+    #             #         mat[1].append(inputdat[1][1])
+    #             #         mat[1].append(inputdat[1][1])
+    #             #         mat.append([])
+    #             #         mat[2].append(-inputdat[1][0] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
+    #             #         mat[2].append(-inputdat[1][0] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
+    #             #     else:
+    #             #         #Z axis rotation
+    #             #         mat.append([])
+    #             #         mat[0].append(inputdat[1][0])
+    #             #         mat[0].append(inputdat[1][0])
+    #             #         mat.append([])
+    #             #         mat[1].append(inputdat[1][1] * np.cos(scan / 2) - inputdat[1][2] * np.sin(scan / 2))
+    #             #         mat[1].append(inputdat[1][1] * np.cos(-scan / 2) - inputdat[1][2] * np.sin(-scan / 2))
+    #             #         mat.append([])
+    #             #         mat[2].append(inputdat[1][1] * np.sin(scan / 2) + inputdat[1][2] * np.cos(scan / 2))
+    #             #         mat[2].append(inputdat[1][1] * np.sin(-scan / 2) + inputdat[1][2] * np.cos(-scan / 2))
+    #             # if depth == 0:
+    #             #     print()
+    #             #     print(mat,theta)
+    #             #     print(inputdat[0],inputdat[1])
                 
                 
-                if node.getAxis(axis) < inputdat[0][axis] and inputdat[1][axis] > 0.1:
-                    retPoints,retDist,steps = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    if depth < 4 and len(retPoints) == 0:
-                        if depth == 0:
-                            print()
-                            print('went left and shouldnt of ?',depth)
-                            print('point',inputdat[0],'norm',inputdat[1])
-                            print('node',node.getPoint())
-                            print('axis',axis)
-                            print('steps:',steps)
-                            print()
-                        else:
-                            steps += 'went left and shouldnt of?'
-                            steps += str(node.getPoint())
-                            steps += str(depth)
+    #             if node.getAxis(axis) < inputdat[0][axis] and inputdat[1][axis] > 0.1:
+    #                 retPoints,retDist,steps = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
+    #                 if depth < 4 and len(retPoints) == 0:
+    #                     if depth == 0:
+    #                         print()
+    #                         print('went left and shouldnt of ?',depth)
+    #                         print('point',inputdat[0],'norm',inputdat[1])
+    #                         print('node',node.getPoint())
+    #                         print('axis',axis)
+    #                         print('steps:',steps)
+    #                         print()
+    #                     else:
+    #                         steps += 'went left and shouldnt of?'
+    #                         steps += str(node.getPoint())
+    #                         steps += str(depth)
                             
-                elif node.getAxis(axis) > inputdat[0][axis] and inputdat[1][axis] < 0.1:
-                    retPoints,retDist,steps = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    if depth < 4 and len(retPoints) == 0:
-                        if depth == 0:
-                            print()
-                            print('went right and shouldnt of ?',depth)
-                            print('point',inputdat[0],'norm',inputdat[1])
-                            print('node',node.getPoint())
-                            print('axis',axis)
-                            print(steps)
-                            print()
-                        else:
-                            steps += 'went right and shouldnt of ?'
-                            steps += str(node.getPoint())
-                            steps += str(depth)
-                else:
-                    # print('bruh',mat[axis])
-                    tretPoints = []
-                    tretDist = []
-                    retPointsl = []
-                    retPointsr = []
-                    retDistl = []
-                    retDistr = []
-                    retPointsl,retDistl,stepsl = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    retPointsr,retDistr,stepsr = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
-                    steps += stepsl
-                    steps += stepsr
-                    if depth < 4 and len(retPointsl) == 0 and len(retDistr) == 0:
-                        if depth == 0:
-                            print()
-                            print('went Both and got nothin?',depth)
-                            print('point',inputdat[0],'norm',inputdat[1])
-                            print('node',node.getPoint())
-                            print('axis',axis)
-                            print(steps)
-                            print()
-                        else:
-                            steps += 'went Both and got nothin?'
-                            steps += str(node.getPoint())
-                            steps += str(depth)
+    #             elif node.getAxis(axis) > inputdat[0][axis] and inputdat[1][axis] < 0.1:
+    #                 retPoints,retDist,steps = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
+    #                 if depth < 4 and len(retPoints) == 0:
+    #                     if depth == 0:
+    #                         print()
+    #                         print('went right and shouldnt of ?',depth)
+    #                         print('point',inputdat[0],'norm',inputdat[1])
+    #                         print('node',node.getPoint())
+    #                         print('axis',axis)
+    #                         print(steps)
+    #                         print()
+    #                     else:
+    #                         steps += 'went right and shouldnt of ?'
+    #                         steps += str(node.getPoint())
+    #                         steps += str(depth)
+    #             else:
+    #                 # print('bruh',mat[axis])
+    #                 tretPoints = []
+    #                 tretDist = []
+    #                 retPointsl = []
+    #                 retPointsr = []
+    #                 retDistl = []
+    #                 retDistr = []
+    #                 retPointsl,retDistl,stepsl = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
+    #                 retPointsr,retDistr,stepsr = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
+    #                 steps += stepsl
+    #                 steps += stepsr
+    #                 if depth < 4 and len(retPointsl) == 0 and len(retDistr) == 0:
+    #                     if depth == 0:
+    #                         print()
+    #                         print('went Both and got nothin?',depth)
+    #                         print('point',inputdat[0],'norm',inputdat[1])
+    #                         print('node',node.getPoint())
+    #                         print('axis',axis)
+    #                         print(steps)
+    #                         print()
+    #                     else:
+    #                         steps += 'went Both and got nothin?'
+    #                         steps += str(node.getPoint())
+    #                         steps += str(depth)
                             
-                    i = 0
-                    while i < len(retPointsl):
-                        tretPoints.append(retPointsl[i])
-                        tretDist.append(retDistl[i])
-                        i += 1
-                    i = 0
-                    while i < len(retPointsr):
-                        tretPoints.append(retPointsr[i])
-                        tretDist.append(retDistr[i])
-                        i += 1
-                    ntheta = getAngle(inputdat[1],nvec,getDistance(inputdat[0],tp1),getDistance(inputdat[0],node.getPoint()))
-                    #gets the node point if it falls inside the criteria
-                    if ntheta < (scan / 2): 
-                        tretPoints.append(node)
-                        tretDist.append(getDistance(inputdat[0],node.getPoint()))
-                    #Finally aquires the best n# of points from big list
-                    i = 0
-                    while i < len(tretPoints):
-                        if i < inputdat[2]:
-                            retPoints.append(tretPoints[i])
-                            retDist.append(tretDist[i])
-                        else:
-                            tdis = tretDist[i]
-                            j = 0
-                            tagj = 0
-                            mtdis = -1
-                            while j < len(retPoints):
+    #                 i = 0
+    #                 while i < len(retPointsl):
+    #                     tretPoints.append(retPointsl[i])
+    #                     tretDist.append(retDistl[i])
+    #                     i += 1
+    #                 i = 0
+    #                 while i < len(retPointsr):
+    #                     tretPoints.append(retPointsr[i])
+    #                     tretDist.append(retDistr[i])
+    #                     i += 1
+    #                 ntheta = getAngle(inputdat[1],nvec,getDistance(inputdat[0],tp1),getDistance(inputdat[0],node.getPoint()))
+    #                 #gets the node point if it falls inside the criteria
+    #                 if ntheta < (scan / 2): 
+    #                     tretPoints.append(node)
+    #                     tretDist.append(getDistance(inputdat[0],node.getPoint()))
+    #                 #Finally aquires the best n# of points from big list
+    #                 i = 0
+    #                 while i < len(tretPoints):
+    #                     if i < inputdat[2]:
+    #                         retPoints.append(tretPoints[i])
+    #                         retDist.append(tretDist[i])
+    #                     else:
+    #                         tdis = tretDist[i]
+    #                         j = 0
+    #                         tagj = 0
+    #                         mtdis = -1
+    #                         while j < len(retPoints):
                                 
-                                if tdis < retDist[j] and retDist[j] > mtdis:
-                                    tagj = j
-                                    mtdis = retDist[j]
-                                j += 1
-                            if not(mtdis == -1):
-                                retPoints[tagj] = tretPoints[i]
-                                retDist[tagj] = tdis 
-                        i += 1
+    #                             if tdis < retDist[j] and retDist[j] > mtdis:
+    #                                 tagj = j
+    #                                 mtdis = retDist[j]
+    #                             j += 1
+    #                         if not(mtdis == -1):
+    #                             retPoints[tagj] = tretPoints[i]
+    #                             retDist[tagj] = tdis 
+    #                     i += 1
                     
-            if depth == 0:
+    #         if depth == 0:
+    #             j = 0
+    #             trp = []
+    #             trad = []
+    #             while j < len(retPoints):
+    #                 trp.append(retPoints[j].getPoint())
+    #                 if getRads:
+    #                     trad.append(retPoints[j].getRad())
+    #                 j += 1
+    #             if getRads:
+    #                 return trp, trad
+    #             else:
+    #                 return trp
+    #         else:
+    #             return retPoints,retDist,steps
+      
+
+    def getVectorR(self, point : list,vector : list,*,n : int = 1, depth : int = 0,getRads : bool = False):           
+        node = self.node
+        dimension = depth % self.dimensions
+        
+            
+        if not(self.split):
+            i = 0
+            svec = []
+            while i < len(self.points):
+                tvec = []
                 j = 0
-                trp = []
-                trad = []
-                while j < len(retPoints):
-                    trp.append(retPoints[j].getPoint())
-                    if getRads:
-                        trad.append(retPoints[j].getRad())
-                    j += 1
-                if getRads:
-                    return trp, trad
+                while j < len(self.points[i]):
+                    tvec.append(self.points[i][j] - point[j])
+                    j += 1 
+                if i == 0:
+                    svec = tvec
                 else:
-                    return trp
+                    if getDeviation(tvec,svec) > 0.7 and getDistance(point,self.ppoints[i]) > 0.1:
+                        svec = tvec
+                i += 1 
+        else:
+            #How to determine which nodes to search through.
+            if node.getAxis(self.axis) < point[self.axis] and vector[self.axis] > .14:
+                #Then we onyl want to search the rightside node..
+                retpts,retdev = self.leafR.getVectorR(point, vector,n=n,depth=depth+1)
+            elif node.getAxis(self.axis) < point[self.axis] and vector[self.axis] < .14:
+                #Then we grab left node
+                retpts,retdev = self.leafL.getVectorR(point, vector,n=n,depth=depth+1)
             else:
-                return retPoints,retDist,steps
-                    
+                retptsl,retdevl =  self.leafl.getVectorR(point,vector,n=n,depth=depth+1)
+                retptsr,retdevr = self.leafR.getVectorR(point, vector,n=n,depth=depth+1)
+                #Finally we go both if need be
                 
-     def getInR(self,point : list, dim : float, mode : int,depth : int = 0,*,getRads : bool = False):
+                
+    def getInR(self,point : list, dim : float, mode : int,depth : int = 0,*,getRads : bool = False):
          #Returns all the points which lie inside a give area arround a certain point
          #Mode 0 => Square area, point in center, side = 2 * dim
          #Mode 1 => Circle area, point in center, rad  = dim

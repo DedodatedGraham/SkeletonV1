@@ -140,4 +140,16 @@ def randPN(points : list,norms : list ):
     return rp,rn
 
 
+def quickDeviation(list1 : list, list2 : list):
+    #is inputted two lists, and returns the unbaised difference in all the comparable values
+    #returns from [0,1]
+    #0 if very un corelated, 1 if identical
+    i = 0
+    tD = 0.0
+    while i < len(list1):
+        dx = list1[i] - list2[i]
+        tD += 1 / dx
+        i += 1
+    print(tD)
+        
 
