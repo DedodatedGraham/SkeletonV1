@@ -34,7 +34,7 @@ if __name__ == '__main__':
     
     
     # link = r'/interface_points_070000.dat'
-    # link = r'/spiral.dat'
+    # link = r'/spiral.dat' 
     # link = r'/vof_points_norm_0650.dat'
     # link = r'/t06.dat'
     link = r'/vof_points_norms.dat'
