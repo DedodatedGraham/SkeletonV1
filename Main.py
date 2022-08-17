@@ -24,7 +24,7 @@ from DataStructures import kdTree
 
 
 if __name__ == '__main__':
-    __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
+    # __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
     sys.setrecursionlimit(10000)
     st = time.time()
     
