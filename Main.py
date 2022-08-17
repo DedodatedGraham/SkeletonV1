@@ -33,11 +33,11 @@ if __name__ == '__main__':
     linep = True
     
     
-    link = r'/interface_points_070000.dat'
+    # link = r'/interface_points_070000.dat'
     # link = r'/spiral.dat'
     # link = r'/vof_points_norm_0650.dat'
     # link = r'/t06.dat'
-    # link = r'/vof_points_norms.dat'
+    link = r'/vof_points_norms.dat'
     # link = r'/bagdrop.dat'
     if linep:
         source = os.path.dirname(os.path.abspath(__file__))

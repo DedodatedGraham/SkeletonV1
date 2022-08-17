@@ -187,8 +187,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 # crossp = results[0]
                 # tpool.close
                 vpts,vdev = tree.getVectorR(inputdat[0]) 
+                print(vpts,vdev)
                 crossp = vpts[0] 
-                print(point,crossp)
                 crossdis = getDistance(point,crossp.getPoint())
                 if getDistance(point,centerp[leng]) < crossdis:
                     SkelePoints.append(centerp[leng - 1])

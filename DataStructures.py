@@ -450,22 +450,21 @@ class kdTree:
                     j += 1 
                 tvec = normalize([tvec])
                 dev = getDeviation(tvec[0],vector)
-                if dev  > 0.5:
-                    if len(retpts) < n:
-                        retpts.append(self.points[i])
-                        retdev.append(dev)
-                    else:
-                        q = 0
-                        ind = -1
-                        tlow = 1.1
-                        while q < len(retpts):
-                            if retdev[q] < tlow: 
-                                tlow =  retdev[q]
-                                ind = q
-                            q += 1
-                        if retdev[ind] < dev:
-                            retdev[ind] = dev
-                            retpts[ind] = self.points[i]
+                if len(retpts) < n:
+                    retpts.append(self.points[i])
+                    retdev.append(dev)
+                else:
+                    q = 0
+                    ind = -1
+                    tlow = 1.1
+                    while q < len(retpts):
+                        if retdev[q] < tlow: 
+                            tlow =  retdev[q]
+                            ind = q
+                        q += 1
+                    if retdev[ind] < dev:
+                        retdev[ind] = dev
+                        retpts[ind] = self.points[i]
                 i += 1 
         else:
             node = self.node
@@ -515,6 +514,14 @@ class kdTree:
                             retdev[ind] = retdevr[i]
                             retpts[ind] = retptsr[i]      
                     i += 1
+            if len(retpts) < n:
+                q = 0
+                tv = 0
+                while q < self.dim:
+                    tv.append(node.getAxis(q) - point[q])
+                    q += 1
+                retpts.append(node)
+                retdev.append(getDeviation(vector,tv))
         return retpts,retdev
                 
                 
