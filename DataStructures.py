@@ -17,7 +17,7 @@ import time
 # import pandas as pd
 # import numpy as np
 
-from Skeletize import getDistance, getAngle, getDeviation
+from Skeletize import getDistance, getAngle, getDeviation, normalize
 
 # @profile
 def quicksort(points : list , dimension : int,*,cpuavail : int = 1):
@@ -425,9 +425,17 @@ class kdTree:
     #             return retPoints,retDist,steps
       
 
-    def getVectorR(self, point : list,vector : list,*,n : int = 1, depth : int = 0,getRads : bool = False):           
-        node = self.node
-        dimension = depth % self.dimensions
+    def getVectorR(self, data : list):
+        point = data[0]
+        vector = data[1]
+        n = data[2]
+        depth = data[3]
+        data[3] += 1
+        if depth == 0:
+            if len(data) == 5:
+                getRads = data[4]
+                data = data[0:4]
+        
         #Finds the differnce between the given vector(from root point) and from the root point to the search point. 
         #Comapres, if close enough, the the point should be close enough to the other side of the shape.
         retpts = []
@@ -437,14 +445,14 @@ class kdTree:
             while i < len(self.points):
                 tvec = []
                 j = 0
-                while j < len(self.points[i]):
-                    tvec.append(self.points[i][j] - point[j])
+                while j < self.points[i].dimensions:
+                    tvec.append(self.points[i].getAxis(j) - point[j])
                     j += 1 
-                tvec =  normalize(tvec)
-                dev = getDeviation(tvec,vector)
-                if dev  > 0.1:
+                tvec = normalize([tvec])
+                dev = getDeviation(tvec[0],vector)
+                if dev  > 0.5:
                     if len(retpts) < n:
-                        retpoints.append(self.points[i])
+                        retpts.append(self.points[i])
                         retdev.append(dev)
                     else:
                         q = 0
@@ -455,115 +463,140 @@ class kdTree:
                                 tlow =  retdev[q]
                                 ind = q
                             q += 1
-                        if retdev[q] < dev:
-                            retdev[q] =  dev
-                            retpts[q] = self.points[i]
+                        if retdev[ind] < dev:
+                            retdev[ind] = dev
+                            retpts[ind] = self.points[i]
                 i += 1 
         else:
+            node = self.node
             #How to determine which nodes to search through.
-            if node.getAxis(self.axis) < point[self.axis] and vector[self.axis] > .14:
-                #Then we onyl want to search the rightside node..
-                retpts,retdev = self.leafR.getVectorR(point, vector,n=n,depth=depth+1)
-            elif node.getAxis(self.axis) < point[self.axis] and vector[self.axis] < .14:
-                #Then we grab left node
-                retpts,retdev = self.leafL.getVectorR(point, vector,n=n,depth=depth+1)
+            if node.getAxis(self.axis) < point[self.axis] and vector[self.axis] > 0:
+                #if want right leaf only
+                retpts,retdev = self.leafR.getVectorR(data)
+            elif node.getAxis(self.axis) < point[self.axis] and vector[self.axis] < 0:
+                #if want left leaf only
+                retpts,retdev = self.leafL.getVectorR(data)
             else:
-                retptsl,retdevl =  self.leafl.getVectorR(point,vector,n=n,depth=depth+1)
-                retptsr,retdevr = self.leafR.getVectorR(point, vector,n=n,depth=depth+1)
+                retptsl,retdevl =  self.leafL.getVectorR(data)
+                retptsr,retdevr = self.leafR.getVectorR(data)
                 i = 0
                 while i < len(retptsl):
                     if len(retpts) < n:
                         retpts.append(retptsl[i])
-                        retdev.append(retptsr[i])
+                        retdev.append(retdevl[i])
                     else:
                         j = 0
                         ind = -1
-                        while j < n:
-                            
+                        tlow = 1.1
+                        while j < len(retpts):
+                            if retdev[j] < tlow:
+                                tlow = retdev[j]
+                                ind = j
                             j += 1
+                        if retdev[ind] < retdevl[i]:
+                            retdev[ind] = retdevl[i]
+                            retpts[ind] = retptsl[i]      
                     i += 1
-                #Finally we go both if need be
+                i = 0
+                while i < len(retptsr):
+                    if len(retpts) < n:
+                        retpts.append(retptsr[i])
+                        retdev.append(retdevr[i])
+                    else:
+                        j = 0
+                        ind = -1
+                        tlow = 1.1
+                        while j < len(retpts):
+                            if retdev[j] < tlow:
+                                tlow = retdev[j]
+                                ind = j
+                            j += 1
+                        if retdev[ind] < retdevr[i]:
+                            retdev[ind] = retdevr[i]
+                            retpts[ind] = retptsr[i]      
+                    i += 1
+        return retpts,retdev
                 
                 
-    def getInR(self,point : list, dim : float, mode : int,depth : int = 0,*,getRads : bool = False):
-         #Returns all the points which lie inside a give area arround a certain point
-         #Mode 0 => Square area, point in center, side = 2 * dim
-         #Mode 1 => Circle area, point in center, rad  = dim
-         retPoints = []
-         axis = depth % self.dimensions
-         node = self.node        
-         if not(self.split):
-             i = 1
-             while i < len(tree):
-                 if mode == 0:
-                     if tree[i][0] >= point[0] - dim and tree[i][0] <= point[0] + dim:
-                         if tree[i][1] >= point[1] - dim and tree[i][1] <= point[1] + dim:
-                             if self.dmensions == 2 or (self.dimensions == 3 and tree[i][2] >= point[2] - dim and tree[i][2] <= point[2] + dim):
-                                 retPoints.append(tree[i])
-                 else:
-                     if getDistance(point,tree[i]) <= dim:
-                         retPoints.append(tree[i])
-                 i += 1
-         else:
-             #Uses square to obtain all possible sections that might be needed
-             #mode only comes into play when searching at bottom layers, however adding the node points 
-             #will still depend on mode  
-             pts = []
-             rads = []
-             if point[axis] - dim > node[axis]:
-                 if getRads:
-                     pts,rads = self.getInR(point,dim,mode,tree[2],depth + 1, getRads=True,rtree = rtree[2])
-                 else:
-                     pts = self.getInR(point,dim,mode,tree[2],depth + 1)
-             elif point[axis] + dim < node[axis]:
-                 if getRads:
-                     pts,rads = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
-                 else:
-                     pts = self.getInR(point,dim,mode,tree[1],depth + 1)
-             else:
-                 if getRads:
-                     pts1,rad1 = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
-                     pts2,rad2 = self.getInR(point,dim,mode,tree[2],depth + 1, getRads = True, rtree = rtree[2])
-                 else:
-                     pts1 = self.getInR(point,dim,mode,tree[1],depth + 1)
-                     pts2 = self.getInR(point,dim,mode,tree[2],depth + 1)
-                 i = 0
-                 while i < len(pts1):
-                     pts.append(pts1[i])
-                     if getRads:
-                         rads.append(rad1[i])
-                     i += 1
-                 i = 0
-                 while i < len(pts2):
-                     pts.append(pts2[i])
-                     if getRads:
-                         rads.append(rad2[i])
-                     i += 1
-                 #Note only needs to check node here
-                 if mode == 0:
-                     if node[0] >= point[0] - dim and node[0] <= point[0] + dim:
-                         if node[1] >= point[1] - dim and node[1] <= point[1] + dim:
-                             if self.dmensions == 2 or (self.dimensions == 3 and node[2] >= point[2] - dim and node[2] <= point[2] + dim):
-                                 pts.append(node)
-                                 if getRads:
-                                     rads.append(rnode)
-                 else:
-                     if getDistance(point,node) <= dim:
-                         pts.append(node)
-                         if getRads:
-                             rads.append(rnode)
+    # def getInR(self,point : list, dim : float, mode : int,depth : int = 0,*,getRads : bool = False):
+    #      #Returns all the points which lie inside a give area arround a certain point
+    #      #Mode 0 => Square area, point in center, side = 2 * dim
+    #      #Mode 1 => Circle area, point in center, rad  = dim
+    #      retPoints = []
+    #      axis = depth % self.dimensions
+    #      node = self.node        
+    #      if not(self.split):
+    #          i = 1
+    #          while i < len(tree):
+    #              if mode == 0:
+    #                  if tree[i][0] >= point[0] - dim and tree[i][0] <= point[0] + dim:
+    #                      if tree[i][1] >= point[1] - dim and tree[i][1] <= point[1] + dim:
+    #                          if self.dmensions == 2 or (self.dimensions == 3 and tree[i][2] >= point[2] - dim and tree[i][2] <= point[2] + dim):
+    #                              retPoints.append(tree[i])
+    #              else:
+    #                  if getDistance(point,tree[i]) <= dim:
+    #                      retPoints.append(tree[i])
+    #              i += 1
+    #      else:
+    #          #Uses square to obtain all possible sections that might be needed
+    #          #mode only comes into play when searching at bottom layers, however adding the node points 
+    #          #will still depend on mode  
+    #          pts = []
+    #          rads = []
+    #          if point[axis] - dim > node[axis]:
+    #              if getRads:
+    #                  pts,rads = self.getInR(point,dim,mode,tree[2],depth + 1, getRads=True,rtree = rtree[2])
+    #              else:
+    #                  pts = self.getInR(point,dim,mode,tree[2],depth + 1)
+    #          elif point[axis] + dim < node[axis]:
+    #              if getRads:
+    #                  pts,rads = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
+    #              else:
+    #                  pts = self.getInR(point,dim,mode,tree[1],depth + 1)
+    #          else:
+    #              if getRads:
+    #                  pts1,rad1 = self.getInR(point,dim,mode,tree[1],depth + 1, getRads = True, rtree = rtree[1])
+    #                  pts2,rad2 = self.getInR(point,dim,mode,tree[2],depth + 1, getRads = True, rtree = rtree[2])
+    #              else:
+    #                  pts1 = self.getInR(point,dim,mode,tree[1],depth + 1)
+    #                  pts2 = self.getInR(point,dim,mode,tree[2],depth + 1)
+    #              i = 0
+    #              while i < len(pts1):
+    #                  pts.append(pts1[i])
+    #                  if getRads:
+    #                      rads.append(rad1[i])
+    #                  i += 1
+    #              i = 0
+    #              while i < len(pts2):
+    #                  pts.append(pts2[i])
+    #                  if getRads:
+    #                      rads.append(rad2[i])
+    #                  i += 1
+    #              #Note only needs to check node here
+    #              if mode == 0:
+    #                  if node[0] >= point[0] - dim and node[0] <= point[0] + dim:
+    #                      if node[1] >= point[1] - dim and node[1] <= point[1] + dim:
+    #                          if self.dmensions == 2 or (self.dimensions == 3 and node[2] >= point[2] - dim and node[2] <= point[2] + dim):
+    #                              pts.append(node)
+    #                              if getRads:
+    #                                  rads.append(rnode)
+    #              else:
+    #                  if getDistance(point,node) <= dim:
+    #                      pts.append(node)
+    #                      if getRads:
+    #                          rads.append(rnode)
                
-             if len(pts) > 0:
-                 i = 0
-                 while i < len(pts):
-                     retPoints.append(pts[i])
-                     if getRads:
-                         retR.append(rads[i])
-                     i += 1
-         if getRads:
-             return retPoints,retR
-         else:
-             return retPoints
+    #          if len(pts) > 0:
+    #              i = 0
+    #              while i < len(pts):
+    #                  retPoints.append(pts[i])
+    #                  if getRads:
+    #                      retR.append(rads[i])
+    #                  i += 1
+    #      if getRads:
+    #          return retPoints,retR
+    #      else:
+    #          return retPoints
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search

@@ -24,7 +24,7 @@ from DataStructures import kdTree
 
 
 if __name__ == '__main__':
-    # __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
+    __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
     sys.setrecursionlimit(10000)
     st = time.time()
     
@@ -33,9 +33,9 @@ if __name__ == '__main__':
     linep = True
     
     
-    # link = r'/interface_points_070000.dat'
+    link = r'/interface_points_070000.dat'
     # link = r'/spiral.dat'
-    link = r'/vof_points_norm_0650.dat'
+    # link = r'/vof_points_norm_0650.dat'
     # link = r'/t06.dat'
     # link = r'/vof_points_norms.dat'
     # link = r'/bagdrop.dat'
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     net = SkeleNet(link)
     net.solve(False)
     net.savedat(1)
-    net.plot([])
+    net.plot([1])
     
     et = time.time()
     tt = et - st
@@ -94,6 +94,7 @@ if __name__ == '__main__':
 #     pts.append(IntPoints[i])
 #     nrms.append(norms[i])
 #     i += randint(20,10000)
+#     i += 1
 #     # i += randint(1,10)
 # out = skeletize(pts,nrms, threshDistance, tree)
     
