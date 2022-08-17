@@ -441,31 +441,48 @@ class kdTree:
         retpts = []
         retdev = []
         if not(self.split):
+           # i = 0
+           # while i < len(self.points):
+           #     tvec = []
+           #     j = 0
+           #     while j < self.points[i].dimensions:
+           #         tvec.append(self.points[i].getAxis(j) - point[j])
+           #         j += 1 
+           #     tvec = normalize([tvec])
+           #     dev = getDeviation(tvec[0],vector)
+           #     if len(retpts) < n:
+           #         retpts.append(self.points[i])
+           #         retdev.append(dev)
+           #     else:
+           #         q = 0
+           #         ind = -1
+           #         tlow = 1.1
+           #         while q < len(retpts):
+           #             if retdev[q] < tlow: 
+           #                 tlow =  retdev[q]
+           #                 ind = q
+           #             q += 1
+           #         if retdev[ind] < dev:
+           #             retdev[ind] = dev
+           #             retpts[ind] = self.points[i]
+           #     i += 1
             i = 0
+            low = 0
+            ind = -1
             while i < len(self.points):
                 tvec = []
                 j = 0
                 while j < self.points[i].dimensions:
                     tvec.append(self.points[i].getAxis(j) - point[j])
-                    j += 1 
+                    j += 1
                 tvec = normalize([tvec])
                 dev = getDeviation(tvec[0],vector)
-                if len(retpts) < n:
-                    retpts.append(self.points[i])
-                    retdev.append(dev)
-                else:
-                    q = 0
-                    ind = -1
-                    tlow = 1.1
-                    while q < len(retpts):
-                        if retdev[q] < tlow: 
-                            tlow =  retdev[q]
-                            ind = q
-                        q += 1
-                    if retdev[ind] < dev:
-                        retdev[ind] = dev
-                        retpts[ind] = self.points[i]
-                i += 1 
+                if dev > low:
+                    low = dev
+                    ind = i
+                i += 1
+            retpts.append(self.points[ind])
+            retdev.append(low)
         else:
             node = self.node
             #How to determine which nodes to search through.
@@ -478,50 +495,51 @@ class kdTree:
             else:
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr = self.leafR.getVectorR(data)
-                i = 0
-                while i < len(retptsl):
-                    if len(retpts) < n:
-                        retpts.append(retptsl[i])
-                        retdev.append(retdevl[i])
-                    else:
-                        j = 0
-                        ind = -1
-                        tlow = 1.1
-                        while j < len(retpts):
-                            if retdev[j] < tlow:
-                                tlow = retdev[j]
-                                ind = j
-                            j += 1
-                        if retdev[ind] < retdevl[i]:
-                            retdev[ind] = retdevl[i]
-                            retpts[ind] = retptsl[i]      
-                    i += 1
-                i = 0
-                while i < len(retptsr):
-                    if len(retpts) < n:
-                        retpts.append(retptsr[i])
-                        retdev.append(retdevr[i])
-                    else:
-                        j = 0
-                        ind = -1
-                        tlow = 1.1
-                        while j < len(retpts):
-                            if retdev[j] < tlow:
-                                tlow = retdev[j]
-                                ind = j
-                            j += 1
-                        if retdev[ind] < retdevr[i]:
-                            retdev[ind] = retdevr[i]
-                            retpts[ind] = retptsr[i]      
-                    i += 1
-            if len(retpts) < n:
-                q = 0
-                tv = 0
-                while q < self.dim:
-                    tv.append(node.getAxis(q) - point[q])
-                    q += 1
-                retpts.append(node)
-                retdev.append(getDeviation(vector,tv))
+                # i = 0
+                # while i < len(retptsl):
+                #     if len(retpts) < n:
+                #         retpts.append(retptsl[i])
+                #         retdev.append(retdevl[i])
+                #     else:
+                #         j = 0
+                #         ind = -1
+                #         tlow = 1.1
+                #         while j < len(retpts):
+                #             if retdev[j] < tlow:
+                #                 tlow = retdev[j]
+                #                 ind = j
+                #             j += 1
+                #         if retdev[ind] < retdevl[i]:
+                #             retdev[ind] = retdevl[i]
+                #             retpts[ind] = retptsl[i]      
+                #     i += 1
+                # i = 0
+                # while i < len(retptsr):
+                #     if len(retpts) < n:
+                #         retpts.append(retptsr[i])
+                #         retdev.append(retdevr[i])
+                #     else:
+                #         j = 0
+                #         ind = -1
+                #         tlow = 1.1
+                #         while j < len(retpts):
+                #             if retdev[j] < tlow:
+                #                 tlow = retdev[j]
+                #                 ind = j
+                #             j += 1
+                #         if retdev[ind] < retdevr[i]:
+                #             retdev[ind] = retdevr[i]
+                #             retpts[ind] = retptsr[i]      
+                #     i += 1
+                
+            # if len(retpts) < n:
+            #     q = 0
+            #     tv = 0
+            #     while q < self.dim:
+            #         tv.append(node.getAxis(q) - point[q])
+            #         q += 1
+            #     retpts.append(node)
+            #     retdev.append(getDeviation(vector,tv))
         return retpts,retdev
                 
                 
