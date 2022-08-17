@@ -428,22 +428,36 @@ class kdTree:
     def getVectorR(self, point : list,vector : list,*,n : int = 1, depth : int = 0,getRads : bool = False):           
         node = self.node
         dimension = depth % self.dimensions
-        
-            
+        #Finds the differnce between the given vector(from root point) and from the root point to the search point. 
+        #Comapres, if close enough, the the point should be close enough to the other side of the shape.
+        retpts = []
+        retdev = []
         if not(self.split):
             i = 0
-            svec = []
             while i < len(self.points):
                 tvec = []
                 j = 0
                 while j < len(self.points[i]):
                     tvec.append(self.points[i][j] - point[j])
                     j += 1 
-                if i == 0:
-                    svec = tvec
-                else:
-                    if getDeviation(tvec,svec) > 0.7 and getDistance(point,self.ppoints[i]) > 0.1:
-                        svec = tvec
+                tvec =  normalize(tvec)
+                dev = getDeviation(tvec,vector)
+                if dev  > 0.1:
+                    if len(retpts) < n:
+                        retpoints.append(self.points[i])
+                        retdev.append(dev)
+                    else:
+                        q = 0
+                        ind = -1
+                        tlow = 1.1
+                        while q < len(retpts):
+                            if retdev[q] < tlow: 
+                                tlow =  retdev[q]
+                                ind = q
+                            q += 1
+                        if retdev[q] < dev:
+                            retdev[q] =  dev
+                            retpts[q] = self.points[i]
                 i += 1 
         else:
             #How to determine which nodes to search through.
@@ -456,6 +470,18 @@ class kdTree:
             else:
                 retptsl,retdevl =  self.leafl.getVectorR(point,vector,n=n,depth=depth+1)
                 retptsr,retdevr = self.leafR.getVectorR(point, vector,n=n,depth=depth+1)
+                i = 0
+                while i < len(retptsl):
+                    if len(retpts) < n:
+                        retpts.append(retptsl[i])
+                        retdev.append(retptsr[i])
+                    else:
+                        j = 0
+                        ind = -1
+                        while j < n:
+                            
+                            j += 1
+                    i += 1
                 #Finally we go both if need be
                 
                 
