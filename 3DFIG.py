@@ -38,7 +38,7 @@ plt.rcParams['figure.dpi'] = 300
 #                             tz.append(z)
 #                             tr.append(r)
                         
-with open('vof_points_norm_0650.dat','r') as csvfile:
+with open('disk1.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ' ')
     ttx = []
     tty = []
