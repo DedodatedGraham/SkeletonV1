@@ -153,6 +153,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     SkeleRad.append(tempr[leng])
                 if SkeleRad[len(SkeleRad) - 1] > 10:
                     print('Error1')
+                    print(tempr)
                 case = True 
             
             #Overshooting  
