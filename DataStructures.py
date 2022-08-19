@@ -498,7 +498,7 @@ class kdTree:
                 retpts,retdev = self.leafR.getVectorR(tdata)
                 # print(data[0],'r only')
                 # print(node.getPoint(),'along the',self.axis)
-            elif node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] < 0:
+            elif node.getAxis(self.axis) > data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
                 tdata = data
                 tdata[3] += 1
