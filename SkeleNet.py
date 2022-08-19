@@ -151,7 +151,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     # print('norm')
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(tempr[leng])
-                
+                if SkeleRad[len(SkeleRad)] > 10:
+                    print('Error1')
                 case = True 
             
             #Overshooting  
@@ -163,6 +164,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     acp[index].append(centerp[leng - 1])
                     atp[index].append(testp[leng - 1])
                     arad[index].append(tempr[leng - 1])
+                if SkeleRad[len(SkeleRad)] > 10:
+                    print('Error2')
                 case = True
 
             elif i > 1 and dist  < tempr[leng] + threshDistance:
@@ -209,6 +212,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         acp[index].append(centerp[leng - 1])
                         atp[index].append(testp[leng - 1])
                         arad[index].append(tempr[leng - 1])
+                    if SkeleRad[len(SkeleRad)] > 10:
+                        print('Error3')
                     case = True
             
             
@@ -237,6 +242,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                    print(point,testp,tempr,centerp)
                    SkeleRad.append(sml)
                    SkelePoints.append(centerp[n])
+                   if SkeleRad[len(SkeleRad)] > 10:
+                       print('Error4')
                    case = True 
             i += 1
         avgt += (time.time() - stt)
@@ -245,10 +252,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
-            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s || A-Time:{:05.2f}m:{:05.2f}s || {}/{} {:05.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
+            # print('CPUID:{:02d} TAG:{:02d} || T-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s || A-Time:{:05.2f}m:{:05.2f}s || {}/{} {:05.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
         if index % 100 == 0:
             est = tat * (len(points) - index)
-            print('CPUID:{:02d} TAG:{:02d} || E-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
+            # print('CPUID:{:02d} TAG:{:02d} || E-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
         index += 1
     te = time.time()
     tt = te - ts
