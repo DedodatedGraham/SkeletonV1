@@ -496,11 +496,27 @@ class kdTree:
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr = self.leafR.getVectorR(data)
                 print()
-                print(depth)
-                print(retptsl[0].getPont(),retdevl[0])
-                print(retptsr[0].getPont(),retdevr[0])
-                retpts =  retptsr
-                retdev =  retdevr
+                print(depth,point,vector)
+                print('left option',retptsl[0].getPoint(),retdevl[0])
+                print('right option',retptsr[0].getPoint(),retdevr[0])
+                if abs(retdevl[0] - retdevr[0]) > 0.05:
+                    if getDistance(point,retptsl[0].getPoint()) > getDistance(point,retptsr[0].getPoint()):
+                        retpts = retptsr
+                        retdev = retdevr
+                        print('went r')
+                    else:
+                        retpts = retptsl
+                        retdev = retdevl
+                        print('went l')
+                else:
+                    if retdevl[0] < retdevr[0]:
+                        retpts = retptsr
+                        retdev = retdevr
+                        print('went r')
+                    else:
+                        retpts = retptsl
+                        retdev = retdevl
+                        print('went l')
                 print()
                 # i = 0
                 # while i < len(retptsl):
