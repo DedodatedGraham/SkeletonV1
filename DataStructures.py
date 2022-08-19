@@ -518,11 +518,12 @@ class kdTree:
                         retpts = retptsr
                         retdev = retdevr
                         print('went r')
-                    else:
+                    elif dl > data[2]:
                         retpts = retptsl
                         retdev = retdevl
                         print('went l')
-                        
+                    else:
+                        print('hmm:(')                        
                 print()
                 # i = 0
                 # while i < len(retptsl):
