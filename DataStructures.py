@@ -61,7 +61,7 @@ def partition(points : list , dimension : int , first : int , last : int , * , c
 class kdTree:
     # @profile
     def __init__(self , points : list , depth : int = 0 , * , rads : list = [],dimensions : int = 0,cpuavail : int = 1):
-        print('making {}'.format(depth))
+        # print('making {}'.format(depth))
         #first converts to skeleton points
         if not(dimensions == 0):
             self.dimensions = dimensions
@@ -496,14 +496,14 @@ class kdTree:
                 tdata = data.copy()
                 tdata[3] += 1
                 retpts,retdev = self.leafR.getVectorR(tdata)
-                print('r only')
+                # print('r only')
                 # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) > data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
                 tdata = data.copy()
                 tdata[3] += 1
                 retpts,retdev = self.leafL.getVectorR(tdata)
-                print('l only')
+                # print('l only')
                 # print(node.getPoint(),'along the',self.axis)
             else:
                 trdata = data.copy()
@@ -512,7 +512,7 @@ class kdTree:
                 tldata[3] += 1
                 retptsl,retdevl =  self.leafL.getVectorR(tldata)
                 retptsr,retdevr =  self.leafR.getVectorR(trdata)
-                print('both')
+                # print('both')
                 # print(depth,data[0],data[1])
                 # print('left option',retptsl[0].getPoint(),retdevl[0])
                 # print('right option',retptsr[0].getPoint(),retdevr[0])
@@ -609,8 +609,8 @@ class kdTree:
             #     retdev.append(getDeviation(vector,tv))
         # if depth == 0:
         #     print('Chose the point',retpts[0].getPoint(),'for',data[0])
-        print(retpts,retdev)
-        print(self.split,data[3])
+        # print(retpts,retdev)
+        # print(self.split,data[3])
         return retpts,retdev
                 
                 
