@@ -498,7 +498,6 @@ class kdTree:
             else:
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr = self.leafR.getVectorR(data)
-                print()
                 print(depth,data[0],data[1])
                 print('left option',retptsl[0].getPoint(),retdevl[0])
                 print('right option',retptsr[0].getPoint(),retdevr[0])
@@ -523,8 +522,7 @@ class kdTree:
                         retdev = retdevl
                         print('went l')
                     else:
-                        print('hmm:(')                        
-                print()
+                        print('hmm:(')       
                 # i = 0
                 # while i < len(retptsl):
                 #     if len(retpts) < n:
