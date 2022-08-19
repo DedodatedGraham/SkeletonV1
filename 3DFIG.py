@@ -27,10 +27,11 @@ with open('SkeleSave.dat','r') as csvfile:
             z = float(row[2])
             r = float(row[3])
             print(i)
-            tx.append(x)
-            ty.append(y)
-            tz.append(z)
-            tr.append(r)
+            if x > 0 and x < 3 and y > 0 and y < 3 and z > 0 and z < 3:
+                tx.append(x)
+                ty.append(y)
+                tz.append(z)
+                tr.append(r)
                         
 # with open('disk1.dat','r') as csvfile:
 #     data = csv.reader(csvfile, delimiter = ' ')
