@@ -578,8 +578,8 @@ class kdTree:
             #         q += 1
             #     retpts.append(node)
             #     retdev.append(getDeviation(vector,tv))
-        if depth == 0:
-            print('Chose the point',retpts[0].getPoint(),'for',data[0])
+        # if depth == 0:
+        #     print('Chose the point',retpts[0].getPoint(),'for',data[0])
         return retpts,retdev
                 
                 
