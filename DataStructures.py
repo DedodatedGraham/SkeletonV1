@@ -426,9 +426,6 @@ class kdTree:
       
 
     def getVectorR(self, data : list):
-        point = data[0]
-        vector = data[1]
-        n = data[2]
         depth = data[3]
         data[3] += 1
         if depth == 0:
@@ -473,10 +470,10 @@ class kdTree:
                 tvec = []
                 j = 0
                 while j < self.points[i].dimensions:
-                    tvec.append(self.points[i].getAxis(j) - point[j])
+                    tvec.append(self.points[i].getAxis(j) - data[0][j])
                     j += 1
                 tvec = normalize([tvec])
-                dev = getDeviation(tvec[0],vector)
+                dev = getDeviation(tvec[0],data[1])
                 if dev > low:
                     low = dev
                     ind = i
@@ -486,21 +483,23 @@ class kdTree:
         else:
             node = self.node
             #How to determine which nodes to search through.
-            if node.getAxis(self.axis) < point[self.axis] and vector[self.axis] > 0:
+            if node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] > 0:
                 #if want right leaf only
                 retpts,retdev = self.leafR.getVectorR(data)
-            elif node.getAxis(self.axis) < point[self.axis] and vector[self.axis] < 0:
+            elif node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
                 retpts,retdev = self.leafL.getVectorR(data)
             else:
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr = self.leafR.getVectorR(data)
                 print()
-                print(depth,point,vector)
+                print(depth,data[0],data[1])
                 print('left option',retptsl[0].getPoint(),retdevl[0])
                 print('right option',retptsr[0].getPoint(),retdevr[0])
                 if retdevl[0] > 0.85 and abs(retdevl[0] - retdevr[0]) > 0.05:
-                    if getDistance(point,retptsl[0].getPoint()) > getDistance(point,retptsr[0].getPoint()):
+                    dl = getDistance(data[0],retptsl[0].getPoint())
+                    dr = getDistance(data[0],retptsr[0].getPoint())
+                    if  dl > dr  and dr > data[2]:
                         retpts = retptsr
                         retdev = retdevr
                         print('went r')
@@ -509,7 +508,7 @@ class kdTree:
                         retdev = retdevl
                         print('went l')
                 else:
-                    if retdevl[0] < retdevr[0]:
+                    if retdevl[0] < retdevr[0] and getDistance(data[0],retptsr[0].getPoint()) > data[2]:
                         retpts = retptsr
                         retdev = retdevr
                         print('went r')
