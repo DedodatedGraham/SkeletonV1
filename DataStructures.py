@@ -480,6 +480,10 @@ class kdTree:
                     low = dev
                     ind = i
                 i += 1
+            if len(self.points) == 0:
+                print()
+                print('POINT FLAG')
+                print()
             retpts.append(self.points[ind])
             retdev.append(low)
         else:
