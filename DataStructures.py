@@ -493,14 +493,14 @@ class kdTree:
             #How to determine which nodes to search through.
             if node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] > 0:
                 #if want right leaf only
-                tdata = data
+                tdata = data.copy()
                 tdata[3] += 1
                 retpts,retdev = self.leafR.getVectorR(tdata)
                 # print(data[0],'r only')
                 # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) > data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
-                tdata = data
+                tdata = data.copy()
                 tdata[3] += 1
                 retpts,retdev = self.leafL.getVectorR(tdata)
                 # print(data[0],'l only')
@@ -601,6 +601,7 @@ class kdTree:
         # if depth == 0:
         #     print('Chose the point',retpts[0].getPoint(),'for',data[0])
         print(retpts,retdev)
+        print(self.split,data[3])
         return retpts,retdev
                 
                 
