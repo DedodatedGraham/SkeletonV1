@@ -200,9 +200,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 # print()
                 crossp = vpts[0] 
                 crossdis = getDistance(point,crossp.getPoint())
-                if dist  < crossdis:
-                    SkelePoints.append(centerp[leng])
-                    SkeleRad.append(tempr[leng])
+                if dist  < crossdis * 2 and getDistance(point,centerp[leng]) < crossdis:
+                    #print('back')
+                    SkelePoints.append(centerp[leng - 1])
+                    SkeleRad.append(tempr[leng - 1])
                     #Show backstep in animation
                     if animate:
                         acp[index].append(centerp[leng - 1])
