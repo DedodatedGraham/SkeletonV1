@@ -98,8 +98,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 # tpool = ThreadPool(cpuavail)
                 inputdat = []
                 inputdat.append([])
-                inputdat[0].append(centerp[len(centerp) - 1])
-                inputdat[0].append(point)
+                inputdat[0].append(centerp[len(centerp) - 1].copy())
+                inputdat[0].append(point.copy())
                 inputdat[0].append(False)
                 # results = tpool.map(tree.getNearR,inputdat)
                 # testp.append(results[0])
@@ -114,7 +114,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     print('Point',point,'Norm',norm)
                     print()
                     
-                tempr.append(np.round(getRadius(point,testp[i],norm),6))
+                tempr.append(np.round(getRadius(point.copy(),testp[i].copy(),norm.copy()),6))
                 if dim == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
                 else:
@@ -183,13 +183,13 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 # tpool = ThreadPool(cpuavail)
                 inputdat = []
                 inputdat.append([])
-                inputdat[0].append(tpoint)
+                inputdat[0].append(tpoint.copy())
                 # q = 0
                 # inputdat[0].append([])
                 # while q < len(tnorm):
                 #     inputdat[0][1].append(-1 * tnorm[q])
                 #     q += 1
-                inputdat[0].append(tnorm)
+                inputdat[0].append(tnorm.copy())
                 # print()
                 # print('oop',inputdat[0][1],tnorm)
                 inputdat[0].append(threshDistance)
