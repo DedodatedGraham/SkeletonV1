@@ -506,7 +506,7 @@ class kdTree:
                 # print(data[0],'l only')
                 # print(node.getPoint(),'along the',self.axis)
             else:
-                # print(data)
+                print('adding 2')
                 trdata = data
                 trdata[3] += 1
                 tldata = data
