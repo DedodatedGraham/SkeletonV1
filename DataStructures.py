@@ -496,14 +496,14 @@ class kdTree:
                 tdata = data.copy()
                 tdata[3] += 1
                 retpts,retdev = self.leafR.getVectorR(tdata)
-                # print(data[0],'r only')
+                print('r only')
                 # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) > data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
                 tdata = data.copy()
                 tdata[3] += 1
                 retpts,retdev = self.leafL.getVectorR(tdata)
-                # print(data[0],'l only')
+                print('l only')
                 # print(node.getPoint(),'along the',self.axis)
             else:
                 trdata = data.copy()
@@ -512,6 +512,7 @@ class kdTree:
                 tldata[3] += 1
                 retptsl,retdevl =  self.leafL.getVectorR(tldata)
                 retptsr,retdevr =  self.leafR.getVectorR(trdata)
+                print('both')
                 # print(depth,data[0],data[1])
                 # print('left option',retptsl[0].getPoint(),retdevl[0])
                 # print('right option',retptsr[0].getPoint(),retdevr[0])
