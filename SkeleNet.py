@@ -182,7 +182,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 q = 0
                 inputdat[0].append([])
                 while q < len(tnorm):
-                    inputdat[0][1].append(-1 * tnorm[q])
+                    inputdat[0][1].append(1 * tnorm[q])
                     q += 1
                 # print()
                 # print('oop',inputdat[0][1],tnorm)
