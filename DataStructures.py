@@ -506,8 +506,8 @@ class kdTree:
                 if len(retptsl) == 0 or len(retptsr) == 0:
                     print()
                     print('BAD FLAG')
-                    print(retptsl[0].getPoint(),retdevl)
-                    print(retptsr[0].getPoint(),retdevr)
+                    print(retptsl,retdevl)
+                    print(retptsr,retdevr)
                     print()
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
