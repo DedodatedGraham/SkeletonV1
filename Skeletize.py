@@ -54,6 +54,7 @@ def getRadius(point1, point2 , norm) -> float:
     #Finally finds radius
     radius = np.abs(dist / (2 * np.cos(theta)))
     
+    print(point1,point2,norm,radius)
     return radius
 # @profile
 def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
