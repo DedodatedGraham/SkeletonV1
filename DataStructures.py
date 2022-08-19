@@ -504,14 +504,24 @@ class kdTree:
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
                 if dl > data[2] and dr > data[2]:
-                    if dl > dr:
+                    if dl > dr and retdevr[0] > retdevl[0]:
                         retpts = retptsr
                         retdev = retdevr
                         print('went r')
-                    else:
+                    elif dl < dr and retdevr[0] < retdevl[0]:
                         retpts = retptsl
                         retdev = retdevl
                         print('went l')
+                    else:
+                        #There isnt a clear winner of closer and more on. so we opt for more on now
+                        if retdevr[0] > retdevl[0]:
+                            retpts = retptsr
+                            retdev = retdevr
+                            print('went r')
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+                            print('went l')
                 else:
                     if dr > data[2]:
                         retpts = retptsr
