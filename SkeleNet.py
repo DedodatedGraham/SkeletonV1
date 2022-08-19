@@ -164,7 +164,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     atp[index].append(testp[leng - 1])
                     arad[index].append(tempr[leng - 1])
                 case = True
-            elif i > 0 and dist  < tempr[leng] + threshDistance:
+            elif i > 1 and dist  < tempr[leng] + threshDistance:
                 #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
                 crossdis = 0
                 tpoint = []
