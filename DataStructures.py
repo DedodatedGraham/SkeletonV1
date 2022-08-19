@@ -524,45 +524,72 @@ class kdTree:
                     print()
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
-                if dl > data[2] * 2 and dr > data[2] * 2:
-                    if dl > dr and abs(retdevr[0] - retdevl[0]) > 0.05:
+                #TEST3
+                if abs(retdevl[0]-retdevr[0]) > 0.05:
+                    if retdevr[0] > retdevl[0]:
                         retpts = retptsr
                         retdev = retdevr
-                        # print('went r')
-                    elif dl < dr and abs(retdevr[0] - retdevl[0]) > 0.05:
+                    else:
                         retpts = retptsl
                         retdev = retdevl
-                        # print('went l')
-                    else:
-                        #There isnt a clear winner of closer and more on. so we opt for more on now
-                        if retdevr[0] > retdevl[0]:
-                            retpts = retptsr
-                            retdev = retdevr
-                            # print('went r')
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                            # print('went l')
                 else:
-                    if dr > data[2]:
-                        retpts = retptsr
-                        retdev = retdevr
-                        # print('went r')
-                    elif dl > data[2]:
-                        retpts = retptsl
-                        retdev = retdevl
-                        # print('went l')
-                    else:
-                        #When both end up being 'toosmall'
-                        print('kinda small eh')
-                        if retdevr[0] > retdevl[0]:
+                    #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent
+                    if dl > data[2] * 2 and dr > data[2] * 2:
+                        if dr < dl:
                             retpts = retptsr
                             retdev = retdevr
-                            # print('went r')
                         else:
                             retpts = retptsl
                             retdev = retdevl
-                        
+                    else:
+                        if dr > dl:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+                    
+                #TEST2
+                # if dl > data[2] * 2 and dr > data[2] * 2:
+                #     if dl > dr and retdevr[0] > 0.8:
+                #         retpts = retptsr
+                #         retdev = retdevr
+                #         # print('went r')
+                #     elif dl < dr and retdevl[0] > 0.8:
+                #         retpts = retptsl
+                #         retdev = retdevl
+                #         # print('went l')
+                #     else:
+                #         #There isnt a clear winner of closer and more on. so we opt for more on now
+                #         if retdevr[0] > retdevl[0]:
+                #             retpts = retptsr
+                #             retdev = retdevr
+                #             # print('went r')
+                #         else:
+                #             retpts = retptsl
+                #             retdev = retdevl
+                #             # print('went l')
+                # else:
+                #     if dr > data[2]:
+                #         retpts = retptsr
+                #         retdev = retdevr
+                #         # print('went r')
+                #     elif dl > data[2]:
+                #         retpts = retptsl
+                #         retdev = retdevl
+                #         # print('went l')
+                #     else:
+                #         #When both end up being 'toosmall'
+                #         print('kinda small eh')
+                #         if retdevr[0] > retdevl[0]:
+                #             retpts = retptsr
+                #             retdev = retdevr
+                #             # print('went r')
+                #         else:
+                #             retpts = retptsl
+                #             retdev = retdevl
+                    
+                #TEST1
                 # i = 0
                 # while i < len(retptsl):
                 #     if len(retpts) < n:
