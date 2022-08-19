@@ -426,7 +426,7 @@ class kdTree:
       
 
     def getVectorR(self, data : list):
-        print('searching',data[3])
+        # print('searching',data[3])
         if len(data) >= 5:
             tdata = []
             tdata.append(data[0])
@@ -487,7 +487,7 @@ class kdTree:
                 i += 1
             retpts.append(self.points[ind])
             retdev.append(low)
-            print(retpts,retdev,data[3])
+            # print(retpts,retdev,data[3])
         else:
             node = self.node
             #How to determine which nodes to search through.
@@ -506,7 +506,6 @@ class kdTree:
                 # print(data[0],'l only')
                 # print(node.getPoint(),'along the',self.axis)
             else:
-                print('adding 2')
                 trdata = data.copy()
                 trdata[3] += 1
                 tldata = data.copy()
@@ -601,6 +600,7 @@ class kdTree:
             #     retdev.append(getDeviation(vector,tv))
         # if depth == 0:
         #     print('Chose the point',retpts[0].getPoint(),'for',data[0])
+        print(retpts,retdev)
         return retpts,retdev
                 
                 
