@@ -91,7 +91,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0])])
                 else:
                     centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
-                testp.append(point)
+                testp.append(point.copy())
             else:   
                 #Refinement of skeleton point
                 
