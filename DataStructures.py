@@ -480,12 +480,10 @@ class kdTree:
                     low = dev
                     ind = i
                 i += 1
-            if len(self.points) == 0:
-                print()
-                print('POINT FLAG')
-                print()
             retpts.append(self.points[ind])
             retdev.append(low)
+            if len(retpts) == 0:
+                print('point flag')
         else:
             node = self.node
             #How to determine which nodes to search through.
@@ -508,6 +506,8 @@ class kdTree:
                 if len(retptsl) == 0 or len(retptsr) == 0:
                     print()
                     print('BAD FLAG')
+                    print(len(retptsl))
+                    print(len(retptsr))
                     print()
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
