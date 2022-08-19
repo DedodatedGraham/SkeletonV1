@@ -243,10 +243,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
-            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:04.2f}h:{:04.2f}m:{:04.2f}s || A-Time:{:04.2f}m:{:04.2f}s || {}/{} {:04.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
+            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s || A-Time:{:05.2f}m:{:05.2f}s || {}/{} {:05.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
         if index % 100 == 0:
             est = tat * (len(points) - index)
-            print('CPUID:{:02d} TAG:{:02d} || Est-Time Left:{:04.2f}h:{:04.2f}m:{:04.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
+            print('CPUID:{:02d} TAG:{:02d} || Est-Time Left:{:05.2f}h:{:05.2f}m:{:05.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
         index += 1
     te = time.time()
     tt = te - ts
@@ -280,7 +280,7 @@ class SkeleNet:
         
         
         #Multiprocessing ideas
-        self.cpuavail = min(mp.cpu_count() - 2,28) #Will Always allow 2 Cores to remain unused
+        self.cpuavail = min(mp.cpu_count() - 1,28) #Will Always allow 2 Cores to remain unused
         if self.cpuavail == 0:
             # self.cpuavail = mp.cpu_count() - 2
             self.cpuavail = 1
