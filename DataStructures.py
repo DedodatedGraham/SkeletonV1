@@ -488,24 +488,25 @@ class kdTree:
             if node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] > 0:
                 #if want right leaf only
                 retpts,retdev = self.leafR.getVectorR(data)
-                # print(data[0],'r only')
+                print(data[0],'r only')
                 # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
                 retpts,retdev = self.leafL.getVectorR(data)
-                # print(data[0],'l only')
+                print(data[0],'l only')
                 # print(node.getPoint(),'along the',self.axis)
             else:
+                print(data)
                 retptsl,retdevl =  self.leafL.getVectorR(data)
-                retptsr,retdevr = self.leafR.getVectorR(data)
+                retptsr,retdevr =  self.leafR.getVectorR(data)
                 # print(depth,data[0],data[1])
                 # print('left option',retptsl[0].getPoint(),retdevl[0])
                 # print('right option',retptsr[0].getPoint(),retdevr[0])
                 if len(retptsl) == 0 or len(retptsr) == 0:
                     print()
                     print('BAD FLAG')
-                    print(retptsl,retdevl)
-                    print(retptsr,retdevr)
+                    print(retptsl[0].getPoint(),retdevl)
+                    print(retptsr[0].getPoint(),retdevr)
                     print()
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
