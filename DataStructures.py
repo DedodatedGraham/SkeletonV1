@@ -502,10 +502,10 @@ class kdTree:
                 print(depth,data[0],data[1])
                 print('left option',retptsl[0].getPoint(),retdevl[0])
                 print('right option',retptsr[0].getPoint(),retdevr[0])
-                if retdevl[0] > 0.85 and abs(retdevl[0] - retdevr[0]) > 0.05:
-                    dl = getDistance(data[0],retptsl[0].getPoint())
-                    dr = getDistance(data[0],retptsr[0].getPoint())
-                    if  dl > dr  and dr > data[2]:
+                dl = getDistance(data[0],retptsl[0].getPoint())
+                dr = getDistance(data[0],retptsr[0].getPoint())
+                if dl > data[2] and dr > data[2]:
+                    if dl > dr:
                         retpts = retptsr
                         retdev = retdevr
                         print('went r')
@@ -514,7 +514,7 @@ class kdTree:
                         retdev = retdevl
                         print('went l')
                 else:
-                    if retdevl[0] < retdevr[0] and getDistance(data[0],retptsr[0].getPoint()) > data[2]:
+                    if dr > data[2]:
                         retpts = retptsr
                         retdev = retdevr
                         print('went r')
@@ -522,6 +522,7 @@ class kdTree:
                         retpts = retptsl
                         retdev = retdevl
                         print('went l')
+                        
                 print()
                 # i = 0
                 # while i < len(retptsl):
