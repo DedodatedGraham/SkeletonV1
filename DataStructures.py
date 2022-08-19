@@ -426,18 +426,25 @@ class kdTree:
       
 
     def getVectorR(self, data : list):
-        #print('searching',depth)
-        if data[3] == 0:
-            if len(data) == 5:
-                getRads = data[4]
-                data = data[0:4]
+        print('searching',data[3])
+        if len(data) >= 5:
+            tdata = []
+            tdata.append(data[0])
+            tdata.append(data[1])
+            tdata.append(data[2])
+            tdata.append(data[3])
+            data = tdata
+        # if data[3] == 0:
+        #     if len(data) == 5:
+        #         getRads = data[4]
+        #         data = data[0:4]
         
         #Finds the differnce between the given vector(from root point) and from the root point to the search point. 
         #Comapres, if close enough, the the point should be close enough to the other side of the shape.
         retpts = []
         retdev = []
         if not(self.split):
-            print('searching {}'.format(data[3]))
+            # print('searching {}'.format(data[3]))
            # i = 0
            # while i < len(self.points):
            #     tvec = []
