@@ -501,6 +501,10 @@ class kdTree:
                 # print(depth,data[0],data[1])
                 # print('left option',retptsl[0].getPoint(),retdevl[0])
                 # print('right option',retptsr[0].getPoint(),retdevr[0])
+                if len(retptsl) == 0 or len(retptsr) == 0:
+                    print()
+                    print('BAD FLAG')
+                    print()
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
                 if dl > data[2] and dr > data[2]:
