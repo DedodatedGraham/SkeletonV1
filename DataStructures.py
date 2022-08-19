@@ -495,6 +495,13 @@ class kdTree:
             else:
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr = self.leafR.getVectorR(data)
+                print()
+                print(depth)
+                print(retptsl[0].getPont(),retdevl[0])
+                print(retptsr[0].getPont(),retdevr[0])
+                retpts =  retptsr
+                retdev =  retdevr
+                print()
                 # i = 0
                 # while i < len(retptsl):
                 #     if len(retpts) < n:
