@@ -427,7 +427,7 @@ class kdTree:
 
     def getVectorR(self, data : list):
         depth = data[3]
-        print(depth)
+        # print(depth)
         data[3] += 1
         #print('searching',depth)
         if depth == 0:
@@ -488,51 +488,51 @@ class kdTree:
             if node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] > 0:
                 #if want right leaf only
                 retpts,retdev = self.leafR.getVectorR(data)
-                print(data[0],'r only')
-                print(node.getPoint(),'along the',self.axis)
+                # print(data[0],'r only')
+                # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
                 retpts,retdev = self.leafL.getVectorR(data)
-                print(data[0],'l only')
-                print(node.getPoint(),'along the',self.axis)
+                # print(data[0],'l only')
+                # print(node.getPoint(),'along the',self.axis)
             else:
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr = self.leafR.getVectorR(data)
-                print(depth,data[0],data[1])
-                print('left option',retptsl[0].getPoint(),retdevl[0])
-                print('right option',retptsr[0].getPoint(),retdevr[0])
+                # print(depth,data[0],data[1])
+                # print('left option',retptsl[0].getPoint(),retdevl[0])
+                # print('right option',retptsr[0].getPoint(),retdevr[0])
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
                 if dl > data[2] and dr > data[2]:
                     if dl > dr and retdevr[0] > retdevl[0]:
                         retpts = retptsr
                         retdev = retdevr
-                        print('went r')
+                        # print('went r')
                     elif dl < dr and retdevr[0] < retdevl[0]:
                         retpts = retptsl
                         retdev = retdevl
-                        print('went l')
+                        # print('went l')
                     else:
                         #There isnt a clear winner of closer and more on. so we opt for more on now
                         if retdevr[0] > retdevl[0]:
                             retpts = retptsr
                             retdev = retdevr
-                            print('went r')
+                            # print('went r')
                         else:
                             retpts = retptsl
                             retdev = retdevl
-                            print('went l')
+                            # print('went l')
                 else:
                     if dr > data[2]:
                         retpts = retptsr
                         retdev = retdevr
-                        print('went r')
+                        # print('went r')
                     elif dl > data[2]:
                         retpts = retptsl
                         retdev = retdevl
-                        print('went l')
-                    else:
-                        print('hmm:(')       
+                        # print('went l')
+                    # else:
+                        # print('hmm:(')       
                 # i = 0
                 # while i < len(retptsl):
                 #     if len(retpts) < n:
