@@ -182,10 +182,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 q = 0
                 inputdat[0].append([])
                 while q < len(tnorm):
-                    inputdat[0][1].append(-1 * tnorm[q])
+                    inputdat[0][1].append(1 * tnorm[q])
                     q += 1
+                print('oop',inputdat[0][1],tnorm)
                 inputdat[0].append(threshDistance)
-                inputdat[0].append(1)
                 inputdat[0].append(0)
                 inputdat[0].append(False)
                 # results = tpool.map(tree.getVectorR,inputdat)
