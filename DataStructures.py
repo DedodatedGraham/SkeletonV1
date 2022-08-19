@@ -467,7 +467,7 @@ class kdTree:
            #     i += 1
             i = 0
             low = 0
-            ind = -1
+            ind = 0
             while i < len(self.points):
                 tvec = []
                 j = 0
