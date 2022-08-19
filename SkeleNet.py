@@ -151,7 +151,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     # print('norm')
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(tempr[leng])
-                if SkeleRad[len(SkeleRad)] > 10:
+                if SkeleRad[len(SkeleRad) - 1] > 10:
                     print('Error1')
                 case = True 
             
@@ -164,7 +164,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     acp[index].append(centerp[leng - 1])
                     atp[index].append(testp[leng - 1])
                     arad[index].append(tempr[leng - 1])
-                if SkeleRad[len(SkeleRad)] > 10:
+                if SkeleRad[len(SkeleRad) - 1] > 10:
                     print('Error2')
                 case = True
 
@@ -212,7 +212,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         acp[index].append(centerp[leng - 1])
                         atp[index].append(testp[leng - 1])
                         arad[index].append(tempr[leng - 1])
-                    if SkeleRad[len(SkeleRad)] > 10:
+                    if SkeleRad[len(SkeleRad) - 1] > 10:
                         print('Error3')
                     case = True
             
@@ -242,7 +242,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                    print(point,testp,tempr,centerp)
                    SkeleRad.append(sml)
                    SkelePoints.append(centerp[n])
-                   if SkeleRad[len(SkeleRad)] > 10:
+                   if SkeleRad[len(SkeleRad) - 1] > 10:
                        print('Error4')
                    case = True 
             i += 1
