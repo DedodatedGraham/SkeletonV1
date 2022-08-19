@@ -437,6 +437,7 @@ class kdTree:
         retpts = []
         retdev = []
         if not(self.split):
+            print('searching {}'.format(data[3]))
            # i = 0
            # while i < len(self.points):
            #     tvec = []
