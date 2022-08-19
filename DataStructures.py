@@ -499,7 +499,7 @@ class kdTree:
                 print(depth,point,vector)
                 print('left option',retptsl[0].getPoint(),retdevl[0])
                 print('right option',retptsr[0].getPoint(),retdevr[0])
-                if abs(retdevl[0] - retdevr[0]) > 0.05:
+                if retdevl[0] > 0.85 and abs(retdevl[0] - retdevr[0]) > 0.05:
                     if getDistance(point,retptsl[0].getPoint()) > getDistance(point,retptsr[0].getPoint()):
                         retpts = retptsr
                         retdev = retdevr
