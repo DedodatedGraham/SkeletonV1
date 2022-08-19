@@ -426,11 +426,8 @@ class kdTree:
       
 
     def getVectorR(self, data : list):
-        depth = data[3]
-        # print(depth)
-        data[3] += 1
         #print('searching',depth)
-        if depth == 0:
+        if data[3] == 0:
             if len(data) == 5:
                 getRads = data[4]
                 data = data[0:4]
@@ -482,22 +479,25 @@ class kdTree:
                 i += 1
             retpts.append(self.points[ind])
             retdev.append(low)
-            print(retpts,retdev,depth)
+            print(retpts,retdev,data[3])
         else:
             node = self.node
             #How to determine which nodes to search through.
             if node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] > 0:
                 #if want right leaf only
+                data[3] +=1
                 retpts,retdev = self.leafR.getVectorR(data)
                 # print(data[0],'r only')
                 # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
+                data[3] +=1
                 retpts,retdev = self.leafL.getVectorR(data)
                 # print(data[0],'l only')
                 # print(node.getPoint(),'along the',self.axis)
             else:
                 # print(data)
+                data[3] +=1
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr =  self.leafR.getVectorR(data)
                 # print(depth,data[0],data[1])
