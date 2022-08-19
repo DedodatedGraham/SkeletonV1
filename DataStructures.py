@@ -507,9 +507,9 @@ class kdTree:
                 # print(node.getPoint(),'along the',self.axis)
             else:
                 print('adding 2')
-                trdata = data
+                trdata = data.copy()
                 trdata[3] += 1
-                tldata = data
+                tldata = data.copy()
                 tldata[3] += 1
                 retptsl,retdevl =  self.leafL.getVectorR(tldata)
                 retptsr,retdevr =  self.leafR.getVectorR(trdata)
