@@ -482,21 +482,22 @@ class kdTree:
                 i += 1
             retpts.append(self.points[ind])
             retdev.append(low)
+            print(retpts,retdev)
         else:
             node = self.node
             #How to determine which nodes to search through.
             if node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] > 0:
                 #if want right leaf only
                 retpts,retdev = self.leafR.getVectorR(data)
-                print(data[0],'r only')
+                # print(data[0],'r only')
                 # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) < data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
                 retpts,retdev = self.leafL.getVectorR(data)
-                print(data[0],'l only')
+                # print(data[0],'l only')
                 # print(node.getPoint(),'along the',self.axis)
             else:
-                print(data)
+                # print(data)
                 retptsl,retdevl =  self.leafL.getVectorR(data)
                 retptsr,retdevr =  self.leafR.getVectorR(data)
                 # print(depth,data[0],data[1])
