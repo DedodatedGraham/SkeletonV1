@@ -482,7 +482,7 @@ class kdTree:
                 i += 1
             retpts.append(self.points[ind])
             retdev.append(low)
-            print(retpts,retdev)
+            print(retpts,retdev,depth)
         else:
             node = self.node
             #How to determine which nodes to search through.
