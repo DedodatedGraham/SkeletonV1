@@ -200,7 +200,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 # print()
                 crossp = vpts[0] 
                 crossdis = getDistance(point,crossp.getPoint())
-                if dist  < crossdis * 2 and getDistance(point,centerp[leng]) < crossdis:
+                if dist  < crossdis + threshDistance and getDistance(point,centerp[leng]) < crossdis + threshDistance:
                     #print('back')
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
