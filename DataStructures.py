@@ -552,8 +552,16 @@ class kdTree:
                         retpts = retptsl
                         retdev = retdevl
                         # print('went l')
-                    # else:
-                        # print('hmm:(')       
+                    else:
+                        #When both end up being 'toosmall'
+                        if retdevr[0] > retdevl[0]:
+                            retpts = retptsr
+                            retdev = retdevr
+                            # print('went r')
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+                        
                 # i = 0
                 # while i < len(retptsl):
                 #     if len(retpts) < n:
