@@ -27,7 +27,7 @@ with open('SkeleSave.dat','r') as csvfile:
             z = float(row[2])
             r = float(row[3])
             print(i)
-            if x > 0 and x < 3 and y > 0 and y < 3 and z > 0 and z < 3:
+            if x > 0 and x < 3 and y > 0 and y < 3 and z > -3 and z < 3:
                 tx.append(x)
                 ty.append(y)
                 tz.append(z)
