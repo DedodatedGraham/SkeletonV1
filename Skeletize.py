@@ -36,6 +36,7 @@ def checkRepeat(check : list):
 # @profile
 def getRadius(point1, point2 , norm) -> float:
     #First finds theta
+    norm = norm.copy()
     dim = len(point1)
     dist = getDistance(point1,point2)
     if dim == 2:
