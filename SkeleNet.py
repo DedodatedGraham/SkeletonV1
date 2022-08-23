@@ -1,5 +1,6 @@
 import os
 from random  import randint
+import copy
 import sys
 from sys import float_repr_style
 # import matplotlib
@@ -72,7 +73,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
     for point in pts:
         stt = time.time()
         #finding inital temp radius
-        norm = nrms[index]
+        norm = nrms[index].copy()
         tempr = []
         i = 0
         centerp = []
@@ -100,7 +101,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 inputdat.append([])
                 inputdat[0].append(centerp[len(centerp) - 1].copy())
                 inputdat[0].append(point.copy())
-                inputdat[0].append(False)
+                #inputdat[0].append(False)
                 # results = tpool.map(tree.getNearR,inputdat)
                 # testp.append(results[0])
                 # tpool.close()
@@ -115,12 +116,55 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     print()
                     
                 tempr.append(np.round(getRadius(point.copy(),testp[i].copy(),norm.copy()),6))
+                if i == 1:
+                    if tempr[0] < tempr[1]:
+                        q = 0
+                        tn = []
+                        while q < len(norm):
+                            tn.append(norm[q] * -1)
+                            q += 1
+                        norm = tn
                 if dim == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
                 else:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i]),float(point[2]-norm[2]*tempr[i])])
             leng = len(tempr) - 1
-                            #Capture animation data
+            #Here we will correct the radius if it seems large
+            #Capture animation data
+            #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
+            crossdis = 0
+            tpoint = []
+            tnorm = []
+            j = 0
+            while j < len(point):
+                tnorm.append(norm[j] * -1)
+                tpoint.append(point[j] + tnorm[j] * threshDistance / 2)
+                j += 1
+                
+                # tpool = ThreadPool(cpuavail)
+            inputdat = []
+            inputdat.append([])
+            inputdat[0].append(tpoint.copy())
+                # q = 0
+                # inputdat[0].append([])
+                # while q < len(tnorm):
+                #     inputdat[0][1].append(-1 * tnorm[q])
+                #     q += 1
+            inputdat[0].append(tnorm.copy())
+                # print()
+                # print('oop',inputdat[0][1],tnorm)
+            inputdat[0].append(threshDistance)
+            inputdat[0].append(0)
+            inputdat[0].append(False)
+                # results = tpool.map(tree.getVectorR,inputdat)
+                # crossp = results[0]
+                # tpool.close
+            vpts,vdev = tree.getVectorR(inputdat[0]) 
+                # print(point,norm,'-->',vpts[0].getPoint())
+                # print(vdev,getDistance(point,vpts[0].getPoint()))
+                # print()
+            crossp = vpts[0] 
+            crossdis = getDistance(point,crossp.getPoint())
             if animate:
                 if i == 0:
                     acp.append([])
@@ -138,7 +182,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             
             #Convergence check
             dist = getDistance(point,testp[leng])
-            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
+            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance and getDistance(centerp[leng],point) < crossdis:
                 if tempr[leng] < (threshDistance) or dist < (tempr[leng]) + threshDistance:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
@@ -152,12 +196,18 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(tempr[leng])
                 if SkeleRad[len(SkeleRad) - 1] > 10:
+                    print()
                     print('Error1')
-                    print(tempr)
+                    print(index,i)
+                    print('centers',centerp)
+                    print('testp',testp)
+                    print('rads',tempr)
+                    print('Point',point,'Norm',norm)
+                    print()
                 case = True 
             
             #Overshooting  
-            elif i > 1 and tempr[leng] < (threshDistance):
+            elif i > 1 and tempr[leng] < (threshDistance) and getDistance(centerp[leng],point) < crossdis:
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(tempr[leng - 1])
                 #Show backstep in animation
@@ -166,7 +216,14 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     atp[index].append(testp[leng - 1])
                     arad[index].append(tempr[leng - 1])
                 if SkeleRad[len(SkeleRad) - 1] > 10:
+                    print()
                     print('Error2')
+                    print(index,i)
+                    print('centers',centerp)
+                    print('testp',testp)
+                    print('rads',tempr)
+                    print('Point',point,'Norm',norm)
+                    print()
                 case = True
 
             elif i > 1 and dist  < tempr[leng] + threshDistance:
@@ -253,10 +310,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
-            # print('CPUID:{:02d} TAG:{:02d} || T-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s || A-Time:{:05.2f}m:{:05.2f}s || {}/{} {:05.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
+            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s || A-Time:{:05.2f}m:{:05.2f}s || {}/{} {:05.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
         if index % 100 == 0:
             est = tat * (len(points) - index)
-            # print('CPUID:{:02d} TAG:{:02d} || E-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
+            print('CPUID:{:02d} TAG:{:02d} || E-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
         index += 1
     te = time.time()
     tt = te - ts
@@ -392,7 +449,7 @@ class SkeleNet:
         stp = []
         i = 0
         while i < len(self.tpoints):
-            rp,rn = randPN(self.tpoints[i],self.tnorms[i])
+            #rp,rn = randPN(self.tpoints[i].copy(),self.tnorms[i].copy())
             j = 0
             self.divpts.append([])
             self.divnrms.append([])
@@ -421,7 +478,7 @@ class SkeleNet:
             j = 0
             while j < len(self.divpts[i]):
                 setthresh.append(self.threshDistance[i])
-                temptree.append(self.tree[i])
+                temptree.append(copy.deepcopy(self.tree[i]))
                 ani.append(self.animate)
                 cpuid.append(j)
                 cputag.append(i)
@@ -1246,8 +1303,8 @@ class SkeleNet:
                 plt.clf()
                 plt.xlim(xmin,xmax)
                 plt.ylim(ymin,ymax)
-                if self.dim == 3:
-                    plt.zlim(zmin,zmax)
+                #if self.dim == 3:
+                    #plt.zlim(zmin,zmax)
                 if self.dim == 2:
                     i = 0
                     tx = []

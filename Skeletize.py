@@ -50,12 +50,17 @@ def getRadius(point1, point2 , norm) -> float:
         #Then find dot product of the norm and mvec
         dot = mvec[0]*-1*norm[0] + mvec[1]*-1*norm[1] + mvec[2]*-1*norm[2]
     #Next finds theta
-    theta = np.arccos(min(1,dot/dist))
+    inside = dot / dist
+    if inside < -1:
+        inside = -1.0
+    elif inside > 1:
+        inside = 1
+    theta = np.arccos(inside)
     # print(dot,dist,point1,point2)
     #Finally finds radius
     radius = np.abs(dist / (2 * np.cos(theta)))
     
-    print(point1,point2,norm,radius)
+    #print(point1,point2,norm,radius)
     return radius
 # @profile
 def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:

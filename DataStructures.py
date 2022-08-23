@@ -124,8 +124,9 @@ class kdTree:
             tdat.append(inputdat[0])
             tdat.append(inputdat[1])
             inputdat = tdat
-                
-        # print('searching...')
+        else:
+            getRads = False
+        #print('searching...')
         dmin = 100000
         if self.split:
             pmin = self.node
