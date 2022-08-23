@@ -146,9 +146,10 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         q = 0
                         tn = []
                         while q < len(norm):
-                            tn.append(norm[q] * -0.9)
+                            tn.append(norm[q] * -1)
                             q += 1
                         norm = tn
+                        
                         print('postnorm',norm)
                 if dim == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
@@ -174,7 +175,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             #Convergence check
             dist = getDistance(point,testp[leng])
             distc = getDistance(point,centerp[leng])
-            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
+            if i > 2 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                 if tempr[leng] < (threshDistance) or dist < (tempr[leng]) + threshDistance:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
@@ -199,7 +200,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 case = True 
             
             #Overshooting  
-            elif i > 1 and tempr[leng] < (threshDistance):
+            elif i > 2 and tempr[leng] < (threshDistance):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(tempr[leng - 1])
                 #Show backstep in animation
@@ -218,7 +219,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     print()
                 case = True
 
-            elif i > 1 and dist  < tempr[leng] + threshDistance:
+            elif i > 2 and dist  < tempr[leng] + threshDistance:
                 #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
                 # crossdis = 0
                 # tpoint = []
