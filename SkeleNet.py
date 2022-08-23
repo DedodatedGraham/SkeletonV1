@@ -171,7 +171,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             #Convergence check
             dist = getDistance(point,testp[leng])
             distc = getDistance(point,centerp[leng])
-            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance and distc < crossdis + threshDistance:
+            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                 if tempr[leng] < (threshDistance) or dist < (tempr[leng]) + threshDistance:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
@@ -196,7 +196,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 case = True 
             
             #Overshooting  
-            elif i > 1 and tempr[leng] < (threshDistance) and distc < crossdis + threshDistance:
+            elif i > 1 and tempr[leng] < (threshDistance):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(tempr[leng - 1])
                 #Show backstep in animation
