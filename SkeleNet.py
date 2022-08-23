@@ -102,7 +102,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         vpts,vdev = tree.getVectorR(inputdat[0]) 
         crossp = vpts[0] 
         crossdis = getDistance(point,crossp.getPoint())
-        print(crossdis)
+        # print(crossdis)
         
         while not case:
             # print(index,i)
@@ -140,9 +140,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     
                 tempr.append(np.round(getRadius(point.copy(),testp[i].copy(),norm.copy()),6))
                 if i == 1:
-                    
-                    if tempr[0] < tempr[1]:
-                        print('prenorm',norm)
+                    if tempr[1] > crossdis:
+                        print(i,'prenorm',norm)
                         q = 0
                         tn = []
                         while q < len(norm):
