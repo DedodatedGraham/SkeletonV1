@@ -82,7 +82,30 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         case = False
         # print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
+        
+        #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
+        crossdis = 0
+        tpoint = []
+        tnorm = []
+        j = 0
+        while j < len(point):
+            tnorm.append(norm[j] * -1)
+            tpoint.append(point[j] + tnorm[j] * threshDistance / 2)
+            j += 1
+        inputdat = []
+        inputdat.append([])
+        inputdat[0].append(tpoint.copy())
+        inputdat[0].append(tnorm.copy())
+        inputdat[0].append(threshDistance)
+        inputdat[0].append(0)
+        inputdat[0].append(False)
+        vpts,vdev = tree.getVectorR(inputdat[0]) 
+        crossp = vpts[0] 
+        crossdis = getDistance(point,crossp.getPoint())
+        print(crossdis)
+        
         while not case:
+            print(index,i)
             if i == 0:
                 #Inital
                 tempr.append(guessr)
@@ -129,42 +152,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 else:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i]),float(point[2]-norm[2]*tempr[i])])
             leng = len(tempr) - 1
-            #Here we will correct the radius if it seems large
             #Capture animation data
-            #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
-            crossdis = 0
-            tpoint = []
-            tnorm = []
-            j = 0
-            while j < len(point):
-                tnorm.append(norm[j] * -1)
-                tpoint.append(point[j] + tnorm[j] * threshDistance / 2)
-                j += 1
-                
-                # tpool = ThreadPool(cpuavail)
-            inputdat = []
-            inputdat.append([])
-            inputdat[0].append(tpoint.copy())
-                # q = 0
-                # inputdat[0].append([])
-                # while q < len(tnorm):
-                #     inputdat[0][1].append(-1 * tnorm[q])
-                #     q += 1
-            inputdat[0].append(tnorm.copy())
-                # print()
-                # print('oop',inputdat[0][1],tnorm)
-            inputdat[0].append(threshDistance)
-            inputdat[0].append(0)
-            inputdat[0].append(False)
-                # results = tpool.map(tree.getVectorR,inputdat)
-                # crossp = results[0]
-                # tpool.close
-            vpts,vdev = tree.getVectorR(inputdat[0]) 
-                # print(point,norm,'-->',vpts[0].getPoint())
-                # print(vdev,getDistance(point,vpts[0].getPoint()))
-                # print()
-            crossp = vpts[0] 
-            crossdis = getDistance(point,crossp.getPoint())
             if animate:
                 if i == 0:
                     acp.append([])
@@ -182,7 +170,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             
             #Convergence check
             dist = getDistance(point,testp[leng])
-            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance and getDistance(centerp[leng],point) < crossdis:
+            distc = getDistance(point,centerp[leng])
+            if i > 1 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance and distc < crossdis + threshDistance:
                 if tempr[leng] < (threshDistance) or dist < (tempr[leng]) + threshDistance:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
@@ -207,7 +196,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 case = True 
             
             #Overshooting  
-            elif i > 1 and tempr[leng] < (threshDistance) and getDistance(centerp[leng],point) < crossdis:
+            elif i > 1 and tempr[leng] < (threshDistance) and distc < crossdis + threshDistance:
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(tempr[leng - 1])
                 #Show backstep in animation
@@ -228,40 +217,40 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
 
             elif i > 1 and dist  < tempr[leng] + threshDistance:
                 #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
-                crossdis = 0
-                tpoint = []
-                tnorm = []
-                j = 0
-                while j < len(point):
-                    tnorm.append(norm[j] * -1)
-                    tpoint.append(point[j] + tnorm[j] * threshDistance / 2)
-                    j += 1
+                # crossdis = 0
+                # tpoint = []
+                # tnorm = []
+                # j = 0
+                # while j < len(point):
+                #     tnorm.append(norm[j] * -1)
+                #     tpoint.append(point[j] + tnorm[j] * threshDistance / 2)
+                #     j += 1
                 
                 # tpool = ThreadPool(cpuavail)
-                inputdat = []
-                inputdat.append([])
-                inputdat[0].append(tpoint.copy())
+                # inputdat = []
+                # inputdat.append([])
+                # inputdat[0].append(tpoint.copy())
                 # q = 0
                 # inputdat[0].append([])
                 # while q < len(tnorm):
                 #     inputdat[0][1].append(-1 * tnorm[q])
                 #     q += 1
-                inputdat[0].append(tnorm.copy())
+                # inputdat[0].append(tnorm.copy())
                 # print()
                 # print('oop',inputdat[0][1],tnorm)
-                inputdat[0].append(threshDistance)
-                inputdat[0].append(0)
-                inputdat[0].append(False)
+                # inputdat[0].append(threshDistance)
+                # inputdat[0].append(0)
+                # inputdat[0].append(False)
                 # results = tpool.map(tree.getVectorR,inputdat)
                 # crossp = results[0]
                 # tpool.close
-                vpts,vdev = tree.getVectorR(inputdat[0]) 
+                # vpts,vdev = tree.getVectorR(inputdat[0]) 
                 # print(point,norm,'-->',vpts[0].getPoint())
                 # print(vdev,getDistance(point,vpts[0].getPoint()))
                 # print()
-                crossp = vpts[0] 
-                crossdis = getDistance(point,crossp.getPoint())
-                if dist  < crossdis + threshDistance and getDistance(point,centerp[leng]) < crossdis + threshDistance:
+                # crossp = vpts[0] 
+                # crossdis = getDistance(point,crossp.getPoint())
+                if dist  < crossdis + threshDistance and distc < crossdis + threshDistance:
                     #print('back')
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
