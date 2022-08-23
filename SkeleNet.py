@@ -105,7 +105,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         crossdis = getDistance(point,crossp.getPoint())
         # print(crossdis)
         if animate:
-            acrossp.append(crossp)
+            acrossp.append(crossp.getPoint())
         while not case:
             # print(index,i)
             if i == 0:
@@ -1412,7 +1412,6 @@ class SkeleNet:
                             # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
                             plt.scatter(self.acp[tag][i][j][0],self.acp[tag][i][j][1],5,color='purple')
                             plt.scatter(self.atp[tag][i][j][0],self.atp[tag][i][j][1],5,color='red')
-                            print(self.acrossp)
                             plt.scatter(self.acrossp[tag][i][0],self.acrossp[tag][i][1],5,color='yellow')
                             plt.scatter(self.tpoints[tag][i][0],self.tpoints[tag][i][1],5,color='blue')
                             plt.title('{},radius : {}, distance : {}'.format(i,self.arad[tag][i][j],getDistance(self.tpoints[tag][i],self.atp[tag][i][j])))
