@@ -141,7 +141,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 tempr.append(np.round(getRadius(point.copy(),testp[i].copy(),norm.copy()),6))
                 if i == 1:
                     if tempr[1] > crossdis:
-                        print(i,'prenorm',norm)
+                        # print(i,'prenorm',norm)
                         q = 0
                         tn = []
                         while q < len(norm):
@@ -149,7 +149,9 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                             q += 1
                         norm = tn
                         
-                        print('postnorm',norm)
+                        # print('postnorm',norm)
+                    else:
+                        print('pass')
                 if dim == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
                 else:
