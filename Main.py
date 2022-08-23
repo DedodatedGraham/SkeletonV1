@@ -45,9 +45,9 @@ if __name__ == '__main__':
         link = source + link
     
     net = SkeleNet(link)
-    net.solve(False)
+    net.solve(True)
     net.savedat(1)
-    net.plot([1])
+    net.plot([1,2])
     
     et = time.time()
     tt = et - st

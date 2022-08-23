@@ -63,6 +63,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         acp = []
         atp = []
         arad = []
+        acrossp = []
     i = 0
     while i < len(points):
         pts.append(points[i])
@@ -103,7 +104,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         crossp = vpts[0] 
         crossdis = getDistance(point,crossp.getPoint())
         # print(crossdis)
-        
+        if animate:
+            acrossp.append(crossp)
         while not case:
             # print(index,i)
             if i == 0:
@@ -312,7 +314,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
     tt = te - ts
     print('Skeleton took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
     if animate:
-        return SkelePoints,SkeleRad,acp,atp,arad
+        return SkelePoints,SkeleRad,acp,atp,arad,acrossp
     else:
         return SkelePoints,SkeleRad
 
@@ -409,6 +411,7 @@ class SkeleNet:
             self.acp = []
             self.atp = []
             self.arad = []
+            self.acrossp = []
         else:
             self.animate = False
         #First we want to make all the nessicary trees and distances
@@ -490,6 +493,7 @@ class SkeleNet:
                     t2 = data[2]
                     t3 = data[3]
                     t4 = data[4]
+                    t5 = data[5]
                 if len(self.SkelePoints) == i:
                     self.SkelePoints.append([])
                     self.SkeleRad.append([])
@@ -505,6 +509,8 @@ class SkeleNet:
                         self.atp.append([])
                     if len(self.arad) == i:
                         self.arad.append([])
+                    if len(self.acrossp) == i:
+                        self.acrossp.append([])
                     j = 0
                     while j < len(t2):
                         self.acp[i].append(t2[j])
@@ -516,6 +522,10 @@ class SkeleNet:
                     j = 0
                     while j < len(t4):
                         self.arad[i].append(t4[j])
+                        j += 1
+                    j = 0
+                    while j < len(t5):
+                        self.acrossp.append(t5[j])
                         j += 1
             i += 1
             self.pool.close()
@@ -1402,6 +1412,7 @@ class SkeleNet:
                             # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
                             plt.scatter(self.acp[tag][i][j][0],self.acp[tag][i][j][1],5,color='purple')
                             plt.scatter(self.atp[tag][i][j][0],self.atp[tag][i][j][1],5,color='red')
+                            plt.scatter(self.acrossp[tag][i][0],self.acrossp[tag][i][1],5,color='yellow')
                             plt.scatter(self.tpoints[tag][i][0],self.tpoints[tag][i][1],5,color='blue')
                             plt.title('{},radius : {}, distance : {}'.format(i,self.arad[tag][i][j],getDistance(self.tpoints[tag][i],self.atp[tag][i][j])))
                             
