@@ -84,6 +84,22 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         # print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
         
+        #Norm Check:
+        with open('disk1.dat','r') as csvfile:
+            data = csv.reader(csvfile, delimiter = ' ')
+            for row in data:
+                if str(row[0]) == 'x':#if title
+                    a = 1
+                else:
+                    if float(row[0]) == point[0] and float(row[1]) == point[1] and float(row[2]) == point[2]:
+                        print('found point')
+                        if normalize([-1*float(row[3]),-1*float(row[4]),-1*float(row[5])]) == norm:
+                            print('found norm too')
+            
+        csvfile.close()
+
+
+
         #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
         crossdis = 0
         tpoint = []
@@ -107,7 +123,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         if animate:
             acrossp.append(crossp.getPoint())
         while not case:
-            # print(index,i)
+            if i > 30:
+                print(index,i)
             if i == 0:
                 #Inital
                 tempr.append(guessr)
@@ -120,7 +137,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 testp.append(point.copy())
             else:   
                 #Refinement of skeleton point
-                
+                    
                 # tpool = ThreadPool(cpuavail)
                 inputdat = []
                 inputdat.append([])
@@ -173,12 +190,13 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     arad[index].append(tempr[leng])
                     
             #Checking for completeion
-            
+                     
             #Convergence check
             dist = getDistance(point,testp[leng])
             distc = getDistance(point,centerp[leng])
-            if i > 2 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
-                if tempr[leng] < (threshDistance) or dist < (tempr[leng]) + threshDistance:
+            if i > 2 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance and tempr[leng] < crossdis + threshDistance:
+                if tempr[leng] < (threshDistance) or dist < (threshDistance):
+                    #print('went 0 0')
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
                     #Show backstep in animation
@@ -187,22 +205,23 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         atp[index].append(testp[leng - 1])
                         arad[index].append(tempr[leng - 1])
                 else:
+                    #print('went 0 1',tempr[leng],dist,(threshDistance))
                     # print('norm')
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(tempr[leng])
-                if SkeleRad[len(SkeleRad) - 1] > 1:
-                    print()
-                    print('Error1')
-                    print(index,i)
-                    print('centers',centerp)
-                    print('testp',testp)
-                    print('rads',tempr)
-                    print('Point',point,'Norm',norm)
-                    print()
+                #if SkeleRad[len(SkeleRad) - 1] > 1:
+                #    print()
+                #    print('Error1')
+                #    print(index,i)
+                #    print('centers',centerp)
+                #    print('testp',testp)
+                #    print('rads',tempr)
+                #    print('Point',point,'Norm',norm)
+                #    print()
                 case = True 
-            
-            #Overshooting  
-            elif i > 2 and tempr[leng] < (threshDistance):
+            #Overshooting
+            elif (i > 2 and tempr[leng] < (threshDistance)) or (i > 2 and dist < (threshDistance)):
+                #print('went 1')
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(tempr[leng - 1])
                 #Show backstep in animation
@@ -210,18 +229,18 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     acp[index].append(centerp[leng - 1])
                     atp[index].append(testp[leng - 1])
                     arad[index].append(tempr[leng - 1])
-                if SkeleRad[len(SkeleRad) - 1] > 1:
-                    print()
-                    print('Error2')
-                    print(index,i)
-                    print('centers',centerp)
-                    print('testp',testp)
-                    print('rads',tempr)
-                    print('Point',point,'Norm',norm)
-                    print()
+                #if SkeleRad[len(SkeleRad) - 1] > 1:
+                #    print()
+                #    print('Error2')
+                #    print(index,i)
+                #    print('centers',centerp)
+                #    print('testp',testp)
+                #    print('rads',tempr)
+                #    print('Point',point,'Norm',norm)
+                #    print()
                 case = True
-
-            elif i > 2 and dist  < tempr[leng] + threshDistance:
+            elif i > 2 and dist < tempr[leng] + threshDistance:
+                #print('went 2',dist < crossdis + threshDistance,distc < crossdis + threshDistance)
                 #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
                 # crossdis = 0
                 # tpoint = []
@@ -256,8 +275,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 # print()
                 # crossp = vpts[0] 
                 # crossdis = getDistance(point,crossp.getPoint())
-                if dist  < crossdis + threshDistance and distc < crossdis + threshDistance:
-                    #print('back')
+                if (dist  < crossdis + threshDistance):
+                    #print('gone 2')
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
                     #Show backstep in animation
@@ -265,8 +284,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         acp[index].append(centerp[leng - 1])
                         atp[index].append(testp[leng - 1])
                         arad[index].append(tempr[leng - 1])
-                    if SkeleRad[len(SkeleRad) - 1] > 1:
-                        print('Error3')
+                    #if SkeleRad[len(SkeleRad) - 1] > 1 and crossdis < 1:
+                    #    print('Error3')
                     case = True
             
             
@@ -276,6 +295,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 #but always a possibility to happen
                repeat, order = checkRepeat(tempr)
                if repeat:
+                   print('went 3')
                    n = 0
                    p = 0
                    sml = 0.0
@@ -302,6 +322,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         avgt += (time.time() - stt)
         avgstep += len(tempr)
         numt += 1
+        #print(i,i > 2, tempr[leng] < (threshDistance),dist < (threshDistance))
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
@@ -317,7 +338,66 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         return SkelePoints,SkeleRad,acp,atp,arad,acrossp
     else:
         return SkelePoints,SkeleRad
-
+def animate(*,xmin:int,xmax:int,ymin:int,ymax:int,IntPoints:list,acp:list,atp:list,tpoints:list):
+    svnum = 0
+    plt.clf()
+    plt.xlim(xmin,xmax)
+    plt.ylim(ymin,ymax)
+    if self.dim == 3:
+        plt.zlim(zmin,zmax)
+    path = os.getcwd()
+    tag = 0
+    i = 0
+    case = True
+    path = path + "/AnimationData/"
+    while case:
+        tpath = path + f'{i:04d}' + '/'
+        if not(os.path.isdir(tpath)):
+            case = False
+            path = tpath
+            os.mkdir(tpath)
+        i += 1
+    i = 0
+    tx = []
+    ty = []
+    while i < len(IntPoints):    
+        tx.append(IntPoints[i][0])
+        ty.append(IntPoints[i][1])
+        i += 1
+    sx = []
+    sy = []
+    while tag < len(acp):
+        i = start
+        while i < len(acp[tag]):
+            j = 0
+            while j < len(acp[tag][i]):
+                plt.clf()
+                plt.xlim(xmin,xmax)
+                plt.ylim(ymin,ymax)
+                if dim == 3:
+                    plt.zlim(zmin,zmax)
+                print(tag, '/', len(acp),' ', i ,'/' , len(acp[tag]), ' ', j , '/', len(acp[tag][i]))
+                plt.scatter(tx,ty,5,color='green')
+                if len(sx) > 0:
+                    plt.scatter(sx,sy,5,color='orange')
+                plt.plot([acp[tag][i][j][0],tpoints[tag][i][0]],[acp[tag][i][j][1],tpoints[tag][i][1]])
+                plt.plot([atp[tag][i][j][0],tpoints[tag][i][0]],[atp[tag][i][j][1],tpoints[tag][i][1]])
+                # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
+                plt.scatter(acp[tag][i][j][0],acp[tag][i][j][1],5,color='purple')
+                plt.scatter(atp[tag][i][j][0],atp[tag][i][j][1],5,color='red')
+                plt.scatter(acrossp[tag][i][0],acrossp[tag][i][1],5,color='yellow')
+                plt.scatter(tpoints[tag][i][0],tpoints[tag][i][1],5,color='blue')
+                plt.title('{},radius : {}, distance : {}'.format(i,arad[tag][i][j],getDistance(tpoints[tag][i],atp[tag][i][j])))
+                
+                plt.savefig(path + 'fig{:04d}.png'.format(svnum))
+                svnum += 1
+                j += 1
+            sx.append(acp[tag][i][j - 1][0])
+            sy.append(acp[tag][i][j - 1][1])
+            i += 1
+            if i == stop:
+                break
+        tag += 1
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
     #It can intake a location of a data file, or even the straight points
@@ -1366,65 +1446,42 @@ class SkeleNet:
                 plt.savefig('Output.png')
             #Mode2 is for Animating the process of solving
             elif mode[index] == 2:
-                svnum = 0
-                plt.clf()
-                plt.xlim(xmin,xmax)
-                plt.ylim(ymin,ymax)
-                if self.dim == 3:
-                    plt.zlim(zmin,zmax)
-                path = os.getcwd()
+                numbering = []
+                absind = 0
+                absinx = 0
                 tag = 0
-                i = 0
-                case = True
-                path = path + "/AnimationData/"
-                while case:
-                    tpath = path + f'{i:04d}' + '/'
-                    if not(os.path.isdir(tpath)):
-                        case = False
-                        path = tpath
-                        os.mkdir(tpath)
-                    i += 1
-                i = 0
-                tx = []
-                ty = []
-                while i < len(self.IntPoints):    
-                    tx.append(self.IntPoints[i][0])
-                    ty.append(self.IntPoints[i][1])
-                    i += 1
-                sx = []
-                sy = []
                 while tag < len(self.acp):
-                    i = start
+                    i = 0
                     while i < len(self.acp[tag]):
                         j = 0
                         while j < len(self.acp[tag][i]):
-                            plt.clf()
-                            plt.xlim(xmin,xmax)
-                            plt.ylim(ymin,ymax)
-                            if self.dim == 3:
-                                plt.zlim(zmin,zmax)
-                            print(tag, '/', len(self.acp),' ', i ,'/' , len(self.acp[tag]), ' ', j , '/', len(self.acp[tag][i]))
-                            plt.scatter(tx,ty,5,color='green')
-                            if len(sx) > 0:
-                                plt.scatter(sx,sy,5,color='orange')
-                            plt.plot([self.acp[tag][i][j][0],self.tpoints[tag][i][0]],[self.acp[tag][i][j][1],self.tpoints[tag][i][1]])
-                            plt.plot([self.atp[tag][i][j][0],self.tpoints[tag][i][0]],[self.atp[tag][i][j][1],self.tpoints[tag][i][1]])
-                            # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
-                            plt.scatter(self.acp[tag][i][j][0],self.acp[tag][i][j][1],5,color='purple')
-                            plt.scatter(self.atp[tag][i][j][0],self.atp[tag][i][j][1],5,color='red')
-                            plt.scatter(self.acrossp[tag][i][0],self.acrossp[tag][i][1],5,color='yellow')
-                            plt.scatter(self.tpoints[tag][i][0],self.tpoints[tag][i][1],5,color='blue')
-                            plt.title('{},radius : {}, distance : {}'.format(i,self.arad[tag][i][j],getDistance(self.tpoints[tag][i],self.atp[tag][i][j])))
-                            
-                            plt.savefig(path + 'fig{:04d}.png'.format(svnum))
-                            svnum += 1
+                            ansinx += 1
                             j += 1
-                        sx.append(self.acp[tag][i][j - 1][0])
-                        sy.append(self.acp[tag][i][j - 1][1])
+                        absind += 1
                         i += 1
-                        if i == stop:
-                            break
                     tag += 1
+                #Next we want to truncate our data into something usable
+                i = 0
+                factor = floor(absind / self.cpuavail)
+                starts = []
+                stops = []
+                xmins = []
+                xmaxs = []
+                ymins = []
+                ymaxs = []
+                acps = []
+                atps = []
+                tpoints = []
+                acrossps = []
+                while i < self.cpuavail:
+                    starts.append(i*factor)
+                    stops.append((i+1)*factor)
+                    i += 1
+                self.pool = ProcessingPool(nodes=self.cpuavail)
+                print('booting animation...')
+                results = self.pool.map(animation)
+                print('done')
+                self.pool.close()
                 
             elif mode[index] == 3:
                 pt = []
