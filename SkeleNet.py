@@ -13,6 +13,7 @@ import csv
 import pandas as pd
 import time
 import multiprocessing as mp
+from pathos.pp import ParallelPool
 from pathos.multiprocessing import ProcessingPool,ThreadPool
 
 from DataStructures import kdTree,SplitTree
@@ -344,72 +345,68 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         return SkelePoints,SkeleRad,acp,atp,arad,acrossp
     else:
         return SkelePoints,SkeleRad
-def animate(data:list):
+def animation(data:list):
+    print('starting node')
     start = data[0]
-    stop = data[1]
+    stop  = data[1]
     IntPoints = data[2]
     acp = data[3]
     atp = data[4]
-    atpoints = data[5]
+    tpoints = data[5]
+    acrossp = data[8]
+    arad = data[9]
     plt.clf()
     plt.xlim(data[6][1],data[6][0])
     plt.ylim(data[6][3],data[6][2])
-    if self.dim == 3:
+    #print(acp)
+    if len(acp[0][0]) == 3:
         plt.zlim(zmin,zmax)
+        dim = 3
+    else:
+        dim = 2
     path = data[7]
     tag = 0
     i = 0
-    case = True
-    path = path + "/AnimationData/"
-    while case:
-        tpath = path + f'{i:04d}' + '/'
-        if not(os.path.isdir(tpath)):
-            case = False
-            path = tpath
-            os.mkdir(tpath)
-        i += 1
-    i = 0
     tx = []
     ty = []
+    #print(IntPoints)
     while i < len(IntPoints):    
         tx.append(IntPoints[i][0])
         ty.append(IntPoints[i][1])
         i += 1
     sx = []
     sy = []
-    while tag < len(acp):
-        i = start
-        while i < stop:
-            j = 0
-            while j < len(acp[tag][i]):
-                plt.clf()
-                plt.xlim(data[6][1],data[6][0])
-                plt.ylim(data[6][3],data[6][2])
+    svnum = start
+    i = 0
+    while i < len(acp):
+        j = 0
+        while j < len(acp[i]):
+            plt.clf()
+            plt.xlim(data[6][1],data[6][0])
+            plt.ylim(data[6][3],data[6][2])
 
-                if dim == 3:
-                    plt.zlim(zmin,zmax)
-                print(tag, '/', len(acp),' ', i ,'/' , len(acp[tag]), ' ', j , '/', len(acp[tag][i]))
-                plt.scatter(tx,ty,5,color='green')
-                if len(sx) > 0:
-                    plt.scatter(sx,sy,5,color='orange')
-                plt.plot([acp[tag][i][j][0],tpoints[tag][i][0]],[acp[tag][i][j][1],tpoints[tag][i][1]])
-                plt.plot([atp[tag][i][j][0],tpoints[tag][i][0]],[atp[tag][i][j][1],tpoints[tag][i][1]])
-                # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
-                plt.scatter(acp[tag][i][j][0],acp[tag][i][j][1],5,color='purple')
-                plt.scatter(atp[tag][i][j][0],atp[tag][i][j][1],5,color='red')
-                plt.scatter(acrossp[tag][i][0],acrossp[tag][i][1],5,color='yellow')
-                plt.scatter(tpoints[tag][i][0],tpoints[tag][i][1],5,color='blue')
-                plt.title('{},radius : {}, distance : {}'.format(i,arad[tag][i][j],getDistance(tpoints[tag][i],atp[tag][i][j])))
-                
-                plt.savefig(path + 'fig{:04d}.png'.format(svnum))
-                svnum += 1
-                j += 1
-            sx.append(acp[tag][i][j - 1][0])
-            sy.append(acp[tag][i][j - 1][1])
-            i += 1
-            if i == stop:
-                break
-        tag += 1
+            if dim == 3:
+                plt.zlim(zmin,zmax)
+            print(i+1 ,'/' , len(acp), ' ', j+1 , '/', len(acp[i]))
+            plt.scatter(tx,ty,5,color='green')
+            if len(sx) > 0:
+                plt.scatter(sx,sy,5,color='orange')
+            plt.plot([acp[i][j][0],tpoints[i][0]],[acp[i][j][1],tpoints[i][1]])
+            plt.plot([atp[i][j][0],tpoints[i][0]],[atp[i][j][1],tpoints[i][1]])
+            # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
+            plt.scatter(acp[i][j][0],acp[i][j][1],5,color='purple')
+            plt.scatter(atp[i][j][0],atp[i][j][1],5,color='red')
+            plt.scatter(acrossp[i][0],acrossp[i][1],5,color='yellow')
+            plt.scatter(tpoints[i][0],tpoints[i][1],5,color='blue')
+            plt.title('{},radius : {}, distance : {}'.format(i,arad[i][j],getDistance(tpoints[i],atp[i][j])))
+            plt.savefig(path + 'fig{:04d}.png'.format(svnum))
+            svnum += 1
+            j += 1
+            sx.append(acp[i][len(acp[i]) - 1][0])
+            sy.append(acp[i][len(acp[i]) - 1][1])
+        i += 1
+        if i == stop:
+            break
 class SkeleNet:
     #In simpleTerms Skelenet is an easy to use skeletonization processer, 
     #It can intake a location of a data file, or even the straight points
@@ -1509,31 +1506,32 @@ class SkeleNet:
                         aidstop[tag].append((i+1)*factor)
                         i += 1
                     stops[tag][len(stops[tag])-1] = abi[tag][len(self.acp[tag]) - 1]
+                    aidstop[tag][len(aidstop[tag])-1] = len(self.acp[tag])
                     data = []
                     i = 0
-                    print(ai)
                     while i < self.cpuavail:
                         data.append([])
                         data[i].append(starts[tag][i])
                         data[i].append(stops[tag][i])
-                        data[i].append(self.IntPoints[tag])
-                        data[i].append(self.acp[tag][aidstart[i]:aidstop[i]])
-                        data[i].append(self.atp[tag][aidstart[i]:aidstop[i]])
-                        data[i].append(self.tpoints[tag][aidstart[i]:aidstop[i]])  
+                        data[i].append(self.IntPoints)
+                        data[i].append(self.acp[tag][aidstart[tag][i]:aidstop[tag][i]])
+                        data[i].append(self.atp[tag][aidstart[tag][i]:aidstop[tag][i]])
+                        data[i].append(self.tpoints[tag][aidstart[tag][i]:aidstop[tag][i]])  
                         data[i].append([])
                         data[i][6].append(xmax)
                         data[i][6].append(xmin)
                         data[i][6].append(ymax)
                         data[i][6].append(ymin)
                         data[i].append(path)
+                        data[i].append(self.acrossp[tag][aidstart[tag][i]:aidstop[tag][i]])
+                        data[i].append(self.arad[tag][aidstart[tag][i]:aidstop[tag][i]])
                         i += 1
-                    self.pool = ProcessingPool(nodes=self.cpuavail)
+                    pool = ParallelPool(nodes=self.cpuavail)
                     print('booting animation...')
-                    results = self.pool.map(animation,data)
+                    pool.imap(animation,data)
                     print('done')
-                    self.pool.close()
-                    tag += 1
-                
+                    pool.close()
+                    tag += 1 
             elif mode[index] == 3:
                 pt = []
                 plt.clf()
