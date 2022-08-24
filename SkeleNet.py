@@ -85,29 +85,35 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         #Main loop for each points solve
         
         #Norm Check:
-        with open('disk1.dat','r') as csvfile:
-            data = csv.reader(csvfile, delimiter = ' ')
-            for row in data:
-                if str(row[0]) == 'x':#if title
-                    a = 1
-                else:
-                    if float(row[0]) == point[0] and float(row[1]) == point[1] and float(row[2]) == point[2]:
-                        print('found point')
-                        if normalize([-1*float(row[3]),-1*float(row[4]),-1*float(row[5])]) == norm:
-                            print('found norm too')
-            
-        csvfile.close()
+        #with open('disk1.dat','r') as csvfile:
+        #    data = csv.reader(csvfile, delimiter = ' ')
+        #    for row in data:
+        #        if str(row[0]) == 'x':#if title
+        #            a = 1
+        #        else:
+        #            if float(row[0]) == point[0] and float(row[1]) == point[1] and float(row[2]) == point[2]:
+        #                #print('found point')
+        #                [tn] = normalize([[float(row[3]),float(row[4]),float(row[5])]])
+        #                #print(tn,norm)
+        #                if tn[0] == norm[0] and tn[1] == norm[1] and tn[2] == norm[2]:
+        #                    #print('found norm too')
+        #                    a = 1
+        #                else:
+        #                    print('uh')
+        #    
+        #csvfile.close()
 
 
 
         #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
+        #Important to remeber, a vector into the surface is -1 * norm
         crossdis = 0
         tpoint = []
         tnorm = []
         j = 0
         while j < len(point):
             tnorm.append(norm[j] * -1)
-            tpoint.append(point[j] + tnorm[j] * threshDistance / 2)
+            tpoint.append(point[j] + tnorm[j] * threshDistance / 10)
             j += 1
         inputdat = []
         inputdat.append([])
@@ -338,14 +344,19 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         return SkelePoints,SkeleRad,acp,atp,arad,acrossp
     else:
         return SkelePoints,SkeleRad
-def animate(*,xmin:int,xmax:int,ymin:int,ymax:int,IntPoints:list,acp:list,atp:list,tpoints:list):
-    svnum = 0
+def animate(data:list):
+    start = data[0]
+    stop = data[1]
+    IntPoints = data[2]
+    acp = data[3]
+    atp = data[4]
+    atpoints = data[5]
     plt.clf()
-    plt.xlim(xmin,xmax)
-    plt.ylim(ymin,ymax)
+    plt.xlim(data[6][1],data[6][0])
+    plt.ylim(data[6][3],data[6][2])
     if self.dim == 3:
         plt.zlim(zmin,zmax)
-    path = os.getcwd()
+    path = data[7]
     tag = 0
     i = 0
     case = True
@@ -368,12 +379,13 @@ def animate(*,xmin:int,xmax:int,ymin:int,ymax:int,IntPoints:list,acp:list,atp:li
     sy = []
     while tag < len(acp):
         i = start
-        while i < len(acp[tag]):
+        while i < stop:
             j = 0
             while j < len(acp[tag][i]):
                 plt.clf()
-                plt.xlim(xmin,xmax)
-                plt.ylim(ymin,ymax)
+                plt.xlim(data[6][1],data[6][0])
+                plt.ylim(data[6][3],data[6][2])
+
                 if dim == 3:
                     plt.zlim(zmin,zmax)
                 print(tag, '/', len(acp),' ', i ,'/' , len(acp[tag]), ' ', j , '/', len(acp[tag][i]))
@@ -1446,42 +1458,81 @@ class SkeleNet:
                 plt.savefig('Output.png')
             #Mode2 is for Animating the process of solving
             elif mode[index] == 2:
+                path = os.getcwd()
+                i = 0
+                case = True
+                path = path + "/AnimationData/"
+                while case:
+                    tpath = path + f'{i:04d}' + '/'
+                    if not(os.path.isdir(tpath)):
+                        case = False
+                        path = tpath
+                        os.mkdir(tpath)
+                    i += 1
                 numbering = []
                 absind = 0
                 absinx = 0
+                ai = []
+                abi = []
                 tag = 0
                 while tag < len(self.acp):
                     i = 0
+                    abi.append([])
                     while i < len(self.acp[tag]):
+                        abi[tag].append(absinx)
                         j = 0
                         while j < len(self.acp[tag][i]):
-                            ansinx += 1
-                            j += 1
+                            absinx += 1
+                            j += 1 
                         absind += 1
                         i += 1
+                    ai.append(absind)
+                    absind = 0
                     tag += 1
                 #Next we want to truncate our data into something usable
-                i = 0
-                factor = floor(absind / self.cpuavail)
                 starts = []
                 stops = []
-                xmins = []
-                xmaxs = []
-                ymins = []
-                ymaxs = []
-                acps = []
-                atps = []
-                tpoints = []
-                acrossps = []
-                while i < self.cpuavail:
-                    starts.append(i*factor)
-                    stops.append((i+1)*factor)
-                    i += 1
-                self.pool = ProcessingPool(nodes=self.cpuavail)
-                print('booting animation...')
-                results = self.pool.map(animation)
-                print('done')
-                self.pool.close()
+                aidstart = []
+                aidstop = []
+                tag = 0
+                while tag < len(self.acp):
+                    starts.append([])
+                    stops.append([])
+                    aidstart.append([])
+                    aidstop.append([])
+                    factor = int(np.floor(ai[tag] / self.cpuavail))
+                    i = 0
+                    while i < self.cpuavail:
+                        starts[tag].append(abi[tag][i*factor])
+                        stops[tag].append(abi[tag][(i+1)*factor])
+                        aidstart[tag].append(i*factor)
+                        aidstop[tag].append((i+1)*factor)
+                        i += 1
+                    stops[tag][len(stops[tag])-1] = abi[tag][len(self.acp[tag]) - 1]
+                    data = []
+                    i = 0
+                    print(ai)
+                    while i < self.cpuavail:
+                        data.append([])
+                        data[i].append(starts[tag][i])
+                        data[i].append(stops[tag][i])
+                        data[i].append(self.IntPoints[tag])
+                        data[i].append(self.acp[tag][aidstart[i]:aidstop[i]])
+                        data[i].append(self.atp[tag][aidstart[i]:aidstop[i]])
+                        data[i].append(self.tpoints[tag][aidstart[i]:aidstop[i]])  
+                        data[i].append([])
+                        data[i][6].append(xmax)
+                        data[i][6].append(xmin)
+                        data[i][6].append(ymax)
+                        data[i][6].append(ymin)
+                        data[i].append(path)
+                        i += 1
+                    self.pool = ProcessingPool(nodes=self.cpuavail)
+                    print('booting animation...')
+                    results = self.pool.map(animation,data)
+                    print('done')
+                    self.pool.close()
+                    tag += 1
                 
             elif mode[index] == 3:
                 pt = []
