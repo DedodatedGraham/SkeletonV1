@@ -92,13 +92,15 @@ def normalize(points : list) -> list:
         tempx = pts[i][0]
         tempy = pts[i][1]
         if dim == 2:
-            normalize = 1/((tempx * tempx + tempy * tempy) ** 0.5)
+            dist = getDistance([0,0],pts[i])
+            normalize = dist/((tempx * tempx + tempy * tempy) ** 0.5)
             tempx = tempx * normalize
             tempy = tempy * normalize
             retpoints.append([tempx,tempy])
         else:
+            dist = getDistance([0,0,0],pts[i])
             tempz = pts[i][2]
-            normalize = 1/((tempx*tempx + tempy*tempy+tempz*tempz) ** 0.5)
+            normalize = dist/((tempx*tempx + tempy*tempy+tempz*tempz) ** 0.5)
             tempx = tempx * normalize
             tempy = tempy * normalize
             tempz = tempz * normalize
