@@ -60,11 +60,16 @@ def partition(points : list , dimension : int , first : int , last : int , * , c
 
 class kdTree:
     # @profile
-    def __init__(self , points : list , depth : int = 0 , * , rads : list = [],dimensions : int = 0,cpuavail : int = 1):
+    def __init__(self , points : list , depth : int = 0 , * , rads : list = [],dimensions : int = 0,cpuavail : int = 1,limit:int=0):
         # print('making {}'.format(depth))
         #first converts to skeleton points
         if not(dimensions == 0):
             self.dimensions = dimensions
+        if depth == 0:
+            t = len(points) / 100
+            t = t ** (1/3)
+            t = np.ceil(t*4)
+            limit = int(t)
         if depth == 0 and not(isinstance(points[0],SkelePoint)):
             st = time.time()
             print('Initiating k-d,Tree')
@@ -83,7 +88,8 @@ class kdTree:
             # print('point conversion took {} minuites and {} seconds to make {} SkelePoints'.format(ttt // 60,ttt % 60, len(points)))
         self.depth = depth
         #Next is the actual process of creating the struct
-        if len(points) > 100:
+        if len(points) > limit:
+            print(limit)
             self.split = True
             self.axis = depth % self.dimensions
             points = quicksort(points,self.axis,cpuavail=cpuavail)
@@ -96,13 +102,13 @@ class kdTree:
             while i < mid:
                 pointsl.append(points[i])
                 i += 1
-            self.leafL = kdTree(pointsl,depth + 1,dimensions=self.dimensions)
+            self.leafL = kdTree(pointsl,depth + 1,dimensions=self.dimensions,limit=limit)
             i = mid + 1
             pointsr = []
             while i < len(points):
                 pointsr.append(points[i])
                 i += 1
-            self.leafR = kdTree(pointsr,depth + 1,dimensions=self.dimensions)
+            self.leafR = kdTree(pointsr,depth + 1,dimensions=self.dimensions,limit=limit)
         else:
             self.split = False
             i = 0
