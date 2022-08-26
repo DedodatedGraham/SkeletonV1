@@ -481,16 +481,17 @@ class kdTree:
             low = 0
             ind = 0
             while i < len(self.points):
-                tvec = []
-                j = 0
-                while j < self.points[i].dimensions:
-                    tvec.append(self.points[i].getAxis(j) - data[0][j])
-                    j += 1
-                tvec = normalize([tvec])
-                dev = getDeviation(tvec[0],data[1])
-                if dev > low:
-                    low = dev
-                    ind = i
+                if self.points[i].getPoint() != data[0]:
+                    tvec = []
+                    j = 0
+                    while j < self.points[i].dimensions:
+                        tvec.append(self.points[i].getAxis(j) - data[0][j])
+                        j += 1
+                    tvec = normalize([tvec])
+                    dev = getDeviation(tvec[0],data[1])
+                    if dev > low:
+                        low = dev
+                        ind = i
                 i += 1
             retpts.append(self.points[ind])
             retdev.append(low)
@@ -532,45 +533,71 @@ class kdTree:
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
                 #TEST3
-                if abs(retdevl[0]-retdevr[0]) > data[2]:
+                #print()
+                #print('point',data[0],data[3])
+                diffdev = abs(retdevl[0]-retdevr[0]) 
+                if diffdev < data[2]:
+                    #print('within')
                     if dl > data[2] and dr > data[2]:
+                        #print('bigger')
                         if dl > dr:
+                            #print('went r')
                             retpts = retptsr
                             retdev = retdevr
                         else:
+                            #print('went l')
                             retpts = retptsl
                             retdev = retdevl
                     else:
                         if dl > dr:
+                            #print('went l')
                             retpts = retptsl
                             retdev = retdevl
                         else:
+                            #print('went r')
                             retpts = retptsr
                             retdev = retdevr
                 else:
+                    #print('deviated',abs(retdevl[0]-retdevr[0]))
                     #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent
                     if retdevr > retdevl and dr > data[2]:
+                        #print('r pass')
                         retpts = retptsr
                         retdev = retdevr
                     elif retdevr < retdevl and dl > data[2]:
+                        #print('l pass')
                         retpts = retptsl
                         retdev = retdevl
                     else:
-                        if dl < data[2] and dr < data[2]:
+                        if dr > data[2]:
+                            if diffdev > data[2] * 10:
+                                print('gol1')
+                                retpts = retptsl
+                                retdev = retdevl
+                            else:
+                                print('gor1')
+                                retpts = retptsr
+                                retdev = retdevr
+                        elif dl > data[2]:
+                            if diffdev > data[2] * 10:
+                                print('gor2')
+                                retpts = retptsr
+                                retdev = retdevr 
+                            else:
+                                print('gol2')
+                                retpts = retptsl
+                                retdev = retdevl
+                        else:
+                            print('both small')
                             if retdevr > retdevl:
                                 retpts = retptsr
                                 retdev = retdevr
                             else:
                                 retpts = retptsl
                                 retdev = retdevl
-                        else:
-                            if dr > data[2]:
-                                retpts = retptsr
-                                retdev = retdevr
-                            else:
-                                retpts = retptsl
-                                retdev = retdevl
-                                
+
+
+                #print()                
                     
                 #TEST2
                 # if dl > data[2] * 2 and dr > data[2] * 2:
@@ -1088,13 +1115,13 @@ class SplitTree:
     
     
     
-                ty = []
-                while i < len(self.skelepts):
-                    tx.append(self.skelepts[i].x)
-                    ty.append(self.skelepts[i].y)
-                    plt.plot(self.skelepts[i].x + np.cos(theta) * self.skelepts[i].r,self.skelepts[i].y + np.sin(theta) * self.skelepts[i].r,5,color='red')
-                    i += 1
-                plt.scatter(tx,ty,5,color='green')
+                #ty = []
+                #while i < len(self.skelepts):
+                #    tx.append(self.skelepts[i].x)
+                #    ty.append(self.skelepts[i].y)
+                #    plt.plot(self.skelepts[i].x + np.cos(theta) * self.skelepts[i].r,self.skelepts[i].y + np.sin(theta) * self.skelepts[i].r,5,color='red')
+                #    i += 1
+                #plt.scatter(tx,ty,5,color='green')
         
         
 
