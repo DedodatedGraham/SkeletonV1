@@ -590,9 +590,11 @@ class kdTree:
                         else:
                             print('both small')
                             if retdevr > retdevl:
+                                print('gor3')
                                 retpts = retptsr
                                 retdev = retdevr
                             else:
+                                print('gol3')
                                 retpts = retptsl
                                 retdev = retdevl
 
