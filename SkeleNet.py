@@ -406,7 +406,7 @@ def animation(data:list):
     plt.ylim(data[6][3],data[6][2])
     #print(acp)
     if len(acp[0][0]) == 3:
-        plt.zlim(zmin,zmax)
+        # plt.zlim(zmin,zmax)
         dim = 3
     else:
         dim = 2
@@ -438,8 +438,8 @@ def animation(data:list):
             plt.xlim(data[6][1],data[6][0])
             plt.ylim(data[6][3],data[6][2])
 
-            if dim == 3:
-                plt.zlim(zmin,zmax)
+            # if dim == 3:
+                # plt.zlim(zmin,zmax)
             #print(i+1 ,'/' , len(acp), ' ', j+1 , '/', len(acp[i]))
             plt.scatter(tx,ty,5,color='green')
             if len(sxx) > 0:

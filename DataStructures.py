@@ -532,29 +532,45 @@ class kdTree:
                 dl = getDistance(data[0],retptsl[0].getPoint())
                 dr = getDistance(data[0],retptsr[0].getPoint())
                 #TEST3
-                if abs(retdevl[0]-retdevr[0]) > 0.05:
-                    if retdevr[0] > retdevl[0]:
-                        retpts = retptsr
-                        retdev = retdevr
+                if abs(retdevl[0]-retdevr[0]) > data[2]:
+                    if dl > data[2] and dr > data[2]:
+                        if dl > dr:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
                     else:
-                        retpts = retptsl
-                        retdev = retdevl
+                        if dl > dr:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            retpts = retptsr
+                            retdev = retdevr
                 else:
                     #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent
-                    if dl > data[2] * 2 and dr > data[2] * 2:
-                        if dr < dl:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
+                    if retdevr > retdevl and dr > data[2]:
+                        retpts = retptsr
+                        retdev = retdevr
+                    elif retdevr < retdevl and dl > data[2]:
+                        retpts = retptsl
+                        retdev = retdevl
                     else:
-                        if dr > dl:
-                            retpts = retptsr
-                            retdev = retdevr
+                        if dl < data[2] and dr < data[2]:
+                            if retdevr > retdevl:
+                                retpts = retptsr
+                                retdev = retdevr
+                            else:
+                                retpts = retptsl
+                                retdev = retdevl
                         else:
-                            retpts = retptsl
-                            retdev = retdevl
+                            if dr > data[2]:
+                                retpts = retptsr
+                                retdev = retdevr
+                            else:
+                                retpts = retptsl
+                                retdev = retdevl
+                                
                     
                 #TEST2
                 # if dl > data[2] * 2 and dr > data[2] * 2:
