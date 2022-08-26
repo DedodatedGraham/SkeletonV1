@@ -1088,22 +1088,6 @@ class SplitTree:
     
     
     
-    def plot(self,theta : list):
-        if self.state == True:
-            #If the figure is subdivided
-            i = 0
-            while i < len(self.leafs):
-                self.leafs[i].plot(theta)
-                i += 1
-            #plt.scatter(self.node[0],self.node[1],color='purple')
-        else:
-            #plt.plot([self.node[0] - self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            #plt.plot([self.node[0] + self.width,self.node[0] + self.width],[self.node[1] + self.width,self.node[1] - self.width],5,color='orange')
-            #plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] + self.width,self.node[1] + self.width],5,color='orange')
-            #plt.plot([self.node[0] + self.width,self.node[0] - self.width],[self.node[1] - self.width,self.node[1] - self.width],5,color='orange')
-            if len(self.skelepts) > 0:
-                i = 0
-                tx = []
                 ty = []
                 while i < len(self.skelepts):
                     tx.append(self.skelepts[i].x)
