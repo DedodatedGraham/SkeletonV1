@@ -241,6 +241,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         acp[index].append(centerp[leng - 1])
                         atp[index].append(testp[leng - 1])
                         arad[index].append(tempr[leng - 1])
+                    case = True
 
             ###OLD LOGIC
 

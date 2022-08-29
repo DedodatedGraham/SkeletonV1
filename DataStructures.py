@@ -545,30 +545,44 @@ class kdTree:
                 #        print('dev',retdevl[0],retdevr[0])
                 #        print('points',retptsl[0].getPoint(),retptsr[0].getPoint())
                 #        print()
+                
+                #TEST4
                 if diffdev < data[2]:
-                    if dl > data[2]/10 and dr > data[2]/10: 
+                    if dl < data[2]/10 and dr < data[2]/10:
                         if dl > dr:
-                            retpts = retptsr
-                            retdev = retdevr
+                            retpts = retptsl
+                            retdev = retdevl
                         else:
-                            retpts = retptsl
-                            retdev = retdevl
-                    else:
-                        #Here we have the potential of having a winner/Final Point. So we want to be more specific
-                        if dl < data[2]/10 and dr < data[2]/ 10:
-                            #if both are small, then we choose the more on one 
-                            if retdevr[0] > retdevl[0]:
-                                retpts = retptsr
-                                retdev = retdevr
-                            else:
-                                retpts = retptsl
-                                retdev = retdevl
-                        elif dl < data[2]/10 and retdevl[0] > 0.9:
-                            retpts = retptsl
-                            retdev = retdevl
-                        elif dr < data[2]/10 and retdevr[0] > 0.9:
                             retpts = retptsr
                             retdev = retdevr
+                    elif dl < dr:
+                        retpts = retptsl
+                        retdev = retdevl
+                    else:
+                        retpts = retptsr
+                        retdev = retdevr
+                else:
+                    if dl > data[2]/10 and dr > data[2]/10:
+                        if retdevl[0] > retdevr[0]:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            retpts = retptsr
+                            retdev = retdevr
+                    elif dl < data[2]/10 and dr < data[2]/10:
+                        if retdevl[0] > retdevr[0]:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            retpts = retptsr
+                            retdev = retedevr
+                    else:
+                        if retdevl[0] > retdevr[0] and dl < dr:
+                            retpts = retptsl
+                            retdev = retdevl
+                        elif retdevl[0] < retdevr[0] and dl < dr:
+                            retpts = retptsr
+                            retdev = retedevr
                         else:
                             if dl > dr:
                                 retpts = retptsl
@@ -576,32 +590,77 @@ class kdTree:
                             else:
                                 retpts = retptsr
                                 retdev = retdevr
-                else:
-                    #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent     
-                    if dl < data[2]/10 and dr < data[2]/ 10:
-                        #both small and not close to eachother, so take the most on
-                        print('b')
-                        if retdevr[0] > retdevl[0]:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                    elif dl < data[2]/10 and retdevl[0] > 0.9:
-                        print('l')
-                        retpts = retptsl
-                        retdev = retdevl
-                    elif dr < data[2]/10 and retdevr[0] > 0.9:
-                        print('r')
-                        retpts = retptsr
-                        retdev = retdevr
-                    else:
-                        if retdevr[0] > retdevl[0]:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
+                            
+
+
+
+
+                #TEST 3
+                #if diffdev < data[2]:
+                #    if dl > data[2]/10 and dr > data[2]/10: 
+                #        if dl > dr:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        elif dl < dr:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        else:
+                #            if dl < dr:
+                #                retpts = retptsl
+                #                retdev = retdevl
+                #            else:
+                #                retpts = retptsr
+                #                retdev = retdevr
+
+                #    else:
+                #        #Here we have the potential of having a winner/Final Point. So we want to be more specific
+                #        if dl < data[2]/10 and dr < data[2]/ 10:
+                #            #if both are small, then we choose the more on one 
+                #            if retdevr[0] > retdevl[0]:
+                #                retpts = retptsr
+                #                retdev = retdevr
+                #            else:
+                #                retpts = retptsl
+                #                retdev = retdevl
+                #        elif dl < data[2]/10 and retdevl[0] > 0.8:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        elif dr < data[2]/10 and retdevr[0] > 0.8:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            if dl > dr:
+                #                retpts = retptsl
+                #                retdev = retdevl
+                #            else:
+                #                retpts = retptsr
+                #                retdev = retdevr
+                #else:
+                #    #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent     
+                #    if dl < data[2]/10 and dr < data[2]/ 10:
+                #        #both small and not close to eachother, so take the most on
+                #        print('b')
+                #        if retdevr[0] > retdevl[0]:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #    elif dl < data[2]/10 and retdevl[0] > 0.8:
+                #        print('l')
+                #        retpts = retptsl
+                #        retdev = retdevl
+                #    elif dr < data[2]/10 and retdevr[0] > 0.8:
+                #        print('r')
+                #        retpts = retptsr
+                #        retdev = retdevr
+                #    else:
+                #        if retdevr[0] > retdevl[0]:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
                     
                 
                 #print()                
