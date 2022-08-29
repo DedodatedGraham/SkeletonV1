@@ -201,14 +201,14 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             distc = getDistance(point,centerp[leng])
             ###NEW LOGIC
             if i == 30:
-                print()
-                print(cpuid,'stuck')
-                print('point',point)
-                print('cross point',crossp.getPoint())
-                print('rads',tempr[i-5:i])
-                print('centers',centerp[i-5:i])
-                print('tests',testp[i-5:i])
-                print()
+                #print()
+                #print(cpuid,'stuck')
+                #print('point',point)
+                #print('cross point',crossp.getPoint())
+                #print('rads',tempr[i-5:i])
+                #print('centers',centerp[i-5:i])
+                #print('tests',testp[i-5:i])
+                #print()
                 case = True
             #First will always determine if inside shape..
             if distc < crossdis or (dist < crossdis and crossdis < threshDistance):

@@ -150,18 +150,26 @@ def randPN(points : list,norms : list ):
 
 
 def getDeviation(list1 : list, list2 : list):
-    #is inputted two *NORMALIZED VECTORS*, and returns the unbaised difference in all the comparable values
+    #Input 2 directional vectors
     #We score the deviation from 0 -> 1
     #0 = Completely opposite
     #1 = Completely same
-    dim = len(list1)
     i = 0
-    dx = 0.0
-    while i < dim:
-        dx += abs(list1[i] - list2[i])
-        i += 1
-    if dim == 2:
-        return (-(dx/4) + 1)
+    if len(list1) == 2:
+        top = list1[0]*list2[0] + list1[1]*list2[1] 
+        bot = ((list1[0]*list1[0] + list1[1]*list1[1]) ** 0.5) * ((list2[0]*list2[0] + list2[1]*list2[1]) ** 0.5)
     else:
-        return (-(dx/6) + 1)
-        
+        top = list1[0]*list2[0] + list1[1]*list2[1] + list1[2]*list2[2]
+        bot = ((list1[0]*list1[0] + list1[1]*list1[1] + list1[2]*list1[2]) ** 0.5) * ((list2[0]*list2[0] + list2[1]*list2[1] + list2[2]*list2[2]) ** 0.5)
+    ins = top/bot
+    if ins < -1:
+        ins = -1
+    elif ins > 1:
+        ins = 1
+    angle = np.arccos(ins)
+    angle = abs(angle) / np.pi
+    score = 1 - angle 
+    return score
+
+
+

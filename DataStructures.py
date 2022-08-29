@@ -438,7 +438,8 @@ class kdTree:
             tdata = []
             tdata.append(data[0])
             tdata.append(data[1])
-            tdata.append(data[2])
+            tempthresh = data[2] * 10
+            tdata.append(tempthresh)
             tdata.append(data[3])
             data = tdata
         # if data[3] == 0:
@@ -487,12 +488,12 @@ class kdTree:
                     while j < self.points[i].dimensions:
                         tvec.append(self.points[i].getAxis(j) - data[0][j])
                         j += 1
-                    tvec = normalize([tvec])
-                    dev = getDeviation(tvec[0],data[1])
+                    dev = getDeviation(tvec,data[1])
                     if dev > low:
                         low = dev
                         ind = i
                 i += 1
+            #print(low)
             retpts.append(self.points[ind])
             retdev.append(low)
             # print(retpts,retdev,data[3])
@@ -535,70 +536,74 @@ class kdTree:
                 #TEST3
                 #print()
                 #print('point',data[0],data[3])
-                diffdev = abs(retdevl[0]-retdevr[0]) 
+                diffdev = abs(retdevl[0]-retdevr[0])
+                #if data[0][0] < 0.18:
+                #    if dl < data[2]/10 or dr < data[2]/10:
+                #        print()
+                #        print('Point:',data[0],data[3],'L-R')
+                #        print('distance',dl,dr)
+                #        print('dev',retdevl[0],retdevr[0])
+                #        print('points',retptsl[0].getPoint(),retptsr[0].getPoint())
+                #        print()
                 if diffdev < data[2]:
-                    #print('within')
-                    if dl > data[2] and dr > data[2]:
-                        #print('bigger')
+                    if dl > data[2]/10 and dr > data[2]/10: 
                         if dl > dr:
-                            #print('went r')
                             retpts = retptsr
                             retdev = retdevr
                         else:
-                            #print('went l')
                             retpts = retptsl
                             retdev = retdevl
                     else:
-                        if dl > dr:
-                            #print('went l')
+                        #Here we have the potential of having a winner/Final Point. So we want to be more specific
+                        if dl < data[2]/10 and dr < data[2]/ 10:
+                            #if both are small, then we choose the more on one 
+                            if retdevr[0] > retdevl[0]:
+                                retpts = retptsr
+                                retdev = retdevr
+                            else:
+                                retpts = retptsl
+                                retdev = retdevl
+                        elif dl < data[2]/10 and retdevl[0] > 0.9:
                             retpts = retptsl
                             retdev = retdevl
-                        else:
-                            #print('went r')
+                        elif dr < data[2]/10 and retdevr[0] > 0.9:
                             retpts = retptsr
                             retdev = retdevr
+                        else:
+                            if dl > dr:
+                                retpts = retptsl
+                                retdev = retdevl
+                            else:
+                                retpts = retptsr
+                                retdev = retdevr
                 else:
-                    #print('deviated',abs(retdevl[0]-retdevr[0]))
-                    #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent
-                    if retdevr > retdevl and dr > data[2]:
-                        #print('r pass')
-                        retpts = retptsr
-                        retdev = retdevr
-                    elif retdevr < retdevl and dl > data[2]:
-                        #print('l pass')
+                    #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent     
+                    if dl < data[2]/10 and dr < data[2]/ 10:
+                        #both small and not close to eachother, so take the most on
+                        print('b')
+                        if retdevr[0] > retdevl[0]:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+                    elif dl < data[2]/10 and retdevl[0] > 0.9:
+                        print('l')
                         retpts = retptsl
                         retdev = retdevl
+                    elif dr < data[2]/10 and retdevr[0] > 0.9:
+                        print('r')
+                        retpts = retptsr
+                        retdev = retdevr
                     else:
-                        if dr > data[2]:
-                            if diffdev > data[2] * 10:
-                                print('gol1')
-                                retpts = retptsl
-                                retdev = retdevl
-                            else:
-                                print('gor1')
-                                retpts = retptsr
-                                retdev = retdevr
-                        elif dl > data[2]:
-                            if diffdev > data[2] * 10:
-                                print('gor2')
-                                retpts = retptsr
-                                retdev = retdevr 
-                            else:
-                                print('gol2')
-                                retpts = retptsl
-                                retdev = retdevl
+                        if retdevr[0] > retdevl[0]:
+                            retpts = retptsr
+                            retdev = retdevr
                         else:
-                            print('both small')
-                            if retdevr > retdevl:
-                                print('gor3')
-                                retpts = retptsr
-                                retdev = retdevr
-                            else:
-                                print('gol3')
-                                retpts = retptsl
-                                retdev = retdevl
-
-
+                            retpts = retptsl
+                            retdev = retdevl
+                    
+                
                 #print()                
                     
                 #TEST2
