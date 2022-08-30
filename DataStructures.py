@@ -272,7 +272,7 @@ class kdTree:
     #                 # tp2.append(inputdat[0][i] + vecax[i])
     #                 nvec.append(node.getAxis(i) - inputdat[0][i])
     #                 i += 1
-    #        LP545BD0CC7     # theta = getAngle(inputdat[1],vecax,getDistance(inputdat[0],tp1),getDistance(inputdat[0],tp2))
+    #             # theta = getAngle(inputdat[1],vecax,getDistance(inputdat[0],tp1),getDistance(inputdat[0],tp2))
     #             # mat = []
     #             # if self.dimensions == 2:
     #             #     if axis == 0:
@@ -547,7 +547,7 @@ class kdTree:
                 #        print()
                 
                 #TEST4
-                if diffdev < data[2]:
+                if diffdev < data[2] * 10:
                     if dl < data[2]/10 and dr < data[2]/10:
                         if dl > dr:
                             retpts = retptsl
@@ -555,12 +555,13 @@ class kdTree:
                         else:
                             retpts = retptsr
                             retdev = retdevr
-                    elif dl < dr:
-                        retpts = retptsl
-                        retdev = retdevl
                     else:
-                        retpts = retptsr
-                        retdev = retdevr
+                        if dl < dr:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            retpts = retptsr
+                            retdev = retdevr
                 else:
                     if dl > data[2]/10 and dr > data[2]/10:
                         if retdevl[0] > retdevr[0]:
@@ -582,7 +583,7 @@ class kdTree:
                             retdev = retdevl
                         elif retdevl[0] < retdevr[0] and dl < dr:
                             retpts = retptsr
-                            retdev = retedevr
+                            retdev = retdevr
                         else:
                             if dl > dr:
                                 retpts = retptsl

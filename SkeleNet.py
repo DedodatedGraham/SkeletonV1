@@ -212,8 +212,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 case = True
             #First will always determine if inside shape..
             if distc < crossdis or (dist < crossdis and crossdis < threshDistance):
-                if i > 30:
-                    print(tempr[leng],index,i)
                 #Next we want to check for convergence
                 if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
@@ -234,7 +232,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         atp[index].append(testp[leng - 1])
                         arad[index].append(tempr[leng - 1])
                     case = True
-                elif dist < tempr[leng] - threshDistance: 
+                elif dist < tempr[leng] + threshDistance: 
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(tempr[leng - 1])
                     if animate:
