@@ -505,7 +505,7 @@ class kdTree:
                 tdata = data.copy()
                 tdata[3] += 1
                 retpts,retdev = self.leafR.getVectorR(tdata)
-                # print('r only')
+                #   print('r only')
                 # print(node.getPoint(),'along the',self.axis)
             elif node.getAxis(self.axis) > data[0][self.axis] and data[1][self.axis] < 0:
                 #if want left leaf only
@@ -591,9 +591,56 @@ class kdTree:
                             else:
                                 retpts = retptsr
                                 retdev = retdevr
-                            
+            #Finally we need to test if the node is a better substitution instead of the              
+            if not(node.getPoint() == data[0]):
+                j = 0
+                tvec = []
+                while j < node.dimensions:
+                    tvec.append(node.getAxis(j) - data[0][j])
+                    j += 1
+                dev = getDeviation(tvec,data[1])
+                diffdev = abs(dev-retdev[0])
+                dn = getDistance(data[0],node.getPoint())
+                dl = getDistance(data[0],retpts[0].getPoint()) 
+                print()
+                if diffdev < data[2] * 10:
+                    print(0)
+                    if dl < data[2]/10 and dn < data[2]/10:
+                        print(1)
+                        if dl < dn:
+                            print(2)
+                            retpts = [node]
+                            retdev = [dev]
+                    else:
+                        if dl < dn:
+                            print(3)
+                            retpts = [node]
+                            retdev = [dev]
+                else:
+                    if dl > data[2]/10 and dn > data[2]/10:
+                        print(4)
+                        if retdev[0] < dev:
+                            print(5)
+                            retpts = [node]
+                            retdev = [dev]
+                    elif dl < data[2]/10 and dn < data[2]/10:
+                        print(6)
+                        if retdev[0] < dev:
+                            print(7)
+                            retpts = [node]
+                            retdev = [dev]
+                    else:
+                        if retdev[0] < dev and dl < dn:
+                            print(8)
+                            retpts = [node]
+                            retdev = [dev]
+                        else:
+                            if dl < dn:
+                                print(9)
+                                retpts = [node]
+                                retdev = [dev]
 
-
+            
 
 
                 #TEST 3
