@@ -547,7 +547,7 @@ class kdTree:
                 #        print()
                 
                 #TEST4
-                if diffdev < data[2] * 10:
+                if diffdev < data[2]:
                     if dl < data[2]/10 and dr < data[2]/10:
                         if dl > dr:
                             retpts = retptsl
@@ -563,6 +563,14 @@ class kdTree:
                             retpts = retptsr
                             retdev = retdevr
                 else:
+                    #print(diffdev,data[2])
+                    #if retdevl[0] > retdevr[0]:
+                    #    retpts = retptsl
+                    #    retdev = retdevl
+                    #else:
+                    #    retpts = retptsr
+                    #    retdev = retdevr
+                         
                     if dl > data[2]/10 and dr > data[2]/10:
                         if retdevl[0] > retdevr[0]:
                             retpts = retptsl
@@ -602,43 +610,32 @@ class kdTree:
                 diffdev = abs(dev-retdev[0])
                 dn = getDistance(data[0],node.getPoint())
                 dl = getDistance(data[0],retpts[0].getPoint()) 
-                print()
-                if diffdev < data[2] * 10:
-                    print(0)
+                if diffdev < data[2]:
                     if dl < data[2]/10 and dn < data[2]/10:
-                        print(1)
                         if dl < dn:
-                            print(2)
                             retpts = [node]
                             retdev = [dev]
                     else:
-                        if dl < dn:
-                            print(3)
+                        if dl > dn:
                             retpts = [node]
                             retdev = [dev]
                 else:
-                    if dl > data[2]/10 and dn > data[2]/10:
-                        print(4)
-                        if retdev[0] < dev:
-                            print(5)
-                            retpts = [node]
-                            retdev = [dev]
-                    elif dl < data[2]/10 and dn < data[2]/10:
-                        print(6)
-                        if retdev[0] < dev:
-                            print(7)
-                            retpts = [node]
-                            retdev = [dev]
-                    else:
-                        if retdev[0] < dev and dl < dn:
-                            print(8)
-                            retpts = [node]
-                            retdev = [dev]
-                        else:
-                            if dl < dn:
-                                print(9)
-                                retpts = [node]
-                                retdev = [dev]
+                    if retdev[0] < dev:
+                        retpts = [node]
+                        retdev = [dev]
+                    #print(diffdev)
+                    #if dl > data[2]/10 and dn > data[2]/10:
+                    #    if retdev[0] < dev:
+                    #        retpts = [node]
+                    #        retdev = [dev]
+                    #elif dl < data[2]/10 and dn < data[2]/10:
+                    #    if retdev[0] < dev:
+                    #        retpts = [node]
+                    #        retdev = [dev]
+                    #else:
+                    #    if retdev[0] < dev and dl < dn:
+                    #        retpts = [node]
+                    #        retdev = [dev]
 
             
 

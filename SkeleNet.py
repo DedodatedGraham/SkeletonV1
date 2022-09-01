@@ -146,23 +146,16 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 # tpool = ThreadPool(cpuavail)
                 inputdat = []
                 inputdat.append([])
-                inputdat[0].append(centerp[len(centerp) - 1].copy())
-                inputdat[0].append(point.copy())
+                inputdat[0].append(centerp[len(centerp) - 1])
+                inputdat[0].append(point)
                 #inputdat[0].append(False)
                 # results = tpool.map(tree.getNearR,inputdat)
                 # testp.append(results[0])
                 # tpool.close()
                 testp.append(tree.getNearR(inputdat[0]))
-                if testp[len(testp) - 1] == point:
-                    print()
-                    print('error',index,i)
-                    print('centers',centerp)
-                    print('testp',testp)
-                    print('rads',tempr)
-                    print('Point',point,'Norm',norm)
-                    print()
-                    
-                tempr.append(np.round(getRadius(point.copy(),testp[i].copy(),norm.copy()),6))
+                
+                tempr.append(np.round(getRadius(point,testp[len(testp) - 1],norm),6))
+                
                 # if i == 1:
                 #     if tempr[1] > tempr[0] or tempr[1] > crossdis + threshDistance:
                 #         # print(i,'prenorm',norm)
@@ -200,46 +193,101 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             dist = getDistance(point,testp[leng])
             distc = getDistance(point,centerp[leng])
             ###NEW LOGIC
-            if i == 30:
-                #print()
-                #print(cpuid,'stuck')
-                #print('point',point)
-                #print('cross point',crossp.getPoint())
-                #print('rads',tempr[i-5:i])
-                #print('centers',centerp[i-5:i])
-                #print('tests',testp[i-5:i])
-                #print()
+            if i == 10:
+                print()
+                print('error')
+                print(cpuid,'stuck')
+                print('point',point,'norm',norm)
+                print('cross point',crossp.getPoint())
+                print()
+                print('rads',tempr)
+                print()
+                print('centers',centerp)
+                print()
+                print('tests',testp)
+                print()
+                print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
+                print(vdev)
+                print()
                 case = True
             #First will always determine if inside shape..
-            if distc < crossdis or (dist < crossdis and crossdis < threshDistance):
+            if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < threshDistance)):
                 #Next we want to check for convergence
                 if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
-                    SkeleRad.append(tempr[leng])
+                    SkeleRad.append(getDistance(point,centerp[leng]))
+                    if SkeleRad[len(SkeleRad)-1] > 0.3:
+                        print()
+                        print('went 1 at',i)
+                        print('point',point)
+                        print('norm',norm)
+                        print('testp',testp[len(testp)-1])
+                        print('theoretical rad',SkeleRad[len(SkeleRad)-1])
+                        print(abs(tempr[leng] - tempr[leng - 1]),threshDistance)
+                        print()
+                        print('cross point',crossp.getPoint(),'||')
+                        print('rads',tempr,'||')
+                        print('centers',centerp,'||')
+                        print('tests',testp,'||')
+                        print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
+                        
+                        print()
                     if animate:
-                        acp[index].append(centerp[leng])
+                        acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng])
-                        arad[index].append(tempr[leng])
+                        arad[index].append(SkeleRad[len(SkeleRad) - 1])
                     case = True
                 
                 #Then if we fall too close to the interface, but the cross isnt there either. Should alllow us to see thin areas well..
                 #Keeps us inside shape at the very least. usually getting too small happens past mid point//
-                elif dist < threshDistance and crossdis > threshDistance:
-                    SkelePoints.append(centerp[leng - 1])
-                    SkeleRad.append(tempr[leng - 1])
-                    if animate:
-                        acp[index].append(centerp[leng - 1])
-                        atp[index].append(testp[leng - 1])
-                        arad[index].append(tempr[leng - 1])
-                    case = True
                 elif dist < tempr[leng] + threshDistance: 
                     SkelePoints.append(centerp[leng - 1])
-                    SkeleRad.append(tempr[leng - 1])
+                    SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                    #if SkeleRad[len(SkeleRad)-1] > 0.3:
+                    #    print()
+                    #    print('went 2 at',i)
+                    #    print('point',point)
+                    #    print('norm',norm)
+                    #    print('testp',testp[len(testp)-1])
+                    #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
+                    #    print()
                     if animate:
-                        acp[index].append(centerp[leng - 1])
+                        acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng - 1])
-                        arad[index].append(tempr[leng - 1])
+                        arad[index].append(SkeleRad[len(SkeleRad) - 1])
                     case = True
+            if i > 0 and dist < threshDistance and crossdis > threshDistance and not(case):
+                SkelePoints.append(centerp[leng - 1])
+                SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                if SkeleRad[len(SkeleRad)-1] > 0.3:
+                    print()
+                    print('went 3 at',i)
+                    print('point',point)
+                    print('norm',norm)
+                    print('testp',testp[len(testp)-1])
+                    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
+                    print()
+                if animate:
+                    acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                    atp[index].append(testp[leng - 1])
+                    arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                case = True
+            if i > 0 and dist < crossdis - threshDistance and tempr[leng] > crossdis - threshDistance and not(case):
+                SkelePoints.append(centerp[leng - 1])
+                SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                if SkeleRad[len(SkeleRad)-1] > 0.3:
+                    print()
+                    print('went 4 at',i)
+                    print('point',point)
+                    print('norm',norm)
+                    print('testp',testp[len(testp)-1])
+                    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
+                    print()
+                if animate:
+                    acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                    atp[index].append(testp[leng - 1])
+                    arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                case = True
 
             ###OLD LOGIC
 
@@ -403,6 +451,7 @@ def animation(data:list):
     plt.clf()
     plt.xlim(data[6][1],data[6][0])
     plt.ylim(data[6][3],data[6][2])
+    theta = np.linspace(0,2*np.pi,100)
     #print(acp)
     if len(acp[0][0]) == 3:
         # plt.zlim(zmin,zmax)
@@ -442,13 +491,13 @@ def animation(data:list):
             #print(i+1 ,'/' , len(acp), ' ', j+1 , '/', len(acp[i]))
             plt.scatter(tx,ty,5,color='green')
             if len(sxx) > 0:
-                print('plotted')
+                #print('plotted')
                 plt.scatter(sxx,syy,5,color='red')
             if len(sx) > 0:
                 plt.scatter(sx,sy,5,color='orange')
             plt.plot([acp[i][j][0],tpoints[i][0]],[acp[i][j][1],tpoints[i][1]])
             plt.plot([atp[i][j][0],tpoints[i][0]],[atp[i][j][1],tpoints[i][1]])
-            # plt.plot(self.acp[tag][i][j][0] + np.cos(theta) * self.arad[tag][i][j],self.acp[tag][i][j][1] + np.sin(theta) * self.arad[tag][i][j])
+            plt.plot(acp[i][j][0] + np.cos(theta) * arad[i][j],acp[i][j][1] + np.sin(theta) * arad[i][j],5)
             plt.scatter(acp[i][j][0],acp[i][j][1],5,color='purple')
             plt.scatter(atp[i][j][0],atp[i][j][1],5,color='black')
             plt.scatter(acrossp[i][0],acrossp[i][1],5,color='yellow')
@@ -1586,7 +1635,7 @@ class SkeleNet:
                     #animation(data[0])
                     pool = ParallelPool(nodes=self.cpuavail)
                     print('booting animation...')
-                    pool.imap(animation,data)
+                    resu = pool.map(animation,data)
                     print('done')
                     pool.close()
                     tag += 1 

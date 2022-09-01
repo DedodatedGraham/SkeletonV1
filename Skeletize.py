@@ -54,7 +54,7 @@ def getRadius(point1, point2 , norm) -> float:
     if inside < -1:
         inside = -1.0
     elif inside > 1:
-        inside = 1
+        inside = 1.0
     theta = np.arccos(inside)
     # print(dot,dist,point1,point2)
     #Finally finds radius
