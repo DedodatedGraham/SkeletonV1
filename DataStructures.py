@@ -547,9 +547,9 @@ class kdTree:
                 #        print()
                 
                 #TEST4
-                if diffdev < data[2]:
+                if diffdev < data[2]*10:
                     if dl < data[2]/10 and dr < data[2]/10:
-                        if dl > dr:
+                        if dl < dr:
                             retpts = retptsl
                             retdev = retdevl
                         else:
@@ -610,7 +610,7 @@ class kdTree:
                 diffdev = abs(dev-retdev[0])
                 dn = getDistance(data[0],node.getPoint())
                 dl = getDistance(data[0],retpts[0].getPoint()) 
-                if diffdev < data[2]:
+                if diffdev < data[2]*10:
                     if dl < data[2]/10 and dn < data[2]/10:
                         if dl < dn:
                             retpts = [node]
