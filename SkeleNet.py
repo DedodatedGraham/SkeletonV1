@@ -193,22 +193,22 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             dist = getDistance(point,testp[leng])
             distc = getDistance(point,centerp[leng])
             ###NEW LOGIC
-            if i == 10:
-                print()
-                print('error')
-                print(cpuid,'stuck')
-                print('point',point,'norm',norm)
-                print('cross point',crossp.getPoint())
-                print()
-                print('rads',tempr)
-                print()
-                print('centers',centerp)
-                print()
-                print('tests',testp)
-                print()
-                print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
-                print(vdev)
-                print()
+            if i == 30:
+                #print()
+                #print('error')
+                #print(cpuid,'stuck')
+                #print('point',point,'norm',norm)
+                #print('cross point',crossp.getPoint())
+                #print()
+                #print('rads',tempr)
+                #print()
+                #print('centers',centerp)
+                #print()
+                #print('tests',testp)
+                #print()
+                #print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
+                #print(vdev)
+                #print()
                 case = True
             #First will always determine if inside shape..
             if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < threshDistance)):
@@ -216,22 +216,22 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(getDistance(point,centerp[leng]))
-                    if SkeleRad[len(SkeleRad)-1] > 0.3:
-                        print()
-                        print('went 1 at',i)
-                        print('point',point)
-                        print('norm',norm)
-                        print('testp',testp[len(testp)-1])
-                        print('theoretical rad',SkeleRad[len(SkeleRad)-1])
-                        print(abs(tempr[leng] - tempr[leng - 1]),threshDistance)
-                        print()
-                        print('cross point',crossp.getPoint(),'||')
-                        print('rads',tempr,'||')
-                        print('centers',centerp,'||')
-                        print('tests',testp,'||')
-                        print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
-                        
-                        print()
+                    if SkeleRad[len(SkeleRad)-1] > 1:
+                        print('error')
+                    #    print('went 1 at',i)
+                    #    print('point',point)
+                    #    print('norm',norm)
+                    #    print('testp',testp[len(testp)-1])
+                    #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
+                    #    print(abs(tempr[leng] - tempr[leng - 1]),threshDistance)
+                    #    print()
+                    #    print('cross point',crossp.getPoint(),'||')
+                    #    print('rads',tempr,'||')
+                    #    print('centers',centerp,'||')
+                    #    print('tests',testp,'||')
+                    #    print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
+                    #    
+                    #    print()
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng])
@@ -259,14 +259,14 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             if i > 0 and dist < threshDistance and crossdis > threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                if SkeleRad[len(SkeleRad)-1] > 0.3:
-                    print()
-                    print('went 3 at',i)
-                    print('point',point)
-                    print('norm',norm)
-                    print('testp',testp[len(testp)-1])
-                    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
-                    print()
+                #if SkeleRad[len(SkeleRad)-1] > 0.3:
+                #    print()
+                #    print('went 3 at',i)
+                #    print('point',point)
+                #    print('norm',norm)
+                #    print('testp',testp[len(testp)-1])
+                #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
+                #    print()
                 if animate:
                     acp[index].append(SkelePoints[len(SkelePoints) - 1])
                     atp[index].append(testp[leng - 1])
@@ -275,14 +275,14 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             if i > 0 and dist < crossdis - threshDistance and tempr[leng] > crossdis - threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                if SkeleRad[len(SkeleRad)-1] > 0.3:
-                    print()
-                    print('went 4 at',i)
-                    print('point',point)
-                    print('norm',norm)
-                    print('testp',testp[len(testp)-1])
-                    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
-                    print()
+                #if SkeleRad[len(SkeleRad)-1] > 0.3:
+                #    print()
+                #    print('went 4 at',i)
+                #    print('point',point)
+                #    print('norm',norm)
+                #    print('testp',testp[len(testp)-1])
+                #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
+                #    print()
                 if animate:
                     acp[index].append(SkelePoints[len(SkelePoints) - 1])
                     atp[index].append(testp[leng - 1])
