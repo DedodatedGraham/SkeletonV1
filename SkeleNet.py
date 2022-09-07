@@ -195,7 +195,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             ###NEW LOGIC
             if i == 30:
                 #print()
-                #print('error')
+                print('error')
                 #print(cpuid,'stuck')
                 #print('point',point,'norm',norm)
                 #print('cross point',crossp.getPoint())
@@ -209,6 +209,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 #print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
                 #print(vdev)
                 #print()
+                
                 case = True
             #First will always determine if inside shape..
             if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < threshDistance)):
@@ -599,6 +600,7 @@ class SkeleNet:
         st = time.time()
         #Solves for all taggs individually
         #will be paralled in the future
+        print('dim:',self.dim)
         if animate:
             self.animate = True
             self.acp = []
