@@ -525,7 +525,7 @@ class kdTree:
                 # print(depth,data[0],data[1])
                 # print('left option',retptsl[0].getPoint(),retdevl[0])
                 # print('right option',retptsr[0].getPoint(),retdevr[0])
-                if len(retptsl) == 0 or len(retptsr) == 0:
+                if len(retptsl) == 0 or len(retptsr) == 0 or len(retdevl) == 0 or len(retdevr) == 0:
                     print()
                     print('BAD FLAG')
                     print(retptsl,retdevl)
@@ -547,7 +547,13 @@ class kdTree:
                 #        print()
                 
                 #TEST4
-                if diffdev < data[2]*10:
+                if len(retdevr) == 0 or len(retptsr) == 0:
+                    retpts = retptsl
+                    retdev = retdevl
+                elif len(retdevl) == 0 or len(retptsl) == 0:
+                    retpts = retptsr
+                    retdev = retdevr
+                elif diffdev < data[2]*10:
                     if dl < data[2]/10 and dr < data[2]/10:
                         if dl < dr:
                             retpts = retptsl
