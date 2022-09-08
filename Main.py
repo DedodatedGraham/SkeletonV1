@@ -23,21 +23,31 @@ from DataStructures import kdTree
 
 #Settings/Modes
 #PP-Mode or paralell procedure mode has 3 main opperations as of now
-#Mode 0 => No Parallel Calculation
+#Mode 0 => No Parallel Calculation(Default)
 #Mode 1 => Normal Parallel Calculation
 #Mode 2 => MPI Calulation
 
 
 print('args =>',str(sys.argv[1:]))
 argumentList = sys.argv[1:]
-options = "iomp:"
-long_options = ["input","output","mode","parallel="]
+options = "i:o:m:p:"
 link = r''
+savefile = r''
+mode = 0
+noderequest = 0
+print('list',argumentList)
 try:
-    arguments, values = getopt.getopt(argumentList,options,long_options)
+    arguments,argumentList = getopt.getopt(argumentList,options)
+    print(arguments) 
     for currentArgument, currentValue in arguments:
-        if currentArgument in ("-i","--input"):
-            link = currentValue
+        if currentArgument in ("-i"):
+            link = str(currentValue)
+        if currentArgument in ("-o"):
+            savefile = str(currentValue)
+        if currentArgument in ("-m"):
+            mode = int(currentValue)
+        if currentArgument in ("-p"):
+            noderequest = int(currentValue)
 except getopt.error as err:
     print(str(err))
 
@@ -49,22 +59,21 @@ if __name__ == '__main__':
     plt.rcParams['figure.dpi'] = 300
 
     linep = True
-    
-    
-    # link = r'/interface_points_020000.dat'
-    # link = r'/spiral.dat' 
-    link = r'/vof_points_norm_0650.dat'
-    # link = r'/t06.dat'
-    # link = r'/vof_points_norms.dat'
-    # link = r'/bagdrop.dat'
-    # link = r'/disk1.dat'
-    if linep:
+    if linep: 
+        # link = r'/interface_points_020000.dat'
+        # link = r'/spiral.dat' 
+        # link = r'/vof_points_norm_0650.dat'
+        # link = r'/t06.dat'
+        link = r'/vof_points_norms.dat'
+        # link = r'/bagdrop.dat'
+        # link = r'/disk1.dat'
+        savefile = 'SkeleSave.dat'
         source = os.path.dirname(os.path.abspath(__file__))
         link = source + link
     
     net = SkeleNet(link)
-    net.solve(False,[])
-    net.savedat(1)
+    net.solve(False,mode,noderequest)
+    net.savedat(1,savefile)
     net.plot([])
     
     et = time.time()

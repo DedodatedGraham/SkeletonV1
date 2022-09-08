@@ -596,11 +596,13 @@ class SkeleNet:
 ###MAIN FUNCTIONS
     
 
-    def solve(self,animate : bool = False):
+    def solve(self,animate : bool = False, mode: int=0, node : int=0):
         st = time.time()
         #Solves for all taggs individually
         #will be paralled in the future
         print('dim:',self.dim)
+        if mode == 1:
+            self.cpuavail = min(self.cpuavail,node)
         if animate:
             self.animate = True
             self.acp = []
@@ -632,98 +634,235 @@ class SkeleNet:
             self.threshDistance.append(tot / min(20,len(self.tpoints[i]))) 
             print('thresh',self.threshDistance,file=sys.stdout)  
             i += 1
-            
-        
-        self.divpts = []
-        self.divnrms = []
-        strt = []
-        stp = []
-        i = 0
-        while i < len(self.tpoints):
-            #rp,rn = randPN(self.tpoints[i].copy(),self.tnorms[i].copy())
-            j = 0
-            self.divpts.append([])
-            self.divnrms.append([])
-            strt.append([])
-            stp.append([])
-            while j < self.cpuavail:
-                self.divpts[i].append([])
-                self.divnrms[i].append([])
-                q = int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail))
-                strt[i].append(int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail)))
-                stp[i].append(int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)))
-                while q < int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)):
-                    self.divpts[i][j].append(self.tpoints[i][q])
-                    self.divnrms[i][j].append(self.tnorms[i][q])
-                    q += 1
-                j += 1  
-            i += 1
-        i = 0
-        while i < len(self.tpoints):    
-            self.pool = ProcessingPool(nodes=self.cpuavail)
-            setthresh = []
-            temptree = []
-            ani = []
-            cpuid = []
-            cputag = []
-            j = 0
-            while j < len(self.divpts[i]):
-                setthresh.append(self.threshDistance[i])
-                temptree.append(copy.deepcopy(self.tree[i]))
-                ani.append(self.animate)
-                cpuid.append(j)
-                cputag.append(i)
-                j += 1
-            print('booting processes...')
-            # centp,rad = skeletize(self.tpoints[i], self.tnorms[i], self.threshDistance[i], self.tree[i],cpuavail = self.cpuavail)
-            # self.SkelePoints.append(centp)
-            # self.SkeleRad.append(rad)
-            #####
-            results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
-            print('done')
-            for data in results:
-                t0 = data[0]
-                t1 = data[1]
+        if mode == 0 or self.cpuavail == 1:
+            i = 0
+            while i < len(self.tpoints):
+                if self.animate: 
+                    tp,tr,tcp,ttp,trad,tcent = skeletize(tpoints[i],tnorms[i],self.threshDistance[i],self.tree[i],self.animate)
+                else:
+                    tp,tr = skeletize(tpoints[i],tnorms[i],self.threshDistance[i],self.tree[i],self.animate)
+                self.SkelePoints.append([])
+                self.SkeleRads.append([])
                 if self.animate:
-                    t2 = data[2]
-                    t3 = data[3]
-                    t4 = data[4]
-                    t5 = data[5]
-                if len(self.SkelePoints) == i:
-                    self.SkelePoints.append([])
-                    self.SkeleRad.append([])
+                    self.acp.append([])
+                    self.atp.append([])
+                    self.arad.append([])
+                    self.acrossp.append([])
                 j = 0
-                while j < len(t0):
-                    self.SkelePoints[i].append(t0[j])
-                    self.SkeleRad[i].append(t1[j])
+                while j < len(tp):
+                    self.SkelePoints[i].append(tp[j])
+                    self.SkeleRads[i].append(tr[j])
                     j += 1
-                if self.animate:
-                    if len(self.acp) == i:
-                        self.acp.append([])
-                    if len(self.atp) == i:
-                        self.atp.append([])
-                    if len(self.arad) == i:
-                        self.arad.append([])
-                    if len(self.acrossp) == i:
-                        self.acrossp.append([])
+                if self.Animate:
                     j = 0
-                    while j < len(t2):
-                        self.acp[i].append(t2[j])
+                    while j < len(tcp):
+                        self.acp[i].append(tcp[j])
                         j += 1
                     j = 0
-                    while j < len(t3):
-                        self.atp[i].append(t3[j])
+                    while j < len(ttp):
+                        self.atp[i].append(ttp[j])
                         j += 1
                     j = 0
-                    while j < len(t4):
-                        self.arad[i].append(t4[j])
+                    while j < len(trad):
+                        self.arad[i].append(trad[j])
                         j += 1
                     j = 0
-                    while j < len(t5):
-                        self.acrossp[i].append(t5[j])
+                    while j < len(tcent):
+                        self.acrossp[i].append(tcent[j])
                         j += 1
-            i += 1
-            self.pool.close()
+                i += 1
+
+        elif mode == 1: 
+            self.divpts = []
+            self.divnrms = []
+            strt = []
+            stp = []
+            i = 0
+            while i < len(self.tpoints):
+                #rp,rn = randPN(self.tpoints[i].copy(),self.tnorms[i].copy())
+                j = 0
+                self.divpts.append([])
+                self.divnrms.append([])
+                strt.append([])
+                stp.append([])
+                while j < self.cpuavail:
+                    self.divpts[i].append([])
+                    self.divnrms[i].append([])
+                    q = int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail))
+                    strt[i].append(int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail)))
+                    stp[i].append(int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)))
+                    while q < int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)):
+                        self.divpts[i][j].append(self.tpoints[i][q])
+                        self.divnrms[i][j].append(self.tnorms[i][q])
+                        q += 1
+                    j += 1  
+                i += 1
+            i = 0
+            while i < len(self.tpoints):    
+                self.pool = ProcessingPool(nodes=self.cpuavail)
+                setthresh = []
+                temptree = []
+                ani = []
+                cpuid = []
+                cputag = []
+                j = 0
+                while j < len(self.divpts[i]):
+                    setthresh.append(self.threshDistance[i])
+                    temptree.append(copy.deepcopy(self.tree[i]))
+                    ani.append(self.animate)
+                    cpuid.append(j)
+                    cputag.append(i)
+                    j += 1
+                print('booting processes...')
+                # centp,rad = skeletize(self.tpoints[i], self.tnorms[i], self.threshDistance[i], self.tree[i],cpuavail = self.cpuavail)
+                # self.SkelePoints.append(centp)
+                # self.SkeleRad.append(rad)
+                #####
+                results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
+                print('done')
+                for data in results:
+                    t0 = data[0]
+                    t1 = data[1]
+                    if self.animate:
+                        t2 = data[2]
+                        t3 = data[3]
+                        t4 = data[4]
+                        t5 = data[5]
+                    if len(self.SkelePoints) == i:
+                        self.SkelePoints.append([])
+                        self.SkeleRad.append([])
+                    j = 0
+                    while j < len(t0):
+                        self.SkelePoints[i].append(t0[j])
+                        self.SkeleRad[i].append(t1[j])
+                        j += 1
+                    if self.animate:
+                        if len(self.acp) == i:
+                            self.acp.append([])
+                        if len(self.atp) == i:
+                            self.atp.append([])
+                        if len(self.arad) == i:
+                            self.arad.append([])
+                        if len(self.acrossp) == i:
+                            self.acrossp.append([])
+                        j = 0
+                        while j < len(t2):
+                            self.acp[i].append(t2[j])
+                            j += 1
+                        j = 0
+                        while j < len(t3):
+                            self.atp[i].append(t3[j])
+                            j += 1
+                        j = 0
+                        while j < len(t4):
+                            self.arad[i].append(t4[j])
+                            j += 1
+                        j = 0
+                        while j < len(t5):
+                            self.acrossp[i].append(t5[j])
+                            j += 1
+                i += 1
+                self.pool.close()
+        elif mode == 2:
+            ##THIS IS MPI Mode, Here we will load in other Modules needed in only MPI before split& calulation
+            try:
+                import mpi4py
+                import pyina
+                from pyina.launchers import MpiPool as Mpi
+            except:
+                print('Failed to start Processes')
+
+
+            try:    
+                self.divpts = []
+                self.divnrms = []
+                strt = []
+                stp = []
+                i = 0
+                while i < len(self.tpoints):
+                    #rp,rn = randPN(self.tpoints[i].copy(),self.tnorms[i].copy())
+                    j = 0
+                    self.divpts.append([])
+                    self.divnrms.append([])
+                    strt.append([])
+                    stp.append([])
+                    while j < self.cpuavail:
+                        self.divpts[i].append([])
+                        self.divnrms[i].append([])
+                        q = int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail))
+                        strt[i].append(int(np.floor((len(self.tpoints[i]) - 1) * j / self.cpuavail)))
+                        stp[i].append(int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)))
+                        while q < int(np.floor((len(self.tpoints[i]) - 1) * (j+1) /self.cpuavail)):
+                            self.divpts[i][j].append(self.tpoints[i][q])
+                            self.divnrms[i][j].append(self.tnorms[i][q])
+                            q += 1
+                        j += 1  
+                    i += 1
+                i = 0
+                while i < len(self.tpoints):    
+                    self.pool = ProcessingPool(nodes=self.cpuavail)
+                    setthresh = []
+                    temptree = []
+                    ani = []
+                    cpuid = []
+                    cputag = []
+                    j = 0
+                    while j < len(self.divpts[i]):
+                        setthresh.append(self.threshDistance[i])
+                        temptree.append(copy.deepcopy(self.tree[i]))
+                        ani.append(self.animate)
+                        cpuid.append(j)
+                        cputag.append(i)
+                        j += 1
+                    work = Mpi(nodes)
+                    output = work.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
+                    for data in results:
+                        t0 = data[0]
+                        t1 = data[1]
+                        if self.animate:
+                            t2 = data[2]
+                            t3 = data[3]
+                            t4 = data[4]
+                            t5 = data[5]
+                        if len(self.SkelePoints) == i:
+                            self.SkelePoints.append([])
+                            self.SkeleRad.append([])
+                        j = 0
+                        while j < len(t0):
+                            self.SkelePoints[i].append(t0[j])
+                            self.SkeleRad[i].append(t1[j])
+                            j += 1
+                        if self.animate:
+                            if len(self.acp) == i:
+                                self.acp.append([])
+                            if len(self.atp) == i:
+                                self.atp.append([])
+                            if len(self.arad) == i:
+                                self.arad.append([])
+                            if len(self.acrossp) == i:
+                                self.acrossp.append([])
+                            j = 0
+                            while j < len(t2):
+                                self.acp[i].append(t2[j])
+                                j += 1
+                            j = 0
+                            while j < len(t3):
+                                self.atp[i].append(t3[j])
+                                j += 1
+                            j = 0
+                            while j < len(t4):
+                                self.arad[i].append(t4[j])
+                                j += 1
+                            j = 0
+                            while j < len(t5):
+                                self.acrossp[i].append(t5[j])
+                                j += 1
+                    
+                    i += 1
+            except:
+                print('runfailure')
+        else:
+            print('failed--mode selection error')
         # self.order()
         et = time.time()
         tt = (et - st)
@@ -1738,7 +1877,7 @@ class SkeleNet:
         print('abstime {} minuites {} seconds'.format(tttt // 60, tttt % 60))
         print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 
-    def savedat(self,mode : int = 0):
+    def savedat(self,mode : int = 0,outputfile: str = 'SkeleSave.dat'):
         print('Saving ... Please Wait')
         st = time.time()
         i = 0
@@ -1772,7 +1911,7 @@ class SkeleNet:
             output = pd.DataFrame({'x':tx,'y':ty,'r':tr})
         else:
             output = pd.DataFrame({'x':tx,'y':ty,'z':tz,'r':tr})
-        output[1:].to_csv('SkeleSave.dat',index=False)
+        output[1:].to_csv(outputfile,index=False)
         et = time.time()
         tt = et - st
         print('Save Complete! Took {} Minuites and {} Seconds'.format(tt // 60, tt % 60))
