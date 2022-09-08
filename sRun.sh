@@ -11,7 +11,7 @@ num=`cat $PBS_NODEFILE | wc -l`
 echo "processes $num"
 
 
-mpiexec -n 1 -machinefile $PBS_NODEFILE python3 Main.py -m 2 -p 4
+mpiexec -n 1 -machinefile $PBS_NODEFILE python3 Main.py -m 1 -p 33
 
 echo
 echo "Job finished at `date`"

@@ -1,9 +1,9 @@
 Starting at /data/ling_shared/garciag/SkeletonV1
-node file /var/spool/pbs/aux/1045613.batch
+node file /var/spool/pbs/aux/1045702.batch
 processes 36
-args => ['-m', '2', '-p', '4']
-list ['-m', '2', '-p', '4']
-[('-m', '2'), ('-p', '4')]
+args => ['-m', '1', '-p', '4']
+list ['-m', '1', '-p', '4']
+[('-m', '1'), ('-p', '4')]
 We have 28 CPU's Available
 dim: 2
 Initiating k-d,Tree
@@ -134,16 +134,119 @@ Initiating k-d,Tree
 9
 9
 9
-k-d tree took 0.0 minuites and 0.04814338684082031 seconds to make
-thresh [0.0015179592488928971]
-divided points
-ready
-runfailure
-Total Solve took: 0.0 Minuites 0.740363359451294 Seconds
+k-d tree took 0.0 minuites and 0.047943115234375 seconds to make
+thresh [0.0013361227555074293]
+process2 started
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.01s || A-Time:00.00m:00.01s || 001/205 00.49%-Done avgstep:06
+CPUID:02 TAG:00 || E-Time:00.00h:00.00m:02.58s
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.09s || A-Time:00.00m:00.01s || 011/205 05.37%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.16s || A-Time:00.00m:00.01s || 021/205 10.24%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.23s || A-Time:00.00m:00.01s || 031/205 15.12%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.30s || A-Time:00.00m:00.01s || 041/205 20.00%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.36s || A-Time:00.00m:00.01s || 051/205 24.88%-Done avgstep:04
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.42s || A-Time:00.00m:00.01s || 061/205 29.76%-Done avgstep:04
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.50s || A-Time:00.00m:00.01s || 071/205 34.63%-Done avgstep:04
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.57s || A-Time:00.00m:00.01s || 081/205 39.51%-Done avgstep:04
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.63s || A-Time:00.00m:00.01s || 091/205 44.39%-Done avgstep:04
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.70s || A-Time:00.00m:00.01s || 101/205 49.27%-Done avgstep:04
+CPUID:02 TAG:00 || E-Time:00.00h:00.00m:00.73s
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.77s || A-Time:00.00m:00.01s || 111/205 54.15%-Done avgstep:04
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.85s || A-Time:00.00m:00.01s || 121/205 59.02%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:00.92s || A-Time:00.00m:00.01s || 131/205 63.90%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:01.01s || A-Time:00.00m:00.01s || 141/205 68.78%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:01.09s || A-Time:00.00m:00.01s || 151/205 73.66%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:01.17s || A-Time:00.00m:00.01s || 161/205 78.54%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:01.26s || A-Time:00.00m:00.01s || 171/205 83.41%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:01.34s || A-Time:00.00m:00.01s || 181/205 88.29%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:01.42s || A-Time:00.00m:00.01s || 191/205 93.17%-Done avgstep:05
+CPUID:02 TAG:00 || T-Time:00.00h:00.00m:01.51s || A-Time:00.00m:00.01s || 201/205 98.05%-Done avgstep:05
+CPUID:02 TAG:00 || E-Time:00.00h:00.00m:00.04s
+Skeleton took 0.0 minuites and 1.5471861362457275 seconds
+process1 started
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.01s || A-Time:00.00m:00.01s || 001/205 00.49%-Done avgstep:06
+CPUID:01 TAG:00 || E-Time:00.00h:00.00m:02.77s
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.09s || A-Time:00.00m:00.01s || 011/205 05.37%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.17s || A-Time:00.00m:00.01s || 021/205 10.24%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.24s || A-Time:00.00m:00.01s || 031/205 15.12%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.33s || A-Time:00.00m:00.01s || 041/205 20.00%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.40s || A-Time:00.00m:00.01s || 051/205 24.88%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.49s || A-Time:00.00m:00.01s || 061/205 29.76%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.57s || A-Time:00.00m:00.01s || 071/205 34.63%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.64s || A-Time:00.00m:00.01s || 081/205 39.51%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.73s || A-Time:00.00m:00.01s || 091/205 44.39%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.81s || A-Time:00.00m:00.01s || 101/205 49.27%-Done avgstep:05
+CPUID:01 TAG:00 || E-Time:00.00h:00.00m:00.84s
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:00.90s || A-Time:00.00m:00.01s || 111/205 54.15%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.00s || A-Time:00.00m:00.01s || 121/205 59.02%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.10s || A-Time:00.00m:00.01s || 131/205 63.90%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.20s || A-Time:00.00m:00.01s || 141/205 68.78%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.28s || A-Time:00.00m:00.01s || 151/205 73.66%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.37s || A-Time:00.00m:00.01s || 161/205 78.54%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.45s || A-Time:00.00m:00.01s || 171/205 83.41%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.53s || A-Time:00.00m:00.01s || 181/205 88.29%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.62s || A-Time:00.00m:00.01s || 191/205 93.17%-Done avgstep:05
+CPUID:01 TAG:00 || T-Time:00.00h:00.00m:01.69s || A-Time:00.00m:00.01s || 201/205 98.05%-Done avgstep:05
+CPUID:01 TAG:00 || E-Time:00.00h:00.00m:00.04s
+Skeleton took 0.0 minuites and 1.723041296005249 seconds
+process3 started
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.01s || A-Time:00.00m:00.01s || 001/206 00.49%-Done avgstep:04
+CPUID:03 TAG:00 || E-Time:00.00h:00.00m:01.40s
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.10s || A-Time:00.00m:00.01s || 011/206 05.34%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.19s || A-Time:00.00m:00.01s || 021/206 10.19%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.27s || A-Time:00.00m:00.01s || 031/206 15.05%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.35s || A-Time:00.00m:00.01s || 041/206 19.90%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.44s || A-Time:00.00m:00.01s || 051/206 24.76%-Done avgstep:06
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.51s || A-Time:00.00m:00.01s || 061/206 29.61%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.58s || A-Time:00.00m:00.01s || 071/206 34.47%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.67s || A-Time:00.00m:00.01s || 081/206 39.32%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.74s || A-Time:00.00m:00.01s || 091/206 44.17%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.81s || A-Time:00.00m:00.01s || 101/206 49.03%-Done avgstep:05
+CPUID:03 TAG:00 || E-Time:00.00h:00.00m:00.85s
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.87s || A-Time:00.00m:00.01s || 111/206 53.88%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:00.95s || A-Time:00.00m:00.01s || 121/206 58.74%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.06s || A-Time:00.00m:00.01s || 131/206 63.59%-Done avgstep:05
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.17s || A-Time:00.00m:00.01s || 141/206 68.45%-Done avgstep:06
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.30s || A-Time:00.00m:00.01s || 151/206 73.30%-Done avgstep:06
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.40s || A-Time:00.00m:00.01s || 161/206 78.16%-Done avgstep:06
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.52s || A-Time:00.00m:00.01s || 171/206 83.01%-Done avgstep:06
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.63s || A-Time:00.00m:00.01s || 181/206 87.86%-Done avgstep:06
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.73s || A-Time:00.00m:00.01s || 191/206 92.72%-Done avgstep:06
+CPUID:03 TAG:00 || T-Time:00.00h:00.00m:01.86s || A-Time:00.00m:00.01s || 201/206 97.57%-Done avgstep:06
+CPUID:03 TAG:00 || E-Time:00.00h:00.00m:00.06s
+Skeleton took 0.0 minuites and 1.9218628406524658 seconds
+process0 started
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.01s || A-Time:00.00m:00.01s || 001/205 00.49%-Done avgstep:05
+CPUID:00 TAG:00 || E-Time:00.00h:00.00m:01.98s
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.12s || A-Time:00.00m:00.01s || 011/205 05.37%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.23s || A-Time:00.00m:00.01s || 021/205 10.24%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.35s || A-Time:00.00m:00.01s || 031/205 15.12%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.47s || A-Time:00.00m:00.01s || 041/205 20.00%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.58s || A-Time:00.00m:00.01s || 051/205 24.88%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.69s || A-Time:00.00m:00.01s || 061/205 29.76%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.80s || A-Time:00.00m:00.01s || 071/205 34.63%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:00.90s || A-Time:00.00m:00.01s || 081/205 39.51%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.02s || A-Time:00.00m:00.01s || 091/205 44.39%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.14s || A-Time:00.00m:00.01s || 101/205 49.27%-Done avgstep:06
+CPUID:00 TAG:00 || E-Time:00.00h:00.00m:01.18s
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.26s || A-Time:00.00m:00.01s || 111/205 54.15%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.39s || A-Time:00.00m:00.01s || 121/205 59.02%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.49s || A-Time:00.00m:00.01s || 131/205 63.90%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.56s || A-Time:00.00m:00.01s || 141/205 68.78%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.60s || A-Time:00.00m:00.01s || 151/205 73.66%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.67s || A-Time:00.00m:00.01s || 161/205 78.54%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.73s || A-Time:00.00m:00.01s || 171/205 83.41%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.81s || A-Time:00.00m:00.01s || 181/205 88.29%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.87s || A-Time:00.00m:00.01s || 191/205 93.17%-Done avgstep:06
+CPUID:00 TAG:00 || T-Time:00.00h:00.00m:01.94s || A-Time:00.00m:00.01s || 201/205 98.05%-Done avgstep:05
+CPUID:00 TAG:00 || E-Time:00.00h:00.00m:00.05s
+Skeleton took 0.0 minuites and 1.9535815715789795 seconds
+booting processes...
+done
+Total Solve took: 0.0 Minuites 2.3299643993377686 Seconds
 Saving ... Please Wait
-Save Complete! Took 0.0 Minuites and 0.009517431259155273 Seconds
-abstime 0.0 minuites 0.036055564880371094 seconds
+Save Complete! Took 0.0 Minuites and 0.010173559188842773 Seconds
+abstime 0.0 minuites 0.021557092666625977 seconds
 Animation took 0 minuites and 0 seconds
-Total time to Complete: 0.0 Minuites 0.7960751056671143 Seconds
+Total time to Complete: 0.0 Minuites 2.3665480613708496 Seconds
 
-Job finished at Thu Sep  8 14:46:38 CDT 2022
+Job finished at Thu Sep  8 17:36:20 CDT 2022
