@@ -1,6 +1,7 @@
 from random  import randint
 # from sys import float_repr_style
 import sys
+import getopt
 # import matplotlib
 import matplotlib.pyplot as plt
 # import matplotlib.animation as animation
@@ -19,9 +20,26 @@ import time
 from SkeleNet import SkeleNet,skeletize
 from Skeletize import normalize, getDistance
 from DataStructures import kdTree
-#theta = np.linspace(0,2*np.pi,100)
+
+#Settings/Modes
+#PP-Mode or paralell procedure mode has 3 main opperations as of now
+#Mode 0 => No Parallel Calculation
+#Mode 1 => Normal Parallel Calculation
+#Mode 2 => MPI Calulation
 
 
+print('args =>',str(sys.argv[1:]))
+argumentList = sys.argv[1:]
+options = "iomp:"
+long_options = ["input","output","mode","parallel="]
+link = r''
+try:
+    arguments, values = getopt.getopt(argumentList,options,long_options)
+    for currentArgument, currentValue in arguments:
+        if currentArgument in ("-i","--input"):
+            link = currentValue
+except getopt.error as err:
+    print(str(err))
 
 if __name__ == '__main__':
     # __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
@@ -45,7 +63,7 @@ if __name__ == '__main__':
         link = source + link
     
     net = SkeleNet(link)
-    net.solve(False)
+    net.solve(False,[])
     net.savedat(1)
     net.plot([])
     
