@@ -638,11 +638,11 @@ class SkeleNet:
             i = 0
             while i < len(self.tpoints):
                 if self.animate: 
-                    tp,tr,tcp,ttp,trad,tcent = skeletize(tpoints[i],tnorms[i],self.threshDistance[i],self.tree[i],self.animate)
+                    tp,tr,tcp,ttp,trad,tcent = skeletize(self.tpoints[i],self.tnorms[i],self.threshDistance[i],self.tree[i],self.animate)
                 else:
-                    tp,tr = skeletize(tpoints[i],tnorms[i],self.threshDistance[i],self.tree[i],self.animate)
+                    tp,tr = skeletize(self.tpoints[i],self.tnorms[i],self.threshDistance[i],self.tree[i],self.animate)
                 self.SkelePoints.append([])
-                self.SkeleRads.append([])
+                self.SkeleRad.append([])
                 if self.animate:
                     self.acp.append([])
                     self.atp.append([])
@@ -651,9 +651,9 @@ class SkeleNet:
                 j = 0
                 while j < len(tp):
                     self.SkelePoints[i].append(tp[j])
-                    self.SkeleRads[i].append(tr[j])
+                    self.SkeleRad[i].append(tr[j])
                     j += 1
-                if self.Animate:
+                if self.animate:
                     j = 0
                     while j < len(tcp):
                         self.acp[i].append(tcp[j])
@@ -799,6 +799,7 @@ class SkeleNet:
                         j += 1  
                     i += 1
                 i = 0
+                print('divided points')
                 while i < len(self.tpoints):    
                     self.pool = ProcessingPool(nodes=self.cpuavail)
                     setthresh = []
@@ -814,8 +815,11 @@ class SkeleNet:
                         cpuid.append(j)
                         cputag.append(i)
                         j += 1
+                    print('ready')
                     work = Mpi(nodes)
+                    print('set')
                     output = work.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
+                    print('done')
                     for data in results:
                         t0 = data[0]
                         t1 = data[1]
@@ -1878,6 +1882,8 @@ class SkeleNet:
         print('Animation took {} minuites and {} seconds'.format((tt) // 60,(tt) % 60))
                 
     def savedat(self,mode : int = 0,outputfile: str = 'SkeleSave.dat'):
+        if outputfile == '':
+            outputfile = 'SkeleSave.dat'
         print('Saving ... Please Wait')
         st = time.time()
         i = 0

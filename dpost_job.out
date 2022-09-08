@@ -1,0 +1,149 @@
+Starting at /data/ling_shared/garciag/SkeletonV1
+node file /var/spool/pbs/aux/1045613.batch
+processes 36
+args => ['-m', '2', '-p', '4']
+list ['-m', '2', '-p', '4']
+[('-m', '2'), ('-p', '4')]
+We have 28 CPU's Available
+dim: 2
+Initiating k-d,Tree
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+9
+k-d tree took 0.0 minuites and 0.04814338684082031 seconds to make
+thresh [0.0015179592488928971]
+divided points
+ready
+runfailure
+Total Solve took: 0.0 Minuites 0.740363359451294 Seconds
+Saving ... Please Wait
+Save Complete! Took 0.0 Minuites and 0.009517431259155273 Seconds
+abstime 0.0 minuites 0.036055564880371094 seconds
+Animation took 0 minuites and 0 seconds
+Total time to Complete: 0.0 Minuites 0.7960751056671143 Seconds
+
+Job finished at Thu Sep  8 14:46:38 CDT 2022
