@@ -584,7 +584,7 @@ class kdTree:
                             retdev = retdevl
                         else:
                             retpts = retptsr
-                            retdev = retedevr
+                            retdev = retdevr
                     else:
                         if retdevl[0] > retdevr[0] and dl < dr:
                             retpts = retptsl

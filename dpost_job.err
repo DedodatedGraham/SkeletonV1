@@ -6,9 +6,27 @@ Traceback (most recent call last):
   File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 48, in mapstar
     return list(map(*args))
   File "/home/garciag/.local/lib/python3.10/site-packages/pathos/helpers/mp_helper.py", line -1, in <lambda>
-  File "/data/ling_shared/garciag/SkeletonV1/SkeleNet.py", line 285, in skeletize
-    if count == 1 and tempr[q] != minr:
-UnboundLocalError: local variable 'count' referenced before assignment
+  File "/data/ling_shared/garciag/SkeletonV1/SkeleNet.py", line 126, in skeletize
+    vpts,vdev = tree.getVectorR(inputdat[0])
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 522, in getVectorR
+    retptsl,retdevl =  self.leafL.getVectorR(tldata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 522, in getVectorR
+    retptsl,retdevl =  self.leafL.getVectorR(tldata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 522, in getVectorR
+    retptsl,retdevl =  self.leafL.getVectorR(tldata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 507, in getVectorR
+    retpts,retdev = self.leafR.getVectorR(tdata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 522, in getVectorR
+    retptsl,retdevl =  self.leafL.getVectorR(tldata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 522, in getVectorR
+    retptsl,retdevl =  self.leafL.getVectorR(tldata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 507, in getVectorR
+    retpts,retdev = self.leafR.getVectorR(tdata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 507, in getVectorR
+    retpts,retdev = self.leafR.getVectorR(tdata)
+  File "/data/ling_shared/garciag/SkeletonV1/DataStructures.py", line 587, in getVectorR
+    retdev = retedevr
+NameError: name 'retedevr' is not defined
 """
 
 The above exception was the direct cause of the following exception:
@@ -24,4 +42,4 @@ Traceback (most recent call last):
     return self._map_async(func, iterable, mapstar, chunksize).get()
   File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 771, in get
     raise self._value
-UnboundLocalError: local variable 'count' referenced before assignment
+NameError: name 'retedevr' is not defined
