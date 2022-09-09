@@ -193,24 +193,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             dist = getDistance(point,testp[leng])
             distc = getDistance(point,centerp[leng])
             ###NEW LOGIC
-            if i == 30:
-                #print()
-                print('error')
-                #print(cpuid,'stuck')
-                #print('point',point,'norm',norm)
-                #print('cross point',crossp.getPoint())
-                #print()
-                #print('rads',tempr)
-                #print()
-                #print('centers',centerp)
-                #print()
-                #print('tests',testp)
-                #print()
-                #print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
-                #print(vdev)
-                #print()
-                
-                case = True
             #First will always determine if inside shape..
             if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < threshDistance)):
                 #Next we want to check for convergence
@@ -257,6 +239,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         atp[index].append(testp[leng - 1])
                         arad[index].append(SkeleRad[len(SkeleRad) - 1])
                     case = True
+            #Check if the distance is way too far inside
             if i > 0 and dist < threshDistance and crossdis > threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
@@ -273,6 +256,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     atp[index].append(testp[leng - 1])
                     arad[index].append(SkeleRad[len(SkeleRad) - 1])
                 case = True
+            #Checks if the distance is within
             if i > 0 and dist < crossdis - threshDistance and tempr[leng] > crossdis - threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
@@ -289,7 +273,25 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     atp[index].append(testp[leng - 1])
                     arad[index].append(SkeleRad[len(SkeleRad) - 1])
                 case = True
-
+            if i > 30 and not(case):
+                #When i > 30 we want to discount the crossdistance, and go back to the last 'best' point
+                q = len(tempr) - 2
+                minr = tempr[len(tempr)-1]
+                counts = 0
+                while q >= 0:
+                    if tempr[q] > minr and counts == 0:
+                        minr = tempr[q]
+                        counts += 1
+                    if counts == 1 and tempr[q] != minr:
+                        SkelePoints.append(centerp[q])
+                        SkeleRad.append(tempr[q])
+                        if animate:
+                            acp[index].append(SkelePoints[q])
+                            atp[index].append(testp[q])
+                            arad[index].append(SkeleRad[q])
+                        case = True
+                        q = -1
+                    q += -1
             ###OLD LOGIC
 
             #if i > 2 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance and tempr[leng] < crossdis + threshDistance:
