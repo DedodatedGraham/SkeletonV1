@@ -275,23 +275,19 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 case = True
             if i > 30 and not(case):
                 #When i > 30 we want to discount the crossdistance, and go back to the last 'best' point
-                q = len(tempr) - 2
-                minr = tempr[len(tempr)-1]
-                counts = 0
-                while q >= 0:
-                    if tempr[q] > minr and counts == 0:
-                        minr = tempr[q]
-                        counts += 1
-                    if counts == 1 and tempr[q] != minr:
-                        SkelePoints.append(centerp[q])
-                        SkeleRad.append(tempr[q])
+                saver = tempr[len(tempr) - 1]
+                q = 1
+                while q < len(tempr) - 1:
+                    if np.abs(tempr[q]-tempr[q+1]) < threshDistance:
+                        SkelePoints.append(centerp[q-1])
+                        SkeleRad.append(tempr[q-1])
                         if animate:
-                            acp[index].append(SkelePoints[q])
-                            atp[index].append(testp[q])
-                            arad[index].append(SkeleRad[q])
-                        case = True
-                        q = -1
-                    q += -1
+                            acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                            atp[index].append(testp[q-1])
+                            arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                        break
+                    q += 1
+                case = True
             ###OLD LOGIC
 
             #if i > 2 and np.abs(tempr[leng] - tempr[leng - 1]) < threshDistance and tempr[leng] < crossdis + threshDistance:
