@@ -273,20 +273,23 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     atp[index].append(testp[leng - 1])
                     arad[index].append(SkeleRad[len(SkeleRad) - 1])
                 case = True
+            #HERE we check if its stuck but the vector could be wrong. 
             if i > 30 and not(case):
+                #SKIPPING WRONG POINTS FOR NOW.
                 #When i > 30 we want to discount the crossdistance, and go back to the last 'best' point
-                saver = tempr[len(tempr) - 1]
-                q = 1
-                while q < len(tempr) - 1:
-                    if np.abs(tempr[q]-tempr[q+1]) < threshDistance:
-                        SkelePoints.append(centerp[q-1])
-                        SkeleRad.append(tempr[q-1])
-                        if animate:
-                            acp[index].append(SkelePoints[len(SkelePoints) - 1])
-                            atp[index].append(testp[q-1])
-                            arad[index].append(SkeleRad[len(SkeleRad) - 1])
-                        break
-                    q += 1
+                #saver = tempr[len(tempr) - 1]
+                #q = 1
+                #while q < len(tempr) - 1:
+                #    if np.abs(tempr[q]-tempr[q+1]) < threshDistance:
+                #        SkelePoints.append(centerp[q-1])
+                #        SkeleRad.append(tempr[q-1])
+                #        if animate:
+                #            acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                #            atp[index].append(testp[q-1])
+                #            arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                #        q = len(tempr) - 1
+                #    if not(q == len(tempr) - 1) and :
+                #    q += 1
                 case = True
             ###OLD LOGIC
 
