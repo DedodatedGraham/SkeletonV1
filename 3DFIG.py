@@ -44,16 +44,16 @@ with open('SkeleSave.dat','r') as csvfile:
 #    for row in data:
 #        if str(row[0]) == 'x':
 #            a = 0
-#        elif len(row) == 6:
-#            if float(row[0]) > 0 and float(row[1]) > 0 and float(row[2]) > 0:
-#                print(i)
-#                i += 1
-#                ttx.append(float(row[0]))
-#                tty.append(float(row[1]))
-#                ttz.append(float(row[2]))
-#                tnx.append(float(row[3]))
-#                tny.append(float(row[4]))
-#                tnz.append(float(row[5]))
+#        else:
+#            #if float(row[0]) > 0 and float(row[1]) > 0 and float(row[2]) > 0:
+#            print(i)
+#            i += 1
+#            ttx.append(float(row[0]))
+#            tty.append(float(row[1]))
+#            ttz.append(float(row[2]))
+#            tnx.append(float(row[3]))
+#            tny.append(float(row[4]))
+#            tnz.append(float(row[5]))
 
 #with open('vof_points_norms.dat','r') as csvfile:
 #    data = csv.reader(csvfile,delimiter = ' ')
@@ -80,9 +80,9 @@ fig = plt.figure()
 ax = plt.axes(projection='3d') 
 p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='winter')
 fig.colorbar(p)
+#q = ax.scatter3D(ttx,tty,ttz,s=5,c='orange')
 plt.savefig('Skeleton3DFIG.png')
 #plt.clf()
-#q = ax.scatter3D(ttx,tty,ttz,s=5,c=ttz,cmap='viridis')
 #fig.colorbar(q)
 #ax.plot3D([ttx[1000],ttx[1000] + tnx[1000]],[tty[1000],tty[1000] + tny[1000]],[ttz[1000],ttz[1000] + tnz[1000]])
 #plt.savefig('3DInterface.png')
