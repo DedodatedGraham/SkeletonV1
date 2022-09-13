@@ -548,7 +548,7 @@ class kdTree:
                     retpts = retptsr
                     retdev = retdevr
                 #LOGIC FOR THIN BAG, theres only 2 surfaces realistically, so prio further 
-                if (dl > data[2] and dr < data[2]) or (dl < data[2] and dr > data[2]):
+                if (dl > data[2]*10 and dr < data[2]*10) or (dl < data[2]*10 and dr > data[2]*10):
                     if retdevr[0] > 0.9 and retdevl[0] > 0.9:
                         if dr > dl:
                             retpts = retptsr
@@ -563,13 +563,29 @@ class kdTree:
                         else:
                             retpts = retptsl
                             retdev = retdevl
-                else:
+                elif dl > data[2]*10 and dr > data[2]*10:
                     if retdevr[0] > retdevl[0]:
                         retpts = retptsr
                         retdev = retdevr
                     else:
                         retpts = retptsl
                         retdev = retdevl
+                else:
+                    if retdevr[0] > 0.9 and retdevl[0] > 0.9:
+                        if dr > dl:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+                    else:
+                        if retdevr[0] > retdevl[0]:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+
                 ###LOGIC, WORKS For 2D Spiral, Taking a differnet approach here.
                 ###elif diffdev < data[2]*10:
                 ###    if dl < data[2]/10 and dr < data[2]/10:
@@ -636,7 +652,7 @@ class kdTree:
                 dl = getDistance(data[0],retpts[0].getPoint()) 
                 
                 #thin bag
-                if (dn > data[2] and dl < data[2]) or (dn < data[2] and dl > data[2]):
+                if (dn > data[2]*10 and dl < data[2]*10) or (dn < data[2]*10 and dl > data[2]*10):
                     if dev > 0.9 and retdev[0] > 0.9:
                         if dn > dl:
                             retpts = [node]
@@ -645,11 +661,19 @@ class kdTree:
                         if dev > retdev[0]:
                             retpts = [node]
                             retdev = [dev]
-                    
-                else:
+                elif dn > data[2]*10 and dl > data[2]*10:
                     if dev > retdev[0]:
                         retpts = [node]
                         retdev = [dev]
+                else:
+                    if dev > 0.9 and retdev[0] > 0.9:
+                        if dn > dl:
+                            retpts = [node]
+                            retdev = [dev]
+                    else:
+                        if dev > retdev[0]:
+                            retpts = [node]
+                            retdev = [dev]
 
                 ###2D Spiral Case
                 ###if diffdev < data[2]*10:
