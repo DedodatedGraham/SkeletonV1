@@ -548,43 +548,43 @@ class kdTree:
                     retpts = retptsr
                     retdev = retdevr
                 #LOGIC FOR THIN BAG, theres only 2 surfaces realistically, so prio further 
-                if (dl > data[2]*10 and dr < data[2]*10) or (dl < data[2]*10 and dr > data[2]*10):
-                    if retdevr[0] > 0.9 and retdevl[0] > 0.9:
-                        if dr > dl:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                    else:
-                        if retdevr[0] > retdevl[0]:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                elif dl > data[2]*10 and dr > data[2]*10:
-                    if retdevr[0] > retdevl[0]:
+                #if (dl > data[2]*10 and dr < data[2]*10) or (dl < data[2]*10 and dr > data[2]*10):
+                #    if retdevr[0] > 0.9 and retdevl[0] > 0.9:
+                #        if dr > dl:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #    else:
+                #        if retdevr[0] > retdevl[0]:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #elif dl > data[2]*10 and dr > data[2]*10:
+                #    if retdevr[0] > retdevl[0]:
+                #        retpts = retptsr
+                #        retdev = retdevr
+                #    else:
+                #        retpts = retptsl
+                #        retdev = retdevl
+                #else:
+                if retdevr[0] > 0.9 and retdevl[0] > 0.9:
+                    if dr > dl:
                         retpts = retptsr
                         retdev = retdevr
                     else:
                         retpts = retptsl
                         retdev = retdevl
                 else:
-                    if retdevr[0] > 0.9 and retdevl[0] > 0.9:
-                        if dr > dl:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
+                    if retdevr[0] > retdevl[0]:
+                        retpts = retptsr
+                        retdev = retdevr
                     else:
-                        if retdevr[0] > retdevl[0]:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
+                        retpts = retptsl
+                        retdev = retdevl
 
                 ###LOGIC, WORKS For 2D Spiral, Taking a differnet approach here.
                 ###elif diffdev < data[2]*10:
