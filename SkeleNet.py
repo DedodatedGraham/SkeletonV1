@@ -602,8 +602,8 @@ class SkeleNet:
         #Solves for all taggs individually
         #will be paralled in the future
         print('dim:',self.dim)
-        if mode == 1:
-            self.cpuavail = min(self.cpuavail,node)
+        if node != 0 and mode == 1:
+            self.cpuavail = node
         if animate:
             self.animate = True
             self.acp = []

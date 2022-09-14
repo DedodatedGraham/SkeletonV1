@@ -1,5 +1,5 @@
 #!/bin/sh
-#PBS -l nodes=1:ppn=36
+#PBS -l nodes=1:ppn=128
 #PBS -o dpost_job.out
 #PBS -e dpost_job.err
 
@@ -11,7 +11,7 @@ num=`cat $PBS_NODEFILE | wc -l`
 echo "processes $num"
 
 
-mpiexec -n 1 -machinefile $PBS_NODEFILE python3 Main.py -m 1 -p 34
+mpiexec -n 1 -machinefile $PBS_NODEFILE python3 Main.py -m 1 -p 120
 
 echo
 echo "Job finished at `date`"
