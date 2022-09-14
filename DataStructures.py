@@ -652,28 +652,28 @@ class kdTree:
                 dl = getDistance(data[0],retpts[0].getPoint()) 
                 
                 #thin bag
-                if (dn > data[2]*10 and dl < data[2]*10) or (dn < data[2]*10 and dl > data[2]*10):
-                    if dev > 0.9 and retdev[0] > 0.9:
-                        if dn > dl:
-                            retpts = [node]
-                            retdev = [dev]
-                    else:
-                        if dev > retdev[0]:
-                            retpts = [node]
-                            retdev = [dev]
-                elif dn > data[2]*10 and dl > data[2]*10:
-                    if dev > retdev[0]:
+                #if (dn > data[2]*10 and dl < data[2]*10) or (dn < data[2]*10 and dl > data[2]*10):
+                #    if dev > 0.9 and retdev[0] > 0.9:
+                #        if dn > dl:
+                #            retpts = [node]
+                #            retdev = [dev]
+                #    else:
+                #        if dev > retdev[0]:
+                #            retpts = [node]
+                #            retdev = [dev]
+                #elif dn > data[2]*10 and dl > data[2]*10:
+                #    if dev > retdev[0]:
+                #        retpts = [node]
+                #        retdev = [dev]
+                #else:
+                if dev > 0.9 and retdev[0] > 0.9:
+                    if dn > dl:
                         retpts = [node]
                         retdev = [dev]
                 else:
-                    if dev > 0.9 and retdev[0] > 0.9:
-                        if dn > dl:
-                            retpts = [node]
-                            retdev = [dev]
-                    else:
-                        if dev > retdev[0]:
-                            retpts = [node]
-                            retdev = [dev]
+                    if dev > retdev[0]:
+                        retpts = [node]
+                        retdev = [dev]
 
                 ###2D Spiral Case
                 ###if diffdev < data[2]*10:

@@ -20,7 +20,7 @@ with open('SkeleSave.dat','r') as csvfile:
     for row in data:
         if str(row[0]) == 'x':
             a = 0
-        elif float(row[3]) > 0.01:
+        elif float(row[3]) > 0.00:
             i += 1
             x = float(row[0])
             y = float(row[1])
