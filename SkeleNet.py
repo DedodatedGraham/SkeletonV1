@@ -429,7 +429,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             print('Centerpoints',centerp)
             print('Testpoints',testp)
             print('radii',tempr)
-            print('crossp',crossp,'is at a distance of',crossdis)
+            print('crossp',crossp.getPoint(),'is at a distance of',crossdis)
             print()
         if index % 10 == 0:
             tat = avgt / numt
