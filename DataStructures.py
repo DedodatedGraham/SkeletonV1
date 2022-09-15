@@ -572,19 +572,38 @@ class kdTree:
                 #        retdev = retdevl
                 #else:
                 if retdevr[0] > 0.9 and retdevl[0] > 0.9:
-                    if np.abs(dr-dl) > data[2]*10:
+                    if dr < data[2] and dl < data[2]:
+                        if dr > dl and retdevr[0] > retdevl[0]:
+                            retpts = retptsr
+                            retdev = retdevr
+                        elif dl > dr and retdevl[0] > retdevr[0]:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            #Here, Both are pretty close to on par with normal, but none is a decisive winner.
+                            #So we choose off of retdev for maximazation, and theyre very close anyways
+                            if retdevr[0] > retdevl[0]:
+                                retpts = retptsr
+                                retdev = retdevr
+                            else:
+                                retpts = retptsl
+                                retdev = retdevl
+                                
+                    elif dr > data[2] and dl > data[2]:
                         if dr < dl:
                             retpts = retptsr
                             retdev = retdevr
                         else:
                             retpts = retptsl
                             retdev = retdevl
-                    elif dr > dl:
-                        retpts = retptsr
-                        retdev = retdevr
                     else:
-                        retpts = retptsl
-                        retdev = retdevl
+                        #This should be the part to switch if next run doesnt work.
+                        if dr > dl:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
                 else:
                     if retdevr[0] > retdevl[0]:
                         retpts = retptsr
@@ -674,13 +693,23 @@ class kdTree:
                 #        retdev = [dev]
                 #else:
                 if dev > 0.9 and retdev[0] > 0.9:
-                    if np.abs(dn-dl) > data[2] * 10:
+                    if dn < data[2] and dl < data[2]:
+                        if dn > dl and dev > retdev[0]:
+                            retpts = [node]
+                            retdev = [dev]
+                        else:
+                            if dev > retdev[0]:
+                                retpts = [node]
+                                retdev = [dev]
+                    elif dn > data[2] and dl > data[2]:
                         if dn < dl:
                             retpts = [node]
                             retdev = [dev]
-                    elif dn > dl:
-                        retpts = [node]
-                        retdev = [dev]
+                    else:
+                        if dn > dl:
+                            retpts = [node]
+                            retdev = [dev]
+                
                 else:
                     if dev > retdev[0]:
                         retpts = [node]
