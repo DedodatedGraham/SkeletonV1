@@ -42,6 +42,8 @@ try:
     for currentArgument, currentValue in arguments:
         if currentArgument in ("-i"):
             link = str(currentValue)
+            source = os.path.dirname(os.path.abspath(__file__))
+            link = source + r'/' + link
         if currentArgument in ("-o"):
             savefile = str(currentValue)
         if currentArgument in ("-m"):
@@ -59,7 +61,7 @@ if __name__ == '__main__':
     plt.rcParams['figure.dpi'] = 300
 
     linep = True
-    if linep: 
+    if linep and len(link) <= 1: 
         # link = r'/interface_points_020000.dat'
         # link = r'/spiral.dat' 
         link = r'/vof_points_norm_0650.dat'
@@ -67,10 +69,10 @@ if __name__ == '__main__':
         # link = r'/vof_points_norms.dat'
         # link = r'/bagdrop.dat'
         # link = r'/disk1.dat'
-        savefile = 'SkeleSave.dat'
         source = os.path.dirname(os.path.abspath(__file__))
         link = source + link
-    
+    if linep and len(savefile) <= 1:
+        savefile = 'SkeleSave.dat'
     net = SkeleNet(link)
     net.solve(False,mode,noderequest)
     net.savedat(1,savefile)

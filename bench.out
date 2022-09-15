@@ -1,0 +1,27 @@
+Starting at /data/ling_shared/garciag/SkeletonV1
+node file /var/spool/pbs/aux/1050167.batch
+processes 36
+args => ['-i', 'disk1.dat', '-m', '1', '-p', '1']
+list ['-i', 'disk1.dat', '-m', '1', '-p', '1']
+[('-i', 'disk1.dat'), ('-m', '1'), ('-p', '1')]
+We have 28 CPU's Available
+args => ['-i', 'disk1.dat', '-m', '1', '-p', '2']
+list ['-i', 'disk1.dat', '-m', '1', '-p', '2']
+[('-i', 'disk1.dat'), ('-m', '1'), ('-p', '2')]
+We have 28 CPU's Available
+args => ['-i', 'disk1.dat', '-m', '1', '-p', '4']
+list ['-i', 'disk1.dat', '-m', '1', '-p', '4']
+[('-i', 'disk1.dat'), ('-m', '1'), ('-p', '4')]
+We have 28 CPU's Available
+args => ['-i', 'disk1.dat', '-m', '1', '-p', '8']
+list ['-i', 'disk1.dat', '-m', '1', '-p', '8']
+[('-i', 'disk1.dat'), ('-m', '1'), ('-p', '8')]
+We have 28 CPU's Available
+args => ['-i', 'disk1.dat', '-m', '1', '-p', '16']
+list ['-i', 'disk1.dat', '-m', '1', '-p', '16']
+[('-i', 'disk1.dat'), ('-m', '1'), ('-p', '16')]
+We have 28 CPU's Available
+args => ['-i', 'disk1.dat', '-m', '1', '-p', '32']
+list ['-i', 'disk1.dat', '-m', '1', '-p', '32']
+[('-i', 'disk1.dat'), ('-m', '1'), ('-p', '32')]
+We have 28 CPU's Available
