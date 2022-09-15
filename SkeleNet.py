@@ -422,13 +422,22 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         avgstep += len(tempr)
         numt += 1
         #print(i,i > 2, tempr[leng] < (threshDistance),dist < (threshDistance))
+        if i < 25 and SkelePoints[len(SkelePoints) - 1][2] > 0.4 and SkeleRad[len(SkeleRad) - 1] < 0.02:
+            print()
+            print('error at point:',point)
+            print('Normal',norm)
+            print('Centerpoints',centerp)
+            print('Testpoints',testp)
+            print('radii',tempr)
+            print('crossp',crossp,'is at a distance of',crossdis)
+            print()
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt
-            print('CPUID:{:02d} TAG:{:02d} || T-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s || A-Time:{:05.2f}m:{:05.2f}s || {}/{} {:05.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
+            #print('CPUID:{:02d} TAG:{:02d} || T-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s || A-Time:{:05.2f}m:{:05.2f}s || {}/{} {:05.2f}%-Done avgstep:{:02d}'.format(cpuid,tag,avgt // 3600, (avgt % 3600) // 60,(avgt % 3600) % 60,tat // 60,tat % 60,str(index + 1).zfill(lenptso),len(points), ((index + 1) / (len(points))) * 100,int(np.ceil(sat))),file=sys.stdout) 
         if index % 100 == 0:
             est = tat * (len(points) - index)
-            print('CPUID:{:02d} TAG:{:02d} || E-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
+            #print('CPUID:{:02d} TAG:{:02d} || E-Time:{:05.2f}h:{:05.2f}m:{:05.2f}s'.format(cpuid,tag,est // 3600,(est % 3600) // 60,(est % 3600) % 60),file=sys.stdout)
         index += 1
     te = time.time()
     tt = te - ts
