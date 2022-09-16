@@ -239,7 +239,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         atp[index].append(testp[leng - 1])
                         arad[index].append(SkeleRad[len(SkeleRad) - 1])
                     case = True
-                elif tempr[leng] < 10*threshDistance and crossdis < 10*threshDistance:
+                elif tempr[leng] < 10*threshDistance and crossdis > 10*threshDistance:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(getDistance(point,centerp[leng - 1]))
                     if animate:
