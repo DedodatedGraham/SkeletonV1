@@ -196,7 +196,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             #First will always determine if inside shape..
             if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < threshDistance)):
                 #Next we want to check for convergence
-                if abs(tempr[leng] - tempr[leng - 1]) < 10*threshDistance:
+                if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(getDistance(point,centerp[leng]))
                     if SkeleRad[len(SkeleRad)-1] > 1:
@@ -240,7 +240,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         arad[index].append(SkeleRad[len(SkeleRad) - 1])
                     case = True
             #Check if the distance is way too far inside
-            if i > 0 and dist < threshDistance and crossdis > threshDistance and not(case):
+            if i > 0 and dist < 10*threshDistance and crossdis > 10*threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
                 #if SkeleRad[len(SkeleRad)-1] > 0.3:
