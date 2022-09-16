@@ -1,2 +1,12 @@
-/var/spool/pbs/mom_priv/jobs/1050464.batch.SC: line 23: syntax error near unexpected token `$runtime'
-/var/spool/pbs/mom_priv/jobs/1050464.batch.SC: line 23: `    $timesave+=($runtime)'
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: runtime: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: +=: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: runtime: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: +=: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: runtime: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: +=: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: runtime: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: +=: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: runtime: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: +=: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: runtime: command not found
+/var/spool/pbs/mom_priv/jobs/1050465.batch.SC: line 23: +=: command not found

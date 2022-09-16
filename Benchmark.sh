@@ -16,8 +16,8 @@ do
     startt=`date +%s`	
     mpiexec -n 1 -machinefile $PBS_NODEFILE python3 Main.py -i 'disk1.dat' -o 'benchsave.dat' -m 1 -p $i
     endt=`date +%s`
-    runtime=$((endt-startt))
-    $timesave+=$(runtime)
+    #runtime=$()
+    $timesave+=$((endt-startt))
 done
 echo $timesave
 printf "%s\n" "${timesave[@]}" > bench.txt
