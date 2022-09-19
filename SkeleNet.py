@@ -194,7 +194,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             distc = getDistance(point,centerp[leng])
             ###NEW LOGIC
             #First will always determine if inside shape..
-            if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < threshDistance)):
+            if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < 10*threshDistance)):
                 #Next we want to check for convergence
                 if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
@@ -223,7 +223,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 
                 #Then if we fall too close to the interface, but the cross isnt there either. Should alllow us to see thin areas well..
                 #Keeps us inside shape at the very least. usually getting too small happens past mid point//
-                elif dist < tempr[leng] + 10*threshDistance: 
+                elif dist < tempr[leng] + threshDistance: 
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(getDistance(point,centerp[leng - 1]))
                     #if SkeleRad[len(SkeleRad)-1] > 0.3:
@@ -239,14 +239,14 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         atp[index].append(testp[leng - 1])
                         arad[index].append(SkeleRad[len(SkeleRad) - 1])
                     case = True
-                elif tempr[leng] < 10*threshDistance and crossdis > 10*threshDistance:
-                    SkelePoints.append(centerp[leng - 1])
-                    SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                    if animate:
-                        acp[index].append(SkelePoints[len(SkelePoints) - 1])
-                        atp[index].append(testp[leng - 1])
-                        arad[index].append(SkeleRad[len(SkeleRad) - 1])
-                    case = True
+                #elif tempr[leng] < 10*threshDistance and crossdis > 10*threshDistance:
+                #    SkelePoints.append(centerp[leng - 1])
+                #    SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                #    if animate:
+                #        acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                #        atp[index].append(testp[leng - 1])
+                #        arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                #    case = True
 
             #Check if the distance is way too far inside
             if i > 1 and dist < 10*threshDistance and crossdis > 10*threshDistance and not(case):
