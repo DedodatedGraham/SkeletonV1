@@ -1,5 +1,5 @@
 #!/bin/sh
-#PBS -l nodes=1:ppn=36
+#PBS -l nodes=1:ppn=128
 #PBS -o bench.out
 #PBS -e bench.err
 
@@ -9,7 +9,7 @@ echo "node file $PBS_NODEFILE"
 num=`cat $PBS_NODEFILE | wc -l`
 echo "processes $num"
 
-for i in {1,2,4,8,16,32}
+for i in {1,2,4,8,16,32,64,128}
 do
     startt=`date +%s`	
     mpiexec -n 1 -machinefile $PBS_NODEFILE python3 Main.py -i 'disk1.dat' -o 'benchsave.dat' -m 1 -p $i
