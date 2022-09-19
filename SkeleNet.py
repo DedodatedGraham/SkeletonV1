@@ -239,14 +239,14 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                         atp[index].append(testp[leng - 1])
                         arad[index].append(SkeleRad[len(SkeleRad) - 1])
                     case = True
-                #elif tempr[leng] < 10*threshDistance and crossdis > 10*threshDistance:
-                #    SkelePoints.append(centerp[leng - 1])
-                #    SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                #    if animate:
-                #        acp[index].append(SkelePoints[len(SkelePoints) - 1])
-                #        atp[index].append(testp[leng - 1])
-                #        arad[index].append(SkeleRad[len(SkeleRad) - 1])
-                #    case = True
+                elif tempr[leng] < 10*threshDistance and crossdis > 10*threshDistance and tempr[leng - 1] < 0.3:
+                    SkelePoints.append(centerp[leng - 1])
+                    SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                    if animate:
+                        acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                        atp[index].append(testp[leng - 1])
+                        arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                    case = True
 
             #Check if the distance is way too far inside
             if i > 1 and dist < 10*threshDistance and crossdis > 10*threshDistance and not(case):
@@ -431,7 +431,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         avgstep += len(tempr)
         numt += 1
         #print(i,i > 2, tempr[leng] < (threshDistance),dist < (threshDistance))
-        if i < 25 and SkelePoints[len(SkelePoints) - 1][2] > 0.4 and SkeleRad[len(SkeleRad) - 1] < 0.02:
+        if i < 25 and SkelePoints[len(SkelePoints) - 1][2] > 0.5 and SkeleRad[len(SkeleRad) - 1] < 0.02:
             print()
             print('error at point:',point)
             print('Normal',norm)
