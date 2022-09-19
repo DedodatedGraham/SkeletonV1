@@ -41,6 +41,6 @@ while i < len(time):
 print(time,nodes)
 
 plt.plot(nodes,time)
-plt.xlabel('Log(Cores); (1->32)')
+plt.xlabel('Log(Cores); (1->128)')
 plt.ylabel('Log(Time)')
 plt.savefig('LogBench.png')
