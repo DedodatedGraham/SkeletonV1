@@ -1,7 +1,27 @@
+multiprocess.pool.RemoteTraceback: 
+"""
 Traceback (most recent call last):
-  File "/data/ling_shared/garciag/SkeletonV1/Main.py", line 20, in <module>
-    from SkeleNet import SkeleNet,skeletize
-  File "/data/ling_shared/garciag/SkeletonV1/SkeleNet.py", line 446
-    while s < len(testp[q])
-                           ^
-SyntaxError: expected ':'
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/home/garciag/.local/lib/python3.10/site-packages/pathos/helpers/mp_helper.py", line -1, in <lambda>
+  File "/data/ling_shared/garciag/SkeletonV1/SkeleNet.py", line 449, in skeletize
+    d = getDeviation(Norm,tvr)
+NameError: name 'getDeviation' is not defined
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/data/ling_shared/garciag/SkeletonV1/Main.py", line 77, in <module>
+    net.solve(False,mode,noderequest)
+  File "/data/ling_shared/garciag/SkeletonV1/SkeleNet.py", line 754, in solve
+    results = self.pool.map(skeletize,self.divpts[i],self.divnrms[i],setthresh,temptree,ani,cpuid,cputag)
+  File "/home/garciag/.local/lib/python3.10/site-packages/pathos/multiprocessing.py", line 139, in map
+    return _pool.map(star(f), zip(*args)) # chunksize
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 364, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 771, in get
+    raise self._value
+NameError: name 'getDeviation' is not defined

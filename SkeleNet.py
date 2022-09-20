@@ -17,7 +17,7 @@ from pathos.pp import ParallelPool
 from pathos.multiprocessing import ProcessingPool,ThreadPool
 
 from DataStructures import kdTree,SplitTree
-from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint,randPN
+from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint,randPN,getDeviation
 from mpl_toolkits import mplot3d
 from itertools import cycle
 cycol = cycle('bgrcmk')
