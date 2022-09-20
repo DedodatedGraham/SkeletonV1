@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/data/ling_shared/garciag/SkeletonV1/Main.py", line 20, in <module>
+    from SkeleNet import SkeleNet,skeletize
+  File "/data/ling_shared/garciag/SkeletonV1/SkeleNet.py", line 446
+    while s < len(testp[q])
+                           ^
+SyntaxError: expected ':'

@@ -443,7 +443,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             while q >= 0:
                 s = 0
                 tvr = []
-                while s < len(testp[q])
+                while s < len(testp[q]):
                     tvr.append(testp[q][s] - point[s])
                     s += 1
                 d = getDeviation(Norm,tvr)
