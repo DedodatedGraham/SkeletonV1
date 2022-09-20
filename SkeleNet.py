@@ -439,6 +439,20 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             print('Testpoints',testp)
             print('radii',tempr)
             print('crossp',crossp.getPoint(),'is at a distance of',crossdis)
+            q = len(testp) - 1
+            while q >= 0:
+                s = 0
+                tvr = []
+                while s < len(testp[q])
+                    tvr.append(testp[q][s] - point[s])
+                    s += 1
+                d = getDeviation(Norm,tvr)
+                print(d)
+                if d > 0.6:
+                    SkelePoints[len(SkelePoints)-1] = centerp[q]
+                    SkeleRad[len(SkeleRad)-1] = tempr[q]
+                    q = -1
+                q -= 1
             print()
         if index % 10 == 0:
             tat = avgt / numt
