@@ -1905,7 +1905,7 @@ class SkeleNet:
                     plt.scatter(self.delpoints[i][0],self.delpoints[i][1],10,color='black')
                     i += 1
                 plt.show()
-                plt.savefig('orderLines.png')
+                plt.savefig('orderLines.png') 
             et = time.time()
             tt += (et - st)
             index += 1        
@@ -1954,3 +1954,5 @@ class SkeleNet:
         et = time.time()
         tt = et - st
         print('Save Complete! Took {} Minuites and {} Seconds'.format(tt // 60, tt % 60))
+
+    
