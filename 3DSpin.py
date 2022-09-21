@@ -30,6 +30,7 @@ p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='winter')
 fig.colorbar(p)
 i = 0
 while i < 360:
-    pt.savefig('AnimationData/Spin/{0:0=3d}spin.png'.format(i))
-    ax.view_init()
+    ax.view_init(30,i)
+    plt.savefig('AnimationData/Spin/{0:0=3d}spin.png'.format(i))
+    print(i)
     i += 1
