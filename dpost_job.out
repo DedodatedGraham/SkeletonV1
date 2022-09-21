@@ -1,5 +1,5 @@
 Starting at /data/ling_shared/garciag/SkeletonV1
-node file /var/spool/pbs/aux/1054734.batch
+node file /var/spool/pbs/aux/1054880.batch
 processes 128
 args => ['-m', '1', '-p', '120']
 list ['-m', '1', '-p', '120']
@@ -8198,270 +8198,312 @@ Initiating k-d,Tree
 54
 54
 54
-k-d tree took 1.0 minuites and 12.68685507774353 seconds to make
-thresh [0.0010788504228129742]
+k-d tree took 1.0 minuites and 12.798382043838501 seconds to make
+thresh [0.0008583369895709195]
 booting processes...
-process99 started
+process0 started
 
-error at point: [3.19611, 0.335938, 0.554688]
-Normal [0.877412, 0.262311, 0.401672]
-Centerpoints [[-15.981931183490651, -5.39752719181709, -8.224861582471013], [2.505353364408, 0.129429468274, 0.23846529124799998], [2.97314206256, 0.26927952868, 0.45261511136], [3.111732797608, 0.310712600374, 0.516060810448], [3.13698120532, 0.31826086171, 0.52761932392], [3.185753906164, 0.332841943267, 0.549947065384], [3.193979643664, 0.335301108892, 0.553712740384]]
-Testpoints [[3.19611, 0.335938, 0.554688], [2.77875, 0.828125, 0.0], [2.82031, 0.37653, 0.625], [3.01562, 0.3125, 0.518684], [3.09375, 0.296875, 0.480554], [3.1875, 0.328125, 0.560625], [3.19185, 0.335938, 0.554688]]
-radii [21.857509566190856, 0.787266, 0.25412, 0.096166, 0.06739, 0.011803, 0.002428]
-crossp [3.10183, 0.28125, 0.484375] is at a distance of 0.12970510287957054
+error at point: [2.875, 0.479154, 0.5]
+Normal [-0.550047, -0.572895, -0.607651]
+Centerpoints [[12.440266400436965, 10.441745004911098, 11.066994626808114], [2.946481357885, 0.553604569725, 0.578967285705], [2.94065911039, 0.54754047615, 0.57253529987], [2.87979640984, 0.4841496444, 0.50529871672], [2.877076977472, 0.48131725152000004, 0.502294490176]]
+Testpoints [[2.875, 0.479154, 0.5], [2.97624, 0.664062, 0.640625], [3.00781, 0.610619, 0.648438], [2.88281, 0.484375, 0.497119], [2.875, 0.484375, 0.501521]]
+radii [17.38990740870683, 0.129955, 0.11937, 0.00872, 0.003776]
+crossp [3.03906, 0.5625, 0.648393] is at a distance of 0.23639526595302204
 process12 started
-Skeleton took 74.0 minuites and 40.40516781806946 seconds
+
+error at point: [2.79933, 0.5, 0.546875]
+Normal [-0.545941, -0.567647, -0.616218]
+Centerpoints [[12.293193440616815, 10.371328770830205, 11.262848963578506], [2.870263568189, 0.5737538070629999, 0.626939588522], [2.8648096175989997, 0.568083013533, 0.620783570702], [2.8041779560799998, 0.50504070536, 0.55234701584], [2.8015132180589997, 0.502270020353, 0.549339255782]]
+Testpoints [[2.79933, 0.5, 0.546875], [2.95896, 0.664062, 0.65625], [2.92969, 0.626355, 0.703125], [2.80469, 0.507812, 0.543926], [2.80469, 0.5, 0.548476]]
+radii [17.38990740870683, 0.129929, 0.119939, 0.00888, 0.003999]
+crossp [2.9293, 0.617188, 0.710938] is at a distance of 0.23987891990127022
+process51 started
+
+error at point: [2.95082, 0.671875, 0.65625]
+Normal [0.531292, 0.575406, 0.621802]
+Centerpoints [[-6.288298686986668, -9.334382062414361, -10.156829206548723], [2.3946199684560003, 0.06949281590799994, 0.0052966786360000295], [2.8710682891720003, 0.585501380746, 0.562911923582], [2.8861883282000003, 0.6018768601, 0.5806077867], [2.9460649366, 0.6667251163, 0.6506848721], [2.948603981068, 0.669474981574, 0.653656463858]]
+Testpoints [[2.95082, 0.671875, 0.65625], [3.43918, 0.0, 0.0], [2.80469, 0.604948, 0.429688], [2.81902, 0.53125, 0.507812], [2.94531, 0.664062, 0.659196], [2.94531, 0.671875, 0.654543]]
+radii [17.38990740870683, 1.046882, 0.150109, 0.12165, 0.00895, 0.004171]
+crossp [2.81901, 0.523438, 0.515625] is at a distance of 0.24327517278588062
+process13 started
+Skeleton took 76.0 minuites and 45.92691254615784 seconds
+process4 started
+Skeleton took 80.0 minuites and 1.4555683135986328 seconds
 process93 started
 
-error at point: [3.23203, 0.226562, 0.539062]
-Normal [0.791002, 0.222262, 0.570013]
-Centerpoints [[-14.057303781876099, -4.631531791200711, -11.920002600353149], [2.594362155696, 0.047385044176000035, 0.07954488002400006], [3.016693152534, 0.16605494895400003, 0.383885650971], [3.170497163418, 0.209272016758, 0.49472011871700006], [3.196345526774, 0.216535094394, 0.513347003531], [3.224220437254, 0.224367607274, 0.533434261651], [3.230929716218, 0.22625283355800002, 0.538269111917]]
-Testpoints [[3.23203, 0.226562, 0.539062], [2.77875, 0.828125, 0.0], [2.95312, 0.40625, 0.495131], [3.09617, 0.21875, 0.515625], [3.16406, 0.203125, 0.484835], [3.23204, 0.21875, 0.53125], [3.22983, 0.226562, 0.539062]]
-radii [21.857509566190856, 0.806152, 0.272233, 0.077791, 0.045113, 0.009873, 0.001391]
-crossp [3.18091, 0.195312, 0.476562] is at a distance of 0.0865798296371621
+error at point: [3.24307, 0.21875, 0.523438]
+Normal [0.866748, 0.166355, 0.470184]
+Centerpoints [[-11.829597466681827, -2.6741480469754246, -7.653018225055413], [2.538348404128, 0.08349273828, 0.14114831622399998], [2.9627619633039997, 0.16495046029, 0.37137955403199996], [3.155644596232, 0.20197043657, 0.47601242065599997], [3.201112462816, 0.21069708716, 0.500677332928], [3.2074899946, 0.21192112725, 0.5041369468], [3.236398640644, 0.217469565565, 0.5198189937519999], [3.2407696508079997, 0.21830849383, 0.522190131664]]
+Testpoints [[3.24307, 0.21875, 0.523438], [2.77344, 0.848922, 0.0], [2.86719, 0.398438, 0.573712], [3.07273, 0.234375, 0.523438], [3.15625, 0.203125, 0.484145], [3.1875, 0.195312, 0.472362], [3.23438, 0.21875, 0.527135], [3.23847, 0.21875, 0.523438]]
+radii [17.38990740870683, 0.813064, 0.323402, 0.100866, 0.048408, 0.04105, 0.007697, 0.002654]
+crossp [3.18091, 0.195312, 0.476562] is at a distance of 0.08130538001879085
+process99 started
+
+error at point: [3.19531, 0.335938, 0.556388]
+Normal [0.846027, 0.248893, 0.471478]
+Centerpoints [[-11.517021195266011, -3.9922882246752684, -7.642570765242278], [2.5719852252910003, 0.15256185106900003, 0.209018568374], [2.9976823229350003, 0.277797839665, 0.44625309659], [3.12300007231, 0.31466511529, 0.51609077534], [3.138678644674, 0.319277600366, 0.524828205636], [3.1862752776670002, 0.333280071653, 0.551353086438], [3.193623868189, 0.33544195625100004, 0.555448344346]]
+Testpoints [[3.19531, 0.335938, 0.556388], [2.77875, 0.828125, 0.0], [2.85938, 0.431684, 0.554688], [3.03906, 0.31408, 0.5], [3.09375, 0.296875, 0.480554], [3.1875, 0.328125, 0.560625], [3.19185, 0.335938, 0.554688]]
+radii [17.38990740870683, 0.736767, 0.233595, 0.08547, 0.066938, 0.010679, 0.001993]
+crossp [3.10938, 0.296774, 0.46875] is at a distance of 0.12883401274508238
 process5 started
-Skeleton took 77.0 minuites and 56.94381666183472 seconds
-process0 started
-Skeleton took 82.0 minuites and 16.13329315185547 seconds
-process13 started
-Skeleton took 76.0 minuites and 34.93566393852234 seconds
-process27 started
-Skeleton took 74.0 minuites and 45.551196336746216 seconds
-process29 started
-Skeleton took 75.0 minuites and 39.4251344203949 seconds
-process4 started
-Skeleton took 80.0 minuites and 43.29679012298584 seconds
+Skeleton took 77.0 minuites and 19.45943260192871 seconds
+process100 started
+
+error at point: [3.18481, 0.445312, 0.507812]
+Normal [0.771644, 0.370347, 0.517116]
+Centerpoints [[-10.240631018363974, -5.998166864383113, -8.48922595746783], [2.694690282028, 0.21008128843899998, 0.17935905009200004], [3.074348389756, 0.392296456603, 0.43378632748400003], [3.1254451121480002, 0.41682009424899996, 0.46802871477200003], [3.1774816969320003, 0.441794814541, 0.502900949348], [3.1818808393760003, 0.443906162788, 0.5058490276640001]]
+Testpoints [[3.18481, 0.445312, 0.507812], [2.78609, 0.8125, 0.0], [2.95338, 0.46875, 0.4375], [3.07031, 0.382812, 0.426527], [3.18544, 0.4375, 0.5], [3.17969, 0.445312, 0.508612]]
+radii [17.398490778602536, 0.635163, 0.143151, 0.076933, 0.009497, 0.003796]
+crossp [3.10156, 0.368704, 0.414062] is at a distance of 0.1469299515551544
 process24 started
-Skeleton took 77.0 minuites and 3.3690106868743896 seconds
-process11 started
-Skeleton took 85.0 minuites and 43.95223546028137 seconds
+Skeleton took 75.0 minuites and 55.23732042312622 seconds
+process27 started
+Skeleton took 75.0 minuites and 12.36733889579773 seconds
+process29 started
+Skeleton took 75.0 minuites and 12.255168199539185 seconds
 process28 started
-Skeleton took 80.0 minuites and 1.832857370376587 seconds
+Skeleton took 78.0 minuites and 31.009832620620728 seconds
 process31 started
-Skeleton took 78.0 minuites and 37.08842921257019 seconds
-process6 started
-Skeleton took 87.0 minuites and 18.68301033973694 seconds
+Skeleton took 77.0 minuites and 33.41461682319641 seconds
 process14 started
-Skeleton took 87.0 minuites and 32.790730237960815 seconds
+Skeleton took 87.0 minuites and 4.2874016761779785 seconds
+process11 started
+Skeleton took 83.0 minuites and 40.06068515777588 seconds
 process15 started
-Skeleton took 89.0 minuites and 40.71326184272766 seconds
-process20 started
-Skeleton took 95.0 minuites and 34.18634486198425 seconds
+Skeleton took 87.0 minuites and 59.4580078125 seconds
+process6 started
+Skeleton took 87.0 minuites and 17.71688222885132 seconds
 process25 started
-Skeleton took 85.0 minuites and 12.734959125518799 seconds
+Skeleton took 85.0 minuites and 34.3585569858551 seconds
 process30 started
-Skeleton took 89.0 minuites and 1.3925743103027344 seconds
-process19 started
-Skeleton took 97.0 minuites and 6.597323894500732 seconds
+Skeleton took 87.0 minuites and 27.04722809791565 seconds
 process26 started
-Skeleton took 90.0 minuites and 15.475224256515503 seconds
+Skeleton took 88.0 minuites and 30.603837728500366 seconds
 process98 started
 
 error at point: [3.18626, 0.335938, 0.570312]
 Normal [0.758371, 0.27597, 0.59052]
-Centerpoints [[-13.389841387221725, -5.69607891498169, -12.336984549027026], [2.6408464021389997, 0.13746285973000003, 0.14561533068], [3.0434064131009997, 0.28395380707, 0.45907633812000004], [3.1301541966779998, 0.31552118746, 0.52662414936], [3.135151861568, 0.31733982976, 0.5305156761600001], [3.177708608604, 0.33282616228, 0.5636532964800001], [3.184775109582, 0.33539765074, 0.56915576184]]
+Centerpoints [[-10.001741471448408, -4.463154747580824, -9.698776122989559], [2.6408464021389997, 0.13746285973000003, 0.14561533068], [3.0434064131009997, 0.28395380707, 0.45907633812000004], [3.1301541966779998, 0.31552118746, 0.52662414936], [3.135151861568, 0.31733982976, 0.5305156761600001], [3.177708608604, 0.33282616228, 0.5636532964800001], [3.184775109582, 0.33539765074, 0.56915576184]]
 Testpoints [[3.18626, 0.335938, 0.570312], [2.77875, 0.828125, 0.0], [2.92969, 0.429688, 0.495312], [3.07031, 0.30517, 0.484375], [3.10183, 0.28125, 0.484375], [3.1875, 0.328125, 0.560625], [3.18329, 0.335938, 0.570312]]
-radii [21.857509566190856, 0.719191, 0.188369, 0.073982, 0.067392, 0.011276, 0.001958]
+radii [17.38990740870683, 0.719191, 0.188369, 0.073982, 0.067392, 0.011276, 0.001958]
 crossp [3.10156, 0.273438, 0.489346] is at a distance of 0.1327999742319251
-process1 started
-Skeleton took 108.0 minuites and 10.006298542022705 seconds
+process47 started
+
+error at point: [2.79688, 0.502475, 0.546875]
+Normal [-0.549064, -0.570718, -0.610581]
+Centerpoints [[12.349764940862622, 10.432106860182481, 11.170062898089915], [2.868108425528, 0.576512533986, 0.626083841387], [2.8627781122159996, 0.570972003642, 0.620156321039], [2.8017507467439997, 0.507537839378, 0.552291464051], [2.799021898664, 0.504701370918, 0.549256876481]]
+Testpoints [[2.79688, 0.502475, 0.546875], [2.95896, 0.664062, 0.65625], [2.92969, 0.632812, 0.698278], [2.80469, 0.507812, 0.543926], [2.79688, 0.507812, 0.548281]]
+radii [17.398490778602536, 0.129727, 0.120019, 0.008871, 0.003901]
+crossp [2.92969, 0.632812, 0.698278] is at a distance of 0.23989393089029998
+process20 started
+Skeleton took 94.0 minuites and 57.41015839576721 seconds
 process41 started
-Skeleton took 91.0 minuites and 58.58118939399719 seconds
+
+error at point: [2.74219, 0.549283, 0.554688]
+Normal [-0.609397, -0.56332, -0.557948]
+Centerpoints [[13.339547405143716, 10.345365641472732, 10.257352058873158], [2.853060643195, 0.6517706242, 0.6561982693799999], [2.815416362314, 0.61697265784, 0.6217321475759999], [2.747765373153, 0.55443681468, 0.559792666252], [2.744642213528, 0.55154979968, 0.556933182752]]
+Testpoints [[2.74219, 0.549283, 0.554688], [3.02344, 0.664862, 0.59375], [2.875, 0.6875, 0.698638], [2.73903, 0.554688, 0.5625], [2.7435, 0.554688, 0.554688]]
+radii [17.38990740870683, 0.181935, 0.120162, 0.009149, 0.004024]
+crossp [2.85984, 0.6875, 0.710938] is at a distance of 0.23949848452338915
+process1 started
+Skeleton took 107.0 minuites and 5.19416069984436 seconds
 process18 started
-Skeleton took 100.0 minuites and 30.85664653778076 seconds
+Skeleton took 98.0 minuites and 51.44661617279053 seconds
+process19 started
+Skeleton took 96.0 minuites and 27.770108699798584 seconds
 process10 started
-Skeleton took 109.0 minuites and 56.646740674972534 seconds
-process39 started
-Skeleton took 98.0 minuites and 59.05145525932312 seconds
+Skeleton took 108.0 minuites and 39.99836087226868 seconds
+process48 started
+
+error at point: [2.86719, 0.710938, 0.692605]
+Normal [0.511507, 0.586197, 0.628278]
+Centerpoints [[-6.027869368905406, -9.482973553261717, -10.23309124692751], [2.2671283506249997, 0.02325564437500005, -0.044443628749999964], [2.781567820256, 0.612813311776, 0.587436289024], [2.8058219476749997, 0.640609014925, 0.61722734695], [2.862713802243, 0.705808190053, 0.6871069392220001], [2.8654114901609997, 0.7088997930309999, 0.690420477394]]
+Testpoints [[2.86719, 0.710938, 0.692605], [3.43918, 0.0, 0.0], [2.77344, 0.636127, 0.421875], [2.73139, 0.578125, 0.546875], [2.85938, 0.71389, 0.6875], [2.86719, 0.709532, 0.6875]]
+radii [17.38990740870683, 1.173125, 0.167392, 0.119975, 0.008751, 0.003477]
+crossp [2.69531, 0.593944, 0.578125] is at a distance of 0.23735206094744557
 process65 started
-Skeleton took 93.0 minuites and 57.074692487716675 seconds
+Skeleton took 92.0 minuites and 50.13115930557251 seconds
 process40 started
-Skeleton took 102.0 minuites and 31.401358604431152 seconds
-process36 started
-Skeleton took 109.0 minuites and 22.45066237449646 seconds
-process49 started
-Skeleton took 105.0 minuites and 5.381820440292358 seconds
+Skeleton took 101.0 minuites and 51.954204082489014 seconds
+process39 started
+Skeleton took 97.0 minuites and 51.3536057472229 seconds
 process17 started
-Skeleton took 116.0 minuites and 18.265312671661377 seconds
+Skeleton took 115.0 minuites and 21.24846649169922 seconds
+process36 started
+Skeleton took 107.0 minuites and 39.0915310382843 seconds
+process49 started
+Skeleton took 104.0 minuites and 31.346607446670532 seconds
 process55 started
-Skeleton took 109.0 minuites and 11.656997203826904 seconds
-process60 started
-Skeleton took 108.0 minuites and 31.433240175247192 seconds
+Skeleton took 106.0 minuites and 10.195356607437134 seconds
+process50 started
+Skeleton took 108.0 minuites and 2.5838236808776855 seconds
 process38 started
-Skeleton took 113.0 minuites and 25.844948053359985 seconds
-process35 started
-Skeleton took 114.0 minuites and 53.195900678634644 seconds
+Skeleton took 112.0 minuites and 10.92493486404419 seconds
+process60 started
+Skeleton took 107.0 minuites and 24.973695039749146 seconds
+process59 started
+Skeleton took 108.0 minuites and 25.96423029899597 seconds
 process119 started
 
 error at point: [3.23438, 0.296875, 0.511285]
 Normal [0.857748, 0.235261, 0.457079]
-Centerpoints [[-15.523108933305744, -4.847882672344841, -9.484254813729041], [2.5894023956359997, 0.119972137877, 0.16758764550299998], [3.017071259696, 0.237272096172, 0.39548494950799995], [3.160649697416, 0.276652434962, 0.471995403318], [3.1911280571, 0.285011964075, 0.488236791425], [3.2264887183999997, 0.2947105988, 0.5070798732], [3.232107825548, 0.296251793611, 0.510074197729]]
+Centerpoints [[-11.689140668364768, -3.796311339064811, -7.441199766592868], [2.5894023956359997, 0.119972137877, 0.16758764550299998], [3.017071259696, 0.237272096172, 0.39548494950799995], [3.160649697416, 0.276652434962, 0.471995403318], [3.1911280571, 0.285011964075, 0.488236791425], [3.2264887183999997, 0.2947105988, 0.5070798732], [3.232107825548, 0.296251793611, 0.510074197729]]
 Testpoints [[3.23438, 0.296875, 0.511285], [2.77875, 0.828125, 0.0], [2.89844, 0.40625, 0.542312], [3.07812, 0.297255, 0.484375], [3.15625, 0.265625, 0.457408], [3.23195, 0.296875, 0.5], [3.23088, 0.296875, 0.507812]]
-radii [21.868298070418987, 0.751943, 0.253348, 0.085958, 0.050425, 0.0092, 0.002649]
+radii [17.398490778602536, 0.751943, 0.253348, 0.085958, 0.050425, 0.0092, 0.002649]
 crossp [3.16406, 0.263978, 0.453125] is at a distance of 0.09700361131937285
-process59 started
-Skeleton took 110.0 minuites and 25.32705283164978 seconds
 process89 started
-Skeleton took 103.0 minuites and 2.643031597137451 seconds
-process58 started
-Skeleton took 111.0 minuites and 40.43857669830322 seconds
-process47 started
-Skeleton took 114.0 minuites and 55.710519313812256 seconds
-process94 started
-Skeleton took 102.0 minuites and 23.967524766921997 seconds
+Skeleton took 101.0 minuites and 38.8882532119751 seconds
 process102 started
-Skeleton took 101.0 minuites and 38.02051329612732 seconds
-process32 started
-Skeleton took 120.0 minuites and 23.49428105354309 seconds
-process50 started
-Skeleton took 110.0 minuites and 20.454772233963013 seconds
-process48 started
-Skeleton took 116.0 minuites and 41.46766924858093 seconds
+Skeleton took 99.0 minuites and 31.19310450553894 seconds
+process58 started
+Skeleton took 110.0 minuites and 17.874428033828735 seconds
 process95 started
-Skeleton took 104.0 minuites and 49.948030948638916 seconds
+Skeleton took 103.0 minuites and 27.616261959075928 seconds
+process35 started
+Skeleton took 115.0 minuites and 36.489928245544434 seconds
 process61 started
-Skeleton took 113.0 minuites and 55.618295192718506 seconds
-process57 started
-Skeleton took 118.0 minuites and 25.24115300178528 seconds
-process103 started
-Skeleton took 105.0 minuites and 19.14287304878235 seconds
-process97 started
-Skeleton took 107.0 minuites and 58.95535969734192 seconds
-process67 started
-Skeleton took 116.0 minuites and 50.34052276611328 seconds
-process56 started
-Skeleton took 118.0 minuites and 39.46861267089844 seconds
-process88 started
-Skeleton took 111.0 minuites and 2.6614911556243896 seconds
+Skeleton took 112.0 minuites and 35.102636098861694 seconds
 process118 started
-Skeleton took 102.0 minuites and 15.160615682601929 seconds
-process117 started
-Skeleton took 103.0 minuites and 37.319398641586304 seconds
+Skeleton took 100.0 minuites and 26.763303995132446 seconds
+process103 started
+Skeleton took 103.0 minuites and 57.261739015579224 seconds
+process88 started
+Skeleton took 109.0 minuites and 58.15074920654297 seconds
 process53 started
-Skeleton took 120.0 minuites and 30.736161947250366 seconds
+Skeleton took 117.0 minuites and 58.31926369667053 seconds
+process94 started
+Skeleton took 101.0 minuites and 50.832062005996704 seconds
+process97 started
+Skeleton took 107.0 minuites and 49.245808601379395 seconds
+process32 started
+Skeleton took 118.0 minuites and 49.1776921749115 seconds
+process57 started
+Skeleton took 117.0 minuites and 55.79032778739929 seconds
+process56 started
+Skeleton took 118.0 minuites and 6.592795372009277 seconds
 process9 started
-Skeleton took 131.0 minuites and 34.628827810287476 seconds
-process52 started
-Skeleton took 120.0 minuites and 48.323992013931274 seconds
-process54 started
-Skeleton took 120.0 minuites and 26.300488471984863 seconds
-process108 started
-Skeleton took 109.0 minuites and 2.816479444503784 seconds
-process115 started
-Skeleton took 107.0 minuites and 38.93204736709595 seconds
-process90 started
-Skeleton took 111.0 minuites and 24.95922875404358 seconds
-process101 started
-Skeleton took 112.0 minuites and 0.8877041339874268 seconds
-process62 started
-Skeleton took 119.0 minuites and 44.414998054504395 seconds
-process96 started
-Skeleton took 116.0 minuites and 41.44913911819458 seconds
+Skeleton took 132.0 minuites and 43.792840003967285 seconds
+process67 started
+Skeleton took 117.0 minuites and 43.816245317459106 seconds
 process63 started
-Skeleton took 120.0 minuites and 38.388378620147705 seconds
-process100 started
-Skeleton took 114.0 minuites and 56.9361207485199 seconds
+Skeleton took 118.0 minuites and 41.74402093887329 seconds
+process52 started
+Skeleton took 119.0 minuites and 43.633562326431274 seconds
+process54 started
+Skeleton took 119.0 minuites and 40.89109396934509 seconds
+process117 started
+Skeleton took 103.0 minuites and 5.438235759735107 seconds
+process90 started
+Skeleton took 110.0 minuites and 36.25206017494202 seconds
+process62 started
+Skeleton took 118.0 minuites and 38.713852882385254 seconds
+process108 started
+Skeleton took 107.0 minuites and 45.779298543930054 seconds
+process115 started
+Skeleton took 107.0 minuites and 51.97833561897278 seconds
+process101 started
+Skeleton took 111.0 minuites and 2.5462255477905273 seconds
 process71 started
-Skeleton took 120.0 minuites and 9.605597734451294 seconds
-process51 started
-Skeleton took 126.0 minuites and 5.002104997634888 seconds
-process68 started
-Skeleton took 122.0 minuites and 7.6323301792144775 seconds
+Skeleton took 118.0 minuites and 46.59442663192749 seconds
 process109 started
-Skeleton took 111.0 minuites and 14.452514410018921 seconds
-process64 started
-Skeleton took 124.0 minuites and 16.906301736831665 seconds
+Skeleton took 109.0 minuites and 25.88999629020691 seconds
 process42 started
-Skeleton took 130.0 minuites and 12.479156017303467 seconds
+Skeleton took 127.0 minuites and 39.17790865898132 seconds
+process96 started
+Skeleton took 114.0 minuites and 24.268941402435303 seconds
+process64 started
+Skeleton took 123.0 minuites and 18.059773206710815 seconds
 process113 started
-Skeleton took 115.0 minuites and 9.984297513961792 seconds
-process70 started
-Skeleton took 127.0 minuites and 22.020554065704346 seconds
+Skeleton took 113.0 minuites and 58.1492965221405 seconds
+process68 started
+Skeleton took 122.0 minuites and 18.051621198654175 seconds
 process92 started
-Skeleton took 122.0 minuites and 9.994977474212646 seconds
-process69 started
-Skeleton took 127.0 minuites and 39.79402756690979 seconds
-process78 started
-Skeleton took 126.0 minuites and 7.448638200759888 seconds
-process104 started
-Skeleton took 119.0 minuites and 3.909928798675537 seconds
-process114 started
-Skeleton took 116.0 minuites and 17.355981826782227 seconds
-process33 started
-Skeleton took 138.0 minuites and 29.167099475860596 seconds
-process91 started
-Skeleton took 123.0 minuites and 19.609045267105103 seconds
-process107 started
-Skeleton took 119.0 minuites and 38.6914963722229 seconds
+Skeleton took 120.0 minuites and 58.28723335266113 seconds
 process21 started
-Skeleton took 142.0 minuites and 49.49464988708496 seconds
-process37 started
-Skeleton took 138.0 minuites and 45.266239166259766 seconds
-process3 started
-Skeleton took 147.0 minuites and 36.14286661148071 seconds
-process112 started
-Skeleton took 119.0 minuites and 4.390997886657715 seconds
-process110 started
-Skeleton took 120.0 minuites and 52.44414210319519 seconds
+Skeleton took 139.0 minuites and 40.69918489456177 seconds
+process69 started
+Skeleton took 127.0 minuites and 55.771446228027344 seconds
+process70 started
+Skeleton took 126.0 minuites and 36.00137448310852 seconds
+process78 started
+Skeleton took 124.0 minuites and 43.28372645378113 seconds
+process104 started
+Skeleton took 118.0 minuites and 11.419753551483154 seconds
+process114 started
+Skeleton took 115.0 minuites and 52.25411534309387 seconds
+process33 started
+Skeleton took 137.0 minuites and 24.65713143348694 seconds
+process91 started
+Skeleton took 122.0 minuites and 11.84045696258545 seconds
 process111 started
-Skeleton took 119.0 minuites and 52.777212142944336 seconds
-process66 started
-Skeleton took 133.0 minuites and 7.753527641296387 seconds
+Skeleton took 118.0 minuites and 26.81533193588257 seconds
+process112 started
+Skeleton took 118.0 minuites and 34.728617429733276 seconds
+process107 started
+Skeleton took 119.0 minuites and 52.7087242603302 seconds
 process74 started
-Skeleton took 131.0 minuites and 30.39401888847351 seconds
+Skeleton took 128.0 minuites and 47.93177771568298 seconds
+process3 started
+Skeleton took 147.0 minuites and 17.796575784683228 seconds
+process37 started
+Skeleton took 138.0 minuites and 56.10480976104736 seconds
+process66 started
+Skeleton took 133.0 minuites and 38.06978511810303 seconds
+process110 started
+Skeleton took 119.0 minuites and 31.82001495361328 seconds
 process2 started
-Skeleton took 150.0 minuites and 47.37380337715149 seconds
-process106 started
-Skeleton took 126.0 minuites and 34.12930870056152 seconds
-process77 started
-Skeleton took 131.0 minuites and 7.114119291305542 seconds
-process116 started
-Skeleton took 124.0 minuites and 58.51052284240723 seconds
+Skeleton took 150.0 minuites and 16.91094994544983 seconds
 process79 started
-Skeleton took 131.0 minuites and 54.2631413936615 seconds
-process80 started
-Skeleton took 135.0 minuites and 34.55289340019226 seconds
-process43 started
-Skeleton took 145.0 minuites and 24.114861011505127 seconds
+Skeleton took 131.0 minuites and 3.5025622844696045 seconds
+process77 started
+Skeleton took 130.0 minuites and 53.12847304344177 seconds
+process106 started
+Skeleton took 125.0 minuites and 18.736058712005615 seconds
+process116 started
+Skeleton took 122.0 minuites and 38.27361440658569 seconds
 process85 started
-Skeleton took 132.0 minuites and 43.54118752479553 seconds
+Skeleton took 130.0 minuites and 56.68117356300354 seconds
 process105 started
-Skeleton took 129.0 minuites and 5.198170185089111 seconds
-process83 started
-Skeleton took 135.0 minuites and 47.821375131607056 seconds
+Skeleton took 127.0 minuites and 6.701213121414185 seconds
+process80 started
+Skeleton took 134.0 minuites and 13.678413152694702 seconds
 process82 started
-Skeleton took 136.0 minuites and 21.690283060073853 seconds
-process73 started
-Skeleton took 138.0 minuites and 23.574626684188843 seconds
-process87 started
-Skeleton took 137.0 minuites and 7.674062490463257 seconds
+Skeleton took 134.0 minuites and 48.86869716644287 seconds
+process43 started
+Skeleton took 145.0 minuites and 4.076230049133301 seconds
+process83 started
+Skeleton took 136.0 minuites and 55.2325325012207 seconds
 process16 started
-Skeleton took 154.0 minuites and 58.163864612579346 seconds
+Skeleton took 153.0 minuites and 44.396994829177856 seconds
+process87 started
+Skeleton took 135.0 minuites and 3.615938663482666 seconds
+process73 started
+Skeleton took 136.0 minuites and 10.499536991119385 seconds
 process76 started
-Skeleton took 140.0 minuites and 50.86187958717346 seconds
-process8 started
-Skeleton took 159.0 minuites and 23.827720165252686 seconds
+Skeleton took 139.0 minuites and 53.23458290100098 seconds
 process72 started
-Skeleton took 141.0 minuites and 53.6325249671936 seconds
+Skeleton took 140.0 minuites and 37.775310039520264 seconds
 process75 started
-Skeleton took 143.0 minuites and 18.794079542160034 seconds
-process81 started
-Skeleton took 142.0 minuites and 59.84476900100708 seconds
-process86 started
-Skeleton took 147.0 minuites and 16.175618171691895 seconds
+Skeleton took 141.0 minuites and 36.645848751068115 seconds
 process22 started
-Skeleton took 158.0 minuites and 56.22797107696533 seconds
+Skeleton took 156.0 minuites and 38.06405806541443 seconds
+process81 started
+Skeleton took 142.0 minuites and 26.117273092269897 seconds
+process8 started
+Skeleton took 159.0 minuites and 23.4636332988739 seconds
+process86 started
+Skeleton took 146.0 minuites and 7.57552695274353 seconds
 process84 started
-Skeleton took 145.0 minuites and 40.433730125427246 seconds
-process23 started
-Skeleton took 171.0 minuites and 32.20425009727478 seconds
-process34 started
-Skeleton took 172.0 minuites and 24.580667972564697 seconds
+Skeleton took 145.0 minuites and 8.984548091888428 seconds
 process7 started
-Skeleton took 168.0 minuites and 36.77880883216858 seconds
+Skeleton took 166.0 minuites and 43.109445571899414 seconds
+process23 started
+Skeleton took 170.0 minuites and 27.64467453956604 seconds
+process34 started
+Skeleton took 171.0 minuites and 9.919156789779663 seconds
 process44 started
-Skeleton took 176.0 minuites and 28.08716368675232 seconds
+Skeleton took 175.0 minuites and 21.073810815811157 seconds
 process45 started
-Skeleton took 177.0 minuites and 28.480530261993408 seconds
+Skeleton took 176.0 minuites and 33.20123076438904 seconds
 
-Job finished at Tue Sep 20 12:43:16 CDT 2022
+Job finished at Tue Sep 20 17:04:33 CDT 2022
