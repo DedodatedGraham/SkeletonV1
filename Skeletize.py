@@ -163,6 +163,7 @@ def getDeviation(list1 : list, list2 : list):
         bot = ((list1[0]*list1[0] + list1[1]*list1[1] + list1[2]*list1[2]) ** 0.5) * ((list2[0]*list2[0] + list2[1]*list2[1] + list2[2]*list2[2]) ** 0.5)
     if bot == 0:
         print('boterror')
+        return 0
     ins = top/bot
     if ins < -1:
         ins = -1
