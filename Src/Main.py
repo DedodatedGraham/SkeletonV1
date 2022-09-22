@@ -69,8 +69,8 @@ if __name__ == '__main__':
     savefile = source + r'SkeleData/Output/' + savefile
     recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
     net = SkeleNet(link)
-    net.LoadSave(recover)
-    #net.solve(False,mode,noderequest)
+    #net.LoadSave(recover)
+    net.solve(False,mode,noderequest)
     net.purge()
     net.savedat(1,savefile)
     #net.plot([])

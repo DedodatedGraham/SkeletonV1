@@ -448,7 +448,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     s += 1
                 d = getDeviation(norm,tvr)
                 print(d)
-                if d > 0.75:
+                if d > 0.85:
                     SkelePoints[len(SkelePoints)-1] = centerp[q]
                     SkeleRad[len(SkeleRad)-1] = tempr[q]
                     q = -1

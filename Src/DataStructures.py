@@ -1008,7 +1008,7 @@ class SplitTree:
         if self.dim == 2:
             self.maxpts = 4
         else:
-            self.maxpts = 8
+            self.maxpts = 3
         #Defining skele Points
         self.skelepts = []
         if not(len(inpts) == 0):
