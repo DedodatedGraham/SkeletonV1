@@ -1,0 +1,1 @@
+qsub -l nodes=1:ppn=128 -q ling2 sRun.sh

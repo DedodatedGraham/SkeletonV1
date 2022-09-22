@@ -1,0 +1,11 @@
+Linux:
+./kernprof -l /home/graham_garcia1/SkeletonV1/Main.py
+python3 -m line_profiler Main.py.lprof
+
+Windows:
+cd AppData\Local\Programs\Python\Python310\Scripts
+kernprof -l D:\Spyder\Repos\SkeletonV1\Main.py
+..\python -m line_profiler ./Main.py.lprof
+
+
+
