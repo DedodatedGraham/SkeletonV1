@@ -626,7 +626,29 @@ class SkeleNet:
         self.NormPoints = temp
         
         self.__tag()
-
+    def LoadSave(self,path:str):
+        #Loads in a unpurged skeleton
+        with open(path,'r') as csvfile:
+            data  = csv.reader(csvfile,delimiter = ',')
+            self.SkelePoints = []
+            self.SkelePoints.append([])
+            self.SkeleRad = []
+            self.SkeleRad.append([])
+            i = 0
+            for row in data:
+                print('loading...{}'.format(i))
+                size = len(row)
+                if str(row[0]) == 'x':
+                    a = 1
+                elif size == 3:
+                    #Load in 2D
+                    self.SkelePoints[0].append([float(row[0]),float(row[1])])
+                    self.SkeleRad[0].append(float(row[2]))
+                else:
+                    #Load in 3D
+                    self.SkelePoints[0].append([float(row[0]),float(row[1]),float(row[2])])
+                    self.SkeleRad[0].append(float(row[3]))
+                i += 1
 ###MAIN FUNCTIONS
     
 
@@ -917,32 +939,32 @@ class SkeleNet:
             minz = 10000
             tcase = len(self.SkelePoints[0][0]) == 3
             j = 0
-            while j < len(self.SkelePoints[i])
-                if SkelePoints[i][j][0] > maxx:
-                    maxx = SkelePoints[i][j][0] 
-                if SkelePoints[i][j][0] < minx:
-                    minx = SkelePoints[i][j][0] 
-                if SkelePoints[i][j][1] > maxy:
-                    maxy = SkelePoints[i][j][1] 
-                if SkelePoints[i][j][1] < miny:
-                    miny = SkelePoints[i][j][1]
+            while j < len(self.SkelePoints[i]):
+                if self.SkelePoints[i][j][0] > maxx:
+                    maxx = self.SkelePoints[i][j][0] 
+                if self.SkelePoints[i][j][0] < minx:
+                    minx = self.SkelePoints[i][j][0] 
+                if self.SkelePoints[i][j][1] > maxy:
+                    maxy = self.SkelePoints[i][j][1] 
+                if self.SkelePoints[i][j][1] < miny:
+                    miny = self.SkelePoints[i][j][1]
                 if tcase:
-                    if SkelePoints[i][j][2] > maxz:
-                        maxz = SkelePoints[i][j][2] 
-                    if SkelePoints[i][j][2] < minz:
-                        minz = SkelePoints[i][j][2]
+                    if self.SkelePoints[i][j][2] > maxz:
+                        maxz = self.SkelePoints[i][j][2] 
+                    if self.SkelePoints[i][j][2] < minz:
+                        minz = self.SkelePoints[i][j][2]
                 j += 1
             maxd = max((maxx-minx),(maxy-miny))
             if tcase:
                 maxd = max(maxd,(maxz-minz))
                 maxd = 1.1 * maxd
-                purgetree = SplitTree(SkelePoints[i],[(maxx-minx) / 2,(maxy - miny) / 2,(maxz - minz) / 2],maxd,inrad=SkeleRad[i])
+                purgetree = SplitTree(self.SkelePoints[i],[(maxx-minx) / 2,(maxy - miny) / 2,(maxz - minz) / 2],maxd,inrad=self.SkeleRad[i])
             else:
                 maxd = 1.1 * maxd
-                purgetree = SplitTree(SkelePoints[i],[(maxx-minx) / 2,(maxy - miny) / 2],maxd,inrad=SkeleRad[i])
-            newpts,newr = purgetree.purge(5)
-            SkelePoints[i] = newpts
-            SkeleRad[i] = newr
+                purgetree = SplitTree(self.SkelePoints[i],[(maxx-minx) / 2,(maxy - miny) / 2],maxd,inrad=self.SkeleRad[i])
+            newpts,newr = purgetree.purge()
+            self.SkelePoints[i] = newpts
+            self.SkeleRad[i] = newr
             i += 1
     def order(self):
         #This function will go through all of the points 

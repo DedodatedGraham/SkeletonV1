@@ -1,9 +1,12 @@
 import csv
 from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
+import os
 #Loads Data from results
 plt.rcParams['figure.dpi'] = 300
-with open('SkeleSave.dat','r') as csvfile:
+source = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0] + r'/'
+inpath = source + r'SkeleData/Output/SkeleSave.dat'
+with open(inpath,'r') as csvfile:
     data = csv.reader(csvfile, delimiter = ',')
     tx = []
     ty = []
@@ -31,6 +34,7 @@ fig.colorbar(p)
 i = 0
 while i < 360:
     ax.view_init(30,i)
-    plt.savefig('AnimationData/Spin/{0:0=3d}spin.png'.format(i))
+    save = source + r'AnimationData/Spin/{0:0=3d}spin.png'.format(i)
+    plt.savefig(save)
     print(i)
     i += 1

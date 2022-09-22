@@ -10,6 +10,7 @@ from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 #Loads Data from results
 plt.rcParams['figure.dpi'] = 300
+source = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0] + r'/'
 with open('SkeleSave.dat','r') as csvfile:
     data = csv.reader(csvfile, delimiter = ',')
     tx = []

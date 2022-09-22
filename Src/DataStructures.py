@@ -1340,8 +1340,8 @@ class SplitTree:
                 #    i += 1
                 #plt.scatter(tx,ty,5,color='green')
     
-    def purge(self,leveloffset : int = 5,*,depth : int = 0): 
-        
+    def purge(self,leveloffset : int = 2,*,depth : int = 0): 
+        print(depth)
         retpoints = []
         if self.state:
             pts = []
@@ -1351,14 +1351,14 @@ class SplitTree:
                 r2,d2 = self.leafs[1].purge(leveloffset,depth = depth + 1)
                 r3,d3 = self.leafs[2].purge(leveloffset,depth = depth + 1)
                 r4,d4 = self.leafs[3].purge(leveloffset,depth = depth + 1)
-                pts.append(for point in r1)
-                pts.append(for point in r2)
-                pts.append(for point in r3)
-                pts.append(for point in r4)
-                ds.append(for d in d1)
-                ds.append(for d in d2)
-                ds.append(for d in d3)
-                ds.append(for d in d4)
+                pts.append(r1)
+                pts.append(r2)
+                pts.append(r3)
+                pts.append(r4)
+                ds.append(d1)
+                ds.append(d2)
+                ds.append(d3)
+                ds.append(d4)
             else:   
                 r1,d1 = self.leafs[0].purge(leveloffset,depth = depth + 1)
                 r2,d2 = self.leafs[1].purge(leveloffset,depth = depth + 1)
@@ -1368,35 +1368,38 @@ class SplitTree:
                 r6,d6 = self.leafs[5].purge(leveloffset,depth = depth + 1)
                 r7,d7 = self.leafs[6].purge(leveloffset,depth = depth + 1)
                 r8,d8 = self.leafs[7].purge(leveloffset,depth = depth + 1)
-                pts.append(for point in r1)
-                pts.append(for point in r2)
-                pts.append(for point in r3)
-                pts.append(for point in r4)
-                pts.append(for point in r5)
-                pts.append(for point in r6)
-                pts.append(for point in r7)
-                pts.append(for point in r8)
-                ds.append(for d in d1)
-                ds.append(for d in d2)
-                ds.append(for d in d3)
-                ds.append(for d in d4)
-                ds.append(for d in d5)
-                ds.append(for d in d6)
-                ds.append(for d in d7)
-                ds.append(for d in d8)
+                pts.append(r1)
+                pts.append(r2)
+                pts.append(r3)
+                pts.append(r4)
+                pts.append(r5)
+                pts.append(r6)
+                pts.append(r7)
+                pts.append(r8)
+                ds.append(d1)
+                ds.append(d2)
+                ds.append(d3)
+                ds.append(d4)
+                ds.append(d5)
+                ds.append(d6)
+                ds.append(d7)
+                ds.append(d8)
             maxqd = max(ds)
             minqd = min(ds)
-            if abs(maxqd - minqd) > leveloffset:
+            if maxqd < leveloffset:
+                #We Will purge a node completely if the max depth in all of its nodes are not deeper than the leveloffset
+                return [],0
+            elif abs(maxqd - minqd) > leveloffset:
                 #We want to purge any point nodes which break the offset. Showing max will know if is needed or not.
                 i = 0
-                while i < len(ds)
+                while i < len(ds):
                     if abs(maxqd - ds[i]) < leveloffset:
-                       retpoints.append(for point in pts[i]) 
+                       retpoints.extend(pts[i]) 
                     i += 1
             else:
                 i = 0
                 while i < len(pts):
-                    retpoints.append(for point in pts[i])
+                    retpoints.extend(pts[i])
                     i += 1
             dep = maxqd
         else:
@@ -1405,14 +1408,20 @@ class SplitTree:
         if depth != 0:
             return retpoints,dep
         else:
-            i = 0
-            retpts = []
-            retr = []
-            while i < len(retpoints):
-                retpts.append(retpoints.getPoint())
-                retr.append(retpoints.getRad())
-                i += 1
-            return retpts,retr
+            if len(retpoints) == 0:
+                #IF Comes up empty will go down in levels until something shows
+                retpts,retr = self.purge(leveloffset - 1)
+                print('restarted')
+                return retpts,retr
+            else:
+                i = 0
+                retpts = []
+                retr = []
+                while i < len(retpoints):
+                    retpts.append(retpoints[i].getPoint())
+                    retr.append(retpoints[i].getRad())
+                    i += 1
+                return retpts,retr
 
 class SkelePoint:
 #This is a class which has a point which holds x,y,z and r

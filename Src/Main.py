@@ -28,22 +28,18 @@ from DataStructures import kdTree
 #Mode 2 => MPI Calulation
 
 
-print('args =>',str(sys.argv[1:]))
 argumentList = sys.argv[1:]
 options = "i:o:m:p:"
 link = r''
 savefile = r''
 mode = 0
 noderequest = 0
-print('list',argumentList)
+source = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0] + r'/'
 try:
-    arguments,argumentList = getopt.getopt(argumentList,options)
-    print(arguments) 
+    arguments,argumentList = getopt.getopt(argumentList,options) 
     for currentArgument, currentValue in arguments:
         if currentArgument in ("-i"):
             link = str(currentValue)
-            source = os.path.dirname(os.path.abspath(__file__))
-            link = source + r'/' + link
         if currentArgument in ("-o"):
             savefile = str(currentValue)
         if currentArgument in ("-m"):
@@ -59,24 +55,25 @@ if __name__ == '__main__':
     st = time.time()
     
     plt.rcParams['figure.dpi'] = 300
-
-    linep = True
-    if linep and len(link) <= 1: 
-        # link = r'/interface_points_020000.dat'
-        # link = r'/spiral.dat' 
-        link = r'/vof_points_norm_0650.dat'
-        # link = r'/t06.dat'
-        # link = r'/vof_points_norms.dat'
-        # link = r'/bagdrop.dat'
-        # link = r'/disk1.dat'
-        source = os.path.dirname(os.path.abspath(__file__))
-        link = source + link
-    if linep and len(savefile) <= 1:
+    if len(link) <= 1: 
+        # link = 'interface_points_020000.dat'
+        # link = 'spiral.dat' 
+        link = 'vof_points_norm_0650.dat'
+        # link = 't06.dat'
+        # link = 'vof_points_norms.dat'
+        # link = 'bagdrop.dat'
+        # link = 'disk1.dat'
+    if len(savefile) <= 1:
         savefile = 'SkeleSave.dat'
+    link = source + r'SkeleData/Input/' + link
+    savefile = source + r'SkeleData/Output/' + savefile
+    recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
     net = SkeleNet(link)
-    net.solve(False,mode,noderequest)
+    net.LoadSave(recover)
+    #net.solve(False,mode,noderequest)
+    net.purge()
     net.savedat(1,savefile)
-    net.plot([])
+    #net.plot([])
     
     et = time.time()
     tt = et - st

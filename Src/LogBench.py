@@ -20,8 +20,9 @@ from DataStructures import kdTree,SplitTree
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint,randPN
 from mpl_toolkits import mplot3d
 from itertools import cycle
-
-with open('bench.txt','r') as csvfile:
+source = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0] + r'/'
+infile = source + r'SkeleData/Output/bench.txt'
+with open(infile,'r') as csvfile:
     data = csv.reader(csvfile)
     time = []
     nodes = []
