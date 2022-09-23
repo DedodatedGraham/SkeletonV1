@@ -11,7 +11,9 @@ import matplotlib.pyplot as plt
 #Loads Data from results
 plt.rcParams['figure.dpi'] = 300
 source = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0] + r'/'
-with open('SkeleSave.dat','r') as csvfile:
+inpath = source + r'SkeleData/Output/SkeleSave.dat'
+outpath = source + r'Plot/Skeleton3DFIG.png'
+with open(inpath,'r') as csvfile:
     data = csv.reader(csvfile, delimiter = ',')
     tx = []
     ty = []
@@ -77,12 +79,12 @@ with open('SkeleSave.dat','r') as csvfile:
 #plt.savefig('2DInt.png')
 
 #Next We Do the Actual Plotting 
-fig = plt.figure()
+fig = plt.figure(outpath)
 ax = plt.axes(projection='3d') 
 p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='winter')
 fig.colorbar(p)
 #q = ax.scatter3D(ttx,tty,ttz,s=5,c='orange')
-plt.savefig('Skeleton3DFIG.png')
+plt.savefig()
 #plt.clf()
 #fig.colorbar(q)
 #ax.plot3D([ttx[1000],ttx[1000] + tnx[1000]],[tty[1000],tty[1000] + tny[1000]],[ttz[1000],ttz[1000] + tnz[1000]])
