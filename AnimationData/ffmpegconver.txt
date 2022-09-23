@@ -1,2 +1,2 @@
 ffmpeg -r 15 -i fig%05d.png -pix_fmt yuv420p animatedFig.mp4
-ffmpeg -r 72 -i %03dspin.png -pix_fmt yuv420p Spin.mp4
+ffmpeg -r 72 -i Spin/%03dspin.png -pix_fmt yuv420p Spin/Spin.mp4
