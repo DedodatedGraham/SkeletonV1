@@ -21,7 +21,7 @@ def paraplot(data,start : int,stop : int):
         ax.view_init(30,i)
         save = source + r'AnimationData/Spin/{0:0=3d}spin.png'.format(i)
         plt.savefig(save)
-        print(i)
+        #print(i)
         i += 1
 
 if __name__ == '__main__':
