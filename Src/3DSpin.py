@@ -65,8 +65,8 @@ if __name__ == '__main__':
     i = 0
     st = []
     sp = []
-    if nodes > 360:
-        nodes = 360
+    if nodes > 30:
+        nodes = 30
     nf = int(np.floor(360/nodes))
     nc = int(np.ceil(360/nodes))
     last = 0
