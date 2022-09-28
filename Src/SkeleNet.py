@@ -431,7 +431,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         avgstep += len(tempr)
         numt += 1
         #print(i,i > 2, tempr[leng] < (threshDistance),dist < (threshDistance))
-        if i < 25 and SkeleRad[len(SkeleRad) - 1] < threshDistance * 1.1:
+        if i < 25 and SkeleRad[len(SkeleRad) - 1] < threshDistance * 1.2:
             #print()
             #print('error at point:',point)
             #print('Normal',norm)
@@ -448,7 +448,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     s += 1
                 d = getDeviation(norm,tvr)
                 print(d)
-                if d > 0.75:
+                if d > 0.8:
                     SkelePoints[len(SkelePoints)-1] = centerp[q]
                     SkeleRad[len(SkeleRad)-1] = tempr[q]
                     q = -1
