@@ -1,5 +1,5 @@
 Starting at /data/ling_shared/garciag/SkeletonV1/Supercomputer
-node file /var/spool/pbs/aux/1060505.batch
+node file /var/spool/pbs/aux/1060820.batch
 processes 128
 We have 28 CPU's Available
 dim: 3
@@ -8195,405 +8195,358 @@ Initiating k-d,Tree
 54
 54
 54
-k-d tree took 1.0 minuites and 13.304019927978516 seconds to make
-thresh [0.0005789223083085044]
-process0 started
-Skeleton took 82.0 minuites and 27.179227590560913 seconds
-process13 started
-Skeleton took 78.0 minuites and 44.26630091667175 seconds
-process4 started
-Skeleton took 81.0 minuites and 59.28842568397522 seconds
+k-d tree took 1.0 minuites and 13.09222960472107 seconds to make
+thresh [0.000966640708974091]
 process12 started
-Skeleton took 75.0 minuites and 5.841574668884277 seconds
-process24 started
-Skeleton took 77.0 minuites and 17.07483673095703 seconds
+Skeleton took 73.0 minuites and 54.96223497390747 seconds
+process13 started
+Skeleton took 78.0 minuites and 16.33103346824646 seconds
+process0 started
+Skeleton took 81.0 minuites and 7.177051544189453 seconds
 process5 started
-Skeleton took 78.0 minuites and 9.343960046768188 seconds
-process27 started
-Skeleton took 77.0 minuites and 17.222272872924805 seconds
+Skeleton took 78.0 minuites and 4.1627748012542725 seconds
+process24 started
+Skeleton took 77.0 minuites and 23.99254536628723 seconds
 process29 started
-Skeleton took 77.0 minuites and 39.35581946372986 seconds
-process31 started
-Skeleton took 79.0 minuites and 22.188430309295654 seconds
-process11 started
-Skeleton took 87.0 minuites and 11.298503160476685 seconds
+Skeleton took 75.0 minuites and 52.907397747039795 seconds
+process27 started
+Skeleton took 76.0 minuites and 52.31960129737854 seconds
+process4 started
+Skeleton took 80.0 minuites and 26.876071453094482 seconds
 process28 started
-Skeleton took 80.0 minuites and 38.179404973983765 seconds
-process25 started
-Skeleton took 86.0 minuites and 55.40541696548462 seconds
-process14 started
-Skeleton took 90.0 minuites and 56.39707827568054 seconds
+Skeleton took 79.0 minuites and 59.50698256492615 seconds
+process31 started
+Skeleton took 78.0 minuites and 41.234434604644775 seconds
+process11 started
+Skeleton took 86.0 minuites and 0.1534285545349121 seconds
 process6 started
-Skeleton took 88.0 minuites and 33.70888900756836 seconds
-process30 started
-Skeleton took 90.0 minuites and 10.1061851978302 seconds
+Skeleton took 88.0 minuites and 33.94417691230774 seconds
+process25 started
+Skeleton took 86.0 minuites and 39.91698861122131 seconds
 process15 started
-Skeleton took 89.0 minuites and 22.351575136184692 seconds
-process20 started
-Skeleton took 97.0 minuites and 25.272685050964355 seconds
+Skeleton took 89.0 minuites and 30.131680011749268 seconds
 process26 started
-Skeleton took 90.0 minuites and 9.318129539489746 seconds
-process19 started
-Skeleton took 98.0 minuites and 7.087803840637207 seconds
-process18 started
-Skeleton took 101.0 minuites and 51.0759711265564 seconds
-process1 started
-Skeleton took 109.0 minuites and 17.550999641418457 seconds
+Skeleton took 91.0 minuites and 3.4239821434020996 seconds
 process41 started
-Skeleton took 93.0 minuites and 10.697672128677368 seconds
+Skeleton took 92.0 minuites and 23.87568497657776 seconds
+process19 started
+Skeleton took 97.0 minuites and 49.9713978767395 seconds
+process30 started
+Skeleton took 87.0 minuites and 14.398220777511597 seconds
+process14 started
+Skeleton took 87.0 minuites and 42.169782876968384 seconds
+process1 started
+Skeleton took 108.0 minuites and 28.0270414352417 seconds
+process20 started
+Skeleton took 94.0 minuites and 50.52191877365112 seconds
+process18 started
+Skeleton took 100.0 minuites and 16.93036675453186 seconds
 process39 started
-Skeleton took 99.0 minuites and 57.42449641227722 seconds
+Skeleton took 100.0 minuites and 8.143476247787476 seconds
 process65 started
-0.054166108989018524
-0.054166108989018635
-0.054166108989018635
-0.33072460931203096
+0.07710109578638746
+0.07710109578638746
+0.07710109578638746
+0.2769104863643822
 boterror
 0
-0.05416610898901897
-0.05416610898901908
-0.05416610898901897
-0.32167605132303456
-boterror
-0
-0.05431817024353425
-0.054318170243535024
-0.05431817024353458
-0.3215929100779815
-boterror
-0
-0.05431817024353469
-0.054318170243535024
-0.05431817024353469
-0.3215929100779815
-boterror
-0
-0.05470804862675116
-0.05470804862675138
-0.05470804862675094
-0.34864247177787655
-boterror
-0
-0.06053262479421195
-0.06053262479421162
-0.06053262479421162
-0.3205549575339125
-boterror
-0
-Skeleton took 95.0 minuites and 50.394287109375 seconds
-process10 started
-Skeleton took 110.0 minuites and 58.527374029159546 seconds
+Skeleton took 94.0 minuites and 13.491385221481323 seconds
 process40 started
-Skeleton took 103.0 minuites and 53.23389744758606 seconds
+Skeleton took 102.0 minuites and 42.94043493270874 seconds
+process10 started
+Skeleton took 111.0 minuites and 6.756122350692749 seconds
 process49 started
-Skeleton took 105.0 minuites and 2.343421697616577 seconds
+Skeleton took 106.0 minuites and 19.650683879852295 seconds
 process36 started
-Skeleton took 110.0 minuites and 2.657043218612671 seconds
-process17 started
-Skeleton took 119.0 minuites and 5.639346122741699 seconds
-process38 started
-Skeleton took 114.0 minuites and 51.61664962768555 seconds
+Skeleton took 110.0 minuites and 43.56728267669678 seconds
 process55 started
-Skeleton took 110.0 minuites and 10.897843599319458 seconds
+Skeleton took 108.0 minuites and 29.019658088684082 seconds
+process17 started
+Skeleton took 118.0 minuites and 48.00732707977295 seconds
 process50 started
-Skeleton took 111.0 minuites and 50.049394845962524 seconds
-process35 started
-Skeleton took 116.0 minuites and 36.71451926231384 seconds
-process89 started
-Skeleton took 104.0 minuites and 8.394479036331177 seconds
-process94 started
-Skeleton took 103.0 minuites and 25.04622220993042 seconds
+Skeleton took 111.0 minuites and 2.9425315856933594 seconds
+process38 started
+Skeleton took 114.0 minuites and 30.53771138191223 seconds
 process60 started
-Skeleton took 110.0 minuites and 48.3468976020813 seconds
-process47 started
-Skeleton took 115.0 minuites and 34.302913427352905 seconds
-process102 started
-Skeleton took 102.0 minuites and 47.25568437576294 seconds
-process58 started
-Skeleton took 115.0 minuites and 21.381908178329468 seconds
-process32 started
-Skeleton took 121.0 minuites and 5.363099098205566 seconds
+Skeleton took 108.0 minuites and 59.23838448524475 seconds
+process35 started
+Skeleton took 115.0 minuites and 37.31085705757141 seconds
 process59 started
-Skeleton took 112.0 minuites and 37.36558794975281 seconds
-process95 started
-Skeleton took 105.0 minuites and 47.25669503211975 seconds
-process48 started
-Skeleton took 120.0 minuites and 5.386457920074463 seconds
-process56 started
-Skeleton took 120.0 minuites and 41.82973647117615 seconds
+Skeleton took 110.0 minuites and 34.4994261264801 seconds
+process89 started
+Skeleton took 103.0 minuites and 33.47209286689758 seconds
+process58 started
+Skeleton took 112.0 minuites and 2.01296067237854 seconds
+process47 started
+Skeleton took 115.0 minuites and 41.380648136138916 seconds
+process94 started
+Skeleton took 103.0 minuites and 38.281768798828125 seconds
+process32 started
+Skeleton took 119.0 minuites and 50.38419771194458 seconds
+process102 started
+Skeleton took 102.0 minuites and 4.7165586948394775 seconds
 process61 started
-Skeleton took 116.0 minuites and 32.353081703186035 seconds
+Skeleton took 113.0 minuites and 50.546223402023315 seconds
+process95 started
+Skeleton took 106.0 minuites and 32.155375719070435 seconds
+process48 started
+Skeleton took 117.0 minuites and 52.914145708084106 seconds
+process56 started
+Skeleton took 119.0 minuites and 14.845118045806885 seconds
 process103 started
-Skeleton took 105.0 minuites and 37.37189245223999 seconds
-process53 started
-Skeleton took 121.0 minuites and 37.337223291397095 seconds
-process88 started
-Skeleton took 112.0 minuites and 41.61094951629639 seconds
-process57 started
-Skeleton took 120.0 minuites and 12.036008834838867 seconds
-process118 started
-Skeleton took 104.0 minuites and 38.681798458099365 seconds
-process90 started
-Skeleton took 112.0 minuites and 25.367542266845703 seconds
+Skeleton took 105.0 minuites and 38.6890709400177 seconds
 process52 started
-Skeleton took 122.0 minuites and 0.812476396560669 seconds
+Skeleton took 120.0 minuites and 9.526331663131714 seconds
+process53 started
+Skeleton took 120.0 minuites and 19.253957748413086 seconds
+process118 started
+Skeleton took 102.0 minuites and 57.43770098686218 seconds
 process97 started
-Skeleton took 110.0 minuites and 40.85152053833008 seconds
-process9 started
-Skeleton took 133.0 minuites and 42.10100865364075 seconds
+Skeleton took 108.0 minuites and 57.86816930770874 seconds
+process57 started
+Skeleton took 119.0 minuites and 17.053176879882812 seconds
+process88 started
+Skeleton took 112.0 minuites and 43.320653676986694 seconds
+process90 started
+Skeleton took 112.0 minuites and 13.841379404067993 seconds
 process54 started
-Skeleton took 122.0 minuites and 45.67010164260864 seconds
-process117 started
-Skeleton took 106.0 minuites and 52.66680836677551 seconds
+Skeleton took 121.0 minuites and 46.216463804244995 seconds
 process63 started
-Skeleton took 122.0 minuites and 8.572612047195435 seconds
-process62 started
-Skeleton took 122.0 minuites and 4.332353591918945 seconds
+Skeleton took 119.0 minuites and 47.073325634002686 seconds
+process9 started
+Skeleton took 132.0 minuites and 18.75643491744995 seconds
+process117 started
+Skeleton took 104.0 minuites and 47.22105264663696 seconds
 process67 started
-Skeleton took 121.0 minuites and 0.8037965297698975 seconds
-process51 started
-Skeleton took 127.0 minuites and 17.917023181915283 seconds
-process108 started
-Skeleton took 110.0 minuites and 12.811341047286987 seconds
-process115 started
-Skeleton took 110.0 minuites and 11.901962041854858 seconds
+0.10292955542351989
+0.10292955542351989
+0.041968156821036495
+0.37238108300618744
+0.3541811299134928
+0.32562844143430525
+0.296300007937497
+boterror
+0
+Skeleton took 118.0 minuites and 57.75968050956726 seconds
+process62 started
+Skeleton took 120.0 minuites and 33.47320222854614 seconds
 process71 started
-Skeleton took 122.0 minuites and 32.745455265045166 seconds
-process109 started
-Skeleton took 112.0 minuites and 37.001572132110596 seconds
+Skeleton took 120.0 minuites and 9.522751569747925 seconds
+process115 started
+Skeleton took 108.0 minuites and 28.048437118530273 seconds
+process108 started
+Skeleton took 110.0 minuites and 27.337734937667847 seconds
 process101 started
-Skeleton took 114.0 minuites and 39.04972290992737 seconds
-process96 started
-Skeleton took 116.0 minuites and 53.43989658355713 seconds
-process100 started
-Skeleton took 116.0 minuites and 47.1610894203186 seconds
-process42 started
-Skeleton took 131.0 minuites and 26.858572483062744 seconds
+Skeleton took 113.0 minuites and 1.2389860153198242 seconds
+process109 started
+Skeleton took 111.0 minuites and 45.986541509628296 seconds
+process51 started
+Skeleton took 126.0 minuites and 56.51384401321411 seconds
 process68 started
-0.06227776363567461
-0.06227776363567483
-0.06227776363567461
-0.11198325995731306
-0.4135564304127557
-0.3409048078228355
-0.30833335665042116
-0.29394961021826327
+0.07698921970469708
+0.07698921970469719
+0.07698921970469708
+0.17952846278506884
+0.39679543701160014
+0.33967295830359023
+0.30645237318495167
+0.31159119294861126
 boterror
 0
-0.06338366043088473
-0.06338366043088461
-0.06338366043088473
-0.1123524617772037
-0.41442581020686
-0.3435151146982959
-0.31028052331062317
-0.2969585214115582
+0.07748494112153848
+0.07748494112153825
+0.07748494112153848
+0.18271601177050933
+0.3963946665554723
+0.3396863502009436
+0.3022500391245939
+0.3118349192092703
 boterror
 0
-0.05467713163295407
-0.05467713163295429
-0.05467713163295407
-0.3230779901780185
+0.07979538175416978
+0.07979538175416989
+0.07979538175416956
+0.1841820414316988
+0.3923743258468819
+0.3421148991273283
+0.3056002600754911
+0.3142370555600511
 boterror
 0
-0.055181907310115186
-0.055181907310115186
-0.055181907310115186
-0.3203150299568448
+0.07744439440880269
+0.07547351447001671
+0.07744439440880269
+0.21388372006855194
+0.40074163700199117
+0.33882771192362915
+0.2975972247654447
+0.31106954823668476
 boterror
 0
-0.07804375332058477
-0.07804375332058455
-0.07804375332058455
-0.18001140359476175
-0.4165459158199707
-0.33709266198365406
-0.29973149734158266
-0.2905667080110832
+0.0762653311530771
+0.07391945070201844
+0.0762653311530771
+0.21278801593408836
+0.3999480442927166
+0.33918251943768585
+0.30131903676880445
+0.3111806196331809
 boterror
 0
-0.07928677889346414
-0.07928677889346414
-0.07928677889346403
-0.10782069076912182
-0.39201520098689724
-0.35057799720755956
-0.32267950066842865
-0.29262452513353365
+0.07932086817013306
+0.07741238317749166
+0.07932086817013284
+0.21355163124580623
+0.40291701038721983
+0.34137521120855574
+0.30097131941943
+0.31362234218726204
 boterror
 0
-Skeleton took 124.0 minuites and 58.1712908744812 seconds
+0.09160453834502758
+0.09160453834502746
+0.09160453834502746
+0.23284542093669047
+boterror
+0
+0.09291738344246947
+0.09291738344246947
+0.08662575909545911
+0.3227267524328403
+boterror
+0
+Skeleton took 123.0 minuites and 31.94605541229248 seconds
+process96 started
+Skeleton took 116.0 minuites and 4.533195734024048 seconds
 process64 started
-Skeleton took 126.0 minuites and 24.387787342071533 seconds
+Skeleton took 125.0 minuites and 0.9733827114105225 seconds
+process42 started
+Skeleton took 131.0 minuites and 26.033117055892944 seconds
+process100 started
+Skeleton took 115.0 minuites and 37.30612897872925 seconds
 process119 started
-Skeleton took 113.0 minuites and 51.2657732963562 seconds
-process78 started
-Skeleton took 126.0 minuites and 33.768070697784424 seconds
+Skeleton took 111.0 minuites and 35.0674524307251 seconds
 process70 started
-Skeleton took 128.0 minuites and 34.193631649017334 seconds
-process104 started
-Skeleton took 120.0 minuites and 7.924616098403931 seconds
+Skeleton took 127.0 minuites and 45.402008056640625 seconds
 process98 started
-Skeleton took 120.0 minuites and 58.99602127075195 seconds
+Skeleton took 119.0 minuites and 1.9695613384246826 seconds
 process99 started
-Skeleton took 120.0 minuites and 46.84156274795532 seconds
-process114 started
-Skeleton took 116.0 minuites and 49.77257227897644 seconds
-process113 started
-Skeleton took 117.0 minuites and 32.251980781555176 seconds
-process33 started
-Skeleton took 138.0 minuites and 48.78926753997803 seconds
+Skeleton took 120.0 minuites and 2.538780689239502 seconds
 process92 started
-Skeleton took 123.0 minuites and 30.459978580474854 seconds
-process21 started
-Skeleton took 142.0 minuites and 0.9595410823822021 seconds
-process91 started
-Skeleton took 124.0 minuites and 54.759859800338745 seconds
-process112 started
-Skeleton took 119.0 minuites and 53.63529706001282 seconds
-process37 started
-Skeleton took 139.0 minuites and 47.88603639602661 seconds
-process107 started
-Skeleton took 121.0 minuites and 21.527017831802368 seconds
+Skeleton took 122.0 minuites and 43.833019495010376 seconds
+process104 started
+Skeleton took 119.0 minuites and 8.791063785552979 seconds
+process78 started
+Skeleton took 126.0 minuites and 52.5468225479126 seconds
+process114 started
+Skeleton took 117.0 minuites and 45.730676889419556 seconds
+process113 started
+Skeleton took 116.0 minuites and 35.8262677192688 seconds
+process33 started
+Skeleton took 138.0 minuites and 52.33486723899841 seconds
 process69 started
-0.06081445380496753
-0.06081445380496764
-0.06081445380496742
-0.2174830915909114
-0.4183813278982431
-0.33102768222676515
-0.29215503157432476
-0.2984492975013455
+0.10568973547052096
+0.07712097775945059
+0.1004484789468918
+0.24260583582491269
 boterror
 0
-Skeleton took 132.0 minuites and 31.345964670181274 seconds
-process3 started
-Skeleton took 148.0 minuites and 39.21930742263794 seconds
+Skeleton took 129.0 minuites and 39.63579225540161 seconds
+process91 started
+Skeleton took 123.0 minuites and 59.84115386009216 seconds
+process112 started
+Skeleton took 119.0 minuites and 20.666151523590088 seconds
+process107 started
+Skeleton took 121.0 minuites and 51.17131519317627 seconds
+process37 started
+Skeleton took 139.0 minuites and 40.846099853515625 seconds
 process93 started
-Skeleton took 125.0 minuites and 45.45465683937073 seconds
+Skeleton took 124.0 minuites and 46.888262033462524 seconds
+process21 started
+Skeleton took 142.0 minuites and 16.74602460861206 seconds
 process111 started
-Skeleton took 121.0 minuites and 13.91387939453125 seconds
-process2 started
-Skeleton took 149.0 minuites and 49.12608599662781 seconds
-process79 started
-Skeleton took 130.0 minuites and 45.84423041343689 seconds
-process74 started
-Skeleton took 131.0 minuites and 29.570959091186523 seconds
+Skeleton took 120.0 minuites and 48.59423041343689 seconds
 process110 started
-Skeleton took 123.0 minuites and 57.26767826080322 seconds
+Skeleton took 122.0 minuites and 55.09321403503418 seconds
+process3 started
+Skeleton took 148.0 minuites and 9.718410730361938 seconds
+process2 started
+Skeleton took 151.0 minuites and 40.70688581466675 seconds
+process74 started
+Skeleton took 131.0 minuites and 39.00605916976929 seconds
 process66 started
-0.04081357098152172
-0.04081357098152194
-0.04081357098152194
-0.3103841427429894
-0.4252864314901894
-0.32622799968216876
-0.2913468255739271
-0.2889066928778723
+0.06407916703743666
+0.06407916703743655
+0.06407916703743666
+0.22668070257426676
+0.4079925454186909
+0.3370113138986034
+0.304801270696037
+0.30450520003551784
 boterror
 0
-0.04006345775816378
-0.04006345775816378
-0.04006345775816411
-0.3053834689897623
-0.4257326601801543
-0.3345060400057517
-0.30438796513738786
-0.28805670064673417
-boterror
-0
-0.06007359153872038
-0.06007359153872038
-0.06007359153872038
-0.19715013511107116
-0.4143047767728162
-0.3398543245283919
-0.3104327113695923
-0.29908570237500554
-boterror
-0
-0.042965380024437616
-0.04296538002443728
-0.042965380024437616
-0.30717189334765105
-0.42418741369579605
-0.328838183470496
-0.29489305098085405
-0.29152043253070725
-boterror
-0
-0.07663988075777217
-0.07663988075777217
-0.07663988075777228
-0.33027683702978206
-boterror
-0
-0.0776436690992468
-0.07764366909924658
-0.0776436690992468
-0.3282783849850428
-boterror
-0
-Skeleton took 136.0 minuites and 54.36423873901367 seconds
-process77 started
-Skeleton took 135.0 minuites and 25.736408948898315 seconds
-process80 started
-Skeleton took 135.0 minuites and 31.651127815246582 seconds
+Skeleton took 134.0 minuites and 45.93778133392334 seconds
 process106 started
-Skeleton took 128.0 minuites and 2.6326630115509033 seconds
-process73 started
-Skeleton took 137.0 minuites and 44.32236933708191 seconds
+Skeleton took 127.0 minuites and 31.600326776504517 seconds
 process116 started
-Skeleton took 126.0 minuites and 29.425286293029785 seconds
-process43 started
-Skeleton took 145.0 minuites and 46.26711082458496 seconds
+Skeleton took 125.0 minuites and 9.2590970993042 seconds
+process79 started
+Skeleton took 131.0 minuites and 43.989551067352295 seconds
+process77 started
+Skeleton took 133.0 minuites and 41.91959309577942 seconds
 process85 started
-Skeleton took 135.0 minuites and 23.577229499816895 seconds
+Skeleton took 133.0 minuites and 28.656983375549316 seconds
+process80 started
+Skeleton took 136.0 minuites and 38.221365451812744 seconds
+process43 started
+Skeleton took 145.0 minuites and 21.75642681121826 seconds
 process105 started
-Skeleton took 130.0 minuites and 28.097549200057983 seconds
+Skeleton took 129.0 minuites and 48.39263987541199 seconds
 process82 started
-Skeleton took 137.0 minuites and 7.699944496154785 seconds
-process87 started
-Skeleton took 138.0 minuites and 13.092278003692627 seconds
-process72 started
-Skeleton took 142.0 minuites and 14.54000186920166 seconds
+Skeleton took 136.0 minuites and 6.932263374328613 seconds
+process73 started
+Skeleton took 138.0 minuites and 58.19880199432373 seconds
 process83 started
-Skeleton took 139.0 minuites and 47.11811661720276 seconds
-process76 started
-Skeleton took 142.0 minuites and 42.656097173690796 seconds
+Skeleton took 136.0 minuites and 36.22792863845825 seconds
+process87 started
+Skeleton took 137.0 minuites and 39.703163623809814 seconds
+process72 started
+Skeleton took 141.0 minuites and 58.09584426879883 seconds
 process16 started
-Skeleton took 156.0 minuites and 17.00903344154358 seconds
-process75 started
-Skeleton took 143.0 minuites and 2.3735239505767822 seconds
+Skeleton took 155.0 minuites and 15.02084493637085 seconds
 process8 started
-Skeleton took 161.0 minuites and 22.5776629447937 seconds
-process22 started
-Skeleton took 158.0 minuites and 27.345434188842773 seconds
-process86 started
-Skeleton took 147.0 minuites and 21.378461360931396 seconds
+Skeleton took 159.0 minuites and 48.53326368331909 seconds
+process75 started
+Skeleton took 144.0 minuites and 52.65486812591553 seconds
 process81 started
-Skeleton took 143.0 minuites and 34.97946882247925 seconds
-process7 started
-Skeleton took 169.0 minuites and 20.685431241989136 seconds
-process34 started
-Skeleton took 175.0 minuites and 19.1231951713562 seconds
+Skeleton took 144.0 minuites and 59.921865463256836 seconds
 process23 started
-Skeleton took 172.0 minuites and 54.17003321647644 seconds
+Skeleton took 173.0 minuites and 45.6751925945282 seconds
+process22 started
+Skeleton took 158.0 minuites and 35.48696804046631 seconds
 process84 started
-Skeleton took 148.0 minuites and 26.53002381324768 seconds
-process45 started
-Skeleton took 177.0 minuites and 55.027336835861206 seconds
-process46 started
-Skeleton took 179.0 minuites and 5.094716787338257 seconds
+Skeleton took 146.0 minuites and 48.69559288024902 seconds
+process86 started
+Skeleton took 148.0 minuites and 24.691463232040405 seconds
+process76 started
+Skeleton took 141.0 minuites and 42.897679805755615 seconds
+process7 started
+Skeleton took 168.0 minuites and 22.31679940223694 seconds
 process44 started
-Skeleton took 178.0 minuites and 58.0094633102417 seconds
+Skeleton took 178.0 minuites and 7.296382665634155 seconds
+process46 started
+Skeleton took 177.0 minuites and 10.693848371505737 seconds
+process34 started
+Skeleton took 172.0 minuites and 42.45764684677124 seconds
+process45 started
+Skeleton took 178.0 minuites and 50.38281798362732 seconds
 booting processes...
 done
-Total Solve took: 201.0 Minuites 20.320878267288208 Seconds
+Total Solve took: 200.0 Minuites 43.10208249092102 Seconds
 Saving ... Please Wait
-Save Complete! Took 0.0 Minuites and 1.9019224643707275 Seconds
-Total time to Complete: 201.0 Minuites 39.535837173461914 Seconds
-Skeleton finished at Tue Sep 27 10:07:29 CDT 2022
-Plot finished at Tue Sep 27 10:12:40 CDT 2022
+Save Complete! Took 0.0 Minuites and 1.7273993492126465 Seconds
+Total time to Complete: 201.0 Minuites 1.5717790126800537 Seconds
+Skeleton finished at Wed Sep 28 11:27:45 CDT 2022
+Plot finished at Wed Sep 28 11:32:58 CDT 2022
 
-Job finished at Tue Sep 27 10:12:40 CDT 2022
+Job finished at Wed Sep 28 11:32:58 CDT 2022
