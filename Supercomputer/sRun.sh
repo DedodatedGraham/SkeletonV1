@@ -10,13 +10,14 @@ echo "node file $PBS_NODEFILE"
 num=`cat $PBS_NODEFILE | wc -l`
 echo "processes $num"
 
-
 mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/Main.py -m 1 -p 120
 echo "Skeleton finished at `date`"
 
 mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/3DSpin.py -n 30
 echo "Plot finished at `date`"
 
+mpiexec -n 1 -machinefile $PBS_NODEFILE ffmpeg -r 60 -y -threads 4 -i ../AnimationData/Spin/%03dspin.png -pix_fmt yuv420p ../AnimationData/Spin/Spin.mp4
+echo "Animation finished at `date`"
 
 echo
 echo "Job finished at `date`"
