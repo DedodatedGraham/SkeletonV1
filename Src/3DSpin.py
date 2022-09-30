@@ -15,9 +15,9 @@ def paraplot(data,start : int,stop : int):
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     if data[0][len(data[0]) - 1] == 0:
-        p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='gist_rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
     else:
-        p = ax.scatter3D(tx,ty,tz,s=5,c=tz,cmap='gist_rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=5,c=tz,cmap='rainbow')
     fig.colorbar(p)
     i = start
     while i < stop:

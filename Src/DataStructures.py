@@ -89,7 +89,7 @@ class kdTree:
         self.depth = depth
         #Next is the actual process of creating the struct
         if len(points) > limit:
-            print(limit)
+            #print(limit)
             self.split = True
             self.axis = depth % self.dimensions
             points = quicksort(points,self.axis,cpuavail=cpuavail)
