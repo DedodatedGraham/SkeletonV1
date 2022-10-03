@@ -26,21 +26,13 @@ cycol = cycle('bgrcmk')
 def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,animate : bool = False,cpuid : int = -1,tag : int = -1,*,cpuavail : int = 1):
     print('process{} started'.format(cpuid),file=sys.stdout)
     #Skeletize takes in 
-    #FROM INPUT
-    #key is the specific index of tpoints and tnorms, allows for
-    #parallel capabilities in splitting apart skeleton tasks 
-    #Also allows the class to have an array being filled by different tags
-    #FROM CLASS
-    #points, the given plain list of points [x,y] for 2D case
-    #norms, a list of not yet normalized normal points [n_x,n_y] here for 2D case
+    #points, the given plain list of points [x,y,z] for 3D case
+    #norms, a list of not yet normalized normal points [n_x,n_y,n_z] here for 3D case
+    #tree, a k-d tree containing all of the point information
     #then returns 2 things
-    # finPoints = [[x1,y1],...] of skeleton points
+    # finPoints = [[x1,y1,z1],...] of skeleton points
     # finR = [r1,...] of the radius of each skeleton point
     ts = time.time()
-    # if len(self.SkelePoints) != key + 1:
-    #     self.SkelePoints.append([])
-    #     self.SkeleRad.append([])
-    #     print('Skeletizing #{}...'.format(key))
     
 
     ##INITAL SETTING UP METHOD
@@ -84,28 +76,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         case = False
         # print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
-        
-        #Norm Check:
-        #with open('disk1.dat','r') as csvfile:
-        #    data = csv.reader(csvfile, delimiter = ' ')
-        #    for row in data:
-        #        if str(row[0]) == 'x':#if title
-        #            a = 1
-        #        else:
-        #            if float(row[0]) == point[0] and float(row[1]) == point[1] and float(row[2]) == point[2]:
-        #                #print('found point')
-        #                [tn] = normalize([[float(row[3]),float(row[4]),float(row[5])]])
-        #                #print(tn,norm)
-        #                if tn[0] == norm[0] and tn[1] == norm[1] and tn[2] == norm[2]:
-        #                    #print('found norm too')
-        #                    a = 1
-        #                else:
-        #                    print('uh')
-        #    
-        #csvfile.close()
-
-
-
         #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
         #Important to remeber, a vector into the surface is -1 * norm
         crossdis = 0
@@ -142,32 +112,12 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 testp.append(point.copy())
             else:   
                 #Refinement of skeleton point
-                    
-                # tpool = ThreadPool(cpuavail)
                 inputdat = []
                 inputdat.append([])
                 inputdat[0].append(centerp[len(centerp) - 1])
                 inputdat[0].append(point)
-                #inputdat[0].append(False)
-                # results = tpool.map(tree.getNearR,inputdat)
-                # testp.append(results[0])
-                # tpool.close()
                 testp.append(tree.getNearR(inputdat[0]))
-                
                 tempr.append(np.round(getRadius(point,testp[len(testp) - 1],norm),6))
-                
-                # if i == 1:
-                #     if tempr[1] > tempr[0] or tempr[1] > crossdis + threshDistance:
-                #         # print(i,'prenorm',norm)
-                #         q = 0
-                #         tn = []
-                #         while q < len(norm):
-                #             tn.append(norm[q] * -1)
-                #             q += 1
-                #         norm = tn
-                #         # print('postnorm',norm)
-                #     else:
-                #         print('pass')
                 if dim == 2:
                     centerp.append([float(point[0]-norm[0]*tempr[i]),float(point[1]-norm[1]*tempr[i])])
                 else:
@@ -199,22 +149,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(getDistance(point,centerp[leng]))
-                    if SkeleRad[len(SkeleRad)-1] > 1:
-                        print('error')
-                    #    print('went 1 at',i)
-                    #    print('point',point)
-                    #    print('norm',norm)
-                    #    print('testp',testp[len(testp)-1])
-                    #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
-                    #    print(abs(tempr[leng] - tempr[leng - 1]),threshDistance)
-                    #    print()
-                    #    print('cross point',crossp.getPoint(),'||')
-                    #    print('rads',tempr,'||')
-                    #    print('centers',centerp,'||')
-                    #    print('tests',testp,'||')
-                    #    print('dists','||center-',distc,'||testpoint-',dist,'||cross-',crossdis)
-                    #    
-                    #    print()
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng])
@@ -226,14 +160,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 elif dist < tempr[leng] + threshDistance: 
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                    #if SkeleRad[len(SkeleRad)-1] > 0.3:
-                    #    print()
-                    #    print('went 2 at',i)
-                    #    print('point',point)
-                    #    print('norm',norm)
-                    #    print('testp',testp[len(testp)-1])
-                    #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
-                    #    print()
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng - 1])
@@ -252,14 +178,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             if i > 1 and dist < 10*threshDistance and crossdis > 10*threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                #if SkeleRad[len(SkeleRad)-1] > 0.3:
-                #    print()
-                #    print('went 3 at',i)
-                #    print('point',point)
-                #    print('norm',norm)
-                #    print('testp',testp[len(testp)-1])
-                #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
-                #    print()
                 if animate:
                     acp[index].append(SkelePoints[len(SkelePoints) - 1])
                     atp[index].append(testp[leng - 1])
@@ -269,14 +187,6 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             if i > 0 and dist < crossdis - threshDistance and tempr[leng] > crossdis - threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                #if SkeleRad[len(SkeleRad)-1] > 0.3:
-                #    print()
-                #    print('went 4 at',i)
-                #    print('point',point)
-                #    print('norm',norm)
-                #    print('testp',testp[len(testp)-1])
-                #    print('theoretical rad',SkeleRad[len(SkeleRad)-1])
-                #    print()
                 if animate:
                     acp[index].append(SkelePoints[len(SkelePoints) - 1])
                     atp[index].append(testp[leng - 1])
@@ -284,21 +194,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 case = True
             #HERE we check if its stuck but the vector could be wrong. 
             if i > 30 and not(case):
-                #SKIPPING WRONG POINTS FOR NOW.
-                #When i > 30 we want to discount the crossdistance, and go back to the last 'best' point
-                #saver = tempr[len(tempr) - 1]
-                #q = 1
-                #while q < len(tempr) - 1:
-                #    if np.abs(tempr[q]-tempr[q+1]) < threshDistance:
-                #        SkelePoints.append(centerp[q-1])
-                #        SkeleRad.append(tempr[q-1])
-                #        if animate:
-                #            acp[index].append(SkelePoints[len(SkelePoints) - 1])
-                #            atp[index].append(testp[q-1])
-                #            arad[index].append(SkeleRad[len(SkeleRad) - 1])
-                #        q = len(tempr) - 1
-                #    if not(q == len(tempr) - 1) and :
-                #    q += 1
+                SkelePoints.append()
+                SkeleRad.append()
                 case = True
             ###OLD LOGIC
 
@@ -430,15 +327,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         avgt += (time.time() - stt)
         avgstep += len(tempr)
         numt += 1
-        #print(i,i > 2, tempr[leng] < (threshDistance),dist < (threshDistance))
         if i < 25 and SkeleRad[len(SkeleRad) - 1] < threshDistance:
-            #print()
-            #print('error at point:',point)
-            #print('Normal',norm)
-            #print('Centerpoints',centerp)
-            #print('Testpoints',testp)
-            #print('radii',tempr)
-            #print('crossp',crossp.getPoint(),'is at a distance of',crossdis)
             q = len(testp) - 1
             while q >= 0:
                 s = 0
@@ -447,12 +336,11 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     tvr.append(testp[q][s] - point[s])
                     s += 1
                 d = getDeviation(norm,tvr)
-                if d > 0.7:
+                if d > 0.75:
                     SkelePoints[len(SkelePoints)-1] = centerp[q]
                     SkeleRad[len(SkeleRad)-1] = tempr[q]
                     q = -1
                 q -= 1
-            #print()
         if index % 10 == 0:
             tat = avgt / numt
             sat = avgstep / numt

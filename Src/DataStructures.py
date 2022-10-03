@@ -1389,13 +1389,13 @@ class SplitTree:
             if maxqd < leveloffset:
                 #We Will purge a node completely if the max depth in all of its nodes are not deeper than the leveloffset
                 return [],0
-            elif abs(maxqd - minqd) > leveloffset:
-                #We want to purge any point nodes which break the offset. Showing max will know if is needed or not.
-                i = 0
-                while i < len(ds):
-                    if abs(maxqd - ds[i]) < leveloffset:
-                       retpoints.extend(pts[i]) 
-                    i += 1
+            #elif abs(maxqd - minqd) > leveloffset:
+            #    #We want to purge any point nodes which break the offset. Showing max will know if is needed or not.
+            #    i = 0
+            #    while i < len(ds):
+            #        if abs(maxqd - ds[i]) < leveloffset:
+            #           retpoints.extend(pts[i]) 
+            #        i += 1
             else:
                 i = 0
                 while i < len(pts):

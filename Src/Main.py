@@ -71,7 +71,7 @@ if __name__ == '__main__':
     net = SkeleNet(link)
     #net.LoadSave(recover)
     net.solve(False,mode,noderequest)
-    #net.purge()
+    net.purge()
     net.savedat(1,savefile)
     #net.plot([])
     
