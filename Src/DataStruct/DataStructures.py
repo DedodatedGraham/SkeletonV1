@@ -1403,8 +1403,8 @@ class SplitTree:
                             #These have already been calulated, so we just copy
                             diffmat[i].append(diffmat[j][i])
                         else:
-                        #if not, then we will add the difference
-                        diffmat[i].append(abs(ds[i] - ds[j]))
+                            #if not, then we will add the difference
+                            diffmat[i].append(abs(ds[i] - ds[j]))
                     else:
                         #If these fail, we dont care about the comparison so we mark with a 0
                         diffmat[i].append(0)
@@ -1413,10 +1413,11 @@ class SplitTree:
             diffspread = abs(spread[0] - spread[1])
             #Now we have the min/max and the difference charts, With these and the relative scores we can put together all important values at once for each ds
             #If the spread is orders of magnitude bigger, ie bigger than 100 then there is an issue
-            print()
-            print(diffspread)
-            print(diffmat)
-            print()
+            if diffspread != 0:
+                print()
+                print(diffspread)
+                print(diffmat)
+                print()
             dep = 0
         else:
             #LowPoints, we will create a points per area/volume score, 
