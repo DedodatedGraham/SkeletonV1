@@ -15,7 +15,7 @@ import time
 import multiprocessing as mp
 from pathos.pp import ParallelPool
 from pathos.multiprocessing import ProcessingPool,ThreadPool
-
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)) + r'/DataStruct')
 from DataStructures import kdTree,SplitTree
 from Skeletize import checkRepeat,getRadius,getDistance,normalize, getAngle, getPoint,randPN,getDeviation
 from mpl_toolkits import mplot3d
