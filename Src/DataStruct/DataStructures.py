@@ -1008,7 +1008,7 @@ class SplitTree:
         if self.dim == 2:
             self.maxpts = 4
         else:
-            self.maxpts = 3
+            self.maxpts = 8
         #Defining skele Points
         self.skelepts = []
         if not(len(inpts) == 0):
@@ -1340,17 +1340,16 @@ class SplitTree:
                 #    i += 1
                 #plt.scatter(tx,ty,5,color='green')
     
-    def purge(self,leveloffset : int = 2,*,depth : int = 0): 
-        print(depth)
+    def purge(self,*,depth : int = 0): 
         retpoints = []
         if self.state:
             pts = []
             ds = []
             if self.dim == 2:
-                r1,d1 = self.leafs[0].purge(leveloffset,depth = depth + 1)
-                r2,d2 = self.leafs[1].purge(leveloffset,depth = depth + 1)
-                r3,d3 = self.leafs[2].purge(leveloffset,depth = depth + 1)
-                r4,d4 = self.leafs[3].purge(leveloffset,depth = depth + 1)
+                r1,d1 = self.leafs[0].purge(depth = depth + 1)
+                r2,d2 = self.leafs[1].purge(depth = depth + 1)
+                r3,d3 = self.leafs[2].purge(depth = depth + 1)
+                r4,d4 = self.leafs[3].purge(depth = depth + 1)
                 pts.append(r1)
                 pts.append(r2)
                 pts.append(r3)
@@ -1360,14 +1359,14 @@ class SplitTree:
                 ds.append(d3)
                 ds.append(d4)
             else:   
-                r1,d1 = self.leafs[0].purge(leveloffset,depth = depth + 1)
-                r2,d2 = self.leafs[1].purge(leveloffset,depth = depth + 1)
-                r3,d3 = self.leafs[2].purge(leveloffset,depth = depth + 1)
-                r4,d4 = self.leafs[3].purge(leveloffset,depth = depth + 1)
-                r5,d5 = self.leafs[4].purge(leveloffset,depth = depth + 1)
-                r6,d6 = self.leafs[5].purge(leveloffset,depth = depth + 1)
-                r7,d7 = self.leafs[6].purge(leveloffset,depth = depth + 1)
-                r8,d8 = self.leafs[7].purge(leveloffset,depth = depth + 1)
+                r1,d1 = self.leafs[0].purge(depth = depth + 1)
+                r2,d2 = self.leafs[1].purge(depth = depth + 1)
+                r3,d3 = self.leafs[2].purge(depth = depth + 1)
+                r4,d4 = self.leafs[3].purge(depth = depth + 1)
+                r5,d5 = self.leafs[4].purge(depth = depth + 1)
+                r6,d6 = self.leafs[5].purge(depth = depth + 1)
+                r7,d7 = self.leafs[6].purge(depth = depth + 1)
+                r8,d8 = self.leafs[7].purge(depth = depth + 1)
                 pts.append(r1)
                 pts.append(r2)
                 pts.append(r3)
@@ -1384,44 +1383,57 @@ class SplitTree:
                 ds.append(d6)
                 ds.append(d7)
                 ds.append(d8)
-            maxqd = max(ds)
-            minqd = min(ds)
-            if maxqd < leveloffset:
-                #We Will purge a node completely if the max depth in all of its nodes are not deeper than the leveloffset
-                return [],0
-            #elif abs(maxqd - minqd) > leveloffset:
-            #    #We want to purge any point nodes which break the offset. Showing max will know if is needed or not.
-            #    i = 0
-            #    while i < len(ds):
-            #        if abs(maxqd - ds[i]) < leveloffset:
-            #           retpoints.extend(pts[i]) 
-            #        i += 1
-            else:
-                i = 0
-                while i < len(pts):
-                    retpoints.extend(pts[i])
-                    i += 1
-            dep = maxqd
+            #Now that we have all the deeper layer information, we will determine information we want
+            i = 0
+            spread = [ds[0],ds[0]]
+            diffmat = []
+            while i < len(ds):
+                if ds[i] > spread[1]:
+                    spread[1] = ds[i]
+                if (ds[i] != 0 and ds[i] < spread[0]) or spread[0] == 0:
+                    spread[0] = ds[i]
+                j = 0
+                diffmat.append([])
+                while j < len(ds):
+                    if len(pts[i]) != 0 and len(pts[j]) != 0 and i != j:
+                        #Makes sure the layers in refrence have points
+                        #One of the features with the score of points per area/vol is we
+                        #can compare to one another, as the 'less defined' points, will have small points along with bigger areas than the previous
+                        if i > j:
+                            #These have already been calulated, so we just copy
+                            diffmat[i].append(diffmat[j][i])
+                        else:
+                        #if not, then we will add the difference
+                        diffmat[i].append(abs(ds[i] - ds[j]))
+                    else:
+                        #If these fail, we dont care about the comparison so we mark with a 0
+                        diffmat[i].append(0)
+                    j += 1
+                i += 1
+            diffspread = abs(spread[0] - spread[1])
+            #Now we have the min/max and the difference charts, With these and the relative scores we can put together all important values at once for each ds
+            #If the spread is orders of magnitude bigger, ie bigger than 100 then there is an issue
+            print()
+            print(diffspread)
+            print(diffmat)
+            print()
+            dep = 0
         else:
-            dep = depth
+            #LowPoints, we will create a points per area/volume score, 
+            dep = len(self.skelepts) / pow(self.width,self.dim)
             retpoints = self.skelepts
+        #Returns
         if depth != 0:
             return retpoints,dep
         else:
-            if len(retpoints) == 0:
-                #IF Comes up empty will go down in levels until something shows
-                retpts,retr = self.purge(leveloffset - 1)
-                print('restarted')
-                return retpts,retr
-            else:
-                i = 0
-                retpts = []
-                retr = []
-                while i < len(retpoints):
-                    retpts.append(retpoints[i].getPoint())
-                    retr.append(retpoints[i].getRad())
-                    i += 1
-                return retpts,retr
+            i = 0
+            retpts = []
+            retr = []
+            while i < len(retpoints):
+                retpts.append(retpoints[i].getPoint())
+                retr.append(retpoints[i].getRad())
+                i += 1
+            return retpts,retr
 
 class SkelePoint:
 #This is a class which has a point which holds x,y,z and r
