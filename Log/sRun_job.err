@@ -1,12 +1,51 @@
 Traceback (most recent call last):
-  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/Main.py", line 20, in <module>
-    from SkeleNet import SkeleNet,skeletize
-  File "/data/ling_shared/garciag/SkeletonV1/Src/SkeleNet.py", line 19, in <module>
-    from DataStructures import kdTree,SplitTree
-  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1407
-    diffmat[i].append(abs(ds[i] - ds[j]))
-    ^
-IndentationError: expected an indented block after 'else' statement on line 1405
+  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/Main.py", line 74, in <module>
+    net.purge()
+  File "/data/ling_shared/garciag/SkeletonV1/Src/SkeleNet.py", line 852, in purge
+    newpts,newr = purgetree.purge()
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1362, in purge
+    r1,d1 = self.leafs[0].purge(depth = depth + 1)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1365, in purge
+    r4,d4 = self.leafs[3].purge(depth = depth + 1)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1362, in purge
+    r1,d1 = self.leafs[0].purge(depth = depth + 1)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1365, in purge
+    r4,d4 = self.leafs[3].purge(depth = depth + 1)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1365, in purge
+    r4,d4 = self.leafs[3].purge(depth = depth + 1)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1365, in purge
+    r4,d4 = self.leafs[3].purge(depth = depth + 1)
+  [Previous line repeated 1 more time]
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1363, in purge
+    r2,d2 = self.leafs[1].purge(depth = depth + 1)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1412, in purge
+    if diffmat[i] < small or small == 0:
+TypeError: '<' not supported between instances of 'list' and 'int'
+multiprocess.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/home/garciag/.local/lib/python3.10/site-packages/pathos/helpers/mp_helper.py", line -1, in <lambda>
+  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 18, in paraplot
+    p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
+IndexError: list index out of range
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 125, in <module>
+    pool.map(paraplot,data,st,sp)
+  File "/home/garciag/.local/lib/python3.10/site-packages/pathos/multiprocessing.py", line 139, in map
+    return _pool.map(star(f), zip(*args)) # chunksize
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 364, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/home/garciag/.local/lib/python3.10/site-packages/multiprocess/pool.py", line 771, in get
+    raise self._value
+IndexError: list index out of range
 ffmpeg version 5.0.1-static https://johnvansickle.com/ffmpeg/  Copyright (c) 2000-2022 the FFmpeg developers
   built with gcc 8 (Debian 8.3.0-6)
   configuration: --enable-gpl --enable-version3 --enable-static --disable-debug --disable-ffplay --disable-indev=sndio --disable-outdev=sndio --cc=gcc --enable-fontconfig --enable-frei0r --enable-gnutls --enable-gmp --enable-libgme --enable-gray --enable-libfribidi --enable-libass --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-librubberband --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libvorbis --enable-libopus --enable-libtheora --enable-libvidstab --enable-libvo-amrwbenc --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg
@@ -36,7 +75,7 @@ Output #0, mp4, to '../AnimationData/Spin/Spin.mp4':
       encoder         : Lavc59.18.100 libx264
     Side data:
       cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
-frame=    2 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0 speed=   0x    frame=   31 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0 speed=   0x    frame=   74 fps= 72 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0 speed=   0x    frame=  122 fps= 79 q=31.0 size=       0kB time=00:00:00.50 bitrate=   0.8kbits/s dup=1 drop=0 speed=0.326x    frame=  171 fps= 83 q=31.0 size=     256kB time=00:00:01.31 bitrate=1593.0kbits/s dup=1 drop=0 speed=0.642x    frame=  219 fps= 86 q=31.0 size=     512kB time=00:00:02.11 bitrate=1981.7kbits/s dup=1 drop=0 speed=0.828x    frame=  269 fps= 88 q=31.0 size=     768kB time=00:00:02.95 bitrate=2132.8kbits/s dup=1 drop=0 speed=0.962x    frame=  319 fps= 89 q=31.0 size=    1024kB time=00:00:03.78 bitrate=2217.3kbits/s dup=1 drop=0 speed=1.06x    frame=  361 fps= 87 q=-1.0 Lsize=    1865kB time=00:00:05.96 bitrate=2560.7kbits/s dup=1 drop=0 speed=1.44x    
+frame=    2 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0 speed=   0x    frame=   31 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0 speed=   0x    frame=   75 fps= 73 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=1 drop=0 speed=   0x    frame=  123 fps= 79 q=31.0 size=       0kB time=00:00:00.51 bitrate=   0.7kbits/s dup=1 drop=0 speed=0.333x    frame=  167 fps= 81 q=31.0 size=     256kB time=00:00:01.25 bitrate=1677.9kbits/s dup=1 drop=0 speed=0.603x    frame=  212 fps= 82 q=31.0 size=     512kB time=00:00:02.00 bitrate=2097.3kbits/s dup=1 drop=0 speed=0.777x    frame=  259 fps= 84 q=31.0 size=     768kB time=00:00:02.78 bitrate=2260.5kbits/s dup=1 drop=0 speed=0.905x    frame=  310 fps= 87 q=31.0 size=    1024kB time=00:00:03.63 bitrate=2308.9kbits/s dup=1 drop=0 speed=1.01x    frame=  359 fps= 88 q=31.0 size=    1280kB time=00:00:04.45 bitrate=2356.4kbits/s dup=1 drop=0 speed=1.09x    frame=  361 fps= 85 q=-1.0 Lsize=    1865kB time=00:00:05.96 bitrate=2560.7kbits/s dup=1 drop=0 speed= 1.4x    
 video:1863kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.134064%
 [libx264 @ 0xb9b9140] frame I:2     Avg QP:23.20  size: 36753
 [libx264 @ 0xb9b9140] frame P:350   Avg QP:23.65  size:  5172

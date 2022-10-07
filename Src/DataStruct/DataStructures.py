@@ -1387,6 +1387,7 @@ class SplitTree:
             i = 0
             spread = [ds[0],ds[0]]
             diffmat = []
+            small = 0
             while i < len(ds):
                 if ds[i] > spread[1]:
                     spread[1] = ds[i]
@@ -1408,17 +1409,46 @@ class SplitTree:
                     else:
                         #If these fail, we dont care about the comparison so we mark with a 0
                         diffmat[i].append(0)
+                    if diffmat[i][j] < small or small == 0:
+                        small = diffmat[i][j]
                     j += 1
                 i += 1
             diffspread = abs(spread[0] - spread[1])
             #Now we have the min/max and the difference charts, With these and the relative scores we can put together all important values at once for each ds
             #If the spread is orders of magnitude bigger, ie bigger than 100 then there is an issue
-            if diffspread != 0:
-                print()
-                print(diffspread)
-                print(diffmat)
-                print()
-            dep = 0
+            if diffspread == 0 or(small / diffspread <= 1 and small / diffspread >= 1/pow(2,self.dim)):
+                i = 0
+                while i < len(pts):
+                    if len(pts[i]) != 0:
+                        j = 0
+                        while j < len(pts[i]):
+                            retpts.append(pts[i][j])
+                            j += 1
+                    i += 1
+            else:
+                i = 0
+                score = []
+                while i < len(diffmat):
+                    top = max(diffmat[i])#gets us the biggest spread of the line
+                    j = 0
+                    q = 0
+                    while j < len(diffmat[i]):
+                        if top / diffspread == 1:
+                            q += 1
+                        j += 1
+                    score.append(q)
+                    i += 1
+                i = 0
+                ms = max(score)
+                while i < len(score):
+                    if score[i] != ms and len(pts[i]) != 0:
+                        j = 0
+                        while j < len(pts[i]):
+                            retpts.appennd(pts[i][j])
+                            j += 1
+                    i += 1
+            dep = len(retpts) / pow(self.width,self.dim)
+
         else:
             #LowPoints, we will create a points per area/volume score, 
             dep = len(self.skelepts) / pow(self.width,self.dim)
