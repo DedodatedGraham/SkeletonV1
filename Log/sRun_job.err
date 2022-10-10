@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/Main.py", line 20, in <module>
-    from SkeleNet import SkeleNet,skeletize
-  File "/data/ling_shared/garciag/SkeletonV1/Src/SkeleNet.py", line 19, in <module>
-    from DataStructures import kdTree,SplitTree
-ModuleNotFoundError: No module named 'DataStructures'
