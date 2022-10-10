@@ -1422,7 +1422,7 @@ class SplitTree:
                     if len(pts[i]) != 0:
                         j = 0
                         while j < len(pts[i]):
-                            retpts.append(pts[i][j])
+                            retpoints.append(pts[i][j])
                             j += 1
                     i += 1
             else:
@@ -1444,11 +1444,10 @@ class SplitTree:
                     if score[i] != ms and len(pts[i]) != 0:
                         j = 0
                         while j < len(pts[i]):
-                            retpts.appennd(pts[i][j])
+                            retpoints.append(pts[i][j])
                             j += 1
                     i += 1
-            dep = len(retpts) / pow(self.width,self.dim)
-
+            dep = len(retpoints) / pow(self.width,self.dim)
         else:
             #LowPoints, we will create a points per area/volume score, 
             dep = len(self.skelepts) / pow(self.width,self.dim)
