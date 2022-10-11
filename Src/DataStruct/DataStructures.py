@@ -1047,14 +1047,6 @@ class SplitTree:
         self.leafs = []
         nodes = []
         points = []
-        wid = []
-        hei = []
-        ax = 0
-        ay = 0
-        az = 0
-        for pt in self.skelepts:
-            aw += pt[0]
-
         
         if self.dim == 2:
             nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width])
