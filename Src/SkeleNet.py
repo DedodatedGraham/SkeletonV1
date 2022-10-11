@@ -329,14 +329,14 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         numt += 1
         if i < 25 and SkeleRad[len(SkeleRad) - 1] < threshDistance:
             q = len(testp) - 1
-            while q >= 0:
+            while q > 0:
                 s = 0
                 tvr = []
                 while s < len(testp[q]):
                     tvr.append(testp[q][s] - point[s])
                     s += 1
                 if tvr == [0.0,0.0,0.0]:
-                    print('foundboterror',q,norm,tvr)
+                    print('foundboterror',)
                 d = getDeviation(norm,tvr)
                 if d > 0.75:
                     SkelePoints[len(SkelePoints)-1] = centerp[q]

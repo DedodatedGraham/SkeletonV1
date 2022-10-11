@@ -991,7 +991,7 @@ class kdTree:
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
-    def __init__(self,inpts,node:list,width: float,*,inrad : list = [],dim : int = 0):
+    def __init__(self,inpts,node:list,width: float,height : float = 0.0,depth : float = 0.0*,inrad : list = [],dim : int = 0):
         #Bounds are stored in a node(center [x,y,z]), heigh and width
         self.count = len(inpts)
         self.state = False
@@ -1028,6 +1028,15 @@ class SplitTree:
         #Defining other important elements
         self.node = node
         self.width = width
+        if height == 0.0:
+            self.height = width
+        else:
+            self.height = height
+        if depth == 0.0:
+            self.depth = width
+        else:
+            self.depth = depth
+
         #If there are too many points, will subdivide
         if len(self.skelepts) > self.maxpts:
             self.state = True
@@ -1038,6 +1047,15 @@ class SplitTree:
         self.leafs = []
         nodes = []
         points = []
+        wid = []
+        hei = []
+        ax = 0
+        ay = 0
+        az = 0
+        for pt in self.skelepts:
+            aw += pt[0]
+
+        
         if self.dim == 2:
             nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width])
             nodes.append([self.node[0] + 0.5 * self.width,self.node[1] - 0.5 * self.width])
