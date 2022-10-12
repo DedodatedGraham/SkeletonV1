@@ -991,10 +991,15 @@ class kdTree:
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
-    def __init__(self,inpts,node:list,width: float,height : float = 0.0,depth : float = 0.0*,inrad : list = [],dim : int = 0):
+    def __init__(self,inpts,lastNode = list,width : int = 0, height : int = 0, depth : int = 0,*,inrad : list = [],dim : int = 0):
         #Bounds are stored in a node(center [x,y,z]), heigh and width
         self.count = len(inpts)
         self.state = False
+
+        self.width = width
+        self.heigth = height
+        self.depth = depth
+
         if not(dim == 2 or dim == 3):
             if isinstance(inpts[0],SkelePoint):
                 self.dim = inpts[0].dimensions
@@ -1025,18 +1030,6 @@ class SplitTree:
                 while i < len(inpts):
                     self.skelepts.append(inpts[i])
                     i += 1
-        #Defining other important elements
-        self.node = node
-        self.width = width
-        if height == 0.0:
-            self.height = width
-        else:
-            self.height = height
-        if depth == 0.0:
-            self.depth = width
-        else:
-            self.depth = depth
-
         #If there are too many points, will subdivide
         if len(self.skelepts) > self.maxpts:
             self.state = True
@@ -1047,12 +1040,22 @@ class SplitTree:
         self.leafs = []
         nodes = []
         points = []
-        
+        avgx = 0
+        avgy = 0
+        avgz = 0
+        for pt in self.skelepoints:
+            avgx.append(pt.x)
+            avgy.append(pt.y)
+            if self.dim == 3:
+                avgz.append(pt.z)
+        avgx = avgx / len(self.skelepts)
+        avgy = avgy / len(self.skelepts)
+        if self.dim == 3:
+            avgz = avgz / len(self.skelepts)
+            self.node = [avgx,avgy,avgz]
+        else:
+            self.node = [avgx,avgy]
         if self.dim == 2:
-            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width])
-            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] - 0.5 * self.width])
-            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] + 0.5 * self.width])
-            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] - 0.5 * self.width])
             points.append([])
             points.append([])
             points.append([])
@@ -1069,14 +1072,6 @@ class SplitTree:
                     points[3].append(self.skelepts[i])
                 i += 1
         else:
-            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] + 0.5 * self.width])
-            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] - 0.5 * self.width])
-            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] + 0.5 * self.width])
-            nodes.append([self.node[0] + 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] - 0.5 * self.width])
-            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] + 0.5 * self.width])
-            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] + 0.5 * self.width,self.node[2] - 0.5 * self.width])
-            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] + 0.5 * self.width])
-            nodes.append([self.node[0] - 0.5 * self.width,self.node[1] - 0.5 * self.width,self.node[2] - 0.5 * self.width])
             points.append([])
             points.append([])
             points.append([])
@@ -1106,7 +1101,7 @@ class SplitTree:
                 i += 1
         i = 0
         while i < len(nodes):
-            self.leafs.append(SplitTree(points[i], nodes[i], self.width / 2,dim=self.dim))
+            self.leafs.append(SplitTree(points[i],dim=self.dim))
             i += 1
         self.skelepts = []
         
