@@ -991,14 +991,14 @@ class kdTree:
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
-    def __init__(self,inpts,lastNode = list,width : float = 0.0, height : float = 0.0, depth : float = 0.0,*,inrad : list = [],dim : int = 0):
-        #Bounds are stored in a node(center [x,y,z]), heigh and width
+    def __init__(self,inpts,*,lastBox = list = [],inrad : list = [],dim : int = 0,dep : int = 0):
+        #Bounds are stored in a node(center [x,y,z])
         self.count = len(inpts)
         self.state = False
+        self.dep = dep
+        if len(lastBox) != 0:
+            self.lastBox = lastBox
 
-        self.width = width
-        self.heigth = height
-        self.depth = depth
         if not(dim == 2 or dim == 3):
             if isinstance(inpts[0],SkelePoint):
                 self.dim = inpts[0].dimensions
@@ -1013,6 +1013,7 @@ class SplitTree:
             self.maxpts = 4
         else:
             self.maxpts = 8
+
         #Defining skele Points
         self.skelepts = []
         if not(len(inpts) == 0):
@@ -1029,46 +1030,21 @@ class SplitTree:
                 while i < len(inpts):
                     self.skelepts.append(inpts[i])
                     i += 1
+        
         #If there are too many points, will subdivide
         if len(self.skelepts) > self.maxpts:
             self.state = True
             self.subdivide()
+        elif len(self.skelepts) > 0:
+            self.getBox()
             
     def subdivide(self):
         #Creates the nodes for the new Quad/oct trees, and sorts points to their appropiate node
         self.leafs = []
         nodes = []
         points = []
-        avgx = 0
-        avgy = 0
-        avgz = 0
-        mx = [0,1000]
-        my = [0,1000]
-        mz = [0,1000]
-        for pt in self.skelepoints:
-            avgx.append(pt.x)
-            if pt.x > mx[0]:
-                mx[0] = pt.x
-            if pt.x < mx[1]:
-                mx[1] = pt.x
-            avgy.append(pt.y)
-            if pt.y > my[0]:
-                my[0] = pt.y
-            if pt.y < my[1]:
-                my[1] = pt.y
-            if self.dim == 3:
-                avgz.append(pt.z)
-                if pt.z > mz[0]:
-                    mz[0] = pt.z
-                if pt.z < mz[1]:
-                    mz[1] = pt.z
-        avgx = avgx / len(self.skelepts)
-        avgy = avgy / len(self.skelepts)
-        if self.dim == 3:
-            avgz = avgz / len(self.skelepts)
-            self.node = [avgx,avgy,avgz]
-        else:
-            self.node = [avgx,avgy]
+        self.getBox()
+
         if self.dim == 2:
             points.append([])
             points.append([])
@@ -1115,10 +1091,66 @@ class SplitTree:
                 i += 1
         i = 0
         while i < len(nodes):
-            self.leafs.append(SplitTree(points[i],dim=self.dim))
+            self.leafs.append(SplitTree(points[i],dim=self.dim,dep=self.dep + 1,lastBox = [self.node,self.c[0],self.c[1]]))
             i += 1
         self.skelepts = []
-        
+    def getBox(self):
+        #First we find the local node
+        avgx = 0
+        avgy = 0
+        avgz = 0
+        if self.dep == 0:
+            mx = [self.skelepoints[0].x,self.skelepoints[0].x]
+            my = [self.skelepoints[0].y,self.skelepoints[0].y]
+            if self.dim == 3:
+                mz = [self.skelepoints[0].z,self.skelepoints[0].z]
+        for pt in self.skelepoints:
+            avgx += pt.x
+            if self.dep == 0:
+                if pt.x > mx[0]:
+                    mx[0] = pt.x
+                if pt.x < mx[1]:
+                    mx[1] = pt.x
+            avgy += pt.y
+            if self.dep == 0:
+                if pt.y > my[0]:
+                    my[0] = pt.y
+                if pt.y < my[1]:
+                    my[1] = pt.y
+            if self.dim == 3:
+                avgz += pt.z
+                if self.dep == 0:
+                    if pt.z > mz[0]:
+                        mz[0] = pt.z
+                    if pt.z < mz[1]:
+                        mz[1] = pt.z
+        avgx = avgx / len(self.skelepts)
+        avgy = avgy / len(self.skelepts)
+        if self.dim == 3:
+            avgz = avgz / len(self.skelepts)
+            self.node = [avgx,avgy,avgz]
+        else:
+            self.node = [avgx,avgy]
+        #Then We will get the bounding box
+        if self.dep == 0:
+            #If First layer, we want to define the corners
+            if self.dim == 2:
+                self.c = [[mx[0],my[0]],[mx[1],my[1]]]
+            else:
+                self.c = [[mx[0],my[0],mz[0]],[mx[1],my[1],mz[1]]]
+        else:
+            #If not first layer, we determine our current bounds using the last box's dimensions
+            #Last box will come in as a [LastNode,c-max,c-min]
+            self.c = [[],[]]
+            for dim in range(self.dim):
+                if self.node[dim] < self.lastBox[0][dim]:
+                    self.c[0].append(self.lastBox[0][dim])
+                    self.c[1].append(self.lastBox[2][dim])
+                else:
+                    self.c[0].append(self.lastBox[1][dim])
+                    self.c[1].append(self.lastBox[0][dim])
+        #We now have a node and bounding box for each and every layer we do, given we pass along the right information
+
     def addpoints(self, points : list = [],*,rads : list = [],spts : bool = False):
         #INPUTS points [skpt1,skpt2...] / [[x1,y1],[x2,y2],..]
         #Goes through all points and adds them to needed areas
@@ -1359,121 +1391,29 @@ class SplitTree:
                 #    i += 1
                 #plt.scatter(tx,ty,5,color='green')
     
-    def purge(self,*,depth : int = 0): 
+    def purge(self): 
         retpoints = []
+        cent = []
+        score = 0
+
+        #Main Logic
         if self.state:
-            pts = []
-            ds = []
-            if self.dim == 2:
-                r1,d1 = self.leafs[0].purge(depth = depth + 1)
-                r2,d2 = self.leafs[1].purge(depth = depth + 1)
-                r3,d3 = self.leafs[2].purge(depth = depth + 1)
-                r4,d4 = self.leafs[3].purge(depth = depth + 1)
-                pts.append(r1)
-                pts.append(r2)
-                pts.append(r3)
-                pts.append(r4)
-                ds.append(d1)
-                ds.append(d2)
-                ds.append(d3)
-                ds.append(d4)
-            else:   
-                r1,d1 = self.leafs[0].purge(depth = depth + 1)
-                r2,d2 = self.leafs[1].purge(depth = depth + 1)
-                r3,d3 = self.leafs[2].purge(depth = depth + 1)
-                r4,d4 = self.leafs[3].purge(depth = depth + 1)
-                r5,d5 = self.leafs[4].purge(depth = depth + 1)
-                r6,d6 = self.leafs[5].purge(depth = depth + 1)
-                r7,d7 = self.leafs[6].purge(depth = depth + 1)
-                r8,d8 = self.leafs[7].purge(depth = depth + 1)
-                pts.append(r1)
-                pts.append(r2)
-                pts.append(r3)
-                pts.append(r4)
-                pts.append(r5)
-                pts.append(r6)
-                pts.append(r7)
-                pts.append(r8)
-                ds.append(d1)
-                ds.append(d2)
-                ds.append(d3)
-                ds.append(d4)
-                ds.append(d5)
-                ds.append(d6)
-                ds.append(d7)
-                ds.append(d8)
-            #Now that we have all the deeper layer information, we will determine information we want
-            i = 0
-            spread = [ds[0],ds[0]]
-            diffmat = []
-            small = 0
-            while i < len(ds):
-                if ds[i] > spread[1]:
-                    spread[1] = ds[i]
-                if (ds[i] != 0 and ds[i] < spread[0]) or spread[0] == 0:
-                    spread[0] = ds[i]
-                j = 0
-                diffmat.append([])
-                while j < len(ds):
-                    if len(pts[i]) != 0 and len(pts[j]) != 0 and i != j:
-                        #Makes sure the layers in refrence have points
-                        #One of the features with the score of points per area/vol is we
-                        #can compare to one another, as the 'less defined' points, will have small points along with bigger areas than the previous
-                        if i > j:
-                            #These have already been calulated, so we just copy
-                            diffmat[i].append(diffmat[j][i])
-                        else:
-                            #if not, then we will add the difference
-                            diffmat[i].append(abs(ds[i] - ds[j]))
-                    else:
-                        #If these fail, we dont care about the comparison so we mark with a 0
-                        diffmat[i].append(0)
-                    if diffmat[i][j] < small or small == 0:
-                        small = diffmat[i][j]
-                    j += 1
-                i += 1
-            diffspread = abs(spread[0] - spread[1])
-            #Now we have the min/max and the difference charts, With these and the relative scores we can put together all important values at once for each ds
-            #If the spread is orders of magnitude bigger, ie bigger than 100 then there is an issue
-            if diffspread == 0 or(small / diffspread <= 1 and small / diffspread >= 1/pow(2,self.dim)):
-                i = 0
-                while i < len(pts):
-                    if len(pts[i]) != 0:
-                        j = 0
-                        while j < len(pts[i]):
-                            retpoints.append(pts[i][j])
-                            j += 1
-                    i += 1
-            else:
-                i = 0
-                score = []
-                while i < len(diffmat):
-                    top = max(diffmat[i])#gets us the biggest spread of the line
-                    j = 0
-                    q = 0
-                    while j < len(diffmat[i]):
-                        if top / diffspread == 1:
-                            q += 1
-                        j += 1
-                    score.append(q)
-                    i += 1
-                i = 0
-                ms = max(score)
-                while i < len(score):
-                    if score[i] != ms and len(pts[i]) != 0:
-                        j = 0
-                        while j < len(pts[i]):
-                            retpoints.append(pts[i][j])
-                            j += 1
-                    i += 1
-            dep = len(retpoints) / pow(self.width,self.dim)
+            #Search Further
+            for layer in self.leafs:
+                rp,s,c = layer.purge()
         else:
-            #LowPoints, we will create a points per area/volume score, 
-            dep = len(self.skelepts) / pow(self.width,self.dim)
-            retpoints = self.skelepts
-        #Returns
+            #Calc Layer, Bottom
+            if len(self.skelepts) > 0:
+                for pt in self.skelepts:
+                    retpoints.append(pt)
+                if self.dim == 2:
+                    score = len(self.skelepts) / ((self.c[0][0] - self.c[1][0])*(self.c[0][1] - self.c[1][1]))
+                else:
+                    score = len(self.skelepts) / ((self.c[0][0] - self.c[1][0])*(self.c[0][1] - self.c[1][1])*(self.c[0][2] - self.c[1][2]))
+                cent = self.node
+        #Return Logic
         if depth != 0:
-            return retpoints,dep
+            return retpoints,score,cent
         else:
             i = 0
             retpts = []
