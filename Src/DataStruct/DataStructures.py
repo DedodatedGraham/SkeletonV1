@@ -1399,8 +1399,12 @@ class SplitTree:
         #Main Logic
         if self.state:
             #Search Further
+            collec = [[],[],[]]
             for layer in self.leafs:
                 rp,s,c = layer.purge()
+                collec[0].append(pt for pt in rp)
+                collec[1].append(s)
+                collec[2].append(c)
         else:
             #Calc Layer, Bottom
             if len(self.skelepts) > 0:
