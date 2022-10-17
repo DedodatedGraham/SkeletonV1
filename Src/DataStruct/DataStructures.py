@@ -1395,16 +1395,25 @@ class SplitTree:
         retpoints = []
         cent = []
         score = 0
-
         #Main Logic
         if self.state:
             #Search Further
             collec = [[],[],[]]
             for layer in self.leafs:
                 rp,s,c = layer.purge()
-                collec[0].append(pt for pt in rp)
-                collec[1].append(s)
-                collec[2].append(c)
+                if len(rp) == 1:
+                    collec[0].append(rp)
+                    collec[1].append(s)
+                    collec[2].append(c)
+                elif len(rp) > 1:
+                    for i in range(rp):
+                        collec[0].append(rp[i])
+            #We now have the points that exist below our current level search.
+            #If we have 2 Levels that exist we can make some decisions
+            if len(collec[0]) > 1:
+
+
+
         else:
             #Calc Layer, Bottom
             if len(self.skelepts) > 0:
