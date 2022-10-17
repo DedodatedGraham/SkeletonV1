@@ -991,7 +991,7 @@ class kdTree:
 
 class SplitTree:
     #Split Tree is a versatile Quad/Oct tree designed for efficient stack storage for search
-    def __init__(self,inpts,*,lastBox = list = [],inrad : list = [],dim : int = 0,dep : int = 0):
+    def __init__(self,inpts,*,lastBox : list = [],inrad : list = [],dim : int = 0,dep : int = 0):
         #Bounds are stored in a node(center [x,y,z])
         self.count = len(inpts)
         self.state = False
@@ -1392,41 +1392,88 @@ class SplitTree:
                 #plt.scatter(tx,ty,5,color='green')
     
     def purge(self): 
-        retpoints = []
-        cent = []
-        score = 0
+        retpoints = []#Return Points
+        dping = 0#Depth ping
+        score = []#Node of real layer
         #Main Logic
         if self.state:
             #Search Further
-            collec = [[],[],[]]
+            tp = []#Points
+            ts = []#Scores
+            td = []#Depths
             for layer in self.leafs:
-                rp,s,c = layer.purge()
-                if len(rp) == 1:
-                    collec[0].append(rp)
-                    collec[1].append(s)
-                    collec[2].append(c)
-                elif len(rp) > 1:
-                    for i in range(rp):
-                        collec[0].append(rp[i])
-            #We now have the points that exist below our current level search.
-            #If we have 2 Levels that exist we can make some decisions
-            if len(collec[0]) > 1:
-
-
-
-        else:
-            #Calc Layer, Bottom
-            if len(self.skelepts) > 0:
-                for pt in self.skelepts:
-                    retpoints.append(pt)
-                if self.dim == 2:
-                    score = len(self.skelepts) / ((self.c[0][0] - self.c[1][0])*(self.c[0][1] - self.c[1][1]))
+                rp,s,dp = layer.purge()
+                if len(rp) > 0 and isinstance(rp[0],list):
+                    #If there is an unsolved layer beneath, gather appropiately
+                    for p in rp:
+                        tp.append(p)
+                    for ss in s:
+                        ts.append(ss)
+                    for d in dp:
+                        td.append(d)
+                elif len(rp) > 0:
+                    #Solved layer below
+                    tp.append(rp)
+                    ts.append(s)
+                    td.append(dp)
                 else:
-                    score = len(self.skelepts) / ((self.c[0][0] - self.c[1][0])*(self.c[0][1] - self.c[1][1])*(self.c[0][2] - self.c[1][2]))
-                cent = self.node
+                    #No Points/Negative Space
+                    tp.append([])
+                    ts.append([])
+                    td.append(dp)
+            #Now we hold the information and must do something with it
+            maxd = max(td)#Deepest we go for uncalculated grids
+            mind = min(td)#Closest we go for uncalculated grids
+            
+                
+
+
+            else:
+                #If we arent i a big enough scope, we will pull out Further
+                retpoints = tp
+                score = score
+                dping = td
+        else:
+            #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
+            #Save these fits in the layer until we want them destroyed
+            n = len(self.skelepts)
+            if n > 2:
+                if self.dim == 2:
+                    #Fits Line
+                    sx = 0
+                    sx2 = 0
+                    sy = 0
+                    sxy = 0
+                    for pt in self.skelepts:
+                        sx += pt.x
+                        sx2 += pt.x*pt.x
+                        sy += pt.y
+                        sxy += pt.x*pt.y
+                    self.fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
+                    self.fit.append((sy-self.fit[0]*sx)/n)#now b for ax + b
+                    #Next we want to find intercepts This part requires a bit of brute force with directions
+                    intercepts = []
+                    c0x = self.fit[0]*self.c[0][0]+self.fit[1] 
+                    c0y = (self.c[0][1] - self.fit[1]) / self.fit[0]
+                    c1x = self.fit[0]*self.c[1][0]+self.fit[1] 
+                    c1y = (self.c[1][1] - self.fit[1]) / self.fit[0] 
+                    if  c0x < self.c[0][1]:#This y value is less than the top right y value, it crosses the right
+                        intercepts.append([self.c[0][0],c0x])
+                    if  c0y < self.c[0][0]:#This x value is less than top right x so it crosses top
+                        intercepts.append([c0y,self.c[0][1]])
+                    if  c1x > self.c[1][1]:#This y value is bigger than bottom left, it crosses the left
+                        intercepts.append([self.c[1][0],c1x])
+                    if  c1y > self.c[1][0]:#this x value is bigger than bottom left, crosses bottom
+                        intercepts.append([c1y,self.c[1][1]])
+                else:
+                    #Fits planar surface based on points
+
+            else:
+
+    
         #Return Logic
         if depth != 0:
-            return retpoints,score,cent
+            return retpoints,score,dping
         else:
             i = 0
             retpts = []
