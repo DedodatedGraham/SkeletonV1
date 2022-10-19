@@ -16,24 +16,23 @@ import time
 # import scipy
 # import pandas as pd
 # import numpy as np
-
+import os
+import sys
+source = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0]
+sys.path.insert(0,source)
 from Skeletize import getDistance, getAngle, getDeviation, normalize
 
-# @profile
-def quicksort(points : list , dimension : int,*,cpuavail : int = 1):
-    #  **Points are Skeleton Points**
-    return quicksortrunner(points,dimension,0,len(points)-1,cpuavail=cpuavail)
+def quicksort(points : list = [], dimension : int = 0):
+    return quicksortrunner(points,dimension,0,len(points)-1)
 
-# @profile
-def quicksortrunner(points : list , dimension : int , first : int , last : int ,depth : int = 0 , * , cpuavail : int = 1):
+def quicksortrunner(points : list , dimension : int , first : int , last : int ,depth : int = 0):
     # print('sorting',depth)
     if first<last:
-        splitpoint = partition(points,dimension,first,last,cpuavail=cpuavail)
-        quicksortrunner(points, dimension, first, splitpoint - 1,depth=depth+1,cpuavail=cpuavail)
-        quicksortrunner(points, dimension, splitpoint + 1,last,depth=depth+1,cpuavail=cpuavail)
+        splitpoint = partition(points,dimension,first,last)
+        quicksortrunner(points, dimension, first, splitpoint - 1,depth=depth+1)
+        quicksortrunner(points, dimension, splitpoint + 1,last,depth=depth+1)
         return points
-# @profile           
-def partition(points : list , dimension : int , first : int , last : int , * , cpuavail : int = 1 ):
+def partition(points : list , dimension : int , first : int , last : int):
     pivot = points[first].getAxis(dimension)
     left = first + 1
     right = last
@@ -1030,14 +1029,13 @@ class SplitTree:
                 while i < len(inpts):
                     self.skelepts.append(inpts[i])
                     i += 1
-        
         #If there are too many points, will subdivide
         if len(self.skelepts) > self.maxpts:
             self.state = True
             self.subdivide()
         elif len(self.skelepts) > 0:
             self.getBox()
-            
+
     def subdivide(self):
         #Creates the nodes for the new Quad/oct trees, and sorts points to their appropiate node
         self.leafs = []
@@ -1090,54 +1088,55 @@ class SplitTree:
                     points[7].append(self.skelepts[i])
                 i += 1
         i = 0
-        while i < len(nodes):
+        while i < len(points):
             self.leafs.append(SplitTree(points[i],dim=self.dim,dep=self.dep + 1,lastBox = [self.node,self.c[0],self.c[1]]))
             i += 1
         self.skelepts = []
     def getBox(self):
         #First we find the local node
-        avgx = 0
-        avgy = 0
-        avgz = 0
-        if self.dep == 0:
-            mx = [self.skelepoints[0].x,self.skelepoints[0].x]
-            my = [self.skelepoints[0].y,self.skelepoints[0].y]
-            if self.dim == 3:
-                mz = [self.skelepoints[0].z,self.skelepoints[0].z]
-        for pt in self.skelepoints:
-            avgx += pt.x
+        if len(self.skelepts) > 0:
+            avgx = 0
+            avgy = 0
+            avgz = 0
             if self.dep == 0:
-                if pt.x > mx[0]:
-                    mx[0] = pt.x
-                if pt.x < mx[1]:
-                    mx[1] = pt.x
-            avgy += pt.y
-            if self.dep == 0:
-                if pt.y > my[0]:
-                    my[0] = pt.y
-                if pt.y < my[1]:
-                    my[1] = pt.y
-            if self.dim == 3:
-                avgz += pt.z
+                mx = [self.skelepts[0].x,self.skelepts[0].x]
+                my = [self.skelepts[0].y,self.skelepts[0].y]
+                if self.dim == 3:
+                    mz = [self.skelepts[0].z,self.skelepts[0].z]
+            for pt in self.skelepts:
+                avgx += pt.x
                 if self.dep == 0:
-                    if pt.z > mz[0]:
-                        mz[0] = pt.z
-                    if pt.z < mz[1]:
-                        mz[1] = pt.z
-        avgx = avgx / len(self.skelepts)
-        avgy = avgy / len(self.skelepts)
-        if self.dim == 3:
-            avgz = avgz / len(self.skelepts)
-            self.node = [avgx,avgy,avgz]
-        else:
-            self.node = [avgx,avgy]
+                    if pt.x > mx[0]:
+                        mx[0] = pt.x
+                    if pt.x < mx[1]:
+                        mx[1] = pt.x
+                avgy += pt.y
+                if self.dep == 0:
+                    if pt.y > my[0]:
+                        my[0] = pt.y
+                    if pt.y < my[1]:
+                        my[1] = pt.y
+                if self.dim == 3:
+                    avgz += pt.z
+                    if self.dep == 0:
+                        if pt.z > mz[0]:
+                            mz[0] = pt.z
+                        if pt.z < mz[1]:
+                            mz[1] = pt.z
+            avgx = avgx / len(self.skelepts)
+            avgy = avgy / len(self.skelepts)
+            if self.dim == 3:
+                avgz = avgz / len(self.skelepts)
+                self.node = [avgx,avgy,avgz]
+            else:
+                self.node = [avgx,avgy]
         #Then We will get the bounding box
         if self.dep == 0:
             #If First layer, we want to define the corners
             if self.dim == 2:
-                self.c = [[mx[0],my[0]],[mx[1],my[1]]]
+                self.c = [[mx[0]*1.05,my[0]*1.05],[mx[1]*1.05,my[1]*1.05]]
             else:
-                self.c = [[mx[0],my[0],mz[0]],[mx[1],my[1],mz[1]]]
+                self.c = [[mx[0]*1.05,my[0]*1.05,mz[0]*1.05],[mx[1]*1.05,my[1]*1.05,mz[1]*1.05]]
         else:
             #If not first layer, we determine our current bounds using the last box's dimensions
             #Last box will come in as a [LastNode,c-max,c-min]
@@ -1397,49 +1396,16 @@ class SplitTree:
         score = []#Node of real layer
         #Main Logic
         if self.state:
-            #Search Further
-            tp = []#Points
-            ts = []#Scores
-            td = []#Depths
-            for layer in self.leafs:
-                rp,s,dp = layer.purge()
-                if len(rp) > 0 and isinstance(rp[0],list):
-                    #If there is an unsolved layer beneath, gather appropiately
-                    for p in rp:
-                        tp.append(p)
-                    for ss in s:
-                        ts.append(ss)
-                    for d in dp:
-                        td.append(d)
-                elif len(rp) > 0:
-                    #Solved layer below
-                    tp.append(rp)
-                    ts.append(s)
-                    td.append(dp)
-                else:
-                    #No Points/Negative Space
-                    tp.append([])
-                    ts.append([])
-                    td.append(dp)
-            #Now we hold the information and must do something with it
-            maxd = max(td)#Deepest we go for uncalculated grids
-            mind = min(td)#Closest we go for uncalculated grids
-            
-                
-
-
-            else:
-                #If we arent i a big enough scope, we will pull out Further
-                retpoints = tp
-                score = score
-                dping = td
+            for leaf in self.leafs:
+                a = 0
+        
         else:
             #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
             #Save these fits in the layer until we want them destroyed
             n = len(self.skelepts)
             if n > 2:
                 if self.dim == 2:
-                    #Fits Line
+                    #Fits Line y = ax + b
                     sx = 0
                     sx2 = 0
                     sy = 0
@@ -1465,10 +1431,11 @@ class SplitTree:
                         intercepts.append([self.c[1][0],c1x])
                     if  c1y > self.c[1][0]:#this x value is bigger than bottom left, crosses bottom
                         intercepts.append([c1y,self.c[1][1]])
-                else:
-                    #Fits planar surface based on points
-
-            else:
+                #else:
+                    #Fits directional surface, z = ax + by + c
+                    
+            #else:
+                #If not enoguh points
 
     
         #Return Logic
@@ -1483,6 +1450,76 @@ class SplitTree:
                 retr.append(retpoints[i].getRad())
                 i += 1
             return retpts,retr
+    def Draw(self):
+        #This is the class for creating a visual of the quad tree structure
+        #First Collect Data
+        rdata = []
+        if self.state:
+            rdata.append([self.dep,self.c[0],self.c[1]])
+            #only care about upper nodes, as they are the divided ones
+            for leaf in self.leafs: 
+                results = leaf.Draw()
+                for res in results:
+                    rdata.append(res)
+        else:
+            if len(self.skelepts) > 0:
+                rdata.append([self.dep,self.c[0],self.c[1]])
+                rpt = []
+                for pt in self.skelepts:
+                    rpt.append(pt)
+                rdata[0].append(rpt)
+
+        #Next we either draw or return
+        if self.dep == 0:
+            if self.dim == 2:
+                plt.clf()
+                plt.rcParams['figure.dpi'] = 300
+                nodes = []
+                deps = []
+                for data in rdata:
+                    #Itterates through everything
+                    plt.plot([data[1][0],data[1][0],data[2][0],data[2][0],data[1][0]],[data[1][1],data[2][1],data[2][1],data[1][1],data[1][1]],c='black')
+                    if len(data) == 4:
+                        #Drawing bottom layer box with points
+                        tpts = []
+                        for pt in data[3]:
+                            plt.scatter(pt.x,pt.y,s=5,c='red')
+                            if len(data[3]) > 1:
+                                tpts.append([pt.x,pt.y])
+                        #Now we will make a linear approximation with the points
+                        n = len(tpts)
+                        if n > 0:
+                            sx = 0
+                            sx2 = 0
+                            sy = 0
+                            sxy = 0
+                            for pt in tpts:
+                                sx += pt[0]
+                                sx2 += pt[0]*pt[0]
+                                sy += pt[1]
+                                sxy += pt[0]*pt[1]
+                            fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
+                            fit.append((sy-fit[0]*sx)/n)#now b for ax + b
+                            intercepts = []
+                            c0y = fit[0]*data[1][0]+fit[1]#y val taken at x of c0 
+                            c0x = (data[1][1] - fit[1]) / fit[0]#x val taken at y of c0
+                            c1y = fit[0]*data[2][0]+fit[1] 
+                            c1x = (data[2][1] - fit[1]) / fit[0]
+                            if c0y > data[2][1] and c0y < data[1][1]:
+                                intercepts.append([data[1][0],c0y])
+                            if c1y > data[2][1] and c1y < data[1][1]:
+                                intercepts.append([data[2][0],c1y])
+                            if c0x > data[2][0] and c0x < data[1][0]:
+                                intercepts.append([c0x,data[1][1]])
+                            if c1x > data[2][0] and c1x < data[1][0]:
+                                intercepts.append([c1x,data[2][1]])
+                            plt.plot([intercepts[0][0],intercepts[1][0]],[intercepts[0][1],intercepts[1][1]],c='green')
+                            
+
+            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/quadplot.png'    
+            plt.savefig(save)
+        else:
+            return rdata
 
 class SkelePoint:
 #This is a class which has a point which holds x,y,z and r
