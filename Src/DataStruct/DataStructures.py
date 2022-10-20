@@ -58,7 +58,6 @@ def partition(points : list , dimension : int , first : int , last : int):
 
 
 class kdTree:
-    # @profile
     def __init__(self , points : list , depth : int = 0 , * , rads : list = [],dimensions : int = 0,cpuavail : int = 1,limit:int=0):
         # print('making {}'.format(depth))
         #first converts to skeleton points
@@ -119,7 +118,6 @@ class kdTree:
             et = time.time()
             tt = et - st
             print('k-d tree took {} minuites and {} seconds to make'.format(tt // 60,tt % 60))
-    # @profile
     def getNearR(self,inputdat : list):
         if len(inputdat) > 2:
             getRads = inputdat[2]
@@ -196,7 +194,6 @@ class kdTree:
                 return pmin.getPoint()
         else:
             return pmin,dmin
-    # @profile    
     # def getVectorR(self,inputdat : list,*,depth : int = 0,scan = np.pi / 4,cpuavail : int = 1):
     #         #Get vector will get the closest n number of points to the search point
     #         #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
@@ -1390,57 +1387,107 @@ class SplitTree:
                 #    i += 1
                 #plt.scatter(tx,ty,5,color='green')
     
-    def purge(self): 
+    def purge(self,incode : int = 0,indata : list = []): 
+
+        #This method is a bit complicated. We pass up and down a code to determine how to act.
+        #incode: 0 ->(default, for itterating down the structure),
+        #outcode: -1 -> negative space :0 -> (Bottom level initial information,hard compare)
         retpoints = []#Return Points
         dping = 0#Depth ping
         score = []#Node of real layer
         #Main Logic
         if self.state:
-            for leaf in self.leafs:
-                a = 0
-        
+            results = []
+            lowest = 0
+            if incode == 0:
+                for leaf in self.leafs:
+                    r,l,c = leaf.purge()
+                    if c == 0:
+                        results.append(r)
+                        if l > lowest:
+                            lowest = l
+                    elif c == -1:
+                        results.append([0])#We identify an array with one 0 as no points are even in this box
+                if lowest - self.dep > 1:
+                    #If the difference is two. 
+
+                elif lowest - self.dep == 1:
+                    #difference small, return somemore
+                    #We will also check for a 'hard truth' basically while we only have a small collection we check if all the lines in it line up
+                    negspace = []
+                    onespace = []
+                    realspace = []
+                    i = 0
+                    while i < len(results):#Parse,count,index
+                        if results[i]  == [0]:
+                            negspace.append(i)
+                        elif isinstance(results[i][1],SkelePoint):
+                            onespace.append(i)
+                        else:
+                            realspace.append(i)
+                        i += 1
+                    if len(realspace) > 1:
+                        #We have the potential for a conneciton here, however we are incredibly strict on this, and 
+                        #Wont take it as doctrine until later
+                        i = 0
+                        while i < len(realspace) - 1:
+                            j = i + 1
+                            while j < len(realspace)
+
+                            i += 1
+
+                        
+
+
         else:
             #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
             #Save these fits in the layer until we want them destroyed
             n = len(self.skelepts)
-            if n > 2:
+            lowest = self.dep
+            outcode = 0
+            if n > 1:
                 if self.dim == 2:
                     #Fits Line y = ax + b
                     sx = 0
                     sx2 = 0
                     sy = 0
                     sxy = 0
-                    for pt in self.skelepts:
-                        sx += pt.x
-                        sx2 += pt.x*pt.x
-                        sy += pt.y
-                        sxy += pt.x*pt.y
+                    for pt in tpts:
+                        sx += pt[0]
+                        sx2 += pt[0]*pt[0]
+                        sy += pt[1]
+                        sxy += pt[0]*pt[1]
                     self.fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
                     self.fit.append((sy-self.fit[0]*sx)/n)#now b for ax + b
-                    #Next we want to find intercepts This part requires a bit of brute force with directions
                     intercepts = []
-                    c0x = self.fit[0]*self.c[0][0]+self.fit[1] 
-                    c0y = (self.c[0][1] - self.fit[1]) / self.fit[0]
-                    c1x = self.fit[0]*self.c[1][0]+self.fit[1] 
-                    c1y = (self.c[1][1] - self.fit[1]) / self.fit[0] 
-                    if  c0x < self.c[0][1]:#This y value is less than the top right y value, it crosses the right
-                        intercepts.append([self.c[0][0],c0x])
-                    if  c0y < self.c[0][0]:#This x value is less than top right x so it crosses top
-                        intercepts.append([c0y,self.c[0][1]])
-                    if  c1x > self.c[1][1]:#This y value is bigger than bottom left, it crosses the left
-                        intercepts.append([self.c[1][0],c1x])
-                    if  c1y > self.c[1][0]:#this x value is bigger than bottom left, crosses bottom
-                        intercepts.append([c1y,self.c[1][1]])
+                    c0y = self.fit[0]*self.c[0][0]+self.fit[1]#y val taken at x of c0 
+                    c0x = (self.c[0][1] - self.fit[1]) / self.fit[0]#x val taken at y of c0
+                    c1y = self.fit[0]*self.c[1][0]+self.fit[1] 
+                    c1x = (self.c[1][1] - self.fit[1]) / self.fit[0]
+                    if c0y > self.c[1][1] and c0y < self.c[0][1]:
+                        intercepts.append([self.c[0][0],c0y])
+                    if c1y > self.c[1][1] and c1y < self.c[0][1]:
+                        intercepts.append([self.c[1][0],c1y])
+                    if c0x > self.c[1][0] and c0x < self.c[0][0]:
+                        intercepts.append([c0x,self.c[0][1]])
+                    if c1x > self.c[1][0] and c1x < self.c[0][0]:
+                        intercepts.append([c1x,self.c[1][1]])
                 #else:
                     #Fits directional surface, z = ax + by + c
-                    
-            #else:
+                
+                #now we have a 2D or 3D(3 2D's) approx
+                #we will want to build some return data, such as a depth ping, intercepts, 
+                rdata = [self.dep,intercepts]
+            elif n == 1:
                 #If not enoguh points
-
-    
+                rdata = [self.dep,self.skelepts[0]]#When we cant make any approximation, we only have one point, we can test this with other information
+            else:
+                rdata = []
+                lowest = 0
+                outcode = -1
         #Return Logic
         if depth != 0:
-            return retpoints,score,dping
+            return rdata,lowest,outcode
         else:
             i = 0
             retpts = []
@@ -1488,7 +1535,7 @@ class SplitTree:
                                 tpts.append([pt.x,pt.y])
                         #Now we will make a linear approximation with the points
                         n = len(tpts)
-                        if n > 0:
+                        if n > 1:
                             sx = 0
                             sx2 = 0
                             sy = 0
@@ -1536,7 +1583,6 @@ class SkelePoint:
             else:
                 self.dimensions = 2
             self.ordered = False
-    # @profile
     def getPoint(self):
         if self.dimensions == 2:
             return [self.x,self.y]
@@ -1557,7 +1603,6 @@ class SkelePoint:
         elif self.dimensions == 3:
             if dim == 2:
                 return self.z
-    # @profile
     def locEx(self,point):
         if point == 0:
             return False
