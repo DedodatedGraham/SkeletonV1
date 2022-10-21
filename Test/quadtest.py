@@ -28,5 +28,6 @@ for i in range(3000):
     indat.append([xdat[i],ydat[i]])
 
 a = SplitTree(indat,inrad = rdat)
+a.purge(threshDistance = (2*np.pi/3000))
 a.Draw()
 

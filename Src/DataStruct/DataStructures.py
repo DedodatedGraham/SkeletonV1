@@ -1387,29 +1387,73 @@ class SplitTree:
                 #    i += 1
                 #plt.scatter(tx,ty,5,color='green')
     
-    def purge(self,incode : int = 0,indata : list = []): 
 
+
+    def purge(self,incode : int = 0,indata : list = [],*,threshDistance : float = 0.0001): 
         #This method is a bit complicated. We pass up and down a code to determine how to act.
         #incode: 0 ->(default, for itterating down the structure),
-        #outcode: -1 -> negative space :0 -> (Bottom level initial information,hard compare)
+        #outcode: -1 -> negative space: 0 -> (Bottom level initial information,hard compare): 1 ->
+        print(self.dep)
         retpoints = []#Return Points
         dping = 0#Depth ping
         score = []#Node of real layer
+        rdata = []
         #Main Logic
         if self.state:
             results = []
             lowest = 0
+            touch = []#Saves the id of the Touching nodes
+            
             if incode == 0:
-                for leaf in self.leafs:
-                    r,l,c = leaf.purge()
+                i = 0
+                for leaf in self.leafs:#Itterate Down and save results
+                    r,l,c = leaf.purge(threshDistance = threshDistance)
                     if c == 0:
                         results.append(r)
                         if l > lowest:
                             lowest = l
                     elif c == -1:
                         results.append([0])#We identify an array with one 0 as no points are even in this box
+                    elif c == 1:#Code when there is no touching beneath
+                        if l > lowest:
+                            lowest = l
+                        results.append(r)
+                    elif c == 2:#Code when there is touching beneath
+                        if l > lowest:
+                            lowest = l
+                        for t in r[-1]:
+                            touch.append([i,t])
+                        results.append(r[:-1])
+                    i += 1
+                
+                
+                
                 if lowest - self.dep > 1:
-                    #If the difference is two. 
+                    #If the difference is two we will employ our thinning technique
+                    #Each of the subdivided layers have already checked their internal boundaries
+                    print(touch)  
+                    #We will search the layer of nodes and compare the internal boundaries
+                    negspace = []
+                    oncespace = []
+                    multispace = []
+                    realspace = []
+                    print(results)
+                    i = 0
+                    while i < len(results):
+                        if results[i] == [0]:
+                            negspace.append(i)
+                        elif isinstance(results[i][1],SkelePoint):
+                            onespace.append(i)
+                        i += 1
+
+                    i = 0
+                    while i < len(self.leafs) - 1:
+                        j = i + 1
+                        while j < len(self.leafs):
+                            j += 1
+                        i += 1
+                    print(touch)
+
 
                 elif lowest - self.dep == 1:
                     #difference small, return somemore
@@ -1427,15 +1471,28 @@ class SplitTree:
                             realspace.append(i)
                         i += 1
                     if len(realspace) > 1:
-                        #We have the potential for a conneciton here, however we are incredibly strict on this, and 
-                        #Wont take it as doctrine until later
+                        #We have the potential for a conneciton here 
                         i = 0
                         while i < len(realspace) - 1:
                             j = i + 1
-                            while j < len(realspace)
-
+                            while j < len(realspace):
+                                #Brings us to the scope of two boxes, wont compare same 2 twice
+                                int1 = results[realspace[i]][1]
+                                int2 = results[realspace[j]][1]
+                                for i1 in int1:
+                                    for i2 in int2:
+                                        if getDistance(i1,i2) < threshDistance:
+                                            #We want to tag these as touching
+                                            touch.append([i,j])
+                                j += 1
                             i += 1
-
+                    for r in results:
+                        rdata.append(r)
+                    if len(touch) > 0:
+                        rdata.append(touch)
+                        outcode = 2
+                    else:
+                        outcode = 1
                         
 
 
@@ -1452,7 +1509,8 @@ class SplitTree:
                     sx2 = 0
                     sy = 0
                     sxy = 0
-                    for pt in tpts:
+                    for pt in self.skelepts:
+                        pt = pt.getPoint()
                         sx += pt[0]
                         sx2 += pt[0]*pt[0]
                         sy += pt[1]
@@ -1473,7 +1531,7 @@ class SplitTree:
                     if c1x > self.c[1][0] and c1x < self.c[0][0]:
                         intercepts.append([c1x,self.c[1][1]])
                 #else:
-                    #Fits directional surface, z = ax + by + c
+                    #Fits 3 projects
                 
                 #now we have a 2D or 3D(3 2D's) approx
                 #we will want to build some return data, such as a depth ping, intercepts, 
@@ -1486,7 +1544,7 @@ class SplitTree:
                 lowest = 0
                 outcode = -1
         #Return Logic
-        if depth != 0:
+        if self.dep != 0:
             return rdata,lowest,outcode
         else:
             i = 0
@@ -1497,6 +1555,8 @@ class SplitTree:
                 retr.append(retpoints[i].getRad())
                 i += 1
             return retpts,retr
+
+
     def Draw(self):
         #This is the class for creating a visual of the quad tree structure
         #First Collect Data
