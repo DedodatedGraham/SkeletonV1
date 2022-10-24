@@ -1393,7 +1393,7 @@ class SplitTree:
         #This method is a bit complicated. We pass up and down a code to determine how to act.
         #incode: 0 ->(default, for itterating down the structure),
         #outcode: -1 -> negative space: 0 -> (Bottom level initial information,hard compare): 1 ->
-        print(self.dep)
+        print('depth',self.dep)
         retpoints = []#Return Points
         dping = 0#Depth ping
         score = []#Node of real layer
@@ -1419,12 +1419,16 @@ class SplitTree:
                         if l > lowest:
                             lowest = l
                         results.append(r[:-1])
-                        intercepts.append(r[-1])
+                        ints = r[-1]
+                        for inter in ints:
+                            intercepts.append(inter)
                     elif c == 2:#Code when there is touching beneath
                         if l > lowest:
                             lowest = l
                         results.append(r[:-2])
-                        intercepts.append(r[-2])
+                        ints = r[-2]
+                        for inter in ints:
+                            intercepts.append(inter)
                         for t in r[-1]:
                             touch.append([i,t])
                     i += 1 
@@ -1437,7 +1441,7 @@ class SplitTree:
                     multispace = []
                     realspace = []
                     i = 0
-                    while i < len(results):
+                    while i < len(results):#Parse,count,index
                         if results[i] == [0]:
                             negspace.append(i)
                         elif isinstance(results[i][1],SkelePoint):
@@ -1445,23 +1449,22 @@ class SplitTree:
                         elif self.dim == 2:
                             if len(results[i]) == 4:
                                 multispace.append(i)
+                            else:
+                                realspace.append(i)
                         elif self.dim == 3:
                             if len(results[i]) == 8:
                                 multispace.append(i)
-                        else:
-                            realspace.append(i)
+                            else:
+                                realspace.append(i)
                         i += 1 
-                    print('neg',len(negspace))
-                    print('one',len(onespace))
-                    print('multi',len(multispace))
-                    print('real',len(realspace))
-                    i = 0
-                    while i < len(self.leafs) - 1:
-                        j = i + 1
-                        while j < len(self.leafs):
-                            j += 1
-                        i += 1
-
+                    if len(realspace) > 0:
+                        #We want to grab the intercepts :)
+                        i = 0
+                        while i < len(realspace):
+                            ints = results[realspace[i]][1]
+                            for inter in ints:
+                                intercepts.append(inter)
+                            i += 1
 
                 elif lowest - self.dep == 1:
                     #difference small, return somemore

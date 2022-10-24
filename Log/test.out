@@ -1,28 +1,32 @@
 Starting at /data/ling_shared/garciag/SkeletonV1/Test
-node file /var/spool/pbs/aux/1081860.batch
+node file /var/spool/pbs/aux/1082063.batch
 
 
-0
-1
-2
-3
-4
-5
-5
-6
-7
-8
-9
-9
-9
-9
-8
-8
-8
-neg 1
-one 1
-multi 1
-real 0
-Skeleton finished at Mon Oct 24 11:53:02 CDT 2022
+depth 0
+depth 1
+depth 2
+depth 3
+depth 4
+depth 5
+depth 6
+depth 6
+depth 6
+depth 6
+depth 5
+depth 6
+depth 7
+depth 7
+depth 7
+depth 7
+depth 6
+depth 6
+depth 6
+depth 7
+depth 7
+depth 7
+depth 7
+[[6.9963134114549295, 1.003744873425497], [6.267880112200558, 0.999885166005593], [6.26544756918646, 0.9998456365221886], [6.252318405257701, 0.9995288147220354]]
+[[6.9963134114549295, 1.003744873425497], [6.267880112200558, 0.999885166005593], [6.26544756918646, 0.9998456365221886], [6.252318405257701, 0.9995288147220354]]
+Skeleton finished at Mon Oct 24 18:02:27 CDT 2022
 
-Job finished at Mon Oct 24 11:53:02 CDT 2022
+Job finished at Mon Oct 24 18:02:27 CDT 2022
