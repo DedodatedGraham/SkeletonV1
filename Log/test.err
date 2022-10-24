@@ -1,0 +1,15 @@
+/usr/bin/id: cannot find name for group ID 5026
+/var/spool/pbs/mom_priv/jobs/1081860.batch.SC: line 16: Job start at Mon Oct 24 11:53:01 CDT 2022: command not found
+Traceback (most recent call last):
+  File "/data/ling_shared/garciag/SkeletonV1/Test/quadtest.py", line 31, in <module>
+    a.purge(threshDistance = (2*np.pi/3000))
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1411, in purge
+    r,l,c = leaf.purge(threshDistance = threshDistance)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1411, in purge
+    r,l,c = leaf.purge(threshDistance = threshDistance)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1411, in purge
+    r,l,c = leaf.purge(threshDistance = threshDistance)
+  [Previous line repeated 4 more times]
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 1561, in purge
+    return rdata,lowest,outcode
+UnboundLocalError: local variable 'outcode' referenced before assignment

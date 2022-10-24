@@ -1398,6 +1398,7 @@ class SplitTree:
         dping = 0#Depth ping
         score = []#Node of real layer
         rdata = []
+        intercepts = []
         #Main Logic
         if self.state:
             results = []
@@ -1417,42 +1418,49 @@ class SplitTree:
                     elif c == 1:#Code when there is no touching beneath
                         if l > lowest:
                             lowest = l
-                        results.append(r)
+                        results.append(r[:-1])
+                        intercepts.append(r[-1])
                     elif c == 2:#Code when there is touching beneath
                         if l > lowest:
                             lowest = l
+                        results.append(r[:-2])
+                        intercepts.append(r[-2])
                         for t in r[-1]:
                             touch.append([i,t])
-                        results.append(r[:-1])
-                    i += 1
-                
-                
-                
+                    i += 1 
                 if lowest - self.dep > 1:
                     #If the difference is two we will employ our thinning technique
                     #Each of the subdivided layers have already checked their internal boundaries
-                    print(touch)  
                     #We will search the layer of nodes and compare the internal boundaries
                     negspace = []
-                    oncespace = []
+                    onespace = []
                     multispace = []
                     realspace = []
-                    print(results)
                     i = 0
                     while i < len(results):
                         if results[i] == [0]:
                             negspace.append(i)
                         elif isinstance(results[i][1],SkelePoint):
                             onespace.append(i)
-                        i += 1
-
+                        elif self.dim == 2:
+                            if len(results[i]) == 4:
+                                multispace.append(i)
+                        elif self.dim == 3:
+                            if len(results[i]) == 8:
+                                multispace.append(i)
+                        else:
+                            realspace.append(i)
+                        i += 1 
+                    print('neg',len(negspace))
+                    print('one',len(onespace))
+                    print('multi',len(multispace))
+                    print('real',len(realspace))
                     i = 0
                     while i < len(self.leafs) - 1:
                         j = i + 1
                         while j < len(self.leafs):
                             j += 1
                         i += 1
-                    print(touch)
 
 
                 elif lowest - self.dep == 1:
@@ -1469,6 +1477,14 @@ class SplitTree:
                             onespace.append(i)
                         else:
                             realspace.append(i)
+                            cepts = results[i][1]
+                            for location in cepts:
+                                if location[0] == self.c[0][0] or location[0] == self.c[1][0]:
+                                    intercepts.append(location)
+                                elif location[1] == self.c[0][1] or location[1] == self.c[1][1]:
+                                    intercepts.append(location)
+                        #We also will test for intercepts here
+                        #if results[i]
                         i += 1
                     if len(realspace) > 1:
                         #We have the potential for a conneciton here 
@@ -1488,14 +1504,12 @@ class SplitTree:
                             i += 1
                     for r in results:
                         rdata.append(r)
+                    rdata.append(intercepts)
                     if len(touch) > 0:
                         rdata.append(touch)
                         outcode = 2
                     else:
                         outcode = 1
-                        
-
-
         else:
             #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
             #Save these fits in the layer until we want them destroyed
@@ -1517,7 +1531,6 @@ class SplitTree:
                         sxy += pt[0]*pt[1]
                     self.fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
                     self.fit.append((sy-self.fit[0]*sx)/n)#now b for ax + b
-                    intercepts = []
                     c0y = self.fit[0]*self.c[0][0]+self.fit[1]#y val taken at x of c0 
                     c0x = (self.c[0][1] - self.fit[1]) / self.fit[0]#x val taken at y of c0
                     c1y = self.fit[0]*self.c[1][0]+self.fit[1] 
