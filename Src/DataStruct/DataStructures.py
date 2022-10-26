@@ -1393,7 +1393,7 @@ class SplitTree:
         #This method is a bit complicated. We pass up and down a code to determine how to act.
         #incode: 0 ->(default, for itterating down the structure),
         #outcode: -1 -> negative space: 0 -> (Bottom level initial information,hard compare): 1 ->
-        print('depth',self.dep)
+        print('step depth',self.dep)
         retpoints = []#Return Points
         dping = 0#Depth ping
         score = []#Node of real layer
@@ -1401,6 +1401,16 @@ class SplitTree:
         intercepts = []
         #Main Logic
         if self.state:
+            if abs(self.c[0][0] - self.c[1][0]) < threshDistance:
+                print('og',threshDistance)
+                print('thresh err ...reducing...')
+                threshDistance = abs(self.c[0][0] - self.c[1][0]) 
+                print('res',threshDistance)
+            if abs(self.c[0][1] - self.c[1][1]) < threshDistance:
+                print('og',threshDistance)
+                print('thresh err ...reducing...')
+                threshDistance = abs(self.c[0][1] - self.c[1][1]) 
+                print('res',threshDistance)
             results = []
             lowest = 0
             touch = []#Saves the id of the Touching nodes
@@ -1457,6 +1467,7 @@ class SplitTree:
                             else:
                                 realspace.append(i)
                         i += 1 
+                    print('before add',intercepts)
                     if len(realspace) > 0:
                         #We want to grab the intercepts :)
                         i = 0
@@ -1465,7 +1476,20 @@ class SplitTree:
                             for inter in ints:
                                 intercepts.append(inter)
                             i += 1
-
+                    print('after add', intercepts)
+                    #Now we hold all the intercepts of the current inside lines 
+                    if len(intercepts) > 1:
+                        i = 0
+                        while i < len(intercepts) - 1:
+                            j = i + 1
+                            while j < len(intercepts):
+                                if getDistance(intercepts[i],intercepts[j]) < threshDistance:
+                                    touch.append([i,j])
+                                    print(intercepts[i],'equals',intercepts[j])
+                                j += 1
+                            i += 1
+                    #We now hold a collection of touching sectors, this level would show [0,1] and a lower touch woudl appear [3,[2,3]] or such, giving us a tracedown path
+                    print(touch)
                 elif lowest - self.dep == 1:
                     #difference small, return somemore
                     #We will also check for a 'hard truth' basically while we only have a small collection we check if all the lines in it line up
@@ -1493,15 +1517,16 @@ class SplitTree:
                         #We have the potential for a conneciton here 
                         i = 0
                         while i < len(realspace) - 1:
+                            int1 = results[realspace[i]][1]
                             j = i + 1
                             while j < len(realspace):
                                 #Brings us to the scope of two boxes, wont compare same 2 twice
-                                int1 = results[realspace[i]][1]
                                 int2 = results[realspace[j]][1]
                                 for i1 in int1:
                                     for i2 in int2:
                                         if getDistance(i1,i2) < threshDistance:
                                             #We want to tag these as touching
+                                            print(i1,'equals',i2)
                                             touch.append([i,j])
                                 j += 1
                             i += 1
@@ -1513,6 +1538,8 @@ class SplitTree:
                         outcode = 2
                     else:
                         outcode = 1
+            #elif incode == 1:#We will designate incode 1 for any sort of deletion method. We start by finding some points we dont like very much 
+
         else:
             #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
             #Save these fits in the layer until we want them destroyed
