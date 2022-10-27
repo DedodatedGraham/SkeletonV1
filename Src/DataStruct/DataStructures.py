@@ -1400,207 +1400,233 @@ class SplitTree:
         rdata = []
         intercepts = []
         #Main Logic
-        if self.state:
-            if abs(self.c[0][0] - self.c[1][0]) < threshDistance:
-                print('og',threshDistance)
-                print('thresh err ...reducing...')
-                threshDistance = abs(self.c[0][0] - self.c[1][0]) 
-                print('res',threshDistance)
-            if abs(self.c[0][1] - self.c[1][1]) < threshDistance:
-                print('og',threshDistance)
-                print('thresh err ...reducing...')
-                threshDistance = abs(self.c[0][1] - self.c[1][1]) 
-                print('res',threshDistance)
-            results = []
-            lowest = 0
-            touch = []#Saves the id of the Touching nodes
-            
-            if incode == 0:
-                i = 0
+        if incode == 0:
+            if self.state:
+                self.stackid = []#Stackid is the kind of data in each ordered leaf
+                self.stack = []#Information passed along with the stack
+                lowest = 0
                 for leaf in self.leafs:#Itterate Down and save results
                     r,l,c = leaf.purge(threshDistance = threshDistance)
-                    if c == 0:
-                        results.append(r)
-                        if l > lowest:
-                            lowest = l
-                    elif c == -1:
-                        results.append([0])#We identify an array with one 0 as no points are even in this box
-                    elif c == 1:#Code when there is no touching beneath
-                        if l > lowest:
-                            lowest = l
-                        results.append(r[:-1])
-                        ints = r[-1]
-                        for inter in ints:
-                            intercepts.append(inter)
-                    elif c == 2:#Code when there is touching beneath
-                        if l > lowest:
-                            lowest = l
-                        results.append(r[:-2])
-                        ints = r[-2]
-                        for inter in ints:
-                            intercepts.append(inter)
-                        for t in r[-1]:
-                            touch.append([i,t])
-                    i += 1 
-                if lowest - self.dep > 1:
-                    #If the difference is two we will employ our thinning technique
-                    #Each of the subdivided layers have already checked their internal boundaries
-                    #We will search the layer of nodes and compare the internal boundaries
-                    negspace = []
-                    onespace = []
-                    multispace = []
-                    realspace = []
-                    i = 0
-                    while i < len(results):#Parse,count,index
-                        if results[i] == [0]:
-                            negspace.append(i)
-                        elif isinstance(results[i][1],SkelePoint):
-                            onespace.append(i)
-                        elif self.dim == 2:
-                            if len(results[i]) == 4:
-                                multispace.append(i)
-                            else:
-                                realspace.append(i)
-                        elif self.dim == 3:
-                            if len(results[i]) == 8:
-                                multispace.append(i)
-                            else:
-                                realspace.append(i)
-                        i += 1 
-                    print('before add',intercepts)
-                    if len(realspace) > 0:
-                        #We want to grab the intercepts :)
-                        i = 0
-                        while i < len(realspace):
-                            ints = results[realspace[i]][1]
-                            for inter in ints:
-                                intercepts.append(inter)
-                            i += 1
-                    print('after add', intercepts)
-                    #Now we hold all the intercepts of the current inside lines 
-                    if len(intercepts) > 1:
-                        i = 0
-                        while i < len(intercepts) - 1:
-                            j = i + 1
-                            while j < len(intercepts):
-                                if getDistance(intercepts[i],intercepts[j]) < threshDistance:
-                                    touch.append([i,j])
-                                    print(intercepts[i],'equals',intercepts[j])
-                                j += 1
-                            i += 1
-                    #We now hold a collection of touching sectors, this level would show [0,1] and a lower touch woudl appear [3,[2,3]] or such, giving us a tracedown path
-                    print(touch)
-                elif lowest - self.dep == 1:
-                    #difference small, return somemore
-                    #We will also check for a 'hard truth' basically while we only have a small collection we check if all the lines in it line up
-                    negspace = []
-                    onespace = []
-                    realspace = []
-                    i = 0
-                    while i < len(results):#Parse,count,index
-                        if results[i]  == [0]:
-                            negspace.append(i)
-                        elif isinstance(results[i][1],SkelePoint):
-                            onespace.append(i)
+                    if l > lowest:
+                        lowest = l
+                    if c == -1:#layer has nothing beneath
+                        self.stackid.append(0)
+                        self.stack.append(0)
+                    elif c == 0:
+                        if isinstance(r[0],SkelePoint):
+                            #One point in this layer
+                            self.stackid.append(1)
+                            self.stack.append(r[0].getPoint())
                         else:
-                            realspace.append(i)
-                            cepts = results[i][1]
-                            for location in cepts:
-                                if location[0] == self.c[0][0] or location[0] == self.c[1][0]:
-                                    intercepts.append(location)
-                                elif location[1] == self.c[0][1] or location[1] == self.c[1][1]:
-                                    intercepts.append(location)
-                        #We also will test for intercepts here
-                        #if results[i]
-                        i += 1
-                    if len(realspace) > 1:
-                        #We have the potential for a conneciton here 
+                            #Approx here
+                            self.stackid.append(2)
+                            self.stack.append(r[0])
+                    else:#c==1 so there is a subdivide below
+                        self.stackid.append(3)
+                        self.stack.append(0)
+                if lowest - self.dep == 1:#Only 1 layer beneath isnt enough to resolve
+                    rdata = []#We dont need to pass anything
+                    outcode = 1
+                else:
+                    #Now we are in a bigger scope. First we will check for touching points and intercepts.
+                    touching = self.getTouch(threshDistance,self.dep)
+                    print(touching)
+                    name = r'quadplot{}.png'.format(self.dep)
+                    self.Draw(self.dep,name)
+            else:
+                #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
+                #Save these fits in the layer until we want them destroyed
+                n = len(self.skelepts)
+                lowest = self.dep
+                outcode = 0
+                if n > 1:
+                    if self.dim == 2:
+                        #Fits Line y = ax + b
+                        sx = 0
+                        sx2 = 0
+                        sy = 0
+                        sxy = 0
+                        for pt in self.skelepts:
+                            pt = pt.getPoint()
+                            sx += pt[0]
+                            sx2 += pt[0]*pt[0]
+                            sy += pt[1]
+                            sxy += pt[0]*pt[1]
+                        self.fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
+                        self.fit.append((sy-self.fit[0]*sx)/n)#now b for ax + b
+                        c0y = self.fit[0]*self.c[0][0]+self.fit[1]#y val taken at x of c0 
+                        c0x = (self.c[0][1] - self.fit[1]) / self.fit[0]#x val taken at y of c0
+                        c1y = self.fit[0]*self.c[1][0]+self.fit[1] 
+                        c1x = (self.c[1][1] - self.fit[1]) / self.fit[0]
+                        if c0y > self.c[1][1] and c0y < self.c[0][1]:
+                            intercepts.append([self.c[0][0],c0y])
+                        if c1y > self.c[1][1] and c1y < self.c[0][1]:
+                            intercepts.append([self.c[1][0],c1y])
+                        if c0x > self.c[1][0] and c0x < self.c[0][0]:
+                            intercepts.append([c0x,self.c[0][1]])
+                        if c1x > self.c[1][0] and c1x < self.c[0][0]:
+                            intercepts.append([c1x,self.c[1][1]])
+                        if len(intercepts) == 3:
+                            print('error on int')
+                        #We want to adjust intercepts whenever they shoot past points
+                        close = []
+                        closept = []
                         i = 0
-                        while i < len(realspace) - 1:
-                            int1 = results[realspace[i]][1]
-                            j = i + 1
-                            while j < len(realspace):
-                                #Brings us to the scope of two boxes, wont compare same 2 twice
-                                int2 = results[realspace[j]][1]
-                                for i1 in int1:
-                                    for i2 in int2:
-                                        if getDistance(i1,i2) < threshDistance:
-                                            #We want to tag these as touching
-                                            print(i1,'equals',i2)
-                                            touch.append([i,j])
+                        while i < len(intercepts):
+                            close.append(getDistance(intercepts[0],self.skelepts[0].getPoint()))
+                            closept.append(self.skelepts[0].getPoint())
+                            j = 1
+                            while j < len(self.skelepts):
+                                dist = getDistance(intercepts[i],self.skelepts[j].getPoint())
+                                if dist < close[i]:
+                                    close[i] = dist
+                                    closept[i] = self.skelepts[j].getPoint()
                                 j += 1
                             i += 1
-                    for r in results:
-                        rdata.append(r)
-                    rdata.append(intercepts)
-                    if len(touch) > 0:
-                        rdata.append(touch)
-                        outcode = 2
-                    else:
-                        outcode = 1
-            #elif incode == 1:#We will designate incode 1 for any sort of deletion method. We start by finding some points we dont like very much 
-
-        else:
-            #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
-            #Save these fits in the layer until we want them destroyed
-            n = len(self.skelepts)
-            lowest = self.dep
-            outcode = 0
-            if n > 1:
-                if self.dim == 2:
-                    #Fits Line y = ax + b
-                    sx = 0
-                    sx2 = 0
-                    sy = 0
-                    sxy = 0
-                    for pt in self.skelepts:
-                        pt = pt.getPoint()
-                        sx += pt[0]
-                        sx2 += pt[0]*pt[0]
-                        sy += pt[1]
-                        sxy += pt[0]*pt[1]
-                    self.fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
-                    self.fit.append((sy-self.fit[0]*sx)/n)#now b for ax + b
-                    c0y = self.fit[0]*self.c[0][0]+self.fit[1]#y val taken at x of c0 
-                    c0x = (self.c[0][1] - self.fit[1]) / self.fit[0]#x val taken at y of c0
-                    c1y = self.fit[0]*self.c[1][0]+self.fit[1] 
-                    c1x = (self.c[1][1] - self.fit[1]) / self.fit[0]
-                    if c0y > self.c[1][1] and c0y < self.c[0][1]:
-                        intercepts.append([self.c[0][0],c0y])
-                    if c1y > self.c[1][1] and c1y < self.c[0][1]:
-                        intercepts.append([self.c[1][0],c1y])
-                    if c0x > self.c[1][0] and c0x < self.c[0][0]:
-                        intercepts.append([c0x,self.c[0][1]])
-                    if c1x > self.c[1][0] and c1x < self.c[0][0]:
-                        intercepts.append([c1x,self.c[1][1]])
-                #else:
-                    #Fits 3 projects
-                
-                #now we have a 2D or 3D(3 2D's) approx
-                #we will want to build some return data, such as a depth ping, intercepts, 
-                rdata = [self.dep,intercepts]
-            elif n == 1:
-                #If not enoguh points
-                rdata = [self.dep,self.skelepts[0]]#When we cant make any approximation, we only have one point, we can test this with other information
+                        maxd = max(close)
+                        mind = min(close)
+                        if maxd > 2 * threshDistance:
+                            ind = close.index(maxd)
+                            lpoint = closept[ind]
+                            intercepts[ind] = [(lpoint[0]+intercepts[ind][0])/2,(lpoint[1]+intercepts[ind][1])/2]
+                        self.intercepts = intercepts
+                    #else:
+                        #Fits 3 projects
+                    
+                    #now we have a 2D or 3D(3 2D's) approx
+                    #we will want to build some return data, such as a depth ping, intercepts, 
+                    rdata = [self.intercepts]
+                    lowest = self.dep
+                elif n == 1:
+                    #If not enoguh points
+                    rdata = [self.skelepts[0]]#When we cant make any approximation, we only have one point, we can test this with other information
+                    lowest = self.dep
+                else:
+                    rdata = []
+                    lowest = 0
+                    outcode = -1
+            #Return Logic
+            if self.dep != 0:
+                return rdata,lowest,outcode
             else:
-                rdata = []
-                lowest = 0
-                outcode = -1
-        #Return Logic
-        if self.dep != 0:
-            return rdata,lowest,outcode
-        else:
+                i = 0
+                retpts = []
+                retr = []
+                while i < len(retpoints):
+                    retpts.append(retpoints[i].getPoint())
+                    retr.append(retpoints[i].getRad())
+                    i += 1
+                return retpts,retr
+
+    def getTouch(self,threshDistance,indepth):
+        #get touch is implied that there has already been a stack build
+        touchid = []
+        extrema = [[],[]]#Extrema holds [[points/intercepts],[trace id's]]
+        if max(self.stackid) < 3:
+            #There are no more splits below. So we just single test each
             i = 0
-            retpts = []
-            retr = []
-            while i < len(retpoints):
-                retpts.append(retpoints[i].getPoint())
-                retr.append(retpoints[i].getRad())
+            while i < len(self.stackid) - 1:
+                j = i + 1
+                while j < len(self.stackid):
+                    idi = self.stackid[i]
+                    idj = self.stackid[j]
+                    if idi != 0 and idj != 0:
+                        #prevents empty compare
+                        if idi == 2 and idj == 2:
+                            #2 approx
+                            for int1 in self.stack[i]:
+                                for int2 in self.stack[j]:
+                                    if getDistance(int1,int2) < threshDistance:
+                                        touchid.append([i,j])
+                        elif idi == 1 and idj == 1:
+                            #1 comp
+                            if getDistance(self.stack[i],self.stack[j]) < threshDistance:
+                                touchid.append([i,j])
+                        else:
+                            #3 comp
+                            if idi == 1:
+                                #idi is the single
+                                for int2 in self.stack[j]:
+                                    if getDistance(self.stack[i],int2) < threshDistance:
+                                        touchid.append([i,j])
+                            else:
+                                #idj is single
+                                for int1 in self.stack[i]:
+                                    if getDistance(int1,self.stack[j]) < threshDistance:
+                                        touchid.append([i,j])
+                    j += 1
                 i += 1
-            return retpts,retr
-
-
-    def Draw(self):
+            #Now we check for extrema
+            i = 0
+            while i < len(self.stackid):
+                idi = self.stackid[i]
+                if idi == 1:
+                    for corner in self.c:
+                        if abs(self.stack[i][0]-corner[0]) < threshDistance or abs(self.stack[i][1]-corner[1]) < threshDistance:
+                            extrema[0].append(self.stack[i])
+                            extrema[1].append(i)
+                            break
+                elif idi == 2:
+                    for inter in self.stack[i]:
+                        for corner in self.c:
+                            if abs(inter[0]-corner[0]) < threshDistance or abs(inter[1]-corner[1]) < threshDistance:
+                                extrema[0].append(inter)
+                                extrema[1].append(i)
+                                break
+                i += 1
+            return touchid,extrema
+        else:
+            #We have a point which is split, we will get all touches from those first, then compare with our non touches
+            i = 0
+            while i < len(self.stackid):
+                if self.stackid[i] == 3:
+                    tid,e = self.leafs[i].getTouch(threshDistance,indepth)
+                    j = 0
+                    while j < len(tid):
+                        touchid.append([i,tid[j]])           
+                        j += 1
+                    j = 0
+                    while j < len(e[0]):
+                        if isinstance(e[1][j],int):
+                            extrema[1].append([i,e[1][j]])
+                        else:
+                            e[1][j].insert(0,i)
+                            extrema[1].append(e[1][j])
+                        extrema[0].append(e[0][j])
+                        j += 1
+                elif self.stackid[i] == 1:
+                    extrema[0].append(self.stack[i])
+                    extrema[1].append(i)
+                elif self.stackid[i] == 2:
+                    for inter in self.stack[i]:
+                        extrema[0].append(inter)
+                        extrema[1].append(i)
+                i += 1
+            i = 0
+            e0 = extrema[0]
+            e1 = extrema[1]
+            while i < len(e0) - 1:
+                j = i + 1
+                while j < len(e0):
+                    if getDistance(e0[i],e0[j]) < threshDistance:
+                        touchid.append([e1[i],e1[j]])
+                    j += 1
+                i += 1
+            if self.dep != indepth:
+                te = [[],[]]
+                i = 0
+                while i < len(e0):
+                    for corner in self.c:
+                        if abs(e0[i][0] - corner[0]) < threshDistance or abs(e0[i][1] - corner[1]) < threshDistance:
+                            te[0].append(e0[i])
+                            te[1].append(e1[i])
+                            break
+                    i += 1
+                extrema = te
+                return touchid,extrema
+            else:
+                return touchid
+    def Draw(self,indep : int = 0,name : str = r'quadplot.png'):
         #This is the class for creating a visual of the quad tree structure
         #First Collect Data
         rdata = []
@@ -1618,9 +1644,12 @@ class SplitTree:
                 for pt in self.skelepts:
                     rpt.append(pt)
                 rdata[0].append(rpt)
+                if len(self.skelepts) > 1:
+                    #there is an approx made, so we will grab it
+                    rdata[0].append(self.intercepts)
 
         #Next we either draw or return
-        if self.dep == 0:
+        if self.dep == indep:
             if self.dim == 2:
                 plt.clf()
                 plt.rcParams['figure.dpi'] = 300
@@ -1629,7 +1658,7 @@ class SplitTree:
                 for data in rdata:
                     #Itterates through everything
                     plt.plot([data[1][0],data[1][0],data[2][0],data[2][0],data[1][0]],[data[1][1],data[2][1],data[2][1],data[1][1],data[1][1]],c='black')
-                    if len(data) == 4:
+                    if len(data) > 3:
                         #Drawing bottom layer box with points
                         tpts = []
                         for pt in data[3]:
@@ -1637,36 +1666,11 @@ class SplitTree:
                             if len(data[3]) > 1:
                                 tpts.append([pt.x,pt.y])
                         #Now we will make a linear approximation with the points
-                        n = len(tpts)
-                        if n > 1:
-                            sx = 0
-                            sx2 = 0
-                            sy = 0
-                            sxy = 0
-                            for pt in tpts:
-                                sx += pt[0]
-                                sx2 += pt[0]*pt[0]
-                                sy += pt[1]
-                                sxy += pt[0]*pt[1]
-                            fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
-                            fit.append((sy-fit[0]*sx)/n)#now b for ax + b
-                            intercepts = []
-                            c0y = fit[0]*data[1][0]+fit[1]#y val taken at x of c0 
-                            c0x = (data[1][1] - fit[1]) / fit[0]#x val taken at y of c0
-                            c1y = fit[0]*data[2][0]+fit[1] 
-                            c1x = (data[2][1] - fit[1]) / fit[0]
-                            if c0y > data[2][1] and c0y < data[1][1]:
-                                intercepts.append([data[1][0],c0y])
-                            if c1y > data[2][1] and c1y < data[1][1]:
-                                intercepts.append([data[2][0],c1y])
-                            if c0x > data[2][0] and c0x < data[1][0]:
-                                intercepts.append([c0x,data[1][1]])
-                            if c1x > data[2][0] and c1x < data[1][0]:
-                                intercepts.append([c1x,data[2][1]])
-                            plt.plot([intercepts[0][0],intercepts[1][0]],[intercepts[0][1],intercepts[1][1]],c='green')
+                    if len(data) > 4:
+                        plt.plot([data[4][0][0],data[4][1][0]],[data[4][0][1],data[4][1][1]],c='green')
                             
 
-            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/quadplot.png'    
+            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + name    
             plt.savefig(save)
         else:
             return rdata
