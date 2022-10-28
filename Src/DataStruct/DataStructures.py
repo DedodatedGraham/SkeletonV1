@@ -1430,9 +1430,15 @@ class SplitTree:
                 else:
                     #Now we are in a bigger scope. First we will check for touching points and intercepts.
                     touching = self.getTouch(threshDistance,self.dep)
-                    print(touching)
-                    name = r'quadplot{}.png'.format(self.dep)
-                    self.Draw(self.dep,name)
+                    #if theres enough touching, we will invoke a converge results yet we need to make sure to ignore the
+                    print(self.dep,touching)
+                    if len(touching) > 2:#Potential for complete segments, this adjusts stack to what we want
+                        self.purge(1,touching,threshDistance=threshDistance)
+                        rdata = []
+                        outcode = 1
+                    else:
+                        rdata = []#We dont have enough touching to put together anything
+                        outcode = 1
             else:
                 #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
                 #Save these fits in the layer until we want them destroyed
@@ -1517,7 +1523,8 @@ class SplitTree:
                     retr.append(retpoints[i].getRad())
                     i += 1
                 return retpts,retr
-
+        elif incode == 1:
+            print('nah')
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []
@@ -1626,17 +1633,19 @@ class SplitTree:
                 return touchid,extrema
             else:
                 return touchid
-    def Draw(self,indep : int = 0,name : str = r'quadplot.png'):
+    def Draw(self,indep : int = 0,name : str = r'quadplot.png',*,index : int = 0):
         #This is the class for creating a visual of the quad tree structure
         #First Collect Data
         rdata = []
         if self.state:
             rdata.append([self.dep,self.c[0],self.c[1]])
             #only care about upper nodes, as they are the divided ones
+            i = 0
             for leaf in self.leafs: 
-                results = leaf.Draw()
+                results = leaf.Draw(index = i)
                 for res in results:
                     rdata.append(res)
+                i += 1
         else:
             if len(self.skelepts) > 0:
                 rdata.append([self.dep,self.c[0],self.c[1]])
@@ -1644,6 +1653,7 @@ class SplitTree:
                 for pt in self.skelepts:
                     rpt.append(pt)
                 rdata[0].append(rpt)
+                rdata[0].append(index)
                 if len(self.skelepts) > 1:
                     #there is an approx made, so we will grab it
                     rdata[0].append(self.intercepts)
@@ -1653,6 +1663,8 @@ class SplitTree:
             if self.dim == 2:
                 plt.clf()
                 plt.rcParams['figure.dpi'] = 300
+                plt.xlim(6.24,6.29)
+                plt.ylim(0.999,1.001)
                 nodes = []
                 deps = []
                 for data in rdata:
@@ -1662,12 +1674,17 @@ class SplitTree:
                         #Drawing bottom layer box with points
                         tpts = []
                         for pt in data[3]:
-                            plt.scatter(pt.x,pt.y,s=5,c='red')
-                            if len(data[3]) > 1:
-                                tpts.append([pt.x,pt.y])
+                            if data[4] == 0:
+                                plt.scatter(pt.x,pt.y,s=5,c='red')
+                            elif data[4] == 1:
+                                plt.scatter(pt.x,pt.y,s=5,c='blue')
+                            elif data[4] == 2:
+                                plt.scatter(pt.x,pt.y,s=5,c='green')
+                            else:
+                                plt.scatter(pt.x,pt.y,s=5,c='purple')
                         #Now we will make a linear approximation with the points
-                    if len(data) > 4:
-                        plt.plot([data[4][0][0],data[4][1][0]],[data[4][0][1],data[4][1][1]],c='green')
+                    if len(data) > 5:
+                        plt.plot([data[5][0][0],data[5][1][0]],[data[5][0][1],data[5][1][1]],c='green')
                             
 
             save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + name    
