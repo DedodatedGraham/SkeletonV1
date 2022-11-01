@@ -1431,10 +1431,8 @@ class SplitTree:
                     #Now we are in a bigger scope. First we will check for touching points and intercepts.
                     touching = self.getTouch(threshDistance,self.dep)
                     #if theres enough touching, we will invoke a converge results yet we need to make sure to ignore the
-                    print(self.dep,touching)
-                    if len(touching) > 2:#Potential for complete segments, this adjusts stack to what we want
-                        self.purge(1,touching,threshDistance=threshDistance)
-                        rdata = []
+                    if (self.dim == 2 and len(touching) > 4) or (self.dim == 3 and len(touching) > 8):#Potential for complete segments, this adjusts stack to what we want
+                        self.purge(1,[self.dep,touching],threshDistance=threshDistance)
                         outcode = 1
                     else:
                         rdata = []#We dont have enough touching to put together anything
@@ -1524,7 +1522,17 @@ class SplitTree:
                     i += 1
                 return retpts,retr
         elif incode == 1:
-            print('nah')
+            if self.dep == indata[0]
+                #Full Touches
+                for t in indata[1]:
+                    t0 = t[0]
+                    t1 = t[1]
+                    it0 = isinstance(t[0],int)
+                    it1 = isinstance(t[1],int)
+            else:
+                #Sent other kinds of touches
+        elif incode == 2:
+
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []
@@ -1589,16 +1597,22 @@ class SplitTree:
                 if self.stackid[i] == 3:
                     tid,e = self.leafs[i].getTouch(threshDistance,indepth)
                     j = 0
-                    while j < len(tid):
-                        touchid.append([i,tid[j]])           
+                    while j < len(tid):#adds touching path
+                        if isinstance(tid[j][0],int):
+                            touchid.append([[i,[tid[j][0]]]])
+                        else:
+                            touchid.append([[i,tid[j][0]]])
+                        if isinstance(tid[j][1],int):
+                            touchid[len(touchid) - 1].append([i,[tid[j][1]]])
+                        else:
+                            touchid[len(touchid) - 1].append([i,tid[j][1]])
                         j += 1
                     j = 0
-                    while j < len(e[0]):
+                    while j < len(e[0]):#adds in extrema types
                         if isinstance(e[1][j],int):
-                            extrema[1].append([i,e[1][j]])
+                            extrema[1].append([i,[e[1][j]]])
                         else:
-                            e[1][j].insert(0,i)
-                            extrema[1].append(e[1][j])
+                            extrema[1].append([i,e[1][j]])
                         extrema[0].append(e[0][j])
                         j += 1
                 elif self.stackid[i] == 1:
@@ -1627,11 +1641,25 @@ class SplitTree:
                         if abs(e0[i][0] - corner[0]) < threshDistance or abs(e0[i][1] - corner[1]) < threshDistance:
                             te[0].append(e0[i])
                             te[1].append(e1[i])
-                            break
                     i += 1
                 extrema = te
                 return touchid,extrema
             else:
+                i = 0
+                j = 0
+                tempid = []
+                while i < len(touchid) - 1:
+                    j = i + 1
+                    case = False
+                    while j < len(touchid):
+                        if touchid[i] == touchid[j]:
+                            case = True
+                            break
+                        j += 1
+                    if case == False:
+                        tempid.append(touchid[i])
+                    i += 1
+                touchid = tempid
                 return touchid
     def Draw(self,indep : int = 0,name : str = r'quadplot.png',*,index : int = 0):
         #This is the class for creating a visual of the quad tree structure
@@ -1663,8 +1691,6 @@ class SplitTree:
             if self.dim == 2:
                 plt.clf()
                 plt.rcParams['figure.dpi'] = 300
-                plt.xlim(6.24,6.29)
-                plt.ylim(0.999,1.001)
                 nodes = []
                 deps = []
                 for data in rdata:
