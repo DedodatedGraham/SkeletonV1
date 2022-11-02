@@ -1432,11 +1432,9 @@ class SplitTree:
                     #Now we are in a bigger scope. First we will check for touching points and intercepts.
                     touching = self.getTouch(threshDistance,self.dep)
                     #if theres enough touching, we will invoke a converge results yet we need to make sure to ignore the
+                    outcode = 1
                     if (self.dim == 2 and len(touching) > 6) or (self.dim == 3 and len(touching) > 8):#Potential for complete segments, this adjusts stack to what we want
                         self.purge(1,[self.dep,touching],threshDistance=threshDistance)
-                    else:
-                        rdata = []#We dont have enough touching to put together anything
-                        outcode = 1
             else:
                 #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
                 #Save these fits in the layer until we want them destroyed
@@ -1520,6 +1518,8 @@ class SplitTree:
                     retpts.append(retpoints[i].getPoint())
                     retr.append(retpoints[i].getRad())
                     i += 1
+                print('finishing')
+                self.Draw(self.dep)
                 return retpts,retr
         elif incode == 1:
             if self.dep == indata[0]:#top layer does more
@@ -1532,19 +1532,19 @@ class SplitTree:
                     if it0 and it1:
                         self.leafs[t0[0]].touchstack.append([-1,t1])
                         if len(self.leafs[t0[0]].touchstack) > 2:
-                            self.stackid[t0[0]] == -1
+                            self.stackid[t0[0]] = -1
                         self.leafs[t1[0]].touchstack.append([-1,t0])
                         if len(self.leafs[t1[0]].touchstack) > 2:
-                            self.stackid[t1[0]] == -1
+                            self.stackid[t1[0]] = -1
                     elif it0:
                         self.leafs[t0[0]].touchstack.append([-1,t1])
                         if len(self.leafs[t0[0]].touchstack) > 2:
-                            self.stackid[t0[0]] == -1
+                            self.stackid[t0[0]] = -1
                         self.leafs[t1[0]].purge(1,[indata[0],[t1[1],[-1,t0]]],threshDistance=threshDistance)
                     elif it1:
                         self.leafs[t1[0]].touchstack.append([-1,t0])
                         if len(self.leafs[t1[0]].touchstack) > 2:
-                            self.stackid[t1[0]] == -1
+                            self.stackid[t1[0]] = -1
                         self.leafs[t0[0]].purge(1,[indata[0],[t0[1],[-1,t1]]],threshDistance=threshDistance)
                     else:
                         if t0[0] == t1[0]:
@@ -1552,10 +1552,8 @@ class SplitTree:
                         else:
                             self.leafs[t0[0]].purge(1,[indata[0],[t0[1],t1[1]]],threshDistance=threshDistance)
                             self.leafs[t1[0]].purge(1,[indata[0],[t1[1],t0[1]]],threshDistance=threshDistance)
-                #Now we have added in our paths we hold lines and connections between each relative cell
-                #We will invoke purge incode == 2, Here we will go through the layers, check if the touches are empty
-                #If touches are empty and the leaf should have touches we will then grab any nearby with touches, and take it as a goal to line up upon
-                self.purge(2,threshDistance=threshDistance)
+                #Now that we have marked, any points that dont fall within threshDistance of the edge of highest scop should be able to be corrected
+                self.purge(2,[self.dep],threshDistance=threshDistance)
             else:#Non top level touch adder
                 #first of indata[1] is the path we want
                 t0 = indata[1][0]
@@ -1566,19 +1564,19 @@ class SplitTree:
                     if it0 and it1:
                         self.leafs[t0[0]].touchstack.append([-1,t1])
                         if len(self.leafs[t0[0]].touchstack) > 2:
-                            self.stackid[t0[0]] == -1
+                            self.stackid[t0[0]] = -1
                         self.leafs[t1[0]].touchstack.append([-1,t0])
                         if len(self.leafs[t1[0]].touchstack) > 2:
-                            self.stackid[t1[0]] == -1
+                            self.stackid[t1[0]] = -1
                     elif it0:
                         self.leafs[t0[0]].touchstack.append([-1,t1])
                         if len(self.leafs[t0[0]].touchstack) > 2:
-                            self.stackid[t0[0]] == -1
+                            self.stackid[t0[0]] = -1
                         self.leafs[t1[0]].purge(1,[indata[0],[t1[1],[-1,t0]]],threshDistance=threshDistance)
                     elif it1:
                         self.leafs[t1[0]].touchstack.append([-1,t0])
                         if len(self.leafs[t1[0]].touchstack) > 2:
-                            self.stackid[t1[0]] == -1
+                            self.stackid[t1[0]] = -1
                         self.leafs[t0[0]].purge(1,[indata[0],[t0[1],[-1,t1]]],threshDistance=threshDistance)
                     else:
                         if t0[0] == t1[0]:
@@ -1592,10 +1590,42 @@ class SplitTree:
                     else:
                         self.leafs[t0[0]].purge(1,[indata[0],[t0[1],[-1,t1]]],threshDistance=threshDistance)
         if incode == 2:
+            if self.dep == indata[0]:
+                indata.append(self.c)
+            i = 0
             for sid in self.stackid:
-                if sid == 2:
-
-
+                if sid == 1:
+                    if indata[0] == 0:
+                        #We will chop here regardless of corners, as we dont want to leave errors on bounding edges
+                        if len(self.leafs[i].touchstack) == 0:
+                            self.stackid[i] = 0
+                            self.stack[i] = []
+                    elif abs(self.stack[i][0] - indata[1][0][0]) > threshDistance and abs(self.stack[i][0] - indata[1][1][0]) > threshDistance:
+                        if abs(self.stack[i][1] - indata[1][0][1]) > threshDistance and abs(self.stack[i][1] - indata[1][1][1]) > threshDistance:
+                            #Our Point is far enough to determine. We check the amount of connections it has
+                            if len(self.leafs[i].touchstack) == 0:
+                                self.stackid[i] = 0
+                                self.stack[i] = []
+                elif sid == 2:
+                    for inter in self.stack[i]:
+                        if indata[0] == 0:
+                            if len(self.leafs[i].touchstack) == 0:
+                                self.stackid[i] = 0
+                                self.stack[i] = []
+                            elif len(self.leafs[i].touchstack) == 1:
+                                #We have a lowest level, where only one side is touching. we will test each point in the level with other touches
+                                self.leafs[i].purge(3,[i],threshDistance=threshDistance)#purge level 3 is given the intercept, and the points far will be purged. 
+                        elif abs(inter[0] - indata[1][0][0]) > threshDistance and abs(inter[0] - indata[1][1][0]) > threshDistance:
+                            if abs(inter[1] - indata[1][0][1]) > threshDistance and abs(inter[1] - indata[1][1][1]) > threshDistance:
+                                if len(self.leafs[i].touchstack) == 0:
+                                    self.stackid[i] = 0
+                                    self.stack[i] = []
+                elif sid == 3:#Go Further
+                    self.leafs[i].purge(2,indata,threshDistance=threshDistance)
+                i += 1
+        if incode == 3:
+            print()
+            #We are now given permission to bruteforce delete
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []
@@ -1625,12 +1655,14 @@ class SplitTree:
                             if (idi == -1 and idj != -1) or (idj == -1 and idi != -1):
                                 #We are dealing with a converged sequence
                                 if idi == -1:
-                                    typestack = len(self.stack[idi])
+                                    typestack = len(self.stack[i])
+                                    if isinstance(self.stack[i][0],float):
+                                        self.stack[i] = [[self.stack[i][0],self.stack[i][1]]]
                                     if typestack == 1:
                                         if idj == 1:
-                                            if getDistance(self.stack[i],self.stack[j]) < threshDistance:
+                                            if getDistance(self.stack[i][0],self.stack[j]) < threshDistance:
                                                 tcase = True
-                                                for touches in self.leafs[i]:
+                                                for touches in self.leafs[i].touchstack:
                                                     if touches == [-1,[j]]:
                                                         tcase = False
                                                         break
@@ -1638,9 +1670,9 @@ class SplitTree:
                                                     touchid.append([i,j])
                                         else:
                                             for int2 in self.stack[j]:
-                                                if getDistance(self.stack[i],int2) < threshDistance:
+                                                if getDistance(self.stack[i][0],int2) < threshDistance:
                                                     tcase = True
-                                                    for touches in self.leafs[i]:
+                                                    for touches in self.leafs[i].touchstack:
                                                         if touches == [-1,[j]]:
                                                             tcase = False
                                                             break
@@ -1651,7 +1683,7 @@ class SplitTree:
                                             if idj == 1:
                                                 if getDistance(int1,self.stack[j]) < threshDistance:
                                                     tcase = True
-                                                    for touches in self.leafs[i]:
+                                                    for touches in self.leafs[i].touchstack:
                                                         if touches == [-1,[j]]:
                                                             tcase = False
                                                             break
@@ -1661,19 +1693,21 @@ class SplitTree:
                                                 for int2 in self.stack[j]:
                                                     if getDistance(int1,int2) < threshDistance:
                                                         tcase = True
-                                                        for touches in self.leafs[i]:
+                                                        for touches in self.leafs[i].touchstack:
                                                             if touches == [-1,[j]]:
                                                                 tcase = False
                                                                 break
                                                         if tcase:
                                                             touchid.append([i,j])
                                 else:
-                                    typestack = len(self.stack[idj])
+                                    typestack = len(self.stack[j])
+                                    if isinstance(self.stack[j][0],float):
+                                        self.stack[j] = [[self.stack[j][0],self.stack[j][1]]]
                                     if typestack == 1:
                                         if idi == 1:
-                                            if getDistance(self.stack[i],self.stack[j]) < threshDistance:
+                                            if getDistance(self.stack[i][0],self.stack[j][0]) < threshDistance:
                                                 tcase = True
-                                                for touches in self.leafs[j]:
+                                                for touches in self.leafs[j].touchstack:
                                                     if touches == [-1,[i]]:
                                                         tcase = False
                                                         break
@@ -1681,9 +1715,9 @@ class SplitTree:
                                                     touchid.append([i,j])
                                         else:
                                             for int2 in self.stack[i]:
-                                                if getDistance(self.stack[j],int2) < threshDistance:
+                                                if getDistance(self.stack[j][0],int2) < threshDistance:
                                                     tcase = True
-                                                    for touches in self.leafs[j]:
+                                                    for touches in self.leafs[j].touchstack:
                                                         if touches == [-1,[i]]:
                                                             tcase = False
                                                             break
@@ -1694,7 +1728,7 @@ class SplitTree:
                                             if idi == 1:
                                                 if getDistance(int1,self.stack[i]) < threshDistance:
                                                     tcase = True
-                                                    for touches in self.leafs[j]:
+                                                    for touches in self.leafs[j].touchstack:
                                                         if touches == [-1,[i]]:
                                                             tcase = False
                                                             break
@@ -1704,7 +1738,7 @@ class SplitTree:
                                                 for int2 in self.stack[i]:
                                                     if getDistance(int1,int2) < threshDistance:
                                                         tcase = True
-                                                        for touches in self.leafs[j]:
+                                                        for touches in self.leafs[j].touchstack:
                                                             if touches == [-1,[i]]:
                                                                 tcase = False
                                                                 break
@@ -1764,7 +1798,8 @@ class SplitTree:
                             extrema[1].append([i,[e[1][j]]])
                         else:
                             extrema[1].append([i,e[1][j]])
-                        extrema[0].append(e[0][j])
+                        if isinstance(e[0][j],list):
+                            extrema[0].append(e[0][j])
                         j += 1
                 elif self.stackid[i] == 1:
                     extrema[0].append(self.stack[i])
@@ -1773,6 +1808,17 @@ class SplitTree:
                     for inter in self.stack[i]:
                         extrema[0].append(inter)
                         extrema[1].append(i)
+                elif self.stackid[i] == -1:
+                    if len(self.stack[i]) > 0:
+                        if isinstance(self.stack[i][0],list):
+                            for inter in self.stack[i]:
+                                if isinstance(inter,float):
+                                    print('error')
+                                extrema[0].append(inter)
+                                extrema[1].append(i)
+                        else:
+                            extrema[0].append(self.stack[i])
+                            extrema[1].append(i)
                 i += 1
             i = 0
             e0 = extrema[0]
@@ -1824,10 +1870,11 @@ class SplitTree:
             rdata.append([self.dep,self.c[0],self.c[1]])
             #only care about upper nodes, as they are the divided ones
             i = 0
-            for leaf in self.leafs: 
-                results = leaf.Draw(index = i)
-                for res in results:
-                    rdata.append(res)
+            for leaf in self.leafs:
+                if self.stackid[i] != 0:
+                    results = leaf.Draw(index = i)
+                    for res in results:
+                        rdata.append(res)
                 i += 1
         else:
             if len(self.skelepts) > 0:
@@ -1850,6 +1897,32 @@ class SplitTree:
                 deps = []
                 for data in rdata:
                     #Itterates through everything
+                    #plt.plot([data[1][0],data[1][0],data[2][0],data[2][0],data[1][0]],[data[1][1],data[2][1],data[2][1],data[1][1],data[1][1]],c='black')
+                    if len(data) > 3:
+                        #Drawing bottom layer box with points
+                        tpts = []
+                        for pt in data[3]:
+                            if data[4] == 0:
+                                plt.scatter(pt.x,pt.y,s=5,c='red')
+                            elif data[4] == 1:
+                                plt.scatter(pt.x,pt.y,s=5,c='blue')
+                            elif data[4] == 2:
+                                plt.scatter(pt.x,pt.y,s=5,c='green')
+                            else:
+                                plt.scatter(pt.x,pt.y,s=5,c='purple')
+                    #if len(data) > 5:
+                        #plt.plot([data[5][0][0],data[5][1][0]],[data[5][0][1],data[5][1][1]],c='green')
+                            
+
+            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + name    
+            plt.savefig(save)
+            if self.dim == 2:
+                plt.clf()
+                plt.rcParams['figure.dpi'] = 300
+                nodes = []
+                deps = []
+                for data in rdata:
+                    #Itterates through everything
                     plt.plot([data[1][0],data[1][0],data[2][0],data[2][0],data[1][0]],[data[1][1],data[2][1],data[2][1],data[1][1],data[1][1]],c='black')
                     if len(data) > 3:
                         #Drawing bottom layer box with points
@@ -1863,12 +1936,11 @@ class SplitTree:
                                 plt.scatter(pt.x,pt.y,s=5,c='green')
                             else:
                                 plt.scatter(pt.x,pt.y,s=5,c='purple')
-                        #Now we will make a linear approximation with the points
                     if len(data) > 5:
                         plt.plot([data[5][0][0],data[5][1][0]],[data[5][0][1],data[5][1][1]],c='green')
                             
 
-            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + name    
+            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + 'box' + name    
             plt.savefig(save)
         else:
             return rdata

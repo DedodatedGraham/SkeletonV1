@@ -56,11 +56,9 @@ def getRadius(point1, point2 , norm) -> float:
     elif inside > 1:
         inside = 1.0
     theta = np.arccos(inside)
-    # print(dot,dist,point1,point2)
     #Finally finds radius
     radius = np.abs(dist / (2 * np.cos(theta)))
     
-    #print(point1,point2,norm,radius)
     return radius
 # @profile
 def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
@@ -136,7 +134,6 @@ def randPN(points : list,norms : list ):
         ret.append([])
         ret[i].append(points[i])
         ret[i].append(norms[i])
-        # print(ret[i])
         i += 1
     shuffle(ret)
     i = 0
@@ -162,10 +159,7 @@ def getDeviation(list1 : list, list2 : list):
         top = list1[0]*list2[0] + list1[1]*list2[1] + list1[2]*list2[2]
         bot = ((list1[0]*list1[0] + list1[1]*list1[1] + list1[2]*list1[2]) ** 0.5) * ((list2[0]*list2[0] + list2[1]*list2[1] + list2[2]*list2[2]) ** 0.5)
     if bot == 0:
-        print()
         print('boterror')
-        print(list1,list2)
-        print()
         return 0
     ins = top/bot
     if ins < -1:
