@@ -1612,9 +1612,6 @@ class SplitTree:
                             if len(self.leafs[i].touchstack) == 0:
                                 self.stackid[i] = 0
                                 self.stack[i] = []
-                            elif len(self.leafs[i].touchstack) == 1:
-                                #We have a lowest level, where only one side is touching. we will test each point in the level with other touches
-                                self.leafs[i].purge(3,[i],threshDistance=threshDistance)#purge level 3 is given the intercept, and the points far will be purged. 
                         elif abs(inter[0] - indata[1][0][0]) > threshDistance and abs(inter[0] - indata[1][1][0]) > threshDistance:
                             if abs(inter[1] - indata[1][0][1]) > threshDistance and abs(inter[1] - indata[1][1][1]) > threshDistance:
                                 if len(self.leafs[i].touchstack) == 0:
@@ -1623,8 +1620,6 @@ class SplitTree:
                 elif sid == 3:#Go Further
                     self.leafs[i].purge(2,indata,threshDistance=threshDistance)
                 i += 1
-        if incode == 3:
-            print()
             #We are now given permission to bruteforce delete
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
