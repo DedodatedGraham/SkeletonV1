@@ -1626,10 +1626,16 @@ class SplitTree:
                 i += 1
             if self.dep == indata[0]: #We collected all the untouched, so now we can determine if allowable to the system, as long as its not along the border of the scope(given dep != 0)
                 if len(pts) > 0:
-
+                    i = 0
+                    while i < len(pts):
+                        potentials = self.deepDive(paths[i],corners[i])
+                        i += 1
             elif len(pts) > 0:
                 return [pts,corners,paths]
-        if incode == 3:
+    def deepDive(self,target : list, bounds : list):
+        #Deep dive will go through the tree and find all the touching node path points, ie closest to the container we want
+        #We will input a target node path, and the bounds of said path, and it will output potential connections for said node to connect to
+        #Potential connections are ranked, 
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []
