@@ -1624,18 +1624,81 @@ class SplitTree:
                         for p in rethelp[2]:
                             paths.append([i,p])
                 i += 1
-            if self.dep == indata[0]: #We collected all the untouched, so now we can determine if allowable to the system, as long as its not along the border of the scope(given dep != 0)
+            if self.dep == indata[0]: 
+                #We collected all the untouched, so now we can determine if allowable to the system, as long as its not along the border of the scope(given dep != 0)
                 if len(pts) > 0:
                     i = 0
                     while i < len(pts):
-                        potentials = self.deepDive(paths[i],corners[i])
+                        if self.dim == 2:
+                            targetpt = [(corners[i][0][0] + corners[i][1][0]) / 2,(corners[i][0][1] + corners[i][1][1]) / 2]
+                        else:
+                            targetpt = [(corners[i][0][0] + corners[i][1][0]) / 2,(corners[i][0][1] + corners[i][1][1]) / 2,(corners[i][0][2] + corners[i][1][2]) / 2]
+                        potentials = self.deepDive(self.dep,targetpt,corners[i],threshDistance=threshDistance)
                         i += 1
             elif len(pts) > 0:
                 return [pts,corners,paths]
-    def deepDive(self,target : list, bounds : list):
+    def deepDive(self,indepth : int ,target : list, bounds : list,*,threshDistance:float):
         #Deep dive will go through the tree and find all the touching node path points, ie closest to the container we want
         #We will input a target node path, and the bounds of said path, and it will output potential connections for said node to connect to
-        #Potential connections are ranked, 
+        #Potential connections are ranked
+        results = []
+        if self.state:#If Divided
+            goto = []
+            if bounds[0][0] >= self.node[0] - threshDistance:
+                #Right side
+                if bounds[0][1] >= self.node[1] - threshDistance:#TR
+                    if self.dim == 2:
+                        goto.append(0)
+                    else:
+                        if bounds[0][2] >= self.node[2] - threshDistance:
+                            print('temp')
+                        if bounds[1][2] <= self.node[2] + threshDistance:
+                            print('temp')
+                if bounds[1][1] <= self.node[1] + threshDistance:#BR
+                    if self.dim == 2:
+                        goto.append(1)
+                    else:
+                        if bounds[0][2] >= self.node[2] - threshDistance:
+                            print('temp')
+                        if bounds[1][2] <= self.node[2] + threshDistance:
+                            print('temp')
+            if bounds[1][0] <= self.node[0] + threshDistance:
+                if bounds[0][1] >= self.node[1] - threshDistance:#TL
+                    if self.dim == 2:
+                        goto.append(2)
+                    else:
+                        if bounds[0][2] >= self.node[2] - threshDistance:
+                            print('temp')
+                        if bounds[1][2] <= self.node[2] + threshDistance:
+                            print('temp')
+                if bounds[1][1] <= self.node[1] + threshDistance:#BL
+                    if self.dim == 2:
+                        goto.append(3)
+                    else:
+                        if bounds[0][2] >= self.node[2] - threshDistance:
+                            print('temp')
+                        if bounds[1][2] <= self.node[2] + threshDistance:
+                            print('temp')
+            #We now have the nodes that cound potentially hold something
+            for loc in goto:
+                sid = self.stackid[loc] 
+                if sid == 3:
+                    res = self.leafs[loc].deepDive(indepth,target,bounds,threshDistance=threshDistance)
+                    if isinstance(res,list):
+                        for r in res:
+                            results.append(r)
+                elif sid == -1 or (sid != 0 and len(self.leafs[loc].touchstack) > 0):
+                    #Will search if converged or has a touch, prevents considering anything from
+                    #Unknown Sectors
+                    if isinstance(self.stack[loc][0],float):
+                        #If one point, then the stack is the point, and thus we will consider it as a true point
+                        results.append(self.stack[loc])
+                    else:
+                        for st in self.stack[loc]:
+
+            print(results)
+            if self.dep != indepth:
+                return results
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []
