@@ -1393,7 +1393,8 @@ class SplitTree:
         #This method is a bit complicated. We pass up and down a code to determine how to act.
         #incode: 0 ->(default, for itterating down the structure),
         #outcode: -1 -> negative space: 0 -> (Bottom level initial information,hard compare): 1 ->
-        print('step depth',self.dep)
+        if incode == 0:
+            print('step depth',self.dep)
         retpoints = []#Return Points
         dping = 0#Depth ping
         score = []#Node of real layer
@@ -1593,34 +1594,42 @@ class SplitTree:
             if self.dep == indata[0]:
                 indata.append(self.c)
             i = 0
+            pts = []
+            corners = []
+            paths = []
             for sid in self.stackid:
                 if sid == 1:
-                    if indata[0] == 0:
-                        #We will chop here regardless of corners, as we dont want to leave errors on bounding edges
-                        if len(self.leafs[i].touchstack) == 0:
-                            self.stackid[i] = 0
-                            self.stack[i] = []
-                    elif abs(self.stack[i][0] - indata[1][0][0]) > threshDistance and abs(self.stack[i][0] - indata[1][1][0]) > threshDistance:
-                        if abs(self.stack[i][1] - indata[1][0][1]) > threshDistance and abs(self.stack[i][1] - indata[1][1][1]) > threshDistance:
-                            #Our Point is far enough to determine. We check the amount of connections it has
-                            if len(self.leafs[i].touchstack) == 0:
-                                self.stackid[i] = 0
-                                self.stack[i] = []
+                    lts = len(self.leafs[i].touchstack)
+                    if self.dim == 2:
+                        if lts < 2:
+                            if indata[0] == 0 or (self.dep+1) - indata[0] > 2:#ensure scope
+                                pts.append(self.stack[i])
+                                corners.append(self.leafs[i].c)
+                                paths.append([i])
                 elif sid == 2:
-                    for inter in self.stack[i]:
-                        if indata[0] == 0:
-                            if len(self.leafs[i].touchstack) == 0:
-                                self.stackid[i] = 0
-                                self.stack[i] = []
-                        elif abs(inter[0] - indata[1][0][0]) > threshDistance and abs(inter[0] - indata[1][1][0]) > threshDistance:
-                            if abs(inter[1] - indata[1][0][1]) > threshDistance and abs(inter[1] - indata[1][1][1]) > threshDistance:
-                                if len(self.leafs[i].touchstack) == 0:
-                                    self.stackid[i] = 0
-                                    self.stack[i] = []
+                    lts = len(self.leafs[i].touchstack)
+                    if self.dim == 2:
+                        if lts < 2:
+                            if indata[0] == 0 or (self.dep+1) - indata[0] > 2:#ensure scope
+                                pts.append(self.stack[i])
+                                corners.append(self.leafs[i].c)
+                                paths.append([i])
                 elif sid == 3:#Go Further
-                    self.leafs[i].purge(2,indata,threshDistance=threshDistance)
+                    rethelp = self.leafs[i].purge(2,indata,threshDistance=threshDistance)
+                    if isinstance(rethelp,list):
+                        for pt in rethelp[0]:
+                            pts.append(pt)
+                        for cor in rethelp[1]:
+                            corners.append(cor)
+                        for p in rethelp[2]:
+                            paths.append([i,p])
                 i += 1
-            #We are now given permission to bruteforce delete
+            if self.dep == indata[0]: #We collected all the untouched, so now we can determine if allowable to the system, as long as its not along the border of the scope(given dep != 0)
+                if len(pts) > 0:
+
+            elif len(pts) > 0:
+                return [pts,corners,paths]
+        if incode == 3:
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []
@@ -1630,7 +1639,11 @@ class SplitTree:
             i = 0
             while i < len(self.stackid) - 1:
                 j = i + 1
+                if self.stack[i] != 0 and isinstance(self.stack[i][0],float):
+                    self.stack[i] = [[self.stack[i][0],self.stack[i][1]]]
                 while j < len(self.stackid):
+                    if self.stack[j] != 0 and isinstance(self.stack[j][0],float):
+                        self.stack[j] = [[self.stack[j][0],self.stack[j][1]]]
                     idi = self.stackid[i]
                     idj = self.stackid[j]
                     if idi != 0 and idj != 0:
@@ -1643,7 +1656,7 @@ class SplitTree:
                                         touchid.append([i,j])
                         elif idi == 1 and idj == 1:
                             #1 comp
-                            if getDistance(self.stack[i],self.stack[j]) < threshDistance:
+                            if getDistance(self.stack[i][0],self.stack[j][0]) < threshDistance:
                                 touchid.append([i,j])
                         else:#makes sure both arent already converged, no point to checking if they are
                             #3 comp
@@ -1651,11 +1664,9 @@ class SplitTree:
                                 #We are dealing with a converged sequence
                                 if idi == -1:
                                     typestack = len(self.stack[i])
-                                    if isinstance(self.stack[i][0],float):
-                                        self.stack[i] = [[self.stack[i][0],self.stack[i][1]]]
                                     if typestack == 1:
                                         if idj == 1:
-                                            if getDistance(self.stack[i][0],self.stack[j]) < threshDistance:
+                                            if getDistance(self.stack[i][0],self.stack[j][0]) < threshDistance:
                                                 tcase = True
                                                 for touches in self.leafs[i].touchstack:
                                                     if touches == [-1,[j]]:
@@ -1676,7 +1687,7 @@ class SplitTree:
                                     else:
                                         for int1 in self.stack[i]:
                                             if idj == 1:
-                                                if getDistance(int1,self.stack[j]) < threshDistance:
+                                                if getDistance(int1,self.stack[j][0]) < threshDistance:
                                                     tcase = True
                                                     for touches in self.leafs[i].touchstack:
                                                         if touches == [-1,[j]]:
@@ -1696,8 +1707,6 @@ class SplitTree:
                                                             touchid.append([i,j])
                                 else:
                                     typestack = len(self.stack[j])
-                                    if isinstance(self.stack[j][0],float):
-                                        self.stack[j] = [[self.stack[j][0],self.stack[j][1]]]
                                     if typestack == 1:
                                         if idi == 1:
                                             if getDistance(self.stack[i][0],self.stack[j][0]) < threshDistance:
@@ -1721,7 +1730,7 @@ class SplitTree:
                                     else:
                                         for int1 in self.stack[j]:
                                             if idi == 1:
-                                                if getDistance(int1,self.stack[i]) < threshDistance:
+                                                if getDistance(int1,self.stack[i][0]) < threshDistance:
                                                     tcase = True
                                                     for touches in self.leafs[j].touchstack:
                                                         if touches == [-1,[i]]:
@@ -1742,12 +1751,12 @@ class SplitTree:
                             elif idi == 1:
                                 #idi is the single
                                 for int2 in self.stack[j]:
-                                    if getDistance(self.stack[i],int2) < threshDistance:
+                                    if getDistance(self.stack[i][0],int2) < threshDistance:
                                         touchid.append([i,j])
                             elif idj == 1:
                                 #idj is single
                                 for int1 in self.stack[i]:
-                                    if getDistance(int1,self.stack[j]) < threshDistance:
+                                    if getDistance(int1,self.stack[j][0]) < threshDistance:
                                         touchid.append([i,j])
                     j += 1
                 i += 1
@@ -1757,7 +1766,7 @@ class SplitTree:
                 idi = self.stackid[i]
                 if idi == 1:
                     for corner in self.c:
-                        if abs(self.stack[i][0]-corner[0]) < threshDistance or abs(self.stack[i][1]-corner[1]) < threshDistance:
+                        if abs(self.stack[i][0][0]-corner[0]) < threshDistance or abs(self.stack[i][0][1]-corner[1]) < threshDistance:
                             extrema[0].append(self.stack[i])
                             extrema[1].append(i)
                             break
@@ -1795,9 +1804,14 @@ class SplitTree:
                             extrema[1].append([i,e[1][j]])
                         if isinstance(e[0][j],list):
                             extrema[0].append(e[0][j])
+                        else:
+                            print('whoops')
                         j += 1
                 elif self.stackid[i] == 1:
-                    extrema[0].append(self.stack[i])
+                    if isinstance(self.stack[i][0],list):
+                        extrema[0].append(self.stack[i])
+                    else:
+                        extrema[0].append(self.stack[i])
                     extrema[1].append(i)
                 elif self.stackid[i] == 2:
                     for inter in self.stack[i]:
@@ -1818,6 +1832,11 @@ class SplitTree:
             i = 0
             e0 = extrema[0]
             e1 = extrema[1]
+            while i < len(e0):
+                if not isinstance(e0[i][0],float):
+                    e0[i] = e0[i][0]
+                i += 1
+            i = 0
             while i < len(e0) - 1:
                 j = i + 1
                 while j < len(e0):
