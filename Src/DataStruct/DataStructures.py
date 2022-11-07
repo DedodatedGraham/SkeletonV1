@@ -1689,15 +1689,47 @@ class SplitTree:
                                 break
                         if go:
                            #We want to go through each point and compare to the current touch attempt, If the point isnt inline then :(
-                           for inter in self.stack[indata[1][0]]:
-                               
+                            for inter in self.stack[indata[1][0]]:
+                                if getDistance(indata[2][i],inter) < threshDistance:
+                                    self.leafs[indata[1][0]].touchstack.append([-1,indata[3][i]])
                         i += 1
+                    cpts = []
                     if indata[0] == 0 or len(indata[3]) > 3:
+                        tp = self.leafs[indata[1][0]].skelepts
+                        approx = self.leafs[indata[1][0]].fit
                         #We have permission to hard delete
-                        if len(self.leafs[indata[1][0]].touchstack) == 0:
-                            print('deleting')
-                            self.stackid[indata[1][0]] = 0
-                            self.stack[indata[1][0]] = []
+                        if len(self.leafs[indata[1][0]].touchstack) < 2:
+                            #If we have one or no touches we want to take a closer look, because we should have enough theoretically here
+                            i = 0
+                            for p in tp:
+                                
+                                i += 1
+                        else:#We already have touches, so test points for linearity
+                            tp = self.leafs[indata[1][0]].skelepts
+                            i = 0
+                            tpt = []
+                            for p in tp:
+                                #We assume approx is 100% correct here
+                                tpt.append(p.getPoint())
+                                if self.dim == 2:
+                                    if getDistance(tpt[len(tpt)-1],[tpt[len(tpt)-1][0],approx[0]*tpt[len(tpt)-1][0]+approx[1]]) > threshDistance:
+                                        tpt = tpt[:-1]
+                                        if i == 0 or i == len(self.leafs[indata[1][0]].skelepts)-1:
+                                            print('edge')
+                                        else:#We can split
+                                            print(len(self.leafs[indata[1][0]].skelepts))  
+                                            fh = self.leafs[indata[1][0]].skelepts[0:i]
+                                            bh = self.leafs[indata[1][0]].skelepts[i:]
+                                            tempp = []
+                                            for f in fh:
+                                                tempp.append(f)
+                                            for b in bh:
+                                                tempp.append(b)
+                                            self.leafs[indata[1][0]].skelepts = tempp
+                                            print(len(self.leafs[indata[1][0]].skelepts))  
+                                i += 1
+                            
+                            
     def deepDive(self,indepth : int ,target : list, bounds : list,*,threshDistance:float):
         #Deep dive will go through the tree and find all the touching node path points, ie closest to the container we want
         #We will input a target node path, and the bounds of said path, and it will output potential connections for said node to connect to
