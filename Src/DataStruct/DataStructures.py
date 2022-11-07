@@ -1393,8 +1393,6 @@ class SplitTree:
         #This method is a bit complicated. We pass up and down a code to determine how to act.
         #incode: 0 ->(default, for itterating down the structure),
         #outcode: -1 -> negative space: 0 -> (Bottom level initial information,hard compare): 1 ->
-        if incode == 0:
-            print('step depth',self.dep)
         retpoints = []#Return Points
         dping = 0#Depth ping
         score = []#Node of real layer
@@ -1602,7 +1600,7 @@ class SplitTree:
                     lts = len(self.leafs[i].touchstack)
                     if self.dim == 2:
                         if lts < 2:
-                            if indata[0] == 0 or (self.dep+1) - indata[0] > 2:#ensure scope
+                            if indata[0] == 0 or (self.dep) - indata[0] > 1:#ensure scope
                                 pts.append(self.stack[i])
                                 corners.append(self.leafs[i].c)
                                 paths.append([i])
@@ -1610,7 +1608,7 @@ class SplitTree:
                     lts = len(self.leafs[i].touchstack)
                     if self.dim == 2:
                         if lts < 2:
-                            if indata[0] == 0 or (self.dep+1) - indata[0] > 2:#ensure scope
+                            if indata[0] == 0 or (self.dep) - indata[0] > 1:#ensure scope
                                 pts.append(self.stack[i])
                                 corners.append(self.leafs[i].c)
                                 paths.append([i])
@@ -1633,15 +1631,79 @@ class SplitTree:
                             targetpt = [(corners[i][0][0] + corners[i][1][0]) / 2,(corners[i][0][1] + corners[i][1][1]) / 2]
                         else:
                             targetpt = [(corners[i][0][0] + corners[i][1][0]) / 2,(corners[i][0][1] + corners[i][1][1]) / 2,(corners[i][0][2] + corners[i][1][2]) / 2]
-                        potentials = self.deepDive(self.dep,targetpt,corners[i],threshDistance=threshDistance)
+                        potentials,tpaths = self.deepDive(self.dep,targetpt,corners[i],threshDistance=threshDistance)
+                        if len(potentials) > 0:
+                            #If There are potentials, then we will give the target information to the cell to make connections
+                            #We build the data we want to send, aka depth, goto path, current points, potential connections, and potential paths
+                            senddata = [self.dep,paths[i],potentials,tpaths]
+                            self.purge(3,senddata,threshDistance=threshDistance)
                         i += 1
             elif len(pts) > 0:
                 return [pts,corners,paths]
+        elif incode == 3:
+            #Now we have our data, so lets go to the scope we want
+            if len(indata[1]) > 1:
+                senddata = indata.copy()
+                i = 0
+                while i < len(senddata[3]):
+                    if senddata[3][i][0] == senddata[1][0]:
+                        senddata[3][i] = senddata[3][i][1]
+                    else:
+                        senddata[3][i] = [-1,senddata[3][i]]
+                    i += 1
+                senddata[1] = senddata[1][1]
+                self.leafs[indata[1][0]].purge(3,senddata,threshDistance=threshDistance)
+            else:
+                #We have arrived at the scope we want
+                if self.stackid[indata[1][0]] == 1:
+                    i = 0
+                    while i < len(indata[3]):
+                        go = True
+                        for tpath in self.leafs[indata[1][0]].touchstack:
+                            if tpath == [-1,indata[3][i]]:
+                                go = False
+                                break
+                        if go:
+                            #If not already touching, then 
+                            if len(self.stack[indata[1][0]]) == 1:
+                                if getDistance(self.stack[indata[1][0]][0],indata[2][i]) < threshDistance:
+                                    self.leafs[indata[1][0]].touchstack.append([-1,indata[3][i]])
+                            else:
+                                if getDistance(self.stack[indata[1][0]],indata[2][i]) < threshDistance:
+                                    self.leafs[indata[1][0]].touchstack.append([-1,indata[3][i]])
+                            if self.stackid[indata[1][0]] != -1 and len(self.leafs[indata[1][0]].touchstack) > 1:
+                                self.stackid[indata[1][0]] = -1
+                        i += 1
+                    if indata[0] == 0 or len(indata[3]) > 3:
+                        #We have permission to hard delete
+                        if len(self.leafs[indata[1][0]].touchstack) == 0:
+                            self.stackid[indata[1][0]] = 0
+                            self.stack[indata[1][0]] = []
+                if self.stackid[indata[1][0]] == 2:
+                    i = 0
+                    while i < len(indata[3]):
+                        go = True
+                        for tpath in self.leafs[indata[1][0]].touchstack:
+                            if tpath == [-1,indata[3][i]]:
+                                go = False
+                                break
+                        if go:
+                           #We want to go through each point and compare to the current touch attempt, If the point isnt inline then :(
+                           for inter in self.stack[indata[1][0]]:
+                               
+                        i += 1
+                    if indata[0] == 0 or len(indata[3]) > 3:
+                        #We have permission to hard delete
+                        if len(self.leafs[indata[1][0]].touchstack) == 0:
+                            print('deleting')
+                            self.stackid[indata[1][0]] = 0
+                            self.stack[indata[1][0]] = []
     def deepDive(self,indepth : int ,target : list, bounds : list,*,threshDistance:float):
         #Deep dive will go through the tree and find all the touching node path points, ie closest to the container we want
         #We will input a target node path, and the bounds of said path, and it will output potential connections for said node to connect to
         #Potential connections are ranked
         results = []
+        paths = []
         if self.state:#If Divided
             goto = []
             if bounds[0][0] >= self.node[0] - threshDistance:
@@ -1683,22 +1745,44 @@ class SplitTree:
             for loc in goto:
                 sid = self.stackid[loc] 
                 if sid == 3:
-                    res = self.leafs[loc].deepDive(indepth,target,bounds,threshDistance=threshDistance)
+                    res,pth = self.leafs[loc].deepDive(indepth,target,bounds,threshDistance=threshDistance)
                     if isinstance(res,list):
                         for r in res:
                             results.append(r)
+                        for p in pth:
+                            paths.append([loc,p])
+                    else:
+                        print('error on res')
                 elif sid == -1 or (sid != 0 and len(self.leafs[loc].touchstack) > 0):
                     #Will search if converged or has a touch, prevents considering anything from
                     #Unknown Sectors
                     if isinstance(self.stack[loc][0],float):
                         #If one point, then the stack is the point, and thus we will consider it as a true point
                         results.append(self.stack[loc])
+                        paths.append([loc])
                     else:
+                        if self.dim == 2:
+                            best = [self.stack[loc][0][0],self.stack[loc][0][1]]
+                        else:
+                            best = [self.stack[loc][0][0],self.stack[loc][0][1],self.stack[loc][0][2]]
+                        bestdis = getDistance(best,target)
                         for st in self.stack[loc]:
-
-            print(results)
+                            if getDistance(st,target) < bestdis:
+                                best = st
+                                bestdis = getDistance(st,target)
+                        results.append(best)
+                        paths.append([loc])
+                else:
+                    if sid != 0 and len(self.leafs[loc].touchstack) != 0:
+                        print()
+                        print('type',sid)
+                        print(len(self.leafs[loc].touchstack))
+                        print(self.stack[loc])
+                        print()
             if self.dep != indepth:
-                return results
+                return results, paths
+            else:
+                return results,paths
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []
@@ -1708,10 +1792,10 @@ class SplitTree:
             i = 0
             while i < len(self.stackid) - 1:
                 j = i + 1
-                if self.stack[i] != 0 and isinstance(self.stack[i][0],float):
+                if self.stack[i] != 0 and self.stack[i] != [] and isinstance(self.stack[i][0],float):
                     self.stack[i] = [[self.stack[i][0],self.stack[i][1]]]
                 while j < len(self.stackid):
-                    if self.stack[j] != 0 and isinstance(self.stack[j][0],float):
+                    if self.stack[j] != 0 and self.stack[j] != []  and isinstance(self.stack[j][0],float):
                         self.stack[j] = [[self.stack[j][0],self.stack[j][1]]]
                     idi = self.stackid[i]
                     idj = self.stackid[j]
