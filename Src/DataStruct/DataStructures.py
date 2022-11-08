@@ -1393,6 +1393,7 @@ class SplitTree:
         #This method is a bit complicated. We pass up and down a code to determine how to act.
         #incode: 0 ->(default, for itterating down the structure),
         #outcode: -1 -> negative space: 0 -> (Bottom level initial information,hard compare): 1 ->
+        #print(self.dep)
         retpoints = []#Return Points
         dping = 0#Depth ping
         score = []#Node of real layer
@@ -1679,6 +1680,7 @@ class SplitTree:
                         if len(self.leafs[indata[1][0]].touchstack) == 0:
                             self.stackid[indata[1][0]] = 0
                             self.stack[indata[1][0]] = []
+                            self.leafs[indata[1][0]].skelepts = []
                 if self.stackid[indata[1][0]] == 2:
                     i = 0
                     while i < len(indata[3]):
@@ -1714,11 +1716,12 @@ class SplitTree:
                                 if self.dim == 2:
                                     if getDistance(tpt[len(tpt)-1],[tpt[len(tpt)-1][0],approx[0]*tpt[len(tpt)-1][0]+approx[1]]) > threshDistance:
                                         tpt = tpt[:-1]
-                                        if i == 0 or i == len(self.leafs[indata[1][0]].skelepts)-1:
-                                            print('edge')
+                                        if i == 0:
+                                            self.leafs[indata[1][0]].skelepts = self.leafs[indata[1][0]].skelepts[1:]
+                                        elif i == len(self.leafs[indata[1][0]].skelepts)-1:
+                                            self.leafs[indata[1][0]].skelepts = self.leafs[indata[1][0]].skelepts[:-1]
                                         else:#We can split
-                                            print(len(self.leafs[indata[1][0]].skelepts))  
-                                            fh = self.leafs[indata[1][0]].skelepts[0:i]
+                                            fh = self.leafs[indata[1][0]].skelepts[0:i-1]
                                             bh = self.leafs[indata[1][0]].skelepts[i:]
                                             tempp = []
                                             for f in fh:
@@ -1726,10 +1729,14 @@ class SplitTree:
                                             for b in bh:
                                                 tempp.append(b)
                                             self.leafs[indata[1][0]].skelepts = tempp
-                                            print(len(self.leafs[indata[1][0]].skelepts))  
+                                        if len(self.leafs[indata[1][0]].skelepts) == 1:
+                                            self.stackid[indata[1][0]] = 1
+                                            self.stack[indata[1][0]] = self.leafs[indata[1][0]].skelepts[0].getPoint()
+                                        if len(self.leafs[indata[1][0]].skelepts) == 0:
+                                            self.stackid[indata[1][0]] = 0
+                                            self.stack[indata[1][0]] = []
+                                            self.leafs[indata[1][0]].skelepts = []
                                 i += 1
-                            
-                            
     def deepDive(self,indepth : int ,target : list, bounds : list,*,threshDistance:float):
         #Deep dive will go through the tree and find all the touching node path points, ie closest to the container we want
         #We will input a target node path, and the bounds of said path, and it will output potential connections for said node to connect to
