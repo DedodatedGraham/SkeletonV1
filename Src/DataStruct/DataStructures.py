@@ -1656,8 +1656,28 @@ class SplitTree:
                 self.leafs[indata[1][0]].purge(3,senddata,threshDistance=threshDistance)
             else:
                 #We have arrived at the scope we want
+                #First we will sort though the indata, and make sure none of the points we are getting exist in this scope
+                i = 0
+                while i < len(indata[2]):
+                    if self.stackid[indata[1][0]] == 1:
+                        if len(self.stack[indata[1][0]]) == 1:
+                            if indata[2][i] == self.stack[indata[1][0]][0]:
+                                del indata[2][i]
+                                del indata[3][i]
+                        else:
+                            if indata[2][i] == self.stack[indata[1][0]]:
+                                del indata[2][i]
+                                del indata[3][i]
+                    else:
+                        for p in self.leafs[indata[1][0]].skelepts:
+                            pt = p.getPoint()
+                            if pt == indata[2]:
+                                del indata[2][i]
+                                del indata[3][i]
+                                break
+                    i += 1
                 if self.stackid[indata[1][0]] == 1:
-                    i = 0
+                    i = 0 
                     while i < len(indata[3]):
                         go = True
                         for tpath in self.leafs[indata[1][0]].touchstack:
@@ -1675,12 +1695,20 @@ class SplitTree:
                             if self.stackid[indata[1][0]] != -1 and len(self.leafs[indata[1][0]].touchstack) > 1:
                                 self.stackid[indata[1][0]] = -1
                         i += 1
-                    if indata[0] == 0 or len(indata[3]) > 3:
+                    if indata[0] == 0 or self.dep - indata[0] > 1:
                         #We have permission to hard delete
                         if len(self.leafs[indata[1][0]].touchstack) == 0:
                             self.stackid[indata[1][0]] = 0
-                            self.stack[indata[1][0]] = []
+                            self.stack[indata[1][0]] = 0
                             self.leafs[indata[1][0]].skelepts = []
+                        else:
+                            print()
+                            print('one left')
+                            print(self.c)
+                            print(self.stack)
+                            print(self.stackid)
+                            print(self.leafs[indata[1][0]].touchstack)
+                            print()
                 if self.stackid[indata[1][0]] == 2:
                     i = 0
                     while i < len(indata[3]):
@@ -1696,45 +1724,40 @@ class SplitTree:
                                     self.leafs[indata[1][0]].touchstack.append([-1,indata[3][i]])
                         i += 1
                     cpts = []
-                    if indata[0] == 0 or len(indata[3]) > 3:
+                    if indata[0] == 0 or self.dep - indata[0] > 1:
                         tp = self.leafs[indata[1][0]].skelepts
                         approx = self.leafs[indata[1][0]].fit
                         #We have permission to hard delete
                         if len(self.leafs[indata[1][0]].touchstack) < 2:
                             #If we have one or no touches we want to take a closer look, because we should have enough theoretically here
                             i = 0
-                            for p in tp:
-                                
-                                i += 1
+                            if len(self.leafs[indata[1][0]].touchstack) == 1:
+                                tpt = []
+                                for p in tp:
+                                    tpt.append(p.getPoint())
+                                    if self.dim == 2:
+                                        #We have **maybe 50% right maybe none of it and we need to rotate
+
+                                    i += 1
+                            else:
+                                #We will try rotation to check points.
                         else:#We already have touches, so test points for linearity
                             tp = self.leafs[indata[1][0]].skelepts
                             i = 0
                             tpt = []
                             for p in tp:
-                                #We assume approx is 100% correct here
+                                #We assume approx is 100% correct here as we have enough touches, take away any major deviations
                                 tpt.append(p.getPoint())
                                 if self.dim == 2:
                                     if getDistance(tpt[len(tpt)-1],[tpt[len(tpt)-1][0],approx[0]*tpt[len(tpt)-1][0]+approx[1]]) > threshDistance:
                                         tpt = tpt[:-1]
-                                        if i == 0:
-                                            self.leafs[indata[1][0]].skelepts = self.leafs[indata[1][0]].skelepts[1:]
-                                        elif i == len(self.leafs[indata[1][0]].skelepts)-1:
-                                            self.leafs[indata[1][0]].skelepts = self.leafs[indata[1][0]].skelepts[:-1]
-                                        else:#We can split
-                                            fh = self.leafs[indata[1][0]].skelepts[0:i-1]
-                                            bh = self.leafs[indata[1][0]].skelepts[i:]
-                                            tempp = []
-                                            for f in fh:
-                                                tempp.append(f)
-                                            for b in bh:
-                                                tempp.append(b)
-                                            self.leafs[indata[1][0]].skelepts = tempp
+                                        del self.leafs[indata[1][0]].skelepts[i]
                                         if len(self.leafs[indata[1][0]].skelepts) == 1:
                                             self.stackid[indata[1][0]] = 1
                                             self.stack[indata[1][0]] = self.leafs[indata[1][0]].skelepts[0].getPoint()
                                         if len(self.leafs[indata[1][0]].skelepts) == 0:
                                             self.stackid[indata[1][0]] = 0
-                                            self.stack[indata[1][0]] = []
+                                            self.stack[indata[1][0]] = 0
                                             self.leafs[indata[1][0]].skelepts = []
                                 i += 1
     def deepDive(self,indepth : int ,target : list, bounds : list,*,threshDistance:float):
