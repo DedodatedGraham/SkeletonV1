@@ -90,7 +90,7 @@ class kdTree:
             #print(limit)
             self.split = True
             self.axis = depth % self.dimensions
-            points = quicksort(points,self.axis,cpuavail=cpuavail)
+            points = quicksort(points,self.axis)
             # ttt = time.time() -  stt
             # print('quicksearch took {} minuites and {} seconds to sort {} SkelePoints'.format(ttt // 60,ttt % 60, len(points)))
             mid = len(points) // 2
@@ -567,100 +567,102 @@ class kdTree:
                 #        retpts = retptsl
                 #        retdev = retdevl
                 #else:
-                if retdevr[0] > 0.9 and retdevl[0] > 0.9:
-                    if dr < data[2] and dl < data[2]:
-                        if dr > dl and retdevr[0] > retdevl[0]:
-                            retpts = retptsr
-                            retdev = retdevr
-                        elif dl > dr and retdevl[0] > retdevr[0]:
+                
+                #3D LOGIC
+                #if retdevr[0] > 0.9 and retdevl[0] > 0.9:
+                #    if dr < data[2] and dl < data[2]:
+                #        if dr > dl and retdevr[0] > retdevl[0]:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        elif dl > dr and retdevl[0] > retdevr[0]:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        else:
+                #            #Here, Both are pretty close to on par with normal, but none is a decisive winner.
+                #            #So we choose off of retdev for maximazation, and theyre very close anyways
+                #            if retdevr[0] > retdevl[0]:
+                #                retpts = retptsr
+                #                retdev = retdevr
+                #            else:
+                #                retpts = retptsl
+                #                retdev = retdevl
+                #                
+                #    elif dr > data[2] and dl > data[2]:
+                #        if dr < dl:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #    else:
+                #        #This should be the part to switch if next run doesnt work.
+                #        if dr > dl:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #else:
+                #    if retdevr[0] > retdevl[0]:
+                #        retpts = retptsr
+                #        retdev = retdevr
+                #    else:
+                #        retpts = retptsl
+                #        retdev = retdevl
+
+                #LOGIC, WORKS For 2D Spiral, Taking a differnet approach here.
+                elif diffdev < data[2]*10:
+                    if dl < data[2]/10 and dr < data[2]/10:
+                        if dl < dr:
                             retpts = retptsl
                             retdev = retdevl
                         else:
-                            #Here, Both are pretty close to on par with normal, but none is a decisive winner.
-                            #So we choose off of retdev for maximazation, and theyre very close anyways
-                            if retdevr[0] > retdevl[0]:
-                                retpts = retptsr
-                                retdev = retdevr
-                            else:
+                            retpts = retptsr
+                            retdev = retdevr
+                    else:
+                        if dl < dr:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            retpts = retptsr
+                            retdev = retdevr
+                else:
+                    #print(diffdev,data[2])
+                    #if retdevl[0] > retdevr[0]:
+                    #    retpts = retptsl
+                    #    retdev = retdevl
+                    #else:
+                    #    retpts = retptsr
+                    #    retdev = retdevr
+                         
+                    if dl > data[2]/10 and dr > data[2]/10:
+                        if retdevl[0] > retdevr[0]:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            retpts = retptsr
+                            retdev = retdevr
+                    elif dl < data[2]/10 and dr < data[2]/10:
+                        if retdevl[0] > retdevr[0]:
+                            retpts = retptsl
+                            retdev = retdevl
+                        else:
+                            retpts = retptsr
+                            retdev = retdevr
+                    else:
+                        if retdevl[0] > retdevr[0] and dl < dr:
+                            retpts = retptsl
+                            retdev = retdevl
+                        elif retdevl[0] < retdevr[0] and dl < dr:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            if dl > dr:
                                 retpts = retptsl
                                 retdev = retdevl
-                                
-                    elif dr > data[2] and dl > data[2]:
-                        if dr < dl:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                    else:
-                        #This should be the part to switch if next run doesnt work.
-                        if dr > dl:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                else:
-                    if retdevr[0] > retdevl[0]:
-                        retpts = retptsr
-                        retdev = retdevr
-                    else:
-                        retpts = retptsl
-                        retdev = retdevl
-
-                ###LOGIC, WORKS For 2D Spiral, Taking a differnet approach here.
-                ###elif diffdev < data[2]*10:
-                ###    if dl < data[2]/10 and dr < data[2]/10:
-                ###        if dl < dr:
-                ###            retpts = retptsl
-                ###            retdev = retdevl
-                ###        else:
-                ###            retpts = retptsr
-                ###            retdev = retdevr
-                ###    else:
-                ###        if dl < dr:
-                ###            retpts = retptsl
-                ###            retdev = retdevl
-                ###        else:
-                ###            retpts = retptsr
-                ###            retdev = retdevr
-                ###else:
-                ###    #print(diffdev,data[2])
-                ###    #if retdevl[0] > retdevr[0]:
-                ###    #    retpts = retptsl
-                ###    #    retdev = retdevl
-                ###    #else:
-                ###    #    retpts = retptsr
-                ###    #    retdev = retdevr
-                ###         
-                ###    if dl > data[2]/10 and dr > data[2]/10:
-                ###        if retdevl[0] > retdevr[0]:
-                ###            retpts = retptsl
-                ###            retdev = retdevl
-                ###        else:
-                ###            retpts = retptsr
-                ###            retdev = retdevr
-                ###    elif dl < data[2]/10 and dr < data[2]/10:
-                ###        if retdevl[0] > retdevr[0]:
-                ###            retpts = retptsl
-                ###            retdev = retdevl
-                ###        else:
-                ###            retpts = retptsr
-                ###            retdev = retdevr
-                ###    else:
-                ###        if retdevl[0] > retdevr[0] and dl < dr:
-                ###            retpts = retptsl
-                ###            retdev = retdevl
-                ###        elif retdevl[0] < retdevr[0] and dl < dr:
-                ###            retpts = retptsr
-                ###            retdev = retdevr
-                ###        else:
-                ###            if dl > dr:
-                ###                retpts = retptsl
-                ###                retdev = retdevl
-                ###            else:
-                ###                retpts = retptsr
-                ###                retdev = retdevr
+                            else:
+                                retpts = retptsr
+                                retdev = retdevr
             #Finally we need to test if the node is a better substitution instead of the              
             if not(node.getPoint() == data[0]):
                 j = 0
@@ -1131,9 +1133,9 @@ class SplitTree:
         if self.dep == 0:
             #If First layer, we want to define the corners
             if self.dim == 2:
-                self.c = [[mx[0]*1.05,my[0]*1.05],[mx[1]*1.05,my[1]*1.05]]
+                self.c = [[mx[0]*1.05,my[0]*1.05],[mx[1]*0.95,my[1]*0.95]]
             else:
-                self.c = [[mx[0]*1.05,my[0]*1.05,mz[0]*1.05],[mx[1]*1.05,my[1]*1.05,mz[1]*1.05]]
+                self.c = [[mx[0]*1.05,my[0]*1.05,mz[0]*1.05],[mx[1]*0.95,my[1]*0.95,mz[1]*0.95]]
         else:
             #If not first layer, we determine our current bounds using the last box's dimensions
             #Last box will come in as a [LastNode,c-max,c-min]
@@ -1442,7 +1444,28 @@ class SplitTree:
                 lowest = self.dep
                 outcode = 0
                 if n > 1:
-                    if self.dim == 2:
+                    #We need to make sure all the points arent equal
+                    mark = []
+                    i = 0
+                    while i < len(self.skelepts) - 1:
+                        j = i + 1
+                        while j < len(self.skelepts):
+                            pti = self.skelepts[i].getPoint() 
+                            ptj = self.skelepts[j].getPoint()
+                            if getDistance(pti,ptj) < threshDistance / 5:
+                                mark.append(i)
+                                break
+                            j += 1
+                        i += 1
+                    i = len(mark) - 1
+                    while i >= 0:
+                        del self.skelepts[mark[i]]
+                        i -= 1
+                    passes = False
+                    n = len(self.skelepts)
+                    if n > 1:
+                        passes = True
+                    if self.dim == 2 and passes:
                         #Fits Line y = ax + b
                         sx = 0
                         sx2 = 0
@@ -1468,7 +1491,7 @@ class SplitTree:
                             intercepts.append([c0x,self.c[0][1]])
                         if c1x > self.c[1][0] and c1x < self.c[0][0]:
                             intercepts.append([c1x,self.c[1][1]])
-                        if len(intercepts) == 3:
+                        if len(intercepts) == 3 or len(intercepts) == 0:
                             print('error on int')
                         #We want to adjust intercepts whenever they shoot past points
                         close = []
@@ -1497,8 +1520,12 @@ class SplitTree:
                     
                     #now we have a 2D or 3D(3 2D's) approx
                     #we will want to build some return data, such as a depth ping, intercepts, 
-                    rdata = [self.intercepts]
-                    lowest = self.dep
+                    if passes:
+                        rdata = [self.intercepts]
+                        lowest = self.dep
+                    else:
+                        rdata = [self.skelepts[0]]
+                        lowest = self.dep
                 elif n == 1:
                     #If not enoguh points
                     rdata = [self.skelepts[0]]#When we cant make any approximation, we only have one point, we can test this with other information
@@ -1511,16 +1538,34 @@ class SplitTree:
             if self.dep != 0:
                 return rdata,lowest,outcode
             else:
+                #Final Step
                 i = 0
                 retpts = []
                 retr = []
-                while i < len(retpoints):
-                    retpts.append(retpoints[i].getPoint())
-                    retr.append(retpoints[i].getRad())
-                    i += 1
+                for leaf in self.leafs:
+                    #We want to go and collect all the points which exist now.
+                    #Invoking 4 to get there
+                    rp = leaf.purge(4,threshDistance=threshDistance)
+                    for p in rp:#Adds in all the points and decomposes them into what we want
+                        retpts.append(p.getPoint())
+                        retr.append(p.getRad())
                 print('finishing')
-                self.Draw(self.dep)
                 return retpts,retr
+        elif incode == 4:#4 used for quick add
+            retdata = []
+            if self.state:
+                for leaf in self.leafs:
+                    rd = leaf.purge(4,threshDistance=threshDistance)
+                    for r in rd:
+                        retdata.append(r)
+            else:
+                if len(self.skelepts) > 0:
+                    if isinstance(self.skelepts[0],list):
+                        retdata.append(skelepts[0][0])
+                    else:
+                        for p in self.skelepts:
+                            retdata.append(p)
+            return retdata
         elif incode == 1:
             if self.dep == indata[0]:#top layer does more
                 #Full Touches
@@ -1593,54 +1638,28 @@ class SplitTree:
             if self.dep == indata[0]:
                 indata.append(self.c)
             i = 0
-            pts = []
-            corners = []
-            paths = []
             for sid in self.stackid:
                 if sid == 1:
                     lts = len(self.leafs[i].touchstack)
                     if self.dim == 2:
-                        if lts < 2:
-                            if indata[0] == 0 or (self.dep) - indata[0] > 1:#ensure scope
-                                pts.append(self.stack[i])
-                                corners.append(self.leafs[i].c)
-                                paths.append([i])
+                        if lts == 0:
+                            if indata[0] == 0 or (self.dep) - indata[0] > 2:#ensure scope
+                                self.stack[i] = 0
+                                self.stackid[i] = 0
+                                self.leafs[i].skelepts = []
                 elif sid == 2:
                     lts = len(self.leafs[i].touchstack)
                     if self.dim == 2:
-                        if lts < 2:
-                            if indata[0] == 0 or (self.dep) - indata[0] > 1:#ensure scope
-                                pts.append(self.stack[i])
-                                corners.append(self.leafs[i].c)
-                                paths.append([i])
+                        if lts == 0:
+                            if indata[0] == 0 or (self.dep) - indata[0] > 2:#ensure scope
+                                self.stack[i] = 0
+                                self.stackid[i] = 0
+                                self.leafs[i].skelepts = []
                 elif sid == 3:#Go Further
-                    rethelp = self.leafs[i].purge(2,indata,threshDistance=threshDistance)
-                    if isinstance(rethelp,list):
-                        for pt in rethelp[0]:
-                            pts.append(pt)
-                        for cor in rethelp[1]:
-                            corners.append(cor)
-                        for p in rethelp[2]:
-                            paths.append([i,p])
+                    self.leafs[i].purge(2,indata,threshDistance=threshDistance)
                 i += 1
-            if self.dep == indata[0]: 
-                #We collected all the untouched, so now we can determine if allowable to the system, as long as its not along the border of the scope(given dep != 0)
-                if len(pts) > 0:
-                    i = 0
-                    while i < len(pts):
-                        if self.dim == 2:
-                            targetpt = [(corners[i][0][0] + corners[i][1][0]) / 2,(corners[i][0][1] + corners[i][1][1]) / 2]
-                        else:
-                            targetpt = [(corners[i][0][0] + corners[i][1][0]) / 2,(corners[i][0][1] + corners[i][1][1]) / 2,(corners[i][0][2] + corners[i][1][2]) / 2]
-                        potentials,tpaths = self.deepDive(self.dep,targetpt,corners[i],threshDistance=threshDistance)
-                        if len(potentials) > 0:
-                            #If There are potentials, then we will give the target information to the cell to make connections
-                            #We build the data we want to send, aka depth, goto path, current points, potential connections, and potential paths
-                            senddata = [self.dep,paths[i],potentials,tpaths]
-                            self.purge(3,senddata,threshDistance=threshDistance)
-                        i += 1
-            elif len(pts) > 0:
-                return [pts,corners,paths]
+        
+####UNUSED####
         elif incode == 3:
             #Now we have our data, so lets go to the scope we want
             if len(indata[1]) > 1:
@@ -1735,11 +1754,9 @@ class SplitTree:
                                 tpt = []
                                 for p in tp:
                                     tpt.append(p.getPoint())
-                                    if self.dim == 2:
                                         #We have **maybe 50% right maybe none of it and we need to rotate
 
                                     i += 1
-                            else:
                                 #We will try rotation to check points.
                         else:#We already have touches, so test points for linearity
                             tp = self.leafs[indata[1][0]].skelepts
@@ -1845,6 +1862,10 @@ class SplitTree:
                 return results, paths
             else:
                 return results,paths
+####UNUSED####
+
+
+
     def getTouch(self,threshDistance,indepth):
         #get touch is implied that there has already been a stack build
         touchid = []

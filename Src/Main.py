@@ -56,9 +56,9 @@ if __name__ == '__main__':
     
     plt.rcParams['figure.dpi'] = 300
     if len(link) <= 1: 
-        # link = 'interface_points_020000.dat'
+        link = 'interface_points_020000.dat'
         # link = 'spiral.dat' 
-        link = 'vof_points_norm_0650.dat'
+        # link = 'vof_points_norm_0650.dat'
         # link = 't06.dat'
         # link = 'vof_points_norms.dat'
         # link = 'bagdrop.dat'
@@ -66,15 +66,17 @@ if __name__ == '__main__':
     if len(savefile) <= 1:
         savefile = 'SkeleSave.dat'
     link = source + r'SkeleData/Input/' + link
+    psavefile = source + r'SkeleData/Output/PrePurge.dat'
     savefile = source + r'SkeleData/Output/' + savefile
     recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
+    
     net = SkeleNet(link)
-    #net.LoadSave(recover)
-    net.solve(False,mode,noderequest)
+    net.solve(True,mode,noderequest)
+    net.savedat(1,psavefile)
     net.purge()
     net.savedat(1,savefile)
-    #net.plot([])
-    
+    net.plot([1]) 
+
     et = time.time()
     tt = et - st
     print('Total time to Complete: {} Minuites {} Seconds'.format(tt // 60, tt % 60))

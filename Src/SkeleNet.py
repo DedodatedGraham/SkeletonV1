@@ -110,8 +110,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 else:
                     centerp.append([float(point[0]-norm[0]*tempr[0]),float(point[1]-norm[1]*tempr[0]),float(point[2]-norm[2]*tempr[0])])
                 testp.append(point.copy())
-            else:   
-                #Refinement of skeleton point
+            else: 
+            #Refinement of skeleton point
                 inputdat = []
                 inputdat.append([])
                 inputdat[0].append(centerp[len(centerp) - 1])
@@ -129,13 +129,13 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                     acp.append([])
                     atp.append([])
                     arad.append([])
-                    acp[index].append(centerp[0])
-                    atp[index].append(testp[0])
-                    arad[index].append(tempr[0])
+                    acp[index].append(centerp[len(centerp) - 1])
+                    atp[index].append(testp[len(testp) - 1])
+                    arad[index].append(tempr[len(tempr) - 1])
                 else:
-                    acp[index].append(centerp[leng])
-                    atp[index].append(testp[leng])
-                    arad[index].append(tempr[leng])
+                    acp[index].append(centerp[len(centerp) - 1])
+                    atp[index].append(testp[len(testp) - 1])
+                    arad[index].append(tempr[len(tempr) - 1])
                     
             #Checking for completeion
                      
@@ -820,40 +820,10 @@ class SkeleNet:
     def purge(self):
         i = 0
         while i < len(self.SkelePoints):
-            maxx =-10000
-            minx = 10000
-            maxy =-10000
-            miny = 10000
-            maxz =-10000
-            minz = 10000
-            tcase = len(self.SkelePoints[0][0]) == 3
-            j = 0
-            while j < len(self.SkelePoints[i]):
-                if self.SkelePoints[i][j][0] > maxx:
-                    maxx = self.SkelePoints[i][j][0] 
-                if self.SkelePoints[i][j][0] < minx:
-                    minx = self.SkelePoints[i][j][0] 
-                if self.SkelePoints[i][j][1] > maxy:
-                    maxy = self.SkelePoints[i][j][1] 
-                if self.SkelePoints[i][j][1] < miny:
-                    miny = self.SkelePoints[i][j][1]
-                if tcase:
-                    if self.SkelePoints[i][j][2] > maxz:
-                        maxz = self.SkelePoints[i][j][2] 
-                    if self.SkelePoints[i][j][2] < minz:
-                        minz = self.SkelePoints[i][j][2]
-                j += 1
-            maxd = max((maxx-minx),(maxy-miny))
-            if tcase:
-                maxd = max(maxd,(maxz-minz))
-                maxd = 1.1 * maxd
-                purgetree = SplitTree(self.SkelePoints[i],[(maxx-minx) / 2,(maxy - miny) / 2,(maxz - minz) / 2],maxd,inrad=self.SkeleRad[i])
-            else:
-                maxd = 1.1 * maxd
-                purgetree = SplitTree(self.SkelePoints[i],[(maxx-minx) / 2,(maxy - miny) / 2],maxd,inrad=self.SkeleRad[i])
-            newpts,newr = purgetree.purge()
-            self.SkelePoints[i] = newpts
-            self.SkeleRad[i] = newr
+            purgetree = SplitTree(self.SkelePoints[i],inrad=self.SkeleRad[i])
+            newpts,newrad = purgetree.purge(threshDistance=self.threshDistance[i])
+            self.SkelePoints[i] = newpts 
+            self.SkeleRad[i] = newrad
             i += 1
     def order(self):
         #This function will go through all of the points 
@@ -1636,7 +1606,7 @@ class SkeleNet:
                         tx.append(self.IntPoints[i][0])
                         ty.append(self.IntPoints[i][1])
                         i += 1
-                    plt.scatter(tx,ty,5,color='blue')
+                    plt.scatter(tx,ty,5,color='black')
                     i = 0
                     #theta = np.linspace(0,2*np.pi)
                     while i < len(self.SkelePoints):
@@ -1650,11 +1620,12 @@ class SkeleNet:
                             tr.append(self.SkeleRad[i][j])
                             j += 1
                         i += 1
-                        plt.scatter(tx,ty,5,color='orange')
-                        plt.savefig('OutputNoRad.png')
+                        p = plt.scatter(tx,ty,5,c=tr,cmap='rainbow')
+                        plt.colorbar(p)
+                        plt.savefig(r'../Plot/OutputNoRad.png')
                         j = 0
                         while j < len(tx):
-                            plt.plot(tx[j] + np.cos(theta) * tr[j],ty[j] + np.sin(theta) * tr[j],5,color='green')
+                            plt.plot(tx[j] + np.cos(theta) * tr[j],ty[j] + np.sin(theta) * tr[j],5)
                             j += 1
                 else:
                     ax = plt.axes(projection='3d')
@@ -1683,13 +1654,13 @@ class SkeleNet:
                             j += 1
                         ax.scatter3D(tx,ty,tz,5,c=tr,cmap='winter')
                         i += 1
-                plt.savefig('Output.png')
+                plt.savefig(r'../Plot/Output.png')
             #Mode2 is for Animating the process of solving
             elif mode[index] == 2:
                 path = os.getcwd()
                 i = 0
                 case = True
-                path = path + "/AnimationData/"
+                path = path + "/../AnimationData/"
                 while case:
                     tpath = path + f'{i:04d}' + '/'
                     if not(os.path.isdir(tpath)):
