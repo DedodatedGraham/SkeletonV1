@@ -11,26 +11,27 @@ import matplotlib.pyplot as plt
 
 xdat = []
 ydat = []
+zdat = []
 rdat = []
 indat = []
 
-for i in range(4000):
-    #Creates 300 pts along sinwave
-    if i < 3000:
-        xdat.append((i*2*np.pi)/3000)
-        ydat.append(np.cos(xdat[i]))
-        rdat.append(i*0.001)
-    else:
-        xdat.append(((i-3000)/1000) + 1 )
-        ydat.append(xdat[i]*((i-3000)/1000))
-        rdat.append(i*0.001)
-
-    #Adds Slight Randomness
-    if i % 10 == 0:
-        xdat[i] += rand.uniform(-0.5,0.5) 
-        ydat[i] += rand.uniform(-0.5,0.5)     
-        rdat[i] += rand.uniform(-0.5,0)
-    indat.append([xdat[i],ydat[i]])
+#for i in range(4000):
+#    #Creates 300 pts along sinwave
+#    if i < 3000:
+#        xdat.append((i*2*np.pi)/3000)
+#        ydat.append(np.cos(xdat[i]))
+#        rdat.append(i*0.001)
+#    else:
+#        xdat.append(((i-3000)/1000) + 1 )
+#        ydat.append(xdat[i]*((i-3000)/1000))
+#        rdat.append(i*0.001)
+#
+#    #Adds Slight Randomness
+#    if i % 10 == 0:
+#        xdat[i] += rand.uniform(-0.5,0.5) 
+#        ydat[i] += rand.uniform(-0.5,0.5)     
+#        rdat[i] += rand.uniform(-0.5,0)
+#    indat.append([xdat[i],ydat[i]])
 
 a = SplitTree(indat,inrad = rdat)
 plt.scatter(xdat,ydat,s=5)

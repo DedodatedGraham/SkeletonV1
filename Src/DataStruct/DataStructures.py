@@ -1549,7 +1549,7 @@ class SplitTree:
                     for p in rp:#Adds in all the points and decomposes them into what we want
                         retpts.append(p.getPoint())
                         retr.append(p.getRad())
-                print('finishing')
+                self.Draw(self.dep)
                 return retpts,retr
         elif incode == 4:#4 used for quick add
             retdata = []
