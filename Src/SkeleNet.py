@@ -194,8 +194,8 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 case = True
             #HERE we check if its stuck but the vector could be wrong. 
             if i > 30 and not(case):
-                SkelePoints.append()
-                SkeleRad.append()
+                #SkelePoints.append()
+                #SkeleRad.append()
                 case = True
             ###OLD LOGIC
 
@@ -406,26 +406,27 @@ def animation(data:list):
         j = 0
         while j < len(acp[i]):
             plt.clf()
+            plt.rcParams['figure.dpi'] = 300
             plt.xlim(data[6][1],data[6][0])
             plt.ylim(data[6][3],data[6][2])
 
             # if dim == 3:
                 # plt.zlim(zmin,zmax)
             #print(i+1 ,'/' , len(acp), ' ', j+1 , '/', len(acp[i]))
-            plt.scatter(tx,ty,5,color='green')
+            plt.scatter(tx,ty,2,color='black',zorder=1)
             if len(sxx) > 0:
                 #print('plotted')
-                plt.scatter(sxx,syy,5,color='red')
+                plt.scatter(sxx,syy,2,color='red',zorder=-1)
             if len(sx) > 0:
-                plt.scatter(sx,sy,5,color='orange')
-            plt.plot([acp[i][j][0],tpoints[i][0]],[acp[i][j][1],tpoints[i][1]])
-            plt.plot([atp[i][j][0],tpoints[i][0]],[atp[i][j][1],tpoints[i][1]])
-            plt.plot(acp[i][j][0] + np.cos(theta) * arad[i][j],acp[i][j][1] + np.sin(theta) * arad[i][j],5)
-            plt.scatter(acp[i][j][0],acp[i][j][1],5,color='purple')
-            plt.scatter(atp[i][j][0],atp[i][j][1],5,color='black')
-            plt.scatter(acrossp[i][0],acrossp[i][1],5,color='yellow')
-            plt.scatter(tpoints[i][0],tpoints[i][1],5,color='blue')
-            plt.title('{},radius : {}, distance : {}'.format(st+i,arad[i][j],getDistance(tpoints[i],atp[i][j])))
+                plt.scatter(sx,sy,2,color='orange',zorder=-1)
+            plt.plot([acp[i][j][0],tpoints[i][0]],[acp[i][j][1],tpoints[i][1]],2,color='blue',zorder=0)
+            plt.plot([atp[i][j][0],tpoints[i][0]],[atp[i][j][1],tpoints[i][1]],2,color='green',zorder=0)
+            plt.plot(acp[i][j][0] + np.cos(theta) * arad[i][j],acp[i][j][1] + np.sin(theta) * arad[i][j],2,color='dimgray',zorder=0)
+            plt.scatter(acp[i][j][0],acp[i][j][1],2,color='green',zorder=1)
+            plt.scatter(atp[i][j][0],atp[i][j][1],2,color='lime',zorder=1)
+            plt.scatter(acrossp[i][0],acrossp[i][1],2,color='yellow',zorder=1)
+            plt.scatter(tpoints[i][0],tpoints[i][1],2,color='blue',zorder=1)
+            #plt.title('{},radius : {}, distance : {}'.format(st+i,arad[i][j],getDistance(tpoints[i],atp[i][j])))
             plt.savefig(path + 'fig{:05d}.png'.format(svnum))
             svnum += 1
             j += 1
@@ -1486,6 +1487,7 @@ class SkeleNet:
 
     ####ImageProcessing
     def plot(self,mode : list = [],*,norm = True,tag = 'None',start : int = 0,stop : int = 9999):
+        plt.rcParams['figure.dpi'] = 300
         sst = time.time()
         fig = plt.figure()
         ax = fig.add_subplot(111)
@@ -1596,6 +1598,7 @@ class SkeleNet:
                 plt.clf()
                 plt.xlim(xmin,xmax)
                 plt.ylim(ymin,ymax)
+                plt.rcParams['figure.dpi'] = 300
                 #if self.dim == 3:
                     #plt.zlim(zmin,zmax)
                 if self.dim == 2:
@@ -1606,7 +1609,7 @@ class SkeleNet:
                         tx.append(self.IntPoints[i][0])
                         ty.append(self.IntPoints[i][1])
                         i += 1
-                    plt.scatter(tx,ty,5,color='black')
+                    plt.scatter(tx,ty,2,color='black')
                     i = 0
                     #theta = np.linspace(0,2*np.pi)
                     while i < len(self.SkelePoints):
@@ -1620,13 +1623,10 @@ class SkeleNet:
                             tr.append(self.SkeleRad[i][j])
                             j += 1
                         i += 1
-                        p = plt.scatter(tx,ty,5,c=tr,cmap='rainbow')
+                        p = plt.scatter(tx,ty,2,c=tr,cmap='rainbow')
                         plt.colorbar(p)
                         plt.savefig(r'../Plot/OutputNoRad.png')
-                        j = 0
-                        while j < len(tx):
-                            plt.plot(tx[j] + np.cos(theta) * tr[j],ty[j] + np.sin(theta) * tr[j],5)
-                            j += 1
+                        plt.plot(tx[100] + np.cos(theta) * tr[100],ty[100] + np.sin(theta) * tr[100],2,color='red')
                 else:
                     ax = plt.axes(projection='3d')
                     i = 0
