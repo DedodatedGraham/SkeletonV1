@@ -1515,11 +1515,48 @@ class SplitTree:
                             lpoint = closept[ind]
                             intercepts[ind] = [(lpoint[0]+intercepts[ind][0])/2,(lpoint[1]+intercepts[ind][1])/2]
                         self.intercepts = intercepts
-                    #else:
-                        #Fits 3 projects
-                    
-                    #now we have a 2D or 3D(3 2D's) approx
-                    #we will want to build some return data, such as a depth ping, intercepts, 
+                    else:
+                        #3D's are alittle bit more tricky, as now we have planes Our Solution is to fit a linear plane
+                        #We can then find the equations/ directions it crosses in, and we can represent those intercepts and compare to others
+                        sx = 0
+                        sx2 = 0
+                        sy = 0
+                        sxy = 0
+                        sy2 = 0
+                        sxz = 0
+                        syz = 0
+                        sz = 0
+                        for pt in self.skelepts:
+                            pt = pt.getPoint()
+                            sx2 += pt[0]*pt[0]
+                            sxy += pt[0]*pt[1]
+                            sy2 += pt[1]*pt[1]
+                            sxz += pt[0]*pt[2]
+                            syz += pt[1]*pt[2]
+                        #Now we fit, Our result will be z = Ax + By + C
+                        self.fit = []
+                        self.fit.append(syz * sxy - sxz * sy2)#A
+                        self.fit.append(sxy * sxz - sx2 * syz)#B
+                        self.fit.append(sx2 * sy2 - sxy * sxy)#C
+                        #Next We Find the Intercepts Going through each Consistent Plane
+                        c0z = self.fit[0]*self.c[0][0] + self.fit[1]*self.c[0][1] + self.fit[2]#z value taken at xy of c0
+                        c0y = ((self.c[0][2] - self.fit[2])-self.fit[0]*self.c[0][0])/self.fit[1]#y val taken at zx of c0
+                        c0x = ((self.c[0][2] - self.fit[2])-self.fit[1]*self.c[0][1])/self.fit[0]#x val taken at zy of c0
+                        c1z = self.fit[0]*self.c[1][0] + self.fit[1]*self.c[1][1] + self.fit[2]#z value taken at xy of c1
+                        c1y = ((self.c[1][2] - self.fit[2])-self.fit[0]*self.c[1][0])/self.fit[1]#y val taken at zx of c1
+                        c1x = ((self.c[1][2] - self.fit[2])-self.fit[1]*self.c[1][1])/self.fit[0]#x val taken at zy of c1
+                        if c0y > self.c[1][1] and c0y < self.c[0][1]:
+                            intercepts.append([self.c[0][0],c0y])
+                        if c1y > self.c[1][1] and c1y < self.c[0][1]:
+                            intercepts.append([self.c[1][0],c1y])
+                        if c0x > self.c[1][0] and c0x < self.c[0][0]:
+                            intercepts.append([c0x,self.c[0][1]])
+                        if c1x > self.c[1][0] and c1x < self.c[0][0]:
+                            intercepts.append([c1x,self.c[1][1]])
+                        if len(intercepts) == 3 or len(intercepts) == 0:
+                            print('error on int')
+                    #now we have a 2D or 3D approx
+                    #we will want to build some return data, such as a depth ping, intercepts,
                     if passes:
                         rdata = [self.intercepts]
                         lowest = self.dep

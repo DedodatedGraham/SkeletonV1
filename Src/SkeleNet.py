@@ -526,7 +526,6 @@ class SkeleNet:
             self.SkeleRad.append([])
             i = 0
             for row in data:
-                print('loading...{}'.format(i))
                 size = len(row)
                 if str(row[0]) == 'x':
                     a = 1
@@ -539,6 +538,17 @@ class SkeleNet:
                     self.SkelePoints[0].append([float(row[0]),float(row[1]),float(row[2])])
                     self.SkeleRad[0].append(float(row[3]))
                 i += 1
+        #We need a distance to reboot with
+        threshtree = kdTree(self.IntPoints)
+        tot = 0
+        tpt = []
+        j = 0
+        self.threshDistance = []
+        while j < min(50,len(self.IntPoints)):
+            tpt = self.IntPoints[randint(0, len(self.IntPoints) - 1)]
+            tot += getDistance(tpt,threshtree.getNearR([tpt,[],False]))
+            j += 1
+        self.threshDistance.append(tot / len(self.IntPoints)) 
 ###MAIN FUNCTIONS
     
 
@@ -821,6 +831,7 @@ class SkeleNet:
     def purge(self):
         i = 0
         while i < len(self.SkelePoints):
+            print(self.threshDistance)
             purgetree = SplitTree(self.SkelePoints[i],inrad=self.SkeleRad[i])
             newpts,newrad = purgetree.purge(threshDistance=self.threshDistance[i])
             self.SkelePoints[i] = newpts 
