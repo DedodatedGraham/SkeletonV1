@@ -1528,33 +1528,136 @@ class SplitTree:
                         sz = 0
                         for pt in self.skelepts:
                             pt = pt.getPoint()
+                            sx += pt[0]
+                            sy += pt[1]
+                            sz += pt[2]
                             sx2 += pt[0]*pt[0]
                             sxy += pt[0]*pt[1]
                             sy2 += pt[1]*pt[1]
                             sxz += pt[0]*pt[2]
                             syz += pt[1]*pt[2]
                         #Now we fit, Our result will be z = Ax + By + C
-                        self.fit = []
-                        self.fit.append(syz * sxy - sxz * sy2)#A
-                        self.fit.append(sxy * sxz - sx2 * syz)#B
-                        self.fit.append(sx2 * sy2 - sxy * sxy)#C
-                        #Next We Find the Intercepts Going through each Consistent Plane
-                        c0z = self.fit[0]*self.c[0][0] + self.fit[1]*self.c[0][1] + self.fit[2]#z value taken at xy of c0
-                        c0y = ((self.c[0][2] - self.fit[2])-self.fit[0]*self.c[0][0])/self.fit[1]#y val taken at zx of c0
-                        c0x = ((self.c[0][2] - self.fit[2])-self.fit[1]*self.c[0][1])/self.fit[0]#x val taken at zy of c0
-                        c1z = self.fit[0]*self.c[1][0] + self.fit[1]*self.c[1][1] + self.fit[2]#z value taken at xy of c1
-                        c1y = ((self.c[1][2] - self.fit[2])-self.fit[0]*self.c[1][0])/self.fit[1]#y val taken at zx of c1
-                        c1x = ((self.c[1][2] - self.fit[2])-self.fit[1]*self.c[1][1])/self.fit[0]#x val taken at zy of c1
-                        if c0y > self.c[1][1] and c0y < self.c[0][1]:
-                            intercepts.append([self.c[0][0],c0y])
-                        if c1y > self.c[1][1] and c1y < self.c[0][1]:
-                            intercepts.append([self.c[1][0],c1y])
-                        if c0x > self.c[1][0] and c0x < self.c[0][0]:
-                            intercepts.append([c0x,self.c[0][1]])
-                        if c1x > self.c[1][0] and c1x < self.c[0][0]:
-                            intercepts.append([c1x,self.c[1][1]])
-                        if len(intercepts) == 3 or len(intercepts) == 0:
-                            print('error on int')
+                        a = np.array([[sx2,sxy,sx],[sxy,sy2,sy],[sx,sy,n]])
+                        b = np.array([sxz,syz,sz])
+                        print()
+                        print('matrix',a,b)
+                        self.fit = np.linalg.lstsq(a,b)[0]
+                        print('least',self.fit)
+                        self.fit = self.fit.tolist()
+                        #Next We Find the Intercepts Going through side of the bounding box
+                        #We hold these intercepts in the form of a line equation
+                        #IE y = Ax + B where y and x are the planes consistent coordinates
+                        #And we will also mark the end points 
+                        #The expression will be [point1,point2,[A,B]]#We find the plane we are looking by finding conisistence in point1 and point 2
+                        #There will be six tests
+                        intercepts = []
+
+                        ##YZ plane Approx at x of c0 and c1
+                        ax0 = self.fit[0] * self.c[0][0] + self.fit[2]
+                        ax1 = self.fit[0] * self.c[1][0] + self.fit[2]
+                        #Gets our C* = ax + c value as will remain const
+                        # caluclated z = By + C*
+                        fitx = []
+                        fitx.append([self.fit[1],ax0,self.c[0][0]])
+                        fitx.append([self.fit[1],ax1,self.c[1][0]])
+                        #Then we find each sectors intercepts
+                        print('corners',self.c)
+                        print('plane',self.fit)
+                        for fit in fitx:
+                            tcy0 = (self.c[0][2] - fit[1])/fit[0] #yvalue using c0z
+                            tcy1 = (self.c[1][2] - fit[1])/fit[0]
+                            tcz0 = fit[0]*self.c[0][1] + fit[1]#zvalue using c0y
+                            tcz1 = fit[0]*self.c[1][1] + fit[1]
+                            #We are positive nothing falls completely out of bounds now, so it must cross the plane
+                            print('approx',fit)
+                            print('fits',tcy0,tcy1,tcz0,tcz1)
+                            print()
+                            tpt = []
+                            if tcy0 < self.c[0][1] and tcy0 > self.c[1][1]:#Crosses one one side
+                                #Next we find other point
+                                tpt.append([fit[2],tcy0,self.c[0][2]])
+                            if tcy1 < self.c[0][1] and tcy1 > self.c[1][1]:#Crosses other
+                                tpt.append([fit[2],tcy1,self.c[1][2]])
+                            if tcz0 < self.c[0][2] and tcz0 > self.c[1][2]:#Crosses one one side
+                                #Next we find other point
+                                tpt.append([fit[2],self.c[0][1],tcz0])
+                            if tcz1 < self.c[0][2] and tcz1 > self.c[1][2]:#Crosses other
+                                tpt.append([fit[2],self.c[1][1],tcz1])
+                            if len(tpt) > 2 or len(tpt) == 1:
+                                print('error on int')
+                            elif len(tpt) != 0:
+                                #If we make it here we want to take the points
+                                intercepts.append([tpt[0],tpt[1],[fit[0],fit[1]],0])
+                        #XZ plane Approx at y of c0 and c1
+                        ay0 = self.fit[1] * self.c[0][1] + self.fit[2]
+                        ay1 = self.fit[1] * self.c[1][1] + self.fit[2]
+                        fity = []
+                        fity.append([self.fit[0],ay0,self.c[0][1]])
+                        fity.append([self.fit[0],ay1,self.c[1][1]])
+                        #Then we find each sectors intercepts
+                        for fit in fity:
+                            tcx0 = (self.c[0][2] - fit[1])/fit[0] #xvalue using c0z
+                            tcx1 = (self.c[1][2] - fit[1])/fit[0]
+                            tcz0 = fit[0]*self.c[0][0] + fit[1]#zvalue using c0x
+                            tcz1 = fit[0]*self.c[1][0] + fit[1]
+                            #We are positive nothing falls completely out of bounds now, so it must cross the plane
+                            print('approx',fit)
+                            print('fits',tcx0,tcx1,tcz0,tcz1)
+                            print()
+                            tpt = []
+                            if tcx0 < self.c[0][0] and tcx0 > self.c[1][0]:#Crosses one one side
+                                #Next we find other point
+                                tpt.append([tcx0,fit[2],self.c[0][2]])
+                            if tcx1 < self.c[0][0] and tcx1 > self.c[1][0]:#Crosses other
+                                tpt.append([tcx1,fit[2],self.c[1][2]])
+                            if tcz0 < self.c[0][2] and tcz0 > self.c[1][2]:#Crosses one one side
+                                #Next we find other point
+                                tpt.append([self.c[0][1],fit[2],tcz0])
+                            if tcz1 < self.c[0][2] and tcz1 > self.c[1][2]:#Crosses other
+                                tpt.append([self.c[1][1],fit[2],tcz1])
+                            if len(tpt) > 2 or len(tpt) == 1:
+                                print('error on int')
+                            elif len(tpt) != 0:
+                                #If we make it here we want to take the points
+                                intercepts.append([tpt[0],tpt[1],[fit[0],fit[1]],1])
+                        #XY plane Approx at z of c0 and c1
+                        az0 = (self.c[0][2] - self.fit[2]) / self.fit[1]
+                        az1 = (self.c[1][2] - self.fit[2]) / self.fit[1]
+                        #Gets our C* = (z - c)/b value as will remain const
+                        #B* = -a/b
+                        # caluclated y = B*x + C*
+                        fitz = []
+                        fitz.append([-(self.fit[0]/self.fit[1]),az0,self.c[0][2]])
+                        fitz.append([-(self.fit[0]/self.fit[1]),az1,self.c[1][2]])
+                        #Then we find each sectors intercepts
+                        for fit in fitz:
+                            tcx0 = (self.c[0][1] - fit[1])/fit[0] #xvalue using c0y
+                            tcx1 = (self.c[1][1] - fit[1])/fit[0]
+                            tcy0 = fit[0]*self.c[0][0] + fit[1] #yvalue using c0x
+                            tcy1 = fit[0]*self.c[1][0] + fit[1]
+                            #We are positive nothing falls completely out of bounds now, so it must cross the plane
+                            print('approx',fit)
+                            print('fits',tcx0,tcx1,tcy0,tcy1)
+                            print()
+                            tpt = []
+                            if tcx0 < self.c[0][0] and tcx0 > self.c[1][0]:#Crosses one one side
+                                #Next we find other point
+                                tpt.append([tcx0,self.c[0][1],fit[2]])
+                            if tcx1 < self.c[0][0] and tcx1 > self.c[1][0]:#Crosses other
+                                tpt.append([tcx1,self.c[1][1],fit[2]])
+                            if tcy0 < self.c[0][1] and tcy0 > self.c[1][1]:#Crosses one one side
+                                #Next we find other point
+                                tpt.append([self.c[0][1],tcy0,fit[2]])
+                            if tcy1 < self.c[0][1] and tcy1 > self.c[1][1]:#Crosses other
+                                tpt.append([self.c[1][1],tcy1,fit[2]])
+                            if len(tpt) > 2 or len(tpt) == 1:
+                                print('error on int',len(tpt))
+                            elif len(tpt) != 0:
+                                #If we make it here we want to take the points
+                                intercepts.append([tpt[0],tpt[1],[fit[0],fit[1]],2])
+                        self.intercepts = intercepts
+                        print('ints',self.intercepts)
+                        print()
                     #now we have a 2D or 3D approx
                     #we will want to build some return data, such as a depth ping, intercepts,
                     if passes:
@@ -1913,20 +2016,40 @@ class SplitTree:
             while i < len(self.stackid) - 1:
                 j = i + 1
                 if self.stack[i] != 0 and self.stack[i] != [] and isinstance(self.stack[i][0],float):
-                    self.stack[i] = [[self.stack[i][0],self.stack[i][1]]]
+                    if self.dim == 2:
+                        self.stack[i] = [[self.stack[i][0],self.stack[i][1]]]
+                    else:
+                        self.stack[i] = [[self.stack[i][0],self.stack[i][1],self.stack[i][2]]]
                 while j < len(self.stackid):
                     if self.stack[j] != 0 and self.stack[j] != []  and isinstance(self.stack[j][0],float):
-                        self.stack[j] = [[self.stack[j][0],self.stack[j][1]]]
+                        if self.dim == 2:
+                            self.stack[j] = [[self.stack[j][0],self.stack[j][1]]]
+                        else:
+                            self.stack[j] = [[self.stack[j][0],self.stack[j][1],self.stack[j][2]]]
                     idi = self.stackid[i]
                     idj = self.stackid[j]
+                    print(self.stack[i],self.dep)
+                    print(self.stack[j],self.dep)
                     if idi != 0 and idj != 0:
                         #prevents empty compare
                         if idi == 2 and idj == 2:
                             #2 approx
                             for int1 in self.stack[i]:
                                 for int2 in self.stack[j]:
-                                    if getDistance(int1,int2) < threshDistance:
-                                        touchid.append([i,j])
+                                    if self.dim == 2:
+                                        if getDistance(int1,int2) < threshDistance:
+                                            touchid.append([i,j])
+                                    else:
+                                        #we grab which planet it is on, 0 -> yz plane
+                                        p1 = int1[2]
+                                        p2 = int2[2]
+                                        if int1[3] == int2[3] and np.abs(p1[0]-p2[0]) < threshDistance and np.abs(p1[1]-p2[1]) < threshDistance:
+                                            touchid.append([i,j])
+                                        #We also add if a point is close to it :)
+                                        elif getDistance(int1[0],int2[0]) < threshDistance or getDistance(int1[0],int2[1]) < threshDistance:
+                                            touchid.append([i,j])
+                                        elif getDistance(int1[1],int2[0]) < threshDistance or getDistance(int1[1],int2[1]) < threshDistance:
+                                            touchid.append([i,j])
                         elif idi == 1 and idj == 1:
                             #1 comp
                             if getDistance(self.stack[i][0],self.stack[j][0]) < threshDistance:
@@ -1949,28 +2072,8 @@ class SplitTree:
                                                     touchid.append([i,j])
                                         else:
                                             for int2 in self.stack[j]:
-                                                if getDistance(self.stack[i][0],int2) < threshDistance:
-                                                    tcase = True
-                                                    for touches in self.leafs[i].touchstack:
-                                                        if touches == [-1,[j]]:
-                                                            tcase = False
-                                                            break
-                                                    if tcase:
-                                                        touchid.append([i,j])
-                                    else:
-                                        for int1 in self.stack[i]:
-                                            if idj == 1:
-                                                if getDistance(int1,self.stack[j][0]) < threshDistance:
-                                                    tcase = True
-                                                    for touches in self.leafs[i].touchstack:
-                                                        if touches == [-1,[j]]:
-                                                            tcase = False
-                                                            break
-                                                    if tcase:
-                                                        touchid.append([i,j])
-                                            else:
-                                                for int2 in self.stack[j]:
-                                                    if getDistance(int1,int2) < threshDistance:
+                                                if self.dim == 2:
+                                                    if getDistance(self.stack[i][0],int2) < threshDistance:
                                                         tcase = True
                                                         for touches in self.leafs[i].touchstack:
                                                             if touches == [-1,[j]]:
@@ -1978,6 +2081,74 @@ class SplitTree:
                                                                 break
                                                         if tcase:
                                                             touchid.append([i,j])
+                                                else:
+                                                    if getDistance(self.stack[i][0],int2[0]) < threshDistance or getDistance(self.stack[i][0],int2[1]) < threshDistance:
+                                                        tcase = True
+                                                        for touches in self.leafs[i].touchstack:
+                                                            if touches == [-1,[j]]:
+                                                                tcase = False
+                                                                break
+                                                        if tcase:
+                                                            touchid.append([i,j])
+                                    else:
+                                        for int1 in self.stack[i]:
+                                            if idj == 1:
+                                                if self.dim == 2:
+                                                    if getDistance(self.stack[i][0],int1) < threshDistance:
+                                                        tcase = True
+                                                        for touches in self.leafs[i].touchstack:
+                                                            if touches == [-1,[j]]:
+                                                                tcase = False
+                                                                break
+                                                        if tcase:
+                                                            touchid.append([i,j])
+                                                else:
+                                                    if getDistance(self.stack[j][0],int1[0]) < threshDistance or getDistance(self.stack[j][0],int1[1]) < threshDistance:
+                                                        tcase = True
+                                                        for touches in self.leafs[i].touchstack:
+                                                            if touches == [-1,[j]]:
+                                                                tcase = False
+                                                                break
+                                                        if tcase:
+                                                            touchid.append([i,j])
+                                            else:
+                                                for int2 in self.stack[j]:
+                                                    if self.dim == 2:
+                                                        if getDistance(int1,int2) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[i].touchstack:
+                                                                if touches == [-1,[j]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
+                                                    else:
+                                                        p1 = int1[2]
+                                                        p2 = int2[2]
+                                                        if int1[3] == int2[3] and np.abs(p1[0]-p2[0]) < threshDistance and np.abs(p1[1]-p2[1]) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[i].touchstack:
+                                                                if touches == [-1,[j]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
+                                                        elif getDistance(int1[0],int2[0]) < threshDistance or getDistance(int1[0],int2[1]) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[i].touchstack:
+                                                                if touches == [-1,[j]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
+                                                        elif getDistance(int1[1],int2[0]) < threshDistance or getDistance(int1[1],int2[1]) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[i].touchstack:
+                                                                if touches == [-1,[j]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
                                 else:
                                     typestack = len(self.stack[j])
                                     if typestack == 1:
@@ -1992,28 +2163,8 @@ class SplitTree:
                                                     touchid.append([i,j])
                                         else:
                                             for int2 in self.stack[i]:
-                                                if getDistance(self.stack[j][0],int2) < threshDistance:
-                                                    tcase = True
-                                                    for touches in self.leafs[j].touchstack:
-                                                        if touches == [-1,[i]]:
-                                                            tcase = False
-                                                            break
-                                                    if tcase:
-                                                        touchid.append([i,j])
-                                    else:
-                                        for int1 in self.stack[j]:
-                                            if idi == 1:
-                                                if getDistance(int1,self.stack[i][0]) < threshDistance:
-                                                    tcase = True
-                                                    for touches in self.leafs[j].touchstack:
-                                                        if touches == [-1,[i]]:
-                                                            tcase = False
-                                                            break
-                                                    if tcase:
-                                                        touchid.append([i,j])
-                                            else:
-                                                for int2 in self.stack[i]:
-                                                    if getDistance(int1,int2) < threshDistance:
+                                                if self.dim == 2:
+                                                    if getDistance(self.stack[j][0],int2) < threshDistance:
                                                         tcase = True
                                                         for touches in self.leafs[j].touchstack:
                                                             if touches == [-1,[i]]:
@@ -2021,16 +2172,93 @@ class SplitTree:
                                                                 break
                                                         if tcase:
                                                             touchid.append([i,j])
+                                                else:
+                                                    if getDistance(self.stack[j][0],int2[0]) < threshDistance or getDistance(self.stack[j][0],int2[1]) < threshDistance:
+                                                        tcase = True
+                                                        for touches in self.leafs[j].touchstack:
+                                                            if touches == [-1,[i]]:
+                                                                tcase = False
+                                                                break
+                                                        if tcase:
+                                                            touchid.append([i,j])
+                                    else:
+                                        for int1 in self.stack[j]:
+                                            if idi == 1:
+                                                if self.dim == 2:
+                                                    if getDistance(int1,self.stack[i][0]) < threshDistance:
+                                                        tcase = True
+                                                        for touches in self.leafs[j].touchstack:
+                                                            if touches == [-1,[i]]:
+                                                                tcase = False
+                                                                break
+                                                        if tcase:
+                                                            touchid.append([i,j])
+                                                else:
+                                                    if getDistance(self.stack[i][0],int1[0]) < threshDistance or getDistance(self.stack[i][0],int1[1]) < threshDistance:
+                                                        tcase = True
+                                                        for touches in self.leafs[j].touchstack:
+                                                            if touches == [-1,[i]]:
+                                                                tcase = False
+                                                                break
+                                                        if tcase:
+                                                            touchid.append([i,j])
+
+                                            else:
+                                                for int2 in self.stack[i]:
+                                                    if self.dim == 2:
+                                                        if getDistance(int1,int2) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[j].touchstack:
+                                                                if touches == [-1,[i]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
+                                                    else:
+                                                        p1 = int1[2]
+                                                        p2 = int2[2]
+                                                        if int1[3] == int2[3] and np.abs(p1[0]-p2[0]) < threshDistance and np.abs(p1[1]-p2[1]) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[j].touchstack:
+                                                                if touches == [-1,[i]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
+                                                        elif getDistance(int1[0],int2[0]) < threshDistance or getDistance(int1[0],int2[1]) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[j].touchstack:
+                                                                if touches == [-1,[i]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
+                                                        elif getDistance(int1[1],int2[0]) < threshDistance or getDistance(int1[1],int2[1]) < threshDistance:
+                                                            tcase = True
+                                                            for touches in self.leafs[j].touchstack:
+                                                                if touches == [-1,[i]]:
+                                                                    tcase = False
+                                                                    break
+                                                            if tcase:
+                                                                touchid.append([i,j])
                             elif idi == 1:
                                 #idi is the single
                                 for int2 in self.stack[j]:
-                                    if getDistance(self.stack[i][0],int2) < threshDistance:
-                                        touchid.append([i,j])
+                                    if self.dim == 2:
+                                        if getDistance(self.stack[i][0],int2) < threshDistance:
+                                            touchid.append([i,j])
+                                    else:
+                                        if getDistance(self.stack[i][0],int2[0]) < threshDistance or getDistance(self.stack[i][0],int2[1]) < threshDistance:
+                                            touchid.append([i,j])
                             elif idj == 1:
                                 #idj is single
                                 for int1 in self.stack[i]:
-                                    if getDistance(int1,self.stack[j][0]) < threshDistance:
-                                        touchid.append([i,j])
+                                    if self.dim == 2:
+                                        if getDistance(self.stack[j][0],int1) < threshDistance:
+                                            touchid.append([i,j])
+                                    else:
+                                        if getDistance(self.stack[j][0],int1[0]) < threshDistance or getDistance(self.stack[j][0],int1[1]) < threshDistance:
+                                            touchid.append([i,j])
                     j += 1
                 i += 1
             #Now we check for extrema
@@ -2039,17 +2267,34 @@ class SplitTree:
                 idi = self.stackid[i]
                 if idi == 1:
                     for corner in self.c:
-                        if abs(self.stack[i][0][0]-corner[0]) < threshDistance or abs(self.stack[i][0][1]-corner[1]) < threshDistance:
-                            extrema[0].append(self.stack[i])
-                            extrema[1].append(i)
-                            break
+                        if self.dim == 2:
+                            if abs(self.stack[i][0][0]-corner[0]) < threshDistance or abs(self.stack[i][0][1]-corner[1]) < threshDistance:
+                                extrema[0].append(self.stack[i])
+                                extrema[1].append(i)
+                                break
+                        else:
+                            if abs(self.stack[i][0][0]-corner[0]) < threshDistance or abs(self.stack[i][0][1]-corner[1]) < threshDistance or abs(self.stack[i][0][2]-corner[2]):
+                                extrema[0].append(self.stack[i])
+                                extrema[1].append(i)
+                                break
+
                 elif idi == 2:
                     for inter in self.stack[i]:
                         for corner in self.c:
-                            if abs(inter[0]-corner[0]) < threshDistance or abs(inter[1]-corner[1]) < threshDistance:
-                                extrema[0].append(inter)
-                                extrema[1].append(i)
-                                break
+                            if self.dim == 2:
+                                if abs(inter[0]-corner[0]) < threshDistance or abs(inter[1]-corner[1]) < threshDistance:
+                                    extrema[0].append(inter)
+                                    extrema[1].append(i)
+                                    break
+                            else:
+                                print(inter,corner)
+                                if abs(inter[0][0]-corner[0]) < threshDistance or abs(inter[0][1]-corner[1]) < threshDistance or abs(inter[0][2]-corner[2]):
+                                    extrema[0].append(self.stack[i][0])
+                                    extrema[1].append(i)
+                                if abs(inter[1][0]-corner[0]) < threshDistance or abs(inter[1][1]-corner[1]) < threshDistance or abs(inter[1][2]-corner[2]):
+                                    extrema[0].append(self.stack[i][1])
+                                    extrema[1].append(i)
+                                
                 i += 1
             return touchid,extrema
         else:
@@ -2088,19 +2333,32 @@ class SplitTree:
                     extrema[1].append(i)
                 elif self.stackid[i] == 2:
                     for inter in self.stack[i]:
-                        extrema[0].append(inter)
-                        extrema[1].append(i)
+                        if self.dim == 2:
+                            extrema[0].append(inter)
+                            extrema[1].append(i)
+                        else:
+                            extrema[0].append(inter[0])
+                            extrema[1].append(i)
+                            extrema[0].append(inter[1])
+                            extrema[1].append(i)
                 elif self.stackid[i] == -1:
                     if len(self.stack[i]) > 0:
                         if isinstance(self.stack[i][0],list):
                             for inter in self.stack[i]:
-                                if isinstance(inter,float):
-                                    print('error')
-                                extrema[0].append(inter)
-                                extrema[1].append(i)
-                        else:
-                            extrema[0].append(self.stack[i])
-                            extrema[1].append(i)
+                                if self.dim == 2:
+                                    if isinstance(inter,float):
+                                        print('error')
+                                    extrema[0].append(inter)
+                                    extrema[1].append(i)
+                                else:
+                                    if isinstance(inter[0],float):
+                                        print('error')
+                                    if isinstance(inter[1],float):
+                                        print('error')
+                                    extrema[0].append(inter[0])
+                                    extrema[1].append(i)
+                                    extrema[0].append(inter[1])
+                                    extrema[1].append(i)
                 i += 1
             i = 0
             e0 = extrema[0]
@@ -2126,9 +2384,14 @@ class SplitTree:
                 i = 0
                 while i < len(e0):
                     for corner in self.c:
-                        if abs(e0[i][0] - corner[0]) < threshDistance or abs(e0[i][1] - corner[1]) < threshDistance:
-                            te[0].append(e0[i])
-                            te[1].append(e1[i])
+                        if self.dim == 2:
+                            if abs(e0[i][0] - corner[0]) < threshDistance or abs(e0[i][1] - corner[1]) < threshDistance:
+                                te[0].append(e0[i])
+                                te[1].append(e1[i])
+                        else:
+                            if abs(e0[i][0] - corner[0]) < threshDistance or abs(e0[i][1] - corner[1]) < threshDistance or abs(e0[i][2] - corner[2]) < threshDistance:
+                                te[0].append(e0[i])
+                                te[1].append(e1[i])
                     i += 1
                 extrema = te
                 return touchid,extrema
