@@ -1401,9 +1401,9 @@ class SplitTree:
         score = []#Node of real layer
         rdata = []
         intercepts = []
-        print('depth:',self.dep,'code:',incode)
         #Main Logic
         if incode == 0:
+            print('depth:',self.dep)
             self.touchstack = []
             if self.state:
                 self.stackid = []#Stackid is the kind of data in each ordered leaf
