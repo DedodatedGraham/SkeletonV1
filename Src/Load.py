@@ -74,7 +74,7 @@ if __name__ == '__main__':
     net.LoadSave(recover)
     net.purge()
     net.savedat(1,savefile)
-    net.plot([1]) 
+    #net.plot([1]) 
 
     et = time.time()
     tt = et - st

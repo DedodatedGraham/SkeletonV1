@@ -1401,6 +1401,7 @@ class SplitTree:
         score = []#Node of real layer
         rdata = []
         intercepts = []
+        print('depth:',self.dep,'code:',incode)
         #Main Logic
         if incode == 0:
             self.touchstack = []
@@ -1515,7 +1516,7 @@ class SplitTree:
                             lpoint = closept[ind]
                             intercepts[ind] = [(lpoint[0]+intercepts[ind][0])/2,(lpoint[1]+intercepts[ind][1])/2]
                         self.intercepts = intercepts
-                    else:
+                    elif self.dim == 3 and passes:
                         #3D's are alittle bit more tricky, as now we have planes Our Solution is to fit a linear plane
                         #We can then find the equations/ directions it crosses in, and we can represent those intercepts and compare to others
                         sx = 0
@@ -1539,10 +1540,7 @@ class SplitTree:
                         #Now we fit, Our result will be z = Ax + By + C
                         a = np.array([[sx2,sxy,sx],[sxy,sy2,sy],[sx,sy,n]])
                         b = np.array([sxz,syz,sz])
-                        print()
-                        print('matrix',a,b)
                         self.fit = np.linalg.lstsq(a,b)[0]
-                        print('least',self.fit)
                         self.fit = self.fit.tolist()
                         #Next We Find the Intercepts Going through side of the bounding box
                         #We hold these intercepts in the form of a line equation
@@ -1561,17 +1559,12 @@ class SplitTree:
                         fitx.append([self.fit[1],ax0,self.c[0][0]])
                         fitx.append([self.fit[1],ax1,self.c[1][0]])
                         #Then we find each sectors intercepts
-                        print('corners',self.c)
-                        print('plane',self.fit)
                         for fit in fitx:
                             tcy0 = (self.c[0][2] - fit[1])/fit[0] #yvalue using c0z
                             tcy1 = (self.c[1][2] - fit[1])/fit[0]
                             tcz0 = fit[0]*self.c[0][1] + fit[1]#zvalue using c0y
                             tcz1 = fit[0]*self.c[1][1] + fit[1]
                             #We are positive nothing falls completely out of bounds now, so it must cross the plane
-                            print('approx',fit)
-                            print('fits',tcy0,tcy1,tcz0,tcz1)
-                            print()
                             tpt = []
                             if tcy0 < self.c[0][1] and tcy0 > self.c[1][1]:#Crosses one one side
                                 #Next we find other point
@@ -1601,9 +1594,6 @@ class SplitTree:
                             tcz0 = fit[0]*self.c[0][0] + fit[1]#zvalue using c0x
                             tcz1 = fit[0]*self.c[1][0] + fit[1]
                             #We are positive nothing falls completely out of bounds now, so it must cross the plane
-                            print('approx',fit)
-                            print('fits',tcx0,tcx1,tcz0,tcz1)
-                            print()
                             tpt = []
                             if tcx0 < self.c[0][0] and tcx0 > self.c[1][0]:#Crosses one one side
                                 #Next we find other point
@@ -1636,9 +1626,6 @@ class SplitTree:
                             tcy0 = fit[0]*self.c[0][0] + fit[1] #yvalue using c0x
                             tcy1 = fit[0]*self.c[1][0] + fit[1]
                             #We are positive nothing falls completely out of bounds now, so it must cross the plane
-                            print('approx',fit)
-                            print('fits',tcx0,tcx1,tcy0,tcy1)
-                            print()
                             tpt = []
                             if tcx0 < self.c[0][0] and tcx0 > self.c[1][0]:#Crosses one one side
                                 #Next we find other point
@@ -1656,8 +1643,6 @@ class SplitTree:
                                 #If we make it here we want to take the points
                                 intercepts.append([tpt[0],tpt[1],[fit[0],fit[1]],2])
                         self.intercepts = intercepts
-                        print('ints',self.intercepts)
-                        print()
                     #now we have a 2D or 3D approx
                     #we will want to build some return data, such as a depth ping, intercepts,
                     if passes:
@@ -1799,7 +1784,7 @@ class SplitTree:
                     self.leafs[i].purge(2,indata,threshDistance=threshDistance)
                 i += 1
         
-####UNUSED####
+####UNUSED########################################################################################################################################################
         elif incode == 3:
             #Now we have our data, so lets go to the scope we want
             if len(indata[1]) > 1:
@@ -2002,7 +1987,7 @@ class SplitTree:
                 return results, paths
             else:
                 return results,paths
-####UNUSED####
+####UNUSED############################################################################################################################################################
 
 
 
@@ -2028,8 +2013,6 @@ class SplitTree:
                             self.stack[j] = [[self.stack[j][0],self.stack[j][1],self.stack[j][2]]]
                     idi = self.stackid[i]
                     idj = self.stackid[j]
-                    print(self.stack[i],self.dep)
-                    print(self.stack[j],self.dep)
                     if idi != 0 and idj != 0:
                         #prevents empty compare
                         if idi == 2 and idj == 2:
@@ -2287,7 +2270,6 @@ class SplitTree:
                                     extrema[1].append(i)
                                     break
                             else:
-                                print(inter,corner)
                                 if abs(inter[0][0]-corner[0]) < threshDistance or abs(inter[0][1]-corner[1]) < threshDistance or abs(inter[0][2]-corner[2]):
                                     extrema[0].append(self.stack[i][0])
                                     extrema[1].append(i)
