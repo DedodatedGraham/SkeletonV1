@@ -73,6 +73,8 @@ if __name__ == '__main__':
     net = SkeleNet(infile)
     net.LoadSave(recover)
     net.purge()
+    net.purge()
+    net.purge()
     net.savedat(1,savefile)
     #net.plot([1]) 
 
