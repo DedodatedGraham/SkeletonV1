@@ -65,14 +65,19 @@ if __name__ == '__main__':
         # link = 'disk1.dat'
     if len(savefile) <= 1:
         savefile = 'SkeleSave.dat'
+        psavefile = 'PrePurge.dat'
+    else:
+        psavefile = savefile[:-4] + 'PrePurge.dat'
     link = source + r'SkeleData/Input/' + link
-    psavefile = source + r'SkeleData/Output/PrePurge.dat'
+    psavefile = source + r'SkeleData/Output/' + psavefile
     savefile = source + r'SkeleData/Output/' + savefile
     recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
     
     net = SkeleNet(link)
     net.solve(True,mode,noderequest)
     net.savedat(1,psavefile)
+    net.purge()
+    net.purge()
     net.purge()
     net.savedat(1,savefile)
     net.plot([1,2]) 

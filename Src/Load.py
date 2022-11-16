@@ -75,6 +75,8 @@ if __name__ == '__main__':
     net.purge()
     net.purge()
     net.purge()
+    net.purge()
+    net.purge()
     net.savedat(1,savefile)
     #net.plot([1]) 
 

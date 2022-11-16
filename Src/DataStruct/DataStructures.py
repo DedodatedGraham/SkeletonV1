@@ -569,100 +569,100 @@ class kdTree:
                 #else:
                 
                 #3D LOGIC
-                #if retdevr[0] > 0.9 and retdevl[0] > 0.9:
-                #    if dr < data[2] and dl < data[2]:
-                #        if dr > dl and retdevr[0] > retdevl[0]:
-                #            retpts = retptsr
-                #            retdev = retdevr
-                #        elif dl > dr and retdevl[0] > retdevr[0]:
-                #            retpts = retptsl
-                #            retdev = retdevl
-                #        else:
-                #            #Here, Both are pretty close to on par with normal, but none is a decisive winner.
-                #            #So we choose off of retdev for maximazation, and theyre very close anyways
-                #            if retdevr[0] > retdevl[0]:
-                #                retpts = retptsr
-                #                retdev = retdevr
-                #            else:
-                #                retpts = retptsl
-                #                retdev = retdevl
-                #                
-                #    elif dr > data[2] and dl > data[2]:
-                #        if dr < dl:
-                #            retpts = retptsr
-                #            retdev = retdevr
-                #        else:
-                #            retpts = retptsl
-                #            retdev = retdevl
-                #    else:
-                #        #This should be the part to switch if next run doesnt work.
-                #        if dr > dl:
-                #            retpts = retptsr
-                #            retdev = retdevr
-                #        else:
-                #            retpts = retptsl
-                #            retdev = retdevl
-                #else:
-                #    if retdevr[0] > retdevl[0]:
-                #        retpts = retptsr
-                #        retdev = retdevr
-                #    else:
-                #        retpts = retptsl
-                #        retdev = retdevl
-
-                #LOGIC, WORKS For 2D Spiral, Taking a differnet approach here.
-                elif diffdev < data[2]*10:
-                    if dl < data[2]/10 and dr < data[2]/10:
-                        if dl < dr:
+                if retdevr[0] > 0.9 and retdevl[0] > 0.9:
+                    if dr < data[2] and dl < data[2]:
+                        if dr > dl and retdevr[0] > retdevl[0]:
+                            retpts = retptsr
+                            retdev = retdevr
+                        elif dl > dr and retdevl[0] > retdevr[0]:
                             retpts = retptsl
                             retdev = retdevl
                         else:
-                            retpts = retptsr
-                            retdev = retdevr
-                    else:
-                        if dl < dr:
-                            retpts = retptsl
-                            retdev = retdevl
-                        else:
-                            retpts = retptsr
-                            retdev = retdevr
-                else:
-                    #print(diffdev,data[2])
-                    #if retdevl[0] > retdevr[0]:
-                    #    retpts = retptsl
-                    #    retdev = retdevl
-                    #else:
-                    #    retpts = retptsr
-                    #    retdev = retdevr
-                         
-                    if dl > data[2]/10 and dr > data[2]/10:
-                        if retdevl[0] > retdevr[0]:
-                            retpts = retptsl
-                            retdev = retdevl
-                        else:
-                            retpts = retptsr
-                            retdev = retdevr
-                    elif dl < data[2]/10 and dr < data[2]/10:
-                        if retdevl[0] > retdevr[0]:
-                            retpts = retptsl
-                            retdev = retdevl
-                        else:
-                            retpts = retptsr
-                            retdev = retdevr
-                    else:
-                        if retdevl[0] > retdevr[0] and dl < dr:
-                            retpts = retptsl
-                            retdev = retdevl
-                        elif retdevl[0] < retdevr[0] and dl < dr:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            if dl > dr:
-                                retpts = retptsl
-                                retdev = retdevl
-                            else:
+                            #Here, Both are pretty close to on par with normal, but none is a decisive winner.
+                            #So we choose off of retdev for maximazation, and theyre very close anyways
+                            if retdevr[0] > retdevl[0]:
                                 retpts = retptsr
                                 retdev = retdevr
+                            else:
+                                retpts = retptsl
+                                retdev = retdevl
+                                
+                    elif dr > data[2] and dl > data[2]:
+                        if dr < dl:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+                    else:
+                        #This should be the part to switch if next run doesnt work.
+                        if dr > dl:
+                            retpts = retptsr
+                            retdev = retdevr
+                        else:
+                            retpts = retptsl
+                            retdev = retdevl
+                else:
+                    if retdevr[0] > retdevl[0]:
+                        retpts = retptsr
+                        retdev = retdevr
+                    else:
+                        retpts = retptsl
+                        retdev = retdevl
+
+                #LOGIC, WORKS For 2D Spiral, Taking a differnet approach here.
+                #elif diffdev < data[2]*10:
+                #    if dl < data[2]/10 and dr < data[2]/10:
+                #        if dl < dr:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        else:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #    else:
+                #        if dl < dr:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        else:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #else:
+                #    #print(diffdev,data[2])
+                #    #if retdevl[0] > retdevr[0]:
+                #    #    retpts = retptsl
+                #    #    retdev = retdevl
+                #    #else:
+                #    #    retpts = retptsr
+                #    #    retdev = retdevr
+                #         
+                #    if dl > data[2]/10 and dr > data[2]/10:
+                #        if retdevl[0] > retdevr[0]:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        else:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #    elif dl < data[2]/10 and dr < data[2]/10:
+                #        if retdevl[0] > retdevr[0]:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        else:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #    else:
+                #        if retdevl[0] > retdevr[0] and dl < dr:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        elif retdevl[0] < retdevr[0] and dl < dr:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            if dl > dr:
+                #                retpts = retptsl
+                #                retdev = retdevl
+                #            else:
+                #                retpts = retptsr
+                #                retdev = retdevr
             #Finally we need to test if the node is a better substitution instead of the              
             if not(node.getPoint() == data[0]):
                 j = 0
