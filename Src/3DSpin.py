@@ -6,7 +6,8 @@ import sys
 import getopt
 import numpy as np
 from pathos.pools import ProcessPool
-
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)) + r'/DataStruct')
+from DataStructures import quicksort 
 def paraplot(data,start : int,stop : int):
     import matplotlib.pyplot as plt
     tx = data[0]
@@ -69,6 +70,7 @@ if __name__ == '__main__':
             ty = []
             tz = []
             tr = []
+            liner = []
             i = 0
             for row in data:
                 if str(row[0]) == 'x':
@@ -83,6 +85,9 @@ if __name__ == '__main__':
                     ty.append(y)
                     tz.append(z)
                     tr.append(r)
+                    #Save x=0 data here for sep figure
+                    if x > - 0.001 and x < 0.001:
+                        liner.append([z,r])
                     print(i,row)
     elif mode == 1:
         with open(inpath,'r') as csvfile:
@@ -103,7 +108,18 @@ if __name__ == '__main__':
                     tx.append(x)
                     ty.append(y)
                     tz.append(z)
-
+    if isinstance(liney,list) and len(liney) > 0:
+        plt.clf()
+        fig = plt.figure()
+        saveapprox = source + 'Plot/radapprox.png'
+        newdata = quicksort(liner,0)
+        plotz = [] 
+        plotr - []
+        for p in newdata:
+            plotz.append(p[0])
+            plotr.append(r[0])
+        plt.plot(plotz,plotr,s=2,c=plotr,cmap='rainbow')
+        plt.savefig(saveapprox)
     if nodes > 1:
         i = 0
         st = []
@@ -129,7 +145,6 @@ if __name__ == '__main__':
                 data.append([tx,ty,tz,mode])
             i += 1
         sp[len(sp) - 1] = 360
-
         pool = ProcessPool(nodes=nodes)
         pool.map(paraplot,data,st,sp)
     else:

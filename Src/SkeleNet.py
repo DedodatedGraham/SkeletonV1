@@ -473,7 +473,7 @@ class SkeleNet:
                 data = csv.reader(csvfile, delimiter = ' ')
                 for row in data:
                     size = len(row)
-                    if str(row[0]) == '#1:x':#if title
+                    if str(row[0]) == '#1:x' or str(row[0]) == 'x':#if title
                         a = 1    
                     elif size == 4:#2D w/ no tag
                         self.IntPoints.append([float(row[0]),float(row[1])])
