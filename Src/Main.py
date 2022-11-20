@@ -60,7 +60,8 @@ if __name__ == '__main__':
         # link = 'spiral.dat' 
         # link = 'vof_points_norm_0650.dat'
         # link = 't06.dat'
-        link = 'vof_points_norms.dat'
+        # link = 'vof_points_norms.dat'
+        link  = 'infc_50.dat'
         # link = 'bagdrop.dat'
         # link = 'disk1.dat'
     if len(savefile) <= 1:
@@ -71,16 +72,14 @@ if __name__ == '__main__':
     link = source + r'SkeleData/Input/' + link
     psavefile = source + r'SkeleData/Output/' + psavefile
     savefile = source + r'SkeleData/Output/' + savefile
-    recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
+    #recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
     
     net = SkeleNet(link)
     net.solve(True,mode,noderequest)
     net.savedat(1,psavefile)
     net.purge()
-    net.purge()
-    net.purge()
     net.savedat(1,savefile)
-    net.plot([1,2]) 
+    #net.plot([1,2]) 
 
     et = time.time()
     tt = et - st

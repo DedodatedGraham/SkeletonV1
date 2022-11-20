@@ -1,7 +1,13 @@
 Traceback (most recent call last):
-  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 111, in <module>
-    if isinstance(liney,list) and len(liney) > 0:
-NameError: name 'liney' is not defined. Did you mean: 'liner'?
+  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 117, in <module>
+    newdata = quicksort(liner,0)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 26, in quicksort
+    return quicksortrunner(points,dimension,0,len(points)-1)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 31, in quicksortrunner
+    splitpoint = partition(points,dimension,first,last)
+  File "/data/ling_shared/garciag/SkeletonV1/Src/DataStruct/DataStructures.py", line 36, in partition
+    pivot = points[first].getAxis(dimension)
+AttributeError: 'list' object has no attribute 'getAxis'
 ffmpeg version 5.0.1-static https://johnvansickle.com/ffmpeg/  Copyright (c) 2000-2022 the FFmpeg developers
   built with gcc 8 (Debian 8.3.0-6)
   configuration: --enable-gpl --enable-version3 --enable-static --disable-debug --disable-ffplay --disable-indev=sndio --disable-outdev=sndio --cc=gcc --enable-fontconfig --enable-frei0r --enable-gnutls --enable-gmp --enable-libgme --enable-gray --enable-libfribidi --enable-libass --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-librubberband --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libvorbis --enable-libopus --enable-libtheora --enable-libvidstab --enable-libvo-amrwbenc --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg
@@ -31,7 +37,7 @@ Output #0, mp4, to '../AnimationData/Spin/Spin.mp4':
       encoder         : Lavc59.18.100 libx264
     Side data:
       cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
-frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   30 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   67 fps= 66 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  111 fps= 73 q=32.0 size=       0kB time=00:00:00.26 bitrate=   1.5kbits/s dup=2 drop=0 speed=0.173x    frame=  158 fps= 78 q=32.0 size=     256kB time=00:00:00.91 bitrate=2288.1kbits/s dup=2 drop=0 speed=0.451x    frame=  206 fps= 81 q=32.0 size=     256kB time=00:00:01.58 bitrate=1324.7kbits/s dup=2 drop=0 speed=0.625x    frame=  252 fps= 83 q=32.0 size=     512kB time=00:00:02.22 bitrate=1887.6kbits/s dup=2 drop=0 speed=0.732x    frame=  298 fps= 84 q=32.0 size=     768kB time=00:00:02.86 bitrate=2199.0kbits/s dup=2 drop=0 speed=0.809x    frame=  344 fps= 85 q=32.0 size=    1024kB time=00:00:03.50 bitrate=2396.8kbits/s dup=2 drop=0 speed=0.866x    frame=  362 fps= 81 q=-1.0 Lsize=    1632kB time=00:00:04.98 bitrate=2680.6kbits/s dup=2 drop=0 speed=1.11x    
+frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   31 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   69 fps= 68 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  113 fps= 74 q=32.0 size=       0kB time=00:00:00.29 bitrate=   1.3kbits/s dup=2 drop=0 speed=0.19x    frame=  160 fps= 79 q=32.0 size=     256kB time=00:00:00.94 bitrate=2220.8kbits/s dup=2 drop=0 speed=0.464x    frame=  208 fps= 82 q=32.0 size=     256kB time=00:00:01.61 bitrate=1301.9kbits/s dup=2 drop=0 speed=0.635x    frame=  254 fps= 84 q=32.0 size=     512kB time=00:00:02.25 bitrate=1864.3kbits/s dup=2 drop=0 speed=0.74x    frame=  299 fps= 84 q=32.0 size=     768kB time=00:00:02.87 bitrate=2188.4kbits/s dup=2 drop=0 speed=0.812x    frame=  345 fps= 85 q=32.0 size=    1024kB time=00:00:03.51 bitrate=2387.3kbits/s dup=2 drop=0 speed=0.868x    frame=  362 fps= 81 q=-1.0 Lsize=    1632kB time=00:00:04.98 bitrate=2680.6kbits/s dup=2 drop=0 speed=1.11x    
 video:1629kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.150640%
 [libx264 @ 0xb9b8d40] frame I:2     Avg QP:23.89  size: 34612
 [libx264 @ 0xb9b8d40] frame P:352   Avg QP:24.04  size:  4493

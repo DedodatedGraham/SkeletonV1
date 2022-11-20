@@ -38,16 +38,29 @@ def partition(points : list , dimension : int , first : int , last : int):
     right = last
     done = False
     while not done:
-        while left <= right and points[left].getAxis(dimension) <= pivot:
-            left += 1
-        while right >= left and points[right].getAxis(dimension) >= pivot:
-            right -= 1
-        if right < left:
-            done = True
+        if isinstance(points[0],SkelePoint):
+            print('is skele')
+            while left <= right and points[left].getAxis(dimension) <= pivot:
+                left += 1
+            while right >= left and points[right].getAxis(dimension) >= pivot:
+                right -= 1
+            if right < left:
+                done = True
+            else:
+                temp = points[left]
+                points[left] = points[right]
+                points[right] = temp
         else:
-            temp = points[left]
-            points[left] = points[right]
-            points[right] = temp
+            while left <= right and points[left][dimension] <= pivot:
+                left += 1
+            while right >= left and points[right][dimension] >= pivot:
+                right -= 1
+            if right < left:
+                done = True
+            else:
+                temp = points[left]
+                points[left] = points[right]
+                points[right] = temp
     temp = points[first]
     points[first] = points[right]
     points[right] = temp

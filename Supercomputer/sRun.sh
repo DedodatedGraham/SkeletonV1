@@ -11,7 +11,6 @@ num=`cat $PBS_NODEFILE | wc -l`
 echo "processes $num"
 
 mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/Main.py -m 1 -p 128 -i 'infc_50.dat' -o 'infc_50_save.dat'
-mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/Main.py -m 1 -p 128 -i 'infc_1300.dat' -o 'infc_1300_save.dat'
 echo "Skeleton finished at `date`"
 
 

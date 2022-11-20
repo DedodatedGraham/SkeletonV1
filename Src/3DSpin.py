@@ -86,7 +86,7 @@ if __name__ == '__main__':
                     tz.append(z)
                     tr.append(r)
                     #Save x=0 data here for sep figure
-                    if x > - 0.001 and x < 0.001:
+                    if y > -0.1 and y < 0.1:
                         liner.append([z,r])
                     print(i,row)
     elif mode == 1:
@@ -108,18 +108,23 @@ if __name__ == '__main__':
                     tx.append(x)
                     ty.append(y)
                     tz.append(z)
-    if isinstance(liney,list) and len(liney) > 0:
+    print(liner)
+    if isinstance(liner,list) and len(liner) > 0:
+        print('starting')
         plt.clf()
         fig = plt.figure()
         saveapprox = source + 'Plot/radapprox.png'
         newdata = quicksort(liner,0)
         plotz = [] 
-        plotr - []
+        plotr = []
         for p in newdata:
             plotz.append(p[0])
             plotr.append(r[0])
         plt.plot(plotz,plotr,s=2,c=plotr,cmap='rainbow')
         plt.savefig(saveapprox)
+        print('finishing')
+    else:
+        print('err')
     if nodes > 1:
         i = 0
         st = []
