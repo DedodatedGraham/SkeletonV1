@@ -5,6 +5,7 @@ import os
 import sys
 import getopt
 import numpy as np
+from scipy import interpolate as itp
 from pathos.pools import ProcessPool
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)) + r'/DataStruct')
 from DataStructures import quicksort 
@@ -21,9 +22,9 @@ def paraplot(data,start : int,stop : int):
     #    p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
     #else:
     if data[-1] == 0:
-        p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=8,c=tr,cmap='rainbow')
     else:
-        p = ax.scatter3D(tx,ty,tz,s=5,c=tz,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=8,c=tz,cmap='rainbow')
     fig.colorbar(p)
     i = start
     while i < stop:
@@ -78,18 +79,18 @@ if __name__ == '__main__':
                     a = 0
                 elif float(row[3]) > -100000000:
                     i += 1
-                    if j % 50 == 0:
-                        x = float(row[0])
-                        y = float(row[1])
-                        z = float(row[2])
-                        r = float(row[3])
+                    x = float(row[0])
+                    y = float(row[1])
+                    z = float(row[2])
+                    r = float(row[3])
+                    if j % 25 == 0:
                         tx.append(x)
                         ty.append(y)
                         tz.append(z)
                         tr.append(r)
                         #Save x=0 data here for sep figure
-                        if y > -0.1 and y < 0.1:
-                            liner.append([z,r])
+                    if y > -0.1 and y < 0.1:
+                        liner.append([z,r])
                     j += 1
     elif mode == 1:
         with open(inpath,'r') as csvfile:
@@ -110,7 +111,6 @@ if __name__ == '__main__':
                     tx.append(x)
                     ty.append(y)
                     tz.append(z)
-    print(liner)
     if isinstance(liner,list) and len(liner) > 0:
         plt.clf()
         fig = plt.figure()
@@ -121,7 +121,9 @@ if __name__ == '__main__':
         for p in newdata:
             plotz.append(p[0])
             plotr.append(p[1])
-        plt.plot(plotz,plotr,color='blue')
+        mytck,myu = itp.splprep([plotz,plotr])
+        znew,rnew = itp.splev(np.linspace(0,1,1000),mytck)
+        plt.plot(znew,rnew,color='blue')
         plt.savefig(saveapprox)
     if nodes > 1:
         i = 0
