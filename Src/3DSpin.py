@@ -83,7 +83,7 @@ if __name__ == '__main__':
                     y = float(row[1])
                     z = float(row[2])
                     r = float(row[3])
-                    if j % 25 == 0:
+                    if j % 24 == 0:
                         tx.append(x)
                         ty.append(y)
                         tz.append(z)
