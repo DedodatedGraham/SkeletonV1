@@ -33,13 +33,15 @@ def quicksortrunner(points : list , dimension : int , first : int , last : int ,
         quicksortrunner(points, dimension, splitpoint + 1,last,depth=depth+1)
         return points
 def partition(points : list , dimension : int , first : int , last : int):
-    pivot = points[first].getAxis(dimension)
+    if isinstance(points[0],SkelePoint):
+        pivot = points[first].getAxis(dimension)
+    else:
+        pivot = points[first][dimension]
     left = first + 1
     right = last
     done = False
     while not done:
         if isinstance(points[0],SkelePoint):
-            print('is skele')
             while left <= right and points[left].getAxis(dimension) <= pivot:
                 left += 1
             while right >= left and points[right].getAxis(dimension) >= pivot:

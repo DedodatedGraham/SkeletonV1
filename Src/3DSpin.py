@@ -72,23 +72,25 @@ if __name__ == '__main__':
             tr = []
             liner = []
             i = 0
+            j = 0
             for row in data:
                 if str(row[0]) == 'x':
                     a = 0
                 elif float(row[3]) > -100000000:
                     i += 1
-                    x = float(row[0])
-                    y = float(row[1])
-                    z = float(row[2])
-                    r = float(row[3])
-                    tx.append(x)
-                    ty.append(y)
-                    tz.append(z)
-                    tr.append(r)
-                    #Save x=0 data here for sep figure
-                    if y > -0.1 and y < 0.1:
-                        liner.append([z,r])
-                    print(i,row)
+                    if j % 50 == 0:
+                        x = float(row[0])
+                        y = float(row[1])
+                        z = float(row[2])
+                        r = float(row[3])
+                        tx.append(x)
+                        ty.append(y)
+                        tz.append(z)
+                        tr.append(r)
+                        #Save x=0 data here for sep figure
+                        if y > -0.1 and y < 0.1:
+                            liner.append([z,r])
+                    j += 1
     elif mode == 1:
         with open(inpath,'r') as csvfile:
             data = csv.reader(csvfile, delimiter = ' ')
@@ -110,7 +112,6 @@ if __name__ == '__main__':
                     tz.append(z)
     print(liner)
     if isinstance(liner,list) and len(liner) > 0:
-        print('starting')
         plt.clf()
         fig = plt.figure()
         saveapprox = source + 'Plot/radapprox.png'
@@ -119,12 +120,9 @@ if __name__ == '__main__':
         plotr = []
         for p in newdata:
             plotz.append(p[0])
-            plotr.append(r[0])
-        plt.plot(plotz,plotr,s=2,c=plotr,cmap='rainbow')
+            plotr.append(p[1])
+        plt.plot(plotz,plotr,color='blue')
         plt.savefig(saveapprox)
-        print('finishing')
-    else:
-        print('err')
     if nodes > 1:
         i = 0
         st = []
