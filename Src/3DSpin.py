@@ -22,9 +22,9 @@ def paraplot(data,start : int,stop : int):
     #    p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
     #else:
     if data[-1] == 0:
-        p = ax.scatter3D(tx,ty,tz,s=12,c=tr,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=15,c=tr,cmap='rainbow')
     else:
-        p = ax.scatter3D(tx,ty,tz,s=12,c=tz,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=15,c=tz,cmap='rainbow')
     fig.colorbar(p)
     i = start
     while i < stop:
@@ -83,11 +83,14 @@ if __name__ == '__main__':
                     y = float(row[1])
                     z = float(row[2])
                     r = float(row[3])
-                    if j % 24 == 0:
-                        tx.append(x)
-                        ty.append(y)
-                        tz.append(z)
-                        tr.append(r)
+                    if j % 23 == 0:
+                        if x < 3.25 and r < 0.01:
+                            print('uh')
+                        else:
+                            tx.append(x)
+                            ty.append(y)
+                            tz.append(z)
+                            tr.append(r)
                         #Save x=0 data here for sep figure
                     if y > -0.1 and y < 0.1:
                         liner.append([z,r])
@@ -101,7 +104,7 @@ if __name__ == '__main__':
             i = 0
             for row in data:
                 print(i,row)
-                if str(row[0]) == '#1:x':
+                if str(row[0]) == '#1:x' or str(row[0]) == 'x':
                     a = 0
                 else:
                     i += 1
@@ -124,6 +127,7 @@ if __name__ == '__main__':
                 plotz.append(p[0])
                 plotr.append(p[1])
             j += 1
+        fit = np.polyfit(plotz,plotr,3)
         plt.plot(plotz,plotr,color='blue')
         plt.savefig(saveapprox)
     if nodes > 1:
