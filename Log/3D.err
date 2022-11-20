@@ -1,7 +1,3 @@
-Traceback (most recent call last):
-  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 128, in <module>
-    spinel = itp.spline(plotz,plotr)
-AttributeError: module 'scipy.interpolate' has no attribute 'spline'. Did you mean: 'splint'?
 ffmpeg version 5.0.1-static https://johnvansickle.com/ffmpeg/  Copyright (c) 2000-2022 the FFmpeg developers
   built with gcc 8 (Debian 8.3.0-6)
   configuration: --enable-gpl --enable-version3 --enable-static --disable-debug --disable-ffplay --disable-indev=sndio --disable-outdev=sndio --cc=gcc --enable-fontconfig --enable-frei0r --enable-gnutls --enable-gmp --enable-libgme --enable-gray --enable-libfribidi --enable-libass --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-librubberband --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libvorbis --enable-libopus --enable-libtheora --enable-libvidstab --enable-libvo-amrwbenc --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg
@@ -31,22 +27,22 @@ Output #0, mp4, to '../AnimationData/Spin/Spin.mp4':
       encoder         : Lavc59.18.100 libx264
     Side data:
       cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
-frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   32 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   70 fps= 68 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  114 fps= 75 q=32.0 size=       0kB time=00:00:00.30 bitrate=   1.3kbits/s dup=2 drop=0 speed= 0.2x    frame=  162 fps= 80 q=32.0 size=     256kB time=00:00:00.97 bitrate=2157.3kbits/s dup=2 drop=0 speed=0.479x    frame=  210 fps= 83 q=32.0 size=     512kB time=00:00:01.63 bitrate=2559.4kbits/s dup=2 drop=0 speed=0.647x    frame=  256 fps= 84 q=32.0 size=     512kB time=00:00:02.27 bitrate=1841.5kbits/s dup=2 drop=0 speed=0.747x    frame=  303 fps= 85 q=32.0 size=     768kB time=00:00:02.93 bitrate=2146.9kbits/s dup=2 drop=0 speed=0.823x    frame=  351 fps= 86 q=32.0 size=    1024kB time=00:00:03.59 bitrate=2332.0kbits/s dup=2 drop=0 speed=0.884x    frame=  362 fps= 82 q=-1.0 Lsize=    1635kB time=00:00:04.98 bitrate=2686.5kbits/s dup=2 drop=0 speed=1.13x    
-video:1633kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.149830%
-[libx264 @ 0xb9b8d40] frame I:2     Avg QP:24.13  size: 37350
-[libx264 @ 0xb9b8d40] frame P:352   Avg QP:23.84  size:  4487
-[libx264 @ 0xb9b8d40] frame B:8     Avg QP:26.54  size:  2117
-[libx264 @ 0xb9b8d40] consecutive B-frames: 95.9%  3.3%  0.8%  0.0%
-[libx264 @ 0xb9b8d40] mb I  I16..4: 25.3% 65.1%  9.6%
-[libx264 @ 0xb9b8d40] mb P  I16..4:  0.3%  1.1%  0.1%  P16..4:  9.4%  2.5%  0.9%  0.0%  0.0%    skip:85.7%
-[libx264 @ 0xb9b8d40] mb B  I16..4:  0.3%  0.1%  0.0%  B16..8: 10.3%  1.2%  0.1%  direct: 0.1%  skip:88.0%  L0:45.0% L1:52.4% BI: 2.6%
-[libx264 @ 0xb9b8d40] 8x8 transform intra:69.7% inter:73.1%
-[libx264 @ 0xb9b8d40] coded y,uvDC,uvAC intra: 6.9% 4.4% 2.8% inter: 0.9% 1.8% 0.4%
-[libx264 @ 0xb9b8d40] i16 v,h,dc,p: 67% 22%  9%  2%
-[libx264 @ 0xb9b8d40] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 20%  6% 72%  0%  1%  0%  0%  0%  0%
-[libx264 @ 0xb9b8d40] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 45% 16% 26%  2%  3%  2%  2%  2%  2%
-[libx264 @ 0xb9b8d40] i8c dc,h,v,p: 92%  3%  4%  1%
+frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   32 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   71 fps= 70 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  115 fps= 76 q=32.0 size=       0kB time=00:00:00.31 bitrate=   1.2kbits/s dup=2 drop=0 speed=0.21x    frame=  162 fps= 80 q=32.0 size=     256kB time=00:00:00.97 bitrate=2157.3kbits/s dup=2 drop=0 speed=0.478x    frame=  210 fps= 83 q=32.0 size=     512kB time=00:00:01.63 bitrate=2559.4kbits/s dup=2 drop=0 speed=0.645x    frame=  257 fps= 84 q=32.0 size=     512kB time=00:00:02.29 bitrate=1830.4kbits/s dup=2 drop=0 speed=0.753x    frame=  305 fps= 86 q=32.0 size=     768kB time=00:00:02.95 bitrate=2126.8kbits/s dup=2 drop=0 speed=0.831x    frame=  353 fps= 87 q=32.0 size=    1024kB time=00:00:03.62 bitrate=2314.2kbits/s dup=2 drop=0 speed=0.889x    frame=  362 fps= 82 q=-1.0 Lsize=    1593kB time=00:00:04.98 bitrate=2617.2kbits/s dup=2 drop=0 speed=1.13x    
+video:1591kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.156751%
+[libx264 @ 0xb9b8d40] frame I:2     Avg QP:23.99  size: 35816
+[libx264 @ 0xb9b8d40] frame P:350   Avg QP:24.09  size:  4385
+[libx264 @ 0xb9b8d40] frame B:10    Avg QP:27.42  size:  2149
+[libx264 @ 0xb9b8d40] consecutive B-frames: 94.8%  4.4%  0.8%  0.0%
+[libx264 @ 0xb9b8d40] mb I  I16..4: 27.0% 63.9%  9.1%
+[libx264 @ 0xb9b8d40] mb P  I16..4:  0.3%  1.1%  0.1%  P16..4:  9.3%  2.4%  0.9%  0.0%  0.0%    skip:85.9%
+[libx264 @ 0xb9b8d40] mb B  I16..4:  0.2%  0.1%  0.0%  B16..8: 11.0%  1.2%  0.0%  direct: 0.0%  skip:87.4%  L0:45.1% L1:52.2% BI: 2.7%
+[libx264 @ 0xb9b8d40] 8x8 transform intra:69.2% inter:74.2%
+[libx264 @ 0xb9b8d40] coded y,uvDC,uvAC intra: 6.9% 4.6% 2.8% inter: 0.9% 1.7% 0.3%
+[libx264 @ 0xb9b8d40] i16 v,h,dc,p: 67% 21%  9%  2%
+[libx264 @ 0xb9b8d40] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 19%  6% 73%  0%  1%  1%  0%  0%  0%
+[libx264 @ 0xb9b8d40] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 46% 16% 26%  2%  3%  2%  2%  2%  2%
+[libx264 @ 0xb9b8d40] i8c dc,h,v,p: 91%  3%  4%  1%
 [libx264 @ 0xb9b8d40] Weighted P-Frames: Y:0.0% UV:0.0%
-[libx264 @ 0xb9b8d40] ref P L0: 78.2%  4.8% 13.2%  3.8%
-[libx264 @ 0xb9b8d40] ref B L0: 89.3% 10.7%
-[libx264 @ 0xb9b8d40] kb/s:2659.16
+[libx264 @ 0xb9b8d40] ref P L0: 78.3%  4.4% 13.4%  3.9%
+[libx264 @ 0xb9b8d40] ref B L0: 87.6% 12.4%
+[libx264 @ 0xb9b8d40] kb/s:2590.43

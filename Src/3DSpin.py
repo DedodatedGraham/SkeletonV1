@@ -22,9 +22,9 @@ def paraplot(data,start : int,stop : int):
     #    p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
     #else:
     if data[-1] == 0:
-        p = ax.scatter3D(tx,ty,tz,s=8,c=tr,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=12,c=tr,cmap='rainbow')
     else:
-        p = ax.scatter3D(tx,ty,tz,s=8,c=tz,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=12,c=tz,cmap='rainbow')
     fig.colorbar(p)
     i = start
     while i < stop:
@@ -120,15 +120,11 @@ if __name__ == '__main__':
         plotr = []
         j = 0
         for p in newdata:
-            print(j,p)
-            if len(plotz) ==  0 or p[0] != plotz[len(plotz)-1]:
+            if j % 3 == 0 and (len(plotz) ==  0 or p[0] != plotz[len(plotz)-1]):
                 plotz.append(p[0])
                 plotr.append(p[1])
             j += 1
-        spinel = itp.make_interp_spline(plotz,plotr,k=3)
-        znew = np.linspace(plotz[0],plotz[len(plotz) - 1],1000)
-        rnew = spinel(znew)
-        plt.plot(znew,rnew,color='blue')
+        plt.plot(plotz,plotr,color='blue')
         plt.savefig(saveapprox)
     if nodes > 1:
         i = 0
