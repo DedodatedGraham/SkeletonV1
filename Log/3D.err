@@ -1,11 +1,7 @@
 Traceback (most recent call last):
-  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 124, in <module>
-    mytck,myu = itp.splprep([plotz,plotr])
-  File "/home/garciag/.local/lib/python3.10/site-packages/scipy/interpolate/_fitpack_py.py", line 155, in splprep
-    res = _impl.splprep(x, w, u, ub, ue, k, task, s, t, full_output, nest, per,
-  File "/home/garciag/.local/lib/python3.10/site-packages/scipy/interpolate/_fitpack_impl.py", line 280, in splprep
-    t, c, o = _fitpack._parcur(ravel(transpose(x)), w, u, ub, ue, k,
-ValueError: Invalid inputs.
+  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 123, in <module>
+    if p[0] != plotz[len(plotz)-1]:
+IndexError: list index out of range
 ffmpeg version 5.0.1-static https://johnvansickle.com/ffmpeg/  Copyright (c) 2000-2022 the FFmpeg developers
   built with gcc 8 (Debian 8.3.0-6)
   configuration: --enable-gpl --enable-version3 --enable-static --disable-debug --disable-ffplay --disable-indev=sndio --disable-outdev=sndio --cc=gcc --enable-fontconfig --enable-frei0r --enable-gnutls --enable-gmp --enable-libgme --enable-gray --enable-libfribidi --enable-libass --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-librubberband --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libvorbis --enable-libopus --enable-libtheora --enable-libvidstab --enable-libvo-amrwbenc --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg
@@ -35,7 +31,7 @@ Output #0, mp4, to '../AnimationData/Spin/Spin.mp4':
       encoder         : Lavc59.18.100 libx264
     Side data:
       cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
-frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   29 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   64 fps= 63 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  103 fps= 68 q=32.0 size=       0kB time=00:00:00.15 bitrate=   2.5kbits/s dup=2 drop=0 speed=0.101x    frame=  149 fps= 74 q=32.0 size=     512kB time=00:00:00.79 bitrate=5298.2kbits/s dup=2 drop=0 speed=0.393x    frame=  197 fps= 78 q=32.0 size=    1024kB time=00:00:01.45 bitrate=5752.2kbits/s dup=2 drop=0 speed=0.578x    frame=  243 fps= 80 q=32.0 size=    1280kB time=00:00:02.09 bitrate=4999.9kbits/s dup=2 drop=0 speed=0.69x    frame=  289 fps= 82 q=32.0 size=    1536kB time=00:00:02.73 bitrate=4598.9kbits/s dup=2 drop=0 speed=0.772x    frame=  334 fps= 83 q=32.0 size=    1792kB time=00:00:03.36 bitrate=4367.7kbits/s dup=2 drop=0 speed=0.831x    frame=  362 fps= 78 q=-1.0 Lsize=    2601kB time=00:00:04.98 bitrate=4273.3kbits/s dup=2 drop=0 speed=1.07x    
+frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   29 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   64 fps= 63 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  104 fps= 69 q=32.0 size=       0kB time=00:00:00.16 bitrate=   2.3kbits/s dup=2 drop=0 speed=0.11x    frame=  150 fps= 74 q=32.0 size=     512kB time=00:00:00.80 bitrate=5206.8kbits/s dup=2 drop=0 speed=0.399x    frame=  198 fps= 78 q=32.0 size=    1024kB time=00:00:01.47 bitrate=5698.0kbits/s dup=2 drop=0 speed=0.583x    frame=  244 fps= 81 q=32.0 size=    1280kB time=00:00:02.11 bitrate=4967.0kbits/s dup=2 drop=0 speed=0.698x    frame=  290 fps= 82 q=32.0 size=    1536kB time=00:00:02.75 bitrate=4575.7kbits/s dup=2 drop=0 speed=0.779x    frame=  337 fps= 83 q=32.0 size=    1792kB time=00:00:03.40 bitrate=4314.2kbits/s dup=2 drop=0 speed=0.842x    frame=  362 fps= 78 q=-1.0 Lsize=    2601kB time=00:00:04.98 bitrate=4273.3kbits/s dup=2 drop=0 speed=1.08x    
 video:2598kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.105277%
 [libx264 @ 0xb9b8780] frame I:2     Avg QP:23.63  size: 58672
 [libx264 @ 0xb9b8780] frame P:337   Avg QP:24.31  size:  7314

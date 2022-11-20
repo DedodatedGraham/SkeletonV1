@@ -118,11 +118,14 @@ if __name__ == '__main__':
         newdata = quicksort(liner,0)
         plotz = [] 
         plotr = []
+        j = 0
         for p in newdata:
-            plotz.append(p[0])
-            plotr.append(p[1])
-        mytck,myu = itp.splprep([plotz,plotr])
-        znew,rnew = itp.splev(np.linspace(0,1,1000),mytck)
+            if p[0] != plotz[len(plotz)-1]:
+                plotz.append(p[0])
+                plotr.append(p[1])
+        spinel = itp.make_interp_spline(plotz,plotr)
+        znew = np.linspace(plotz.min(),plotz.max(),1000)
+        rnew = spinel(znew)
         plt.plot(znew,rnew,color='blue')
         plt.savefig(saveapprox)
     if nodes > 1:
