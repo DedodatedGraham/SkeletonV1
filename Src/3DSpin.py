@@ -120,11 +120,13 @@ if __name__ == '__main__':
         plotr = []
         j = 0
         for p in newdata:
-            if p[0] != plotz[len(plotz)-1]:
+            print(j,p)
+            if len(plotz) ==  0 or p[0] != plotz[len(plotz)-1]:
                 plotz.append(p[0])
                 plotr.append(p[1])
-        spinel = itp.make_interp_spline(plotz,plotr)
-        znew = np.linspace(plotz.min(),plotz.max(),1000)
+            j += 1
+        spinel = itp.make_interp_spline(plotz,plotr,k=3)
+        znew = np.linspace(plotz[0],plotz[len(plotz) - 1],1000)
         rnew = spinel(znew)
         plt.plot(znew,rnew,color='blue')
         plt.savefig(saveapprox)
