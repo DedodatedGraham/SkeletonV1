@@ -18,13 +18,13 @@ def paraplot(data,start : int,stop : int):
         tr = data[3]
     fig = plt.figure()
     ax = plt.axes(projection='3d')
-    #if data[0][len(data[0]) - 1] == 0:
-    #    p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
-    #else:
+    ax.axes.set_xlim3d(left=2.35,right=3.85)
+    ax.axes.set_ylim(bottom=-0.75,top=0.75)
+    ax.axes.set_zlim3d(bottom=-0.75,top=0.75)
     if data[-1] == 0:
         p = ax.scatter3D(tx,ty,tz,s=15,c=tr,cmap='rainbow')
     else:
-        p = ax.scatter3D(tx,ty,tz,s=15,c=tz,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,s=15,c=tz,cmap='Greys')
     fig.colorbar(p)
     i = start
     while i < stop:
@@ -91,6 +91,21 @@ if __name__ == '__main__':
                             ty.append(y)
                             tz.append(z)
                             tr.append(r)
+                            #Flip over 
+                            tx.append(x)
+                            ty.append(-y)
+                            tz.append(z)
+                            tr.append(r)
+                            #Flip
+                            tx.append(x)
+                            ty.append(y)
+                            tz.append(-z)
+                            tr.append(r)
+                            #Flip over 
+                            tx.append(x)
+                            ty.append(-y)
+                            tz.append(-z)
+                            tr.append(r)
                         #Save x=0 data here for sep figure
                     if y > -0.1 and y < 0.1:
                         liner.append([z,r])
@@ -114,7 +129,7 @@ if __name__ == '__main__':
                     tx.append(x)
                     ty.append(y)
                     tz.append(z)
-    if isinstance(liner,list) and len(liner) > 0:
+    if mode == 0 and isinstance(liner,list) and len(liner) > 0:
         plt.clf()
         fig = plt.figure()
         saveapprox = source + 'Plot/radapprox.png'

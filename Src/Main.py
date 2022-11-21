@@ -56,12 +56,12 @@ if __name__ == '__main__':
     
     plt.rcParams['figure.dpi'] = 300
     if len(link) <= 1: 
-        # link = 'interface_points_020000.dat'
+        link = 'interface_points_070000.dat'
         # link = 'spiral.dat' 
         # link = 'vof_points_norm_0650.dat'
         # link = 't06.dat'
         # link = 'vof_points_norms.dat'
-        link  = 'infc_50.dat'
+        # link  = 'infc_50.dat'
         # link = 'bagdrop.dat'
         # link = 'disk1.dat'
     if len(savefile) <= 1:
@@ -75,11 +75,11 @@ if __name__ == '__main__':
     #recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
     
     net = SkeleNet(link)
-    net.solve(True,mode,noderequest)
+    net.solve(False,mode,noderequest)
     net.savedat(1,psavefile)
     net.purge()
     net.savedat(1,savefile)
-    #net.plot([1,2]) 
+    net.plot([1]) 
 
     et = time.time()
     tt = et - st
