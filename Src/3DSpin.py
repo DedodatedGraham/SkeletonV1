@@ -18,9 +18,9 @@ def paraplot(data,start : int,stop : int):
         tr = data[3]
     fig = plt.figure()
     ax = plt.axes(projection='3d')
-    ax.axes.set_xlim3d(left=2.35,right=3.85)
-    ax.axes.set_ylim(bottom=-0.75,top=0.75)
-    ax.axes.set_zlim3d(bottom=-0.75,top=0.75)
+    #ax.axes.set_xlim3d(left=2.35,right=3.85)
+    #ax.axes.set_ylim(bottom=-0.75,top=0.75)
+    #ax.axes.set_zlim3d(bottom=-0.75,top=0.75)
     if data[-1] == 0:
         p = ax.scatter3D(tx,ty,tz,s=15,c=tr,cmap='rainbow')
     else:
@@ -83,30 +83,10 @@ if __name__ == '__main__':
                     y = float(row[1])
                     z = float(row[2])
                     r = float(row[3])
-                    if j % 23 == 0:
-                        if x < 3.25 and r < 0.01:
-                            print('uh')
-                        else:
-                            tx.append(x)
-                            ty.append(y)
-                            tz.append(z)
-                            tr.append(r)
-                            #Flip over 
-                            tx.append(x)
-                            ty.append(-y)
-                            tz.append(z)
-                            tr.append(r)
-                            #Flip
-                            tx.append(x)
-                            ty.append(y)
-                            tz.append(-z)
-                            tr.append(r)
-                            #Flip over 
-                            tx.append(x)
-                            ty.append(-y)
-                            tz.append(-z)
-                            tr.append(r)
-                        #Save x=0 data here for sep figure
+                    tx.append(x)
+                    ty.append(y)
+                    tz.append(z)
+                    tr.append(r)
                     if y > -0.1 and y < 0.1:
                         liner.append([z,r])
                     j += 1
