@@ -77,9 +77,9 @@ if __name__ == '__main__':
     net = SkeleNet(link)
     net.solve(False,mode,noderequest)
     net.savedat(1,psavefile)
-    net.purge()
-    net.savedat(1,savefile)
-    net.plot([1]) 
+    #net.purge()
+    #net.savedat(1,savefile)
+    #net.plot([1]) 
 
     et = time.time()
     tt = et - st

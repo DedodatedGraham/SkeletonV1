@@ -493,7 +493,7 @@ class SkeleNet:
                         self.MasterTag.append(int(row[4]) - 1)
                     elif size == 6:#3D w/ no tag
                         self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
-                        self.NormPoints.append([float(row[3])*1,float(row[4])*1,float(row[5])*1])
+                        self.NormPoints.append([float(row[3])*-1,float(row[4])*-1,float(row[5])*-1])
                         self.MasterTag.append(0)
                     elif size == 7:#3D w/ tag
                         self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
