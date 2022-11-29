@@ -10,10 +10,12 @@ echo "node file $PBS_NODEFILE"
 num=`cat $PBS_NODEFILE | wc -l`
 echo "processes $num"
 
+echo "Skeleton started at `date`"
+echo
 mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/Main.py -m 1 -p 128 -i 'infc_50.dat' -o 'infc_50_save.dat'
+echo
 echo "Skeleton finished at `date`"
 
 
 echo
-echo "Job finished at `date`"
 
