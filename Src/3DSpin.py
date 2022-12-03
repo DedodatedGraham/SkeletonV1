@@ -87,8 +87,6 @@ if __name__ == '__main__':
                     ty.append(y)
                     tz.append(z)
                     tr.append(r)
-                    if y > -0.1 and y < 0.1:
-                        liner.append([z,r])
                     j += 1
     elif mode == 1:
         with open(inpath,'r') as csvfile:
