@@ -8,7 +8,7 @@ import numpy as np
 from scipy import interpolate as itp
 from pathos.pools import ProcessPool
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)) + r'/DataStruct')
-from DataStructures import quicksort 
+from DataStructures import quicksort
 def paraplot(data,start : int,stop : int):
     import matplotlib.pyplot as plt
     tx = data[0]
@@ -36,7 +36,7 @@ def paraplot(data,start : int,stop : int):
         i += 1
 
 if __name__ == '__main__':
-    
+
     #Gets Args, Only Arg is number of processes though
     argumentList = sys.argv[1:]
     options = "i:n:m:"
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     fp = r''
     mode = 0
     try:
-        arguments,argumentList = getopt.getopt(argumentList,options) 
+        arguments,argumentList = getopt.getopt(argumentList,options)
         for currentArgument, currentValue in arguments:
             if currentArgument in ("-i"):
                 fp = str(currentValue)
@@ -83,10 +83,11 @@ if __name__ == '__main__':
                     y = float(row[1])
                     z = float(row[2])
                     r = float(row[3])
-                    tx.append(x)
-                    ty.append(y)
-                    tz.append(z)
-                    tr.append(r)
+                    if r > 0.11 and r < 0.39:
+                        tx.append(x)
+                        ty.append(y)
+                        tz.append(z)
+                        tr.append(r)
                     j += 1
     elif mode == 1:
         with open(inpath,'r') as csvfile:
@@ -112,7 +113,7 @@ if __name__ == '__main__':
         fig = plt.figure()
         saveapprox = source + 'Plot/radapprox.png'
         newdata = quicksort(liner,0)
-        plotz = [] 
+        plotz = []
         plotr = []
         j = 0
         for p in newdata:
@@ -138,7 +139,7 @@ if __name__ == '__main__':
             st.append(last)
             if i % 2 == 0:
                 sp.append(last + nf)
-                last = last + nf 
+                last = last + nf
             else:
                 sp.append(last + nc)
                 last = last + nc

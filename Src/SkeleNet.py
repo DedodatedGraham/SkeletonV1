@@ -156,6 +156,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(getDistance(point,centerp[leng]))
+                    print('got rad 11',SkeleRad[len(SkeleRad)-1])
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng])
@@ -164,17 +165,19 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
 
                 #Then if we fall too close to the interface, but the cross isnt there either. Should alllow us to see thin areas well..
                 #Keeps us inside shape at the very least. usually getting too small happens past mid point//
-                elif dist < tempr[leng] + threshDistance:
-                    SkelePoints.append(centerp[leng - 1])
-                    SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                    if animate:
-                        acp[index].append(SkelePoints[len(SkelePoints) - 1])
-                        atp[index].append(testp[leng - 1])
-                        arad[index].append(SkeleRad[len(SkeleRad) - 1])
-                    case = True
+                #elif dist < tempr[leng] + threshDistance:
+                #    SkelePoints.append(centerp[leng - 1])
+                #    SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                #    print('got rad 12',SkeleRad[len(SkeleRad)-1])
+                #    if animate:
+                #        acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                #        atp[index].append(testp[leng - 1])
+                #        arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                #    case = True
                 elif tempr[leng] < 10*threshDistance and crossdis > 100*threshDistance and tempr[leng - 1] < 0.13:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                    print('got rad 13',SkeleRad[len(SkeleRad)-1])
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng - 1])
@@ -185,7 +188,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             if i > 1 and dist < threshDistance and crossdis > threshDistance and not(case):
                 SkelePoints.append(centerp[leng - 1])
                 SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                print('got rad 1',SkeleRad[len(SkeleRad)-1])
+                print('got rad 2',SkeleRad[len(SkeleRad)-1])
                 if animate:
                     acp[index].append(SkelePoints[len(SkelePoints) - 1])
                     atp[index].append(testp[leng - 1])
@@ -494,7 +497,7 @@ class SkeleNet:
                         self.MasterTag.append(int(row[4]) - 1)
                     elif size == 6:#3D w/ no tag
                         self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
-                        self.NormPoints.append([float(row[3])*-1,float(row[4])*-1,float(row[5])*-1])
+                        self.NormPoints.append([float(row[3])*1,float(row[4])*1,float(row[5])*1])
                         self.MasterTag.append(0)
                     elif size == 7:#3D w/ tag
                         self.IntPoints.append([float(row[0]),float(row[1]),float(row[2])])
