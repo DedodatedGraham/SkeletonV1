@@ -83,7 +83,7 @@ if __name__ == '__main__':
                     y = float(row[1])
                     z = float(row[2])
                     r = float(row[3])
-                    if r > 0.11 and r < 0.39:
+                    if r > 0.15 and r < 0.3:
                         tx.append(x)
                         ty.append(y)
                         tz.append(z)
