@@ -96,6 +96,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         vpts,vdev = tree.getVectorR(inputdat[0])
         crossp = vpts[0]
         crossdis = getDistance(point,crossp.getPoint())
+        print('cross',crossdis < 0.3,crossdis)
         if animate:
             acrossp.append(crossp.getPoint())
         while not case:
@@ -141,59 +142,59 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             #Convergence check
             dist = getDistance(point,testp[leng])
             distc = getDistance(point,centerp[leng])
-            if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
-                SkelePoints.append(centerp[leng])
-                SkeleRad.append(getDistance(point,centerp[leng]))
-                if animate:
-                    acp[index].append(SkelePoints[len(SkelePoints) - 1])
-                    atp[index].append(testp[leng])
-                    arad[index].append(SkeleRad[len(SkeleRad) - 1])
-                case = True
-            ###NEW LOGIC
-            #First will always determine if inside shape..
-            #if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < 10*threshDistance)):
-            #    #Next we want to check for convergence
-            #    if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
-            #        SkelePoints.append(centerp[leng])
-            #        SkeleRad.append(getDistance(point,centerp[leng]))
-            #        print('got rad 11',SkeleRad[len(SkeleRad)-1])
-            #        if animate:
-            #            acp[index].append(SkelePoints[len(SkelePoints) - 1])
-            #            atp[index].append(testp[leng])
-            #            arad[index].append(SkeleRad[len(SkeleRad) - 1])
-            #        case = True
-
-            #    #Then if we fall too close to the interface, but the cross isnt there either. Should alllow us to see thin areas well..
-            #    #Keeps us inside shape at the very least. usually getting too small happens past mid point//
-            #    #elif dist < tempr[leng] + threshDistance:
-            #    #    SkelePoints.append(centerp[leng - 1])
-            #    #    SkeleRad.append(getDistance(point,centerp[leng - 1]))
-            #    #    print('got rad 12',SkeleRad[len(SkeleRad)-1])
-            #    #    if animate:
-            #    #        acp[index].append(SkelePoints[len(SkelePoints) - 1])
-            #    #        atp[index].append(testp[leng - 1])
-            #    #        arad[index].append(SkeleRad[len(SkeleRad) - 1])
-            #    #    case = True
-            #    elif tempr[leng] < 10*threshDistance and crossdis > 100*threshDistance and tempr[leng - 1] < 0.13:
-            #        SkelePoints.append(centerp[leng - 1])
-            #        SkeleRad.append(getDistance(point,centerp[leng - 1]))
-            #        print('got rad 13',SkeleRad[len(SkeleRad)-1])
-            #        if animate:
-            #            acp[index].append(SkelePoints[len(SkelePoints) - 1])
-            #            atp[index].append(testp[leng - 1])
-            #            arad[index].append(SkeleRad[len(SkeleRad) - 1])
-            #        case = True
-
-            ##Check if the distance is way too far inside
-            #if i > 1 and dist < threshDistance and crossdis > threshDistance and not(case):
-            #    SkelePoints.append(centerp[leng - 1])
-            #    SkeleRad.append(getDistance(point,centerp[leng - 1]))
-            #    print('got rad 21',SkeleRad[len(SkeleRad)-1])
+            #if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
+            #    SkelePoints.append(centerp[leng])
+            #    SkeleRad.append(getDistance(point,centerp[leng]))
             #    if animate:
             #        acp[index].append(SkelePoints[len(SkelePoints) - 1])
-            #        atp[index].append(testp[leng - 1])
+            #        atp[index].append(testp[leng])
             #        arad[index].append(SkeleRad[len(SkeleRad) - 1])
             #    case = True
+            ###NEW LOGIC
+            #First will always determine if inside shape..
+            if i > 0 and (distc < crossdis or (dist < crossdis and crossdis < 10*threshDistance)):
+                #Next we want to check for convergence
+                if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
+                    SkelePoints.append(centerp[leng])
+                    SkeleRad.append(getDistance(point,centerp[leng]))
+                    print(i,'got rad 11',SkeleRad[len(SkeleRad)-1])
+                    if animate:
+                        acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                        atp[index].append(testp[leng])
+                        arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                    case = True
+
+                #Then if we fall too close to the interface, but the cross isnt there either. Should alllow us to see thin areas well..
+                #Keeps us inside shape at the very least. usually getting too small happens past mid point//
+                #elif dist < tempr[leng] + threshDistance:
+                #    SkelePoints.append(centerp[leng - 1])
+                #    SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                #    print('got rad 12',SkeleRad[len(SkeleRad)-1])
+                #    if animate:
+                #        acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                #        atp[index].append(testp[leng - 1])
+                #        arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                #    case = True
+                elif tempr[leng] < 10*threshDistance and crossdis > 100*threshDistance:
+                    SkelePoints.append(centerp[leng - 1])
+                    SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                    print(i,'got rad 13',SkeleRad[len(SkeleRad)-1])
+                    if animate:
+                        acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                        atp[index].append(testp[leng - 1])
+                        arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                    case = True
+
+            ##Check if the distance is way too far inside
+            if i > 1 and dist < threshDistance and crossdis > threshDistance and not(case):
+                SkelePoints.append(centerp[leng - 1])
+                SkeleRad.append(getDistance(point,centerp[leng - 1]))
+                print(i,'got rad 21',SkeleRad[len(SkeleRad)-1])
+                if animate:
+                    acp[index].append(SkelePoints[len(SkelePoints) - 1])
+                    atp[index].append(testp[leng - 1])
+                    arad[index].append(SkeleRad[len(SkeleRad) - 1])
+                case = True
             ##Checks if the distance is within
             #if i > 1 and dist < crossdis - threshDistance and tempr[leng] > crossdis - threshDistance and not(case):
             #    SkelePoints.append(centerp[leng - 1])
@@ -208,6 +209,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
             if i > 30 and not(case):
                 #SkelePoints.append()
                 #SkeleRad.append()
+                print('No converge','rad->',tempr)
                 case = True
             ###OLD LOGIC
 
