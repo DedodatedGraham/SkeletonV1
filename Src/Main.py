@@ -15,7 +15,7 @@ import os
 import time
 # import pprofile
 # import Skeletize
-# import DataStructures 
+# import DataStructures
 # from DataStructures import kdTree
 from SkeleNet import SkeleNet,skeletize
 from Skeletize import normalize, getDistance
@@ -36,7 +36,7 @@ mode = 0
 noderequest = 0
 source = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0] + r'/'
 try:
-    arguments,argumentList = getopt.getopt(argumentList,options) 
+    arguments,argumentList = getopt.getopt(argumentList,options)
     for currentArgument, currentValue in arguments:
         if currentArgument in ("-i"):
             link = str(currentValue)
@@ -53,11 +53,11 @@ if __name__ == '__main__':
     # __spec__ = "ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>)"
     sys.setrecursionlimit(10000)
     st = time.time()
-    
+
     plt.rcParams['figure.dpi'] = 300
-    if len(link) <= 1: 
+    if len(link) <= 1:
         link = 'interface_points_070000.dat'
-        # link = 'spiral.dat' 
+        # link = 'spiral.dat'
         # link = 'vof_points_norm_0650.dat'
         # link = 't06.dat'
         # link = 'vof_points_norms.dat'
@@ -72,14 +72,14 @@ if __name__ == '__main__':
     link = source + r'SkeleData/Input/' + link
     psavefile = source + r'SkeleData/Output/' + psavefile
     savefile = source + r'SkeleData/Output/' + savefile
-    #recover = source + r'SkeleData/SAVE/BESTSAVE02.dat' 
-    
+    #recover = source + r'SkeleData/SAVE/BESTSAVE02.dat'
+
     net = SkeleNet(link)
     net.solve(False,mode,noderequest)
     net.savedat(1,psavefile)
-    #net.purge()
-    #net.savedat(1,savefile)
-    #net.plot([1]) 
+    net.purge()
+    net.savedat(1,savefile)
+    #net.plot([1])
 
     et = time.time()
     tt = et - st

@@ -167,7 +167,7 @@ class kdTree:
                             dmin = dmin1
                             pmin = pmin1
             else:
-                tpmin,dmin =  self.leafL.getNearR(inputdat) 
+                tpmin,dmin =  self.leafL.getNearR(inputdat)
                 if tpmin != 0:
                     pmin = tpmin
                 #Next checks node point and sees if its closer, overwrites if so
@@ -183,8 +183,8 @@ class kdTree:
                         if dmin1 < dmin and not(dmin1) == 0:
                             dmin = dmin1
                             pmin = pmin1
-                            
-        
+
+
         else:
             #If at the lowest
             i = 0
@@ -213,7 +213,7 @@ class kdTree:
     #         #Get vector will get the closest n number of points to the search point
     #         #it consideres a 'scan' degree area along the given vector, will go deepest first as thats where the closest points should be
     #         #however it will store node value and compare on the way out if a given node is a better point than something returned
-            
+
     #         if depth == 0:
     #             if len(inputdat) > 3:
     #                 getRads = inputdat[3]
@@ -230,7 +230,7 @@ class kdTree:
     #                 i += 1
     #             tin.append(inputdat[2])
     #             inputdat = tin
-                
+
     #         retPoints = []
     #         retDist = []
     #         axis = depth % self.dimensions
@@ -264,7 +264,7 @@ class kdTree:
     #                             j += 1
     #                         if not(mtdis == -1):
     #                             retPoints[tagj] = self.points[i]
-    #                             retDist[tagj] = tdis 
+    #                             retDist[tagj] = tdis
     #                 i += 1
     #         else:
     #             node = self.node
@@ -330,8 +330,8 @@ class kdTree:
     #             #     print()
     #             #     print(mat,theta)
     #             #     print(inputdat[0],inputdat[1])
-                
-                
+
+
     #             if node.getAxis(axis) < inputdat[0][axis] and inputdat[1][axis] > 0.1:
     #                 retPoints,retDist,steps = self.leafR.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
     #                 if depth < 4 and len(retPoints) == 0:
@@ -347,7 +347,7 @@ class kdTree:
     #                         steps += 'went left and shouldnt of?'
     #                         steps += str(node.getPoint())
     #                         steps += str(depth)
-                            
+
     #             elif node.getAxis(axis) > inputdat[0][axis] and inputdat[1][axis] < 0.1:
     #                 retPoints,retDist,steps = self.leafL.getVectorR(inputdat,depth = depth + 1, scan = scan,cpuavail=cpuavail)
     #                 if depth < 4 and len(retPoints) == 0:
@@ -388,7 +388,7 @@ class kdTree:
     #                         steps += 'went Both and got nothin?'
     #                         steps += str(node.getPoint())
     #                         steps += str(depth)
-                            
+
     #                 i = 0
     #                 while i < len(retPointsl):
     #                     tretPoints.append(retPointsl[i])
@@ -401,7 +401,7 @@ class kdTree:
     #                     i += 1
     #                 ntheta = getAngle(inputdat[1],nvec,getDistance(inputdat[0],tp1),getDistance(inputdat[0],node.getPoint()))
     #                 #gets the node point if it falls inside the criteria
-    #                 if ntheta < (scan / 2): 
+    #                 if ntheta < (scan / 2):
     #                     tretPoints.append(node)
     #                     tretDist.append(getDistance(inputdat[0],node.getPoint()))
     #                 #Finally aquires the best n# of points from big list
@@ -416,16 +416,16 @@ class kdTree:
     #                         tagj = 0
     #                         mtdis = -1
     #                         while j < len(retPoints):
-                                
+
     #                             if tdis < retDist[j] and retDist[j] > mtdis:
     #                                 tagj = j
     #                                 mtdis = retDist[j]
     #                             j += 1
     #                         if not(mtdis == -1):
     #                             retPoints[tagj] = tretPoints[i]
-    #                             retDist[tagj] = tdis 
+    #                             retDist[tagj] = tdis
     #                     i += 1
-                    
+
     #         if depth == 0:
     #             j = 0
     #             trp = []
@@ -441,7 +441,7 @@ class kdTree:
     #                 return trp
     #         else:
     #             return retPoints,retDist,steps
-      
+
 
     def getVectorR(self, data : list):
         # print('searching',data[3])
@@ -457,8 +457,8 @@ class kdTree:
         #     if len(data) == 5:
         #         getRads = data[4]
         #         data = data[0:4]
-        
-        #Finds the differnce between the given vector(from root point) and from the root point to the search point. 
+
+        #Finds the differnce between the given vector(from root point) and from the root point to the search point.
         #Comapres, if close enough, the the point should be close enough to the other side of the shape.
         retpts = []
         retdev = []
@@ -470,7 +470,7 @@ class kdTree:
            #     j = 0
            #     while j < self.points[i].dimensions:
            #         tvec.append(self.points[i].getAxis(j) - point[j])
-           #         j += 1 
+           #         j += 1
            #     tvec = normalize([tvec])
            #     dev = getDeviation(tvec[0],vector)
            #     if len(retpts) < n:
@@ -481,7 +481,7 @@ class kdTree:
            #         ind = -1
            #         tlow = 1.1
            #         while q < len(retpts):
-           #             if retdev[q] < tlow: 
+           #             if retdev[q] < tlow:
            #                 tlow =  retdev[q]
            #                 ind = q
            #             q += 1
@@ -550,7 +550,7 @@ class kdTree:
                 #        print('dev',retdevl[0],retdevr[0])
                 #        print('points',retptsl[0].getPoint(),retptsr[0].getPoint())
                 #        print()
-                
+
                 #TEST4
                 if len(retdevr) == 0 or len(retptsr) == 0:
                     retpts = retptsl
@@ -558,72 +558,72 @@ class kdTree:
                 elif len(retdevl) == 0 or len(retptsl) == 0:
                     retpts = retptsr
                     retdev = retdevr
-                #LOGIC FOR THIN BAG, theres only 2 surfaces realistically, so prio further 
-                if (dl > data[2]*10 and dr < data[2]*10) or (dl < data[2]*10 and dr > data[2]*10):
-                    if retdevr[0] > 0.9 and retdevl[0] > 0.9:
-                        if dr > dl:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                    else:
-                        if retdevr[0] > retdevl[0]:
-                            retpts = retptsr
-                            retdev = retdevr
-                        else:
-                            retpts = retptsl
-                            retdev = retdevl
-                elif dl > data[2]*10 and dr > data[2]*10:
-                    if retdevr[0] > retdevl[0]:
-                        retpts = retptsr
-                        retdev = retdevr
-                    else:
-                        retpts = retptsl
-                        retdev = retdevl
+                #LOGIC FOR THIN BAG, theres only 2 surfaces realistically, so prio further
+                #if (dl > data[2]*10 and dr < data[2]*10) or (dl < data[2]*10 and dr > data[2]*10):
+                #    if retdevr[0] > 0.9 and retdevl[0] > 0.9:
+                #        if dr > dl:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #    else:
+                #        if retdevr[0] > retdevl[0]:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #elif dl > data[2]*10 and dr > data[2]*10:
+                #    if retdevr[0] > retdevl[0]:
+                #        retpts = retptsr
+                #        retdev = retdevr
+                #    else:
+                #        retpts = retptsl
+                #        retdev = retdevl
                 #else:
-                
+
                 #3D LOGIC
-                ##if retdevr[0] > 0.9 and retdevl[0] > 0.9:
-                ##    if dr < data[2] and dl < data[2]:
-                ##        if dr > dl and retdevr[0] > retdevl[0]:
-                ##            retpts = retptsr
-                ##            retdev = retdevr
-                ##        elif dl > dr and retdevl[0] > retdevr[0]:
-                ##            retpts = retptsl
-                ##            retdev = retdevl
-                ##        else:
-                ##            #Here, Both are pretty close to on par with normal, but none is a decisive winner.
-                ##            #So we choose off of retdev for maximazation, and theyre very close anyways
-                ##            if retdevr[0] > retdevl[0]:
-                ##                retpts = retptsr
-                ##                retdev = retdevr
-                ##            else:
-                ##                retpts = retptsl
-                ##                retdev = retdevl
-                ##                
-                ##    elif dr > data[2] and dl > data[2]:
-                ##        if dr < dl:
-                ##            retpts = retptsr
-                ##            retdev = retdevr
-                ##        else:
-                ##            retpts = retptsl
-                ##            retdev = retdevl
-                ##    else:
-                ##        #This should be the part to switch if next run doesnt work.
-                ##        if dr > dl:
-                ##            retpts = retptsr
-                ##            retdev = retdevr
-                ##        else:
-                ##            retpts = retptsl
-                ##            retdev = retdevl
-                ##else:
-                ##    if retdevr[0] > retdevl[0]:
-                ##        retpts = retptsr
-                ##        retdev = retdevr
-                ##    else:
-                ##        retpts = retptsl
-                ##        retdev = retdevl
+                #if retdevr[0] > 0.9 and retdevl[0] > 0.9:
+                #    if dr < data[2] and dl < data[2]:
+                #        if dr > dl and retdevr[0] > retdevl[0]:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        elif dl > dr and retdevl[0] > retdevr[0]:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #        else:
+                #            #Here, Both are pretty close to on par with normal, but none is a decisive winner.
+                #            #So we choose off of retdev for maximazation, and theyre very close anyways
+                #            if retdevr[0] > retdevl[0]:
+                #                retpts = retptsr
+                #                retdev = retdevr
+                #            else:
+                #                retpts = retptsl
+                #                retdev = retdevl
+
+                #    elif dr > data[2] and dl > data[2]:
+                #        if dr < dl:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #    else:
+                #        #This should be the part to switch if next run doesnt work.
+                #        if dr > dl:
+                #            retpts = retptsr
+                #            retdev = retdevr
+                #        else:
+                #            retpts = retptsl
+                #            retdev = retdevl
+                #else:
+                #    if retdevr[0] > retdevl[0]:
+                #        retpts = retptsr
+                #        retdev = retdevr
+                #    else:
+                #        retpts = retptsl
+                #        retdev = retdevl
 
                 #LOGIC, WORKS For 2D Spiral, Taking a differnet approach here.
                 elif diffdev < data[2]*10:
@@ -649,7 +649,7 @@ class kdTree:
                     #else:
                     #    retpts = retptsr
                     #    retdev = retdevr
-                         
+
                     if dl > data[2]/10 and dr > data[2]/10:
                         if retdevl[0] > retdevr[0]:
                             retpts = retptsl
@@ -678,7 +678,7 @@ class kdTree:
                             else:
                                 retpts = retptsr
                                 retdev = retdevr
-            #Finally we need to test if the node is a better substitution instead of the              
+            #Finally we need to test if the node is a better substitution instead of the
             if not(node.getPoint() == data[0]):
                 j = 0
                 tvec = []
@@ -688,8 +688,8 @@ class kdTree:
                 dev = getDeviation(tvec,data[1])
                 diffdev = abs(dev-retdev[0])
                 dn = getDistance(data[0],node.getPoint())
-                dl = getDistance(data[0],retpts[0].getPoint()) 
-                
+                dl = getDistance(data[0],retpts[0].getPoint())
+
                 #thin bag
                 #if (dn > data[2]*10 and dl < data[2]*10) or (dn < data[2]*10 and dl > data[2]*10):
                 #    if dev > 0.9 and retdev[0] > 0.9:
@@ -722,7 +722,7 @@ class kdTree:
                         if dn > dl:
                             retpts = [node]
                             retdev = [dev]
-                
+
                 else:
                     if dev > retdev[0]:
                         retpts = [node]
@@ -756,12 +756,12 @@ class kdTree:
                     #        retpts = [node]
                     #        retdev = [dev]
 
-            
+
 
 
                 #TEST 3
                 #if diffdev < data[2]:
-                #    if dl > data[2]/10 and dr > data[2]/10: 
+                #    if dl > data[2]/10 and dr > data[2]/10:
                 #        if dl > dr:
                 #            retpts = retptsr
                 #            retdev = retdevr
@@ -779,7 +779,7 @@ class kdTree:
                 #    else:
                 #        #Here we have the potential of having a winner/Final Point. So we want to be more specific
                 #        if dl < data[2]/10 and dr < data[2]/ 10:
-                #            #if both are small, then we choose the more on one 
+                #            #if both are small, then we choose the more on one
                 #            if retdevr[0] > retdevl[0]:
                 #                retpts = retptsr
                 #                retdev = retdevr
@@ -800,7 +800,7 @@ class kdTree:
                 #                retpts = retptsr
                 #                retdev = retdevr
                 #else:
-                #    #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent     
+                #    #All results here will be within 0.05 dev of eachother. This is where we consider which ones are good enough to thresh and which ones arent
                 #    if dl < data[2]/10 and dr < data[2]/ 10:
                 #        #both small and not close to eachother, so take the most on
                 #        print('b')
@@ -825,10 +825,10 @@ class kdTree:
                 #        else:
                 #            retpts = retptsl
                 #            retdev = retdevl
-                    
-                
-                #print()                
-                    
+
+
+                #print()
+
                 #TEST2
                 # if dl > data[2] * 2 and dr > data[2] * 2:
                 #     if dl > dr and retdevr[0] > 0.8:
@@ -868,7 +868,7 @@ class kdTree:
                 #         else:
                 #             retpts = retptsl
                 #             retdev = retdevl
-                    
+
                 #TEST1
                 # i = 0
                 # while i < len(retptsl):
@@ -886,7 +886,7 @@ class kdTree:
                 #             j += 1
                 #         if retdev[ind] < retdevl[i]:
                 #             retdev[ind] = retdevl[i]
-                #             retpts[ind] = retptsl[i]      
+                #             retpts[ind] = retptsl[i]
                 #     i += 1
                 # i = 0
                 # while i < len(retptsr):
@@ -904,9 +904,9 @@ class kdTree:
                 #             j += 1
                 #         if retdev[ind] < retdevr[i]:
                 #             retdev[ind] = retdevr[i]
-                #             retpts[ind] = retptsr[i]      
+                #             retpts[ind] = retptsr[i]
                 #     i += 1
-                
+
             # if len(retpts) < n:
             #     q = 0
             #     tv = 0
@@ -920,15 +920,15 @@ class kdTree:
         # print(retpts,retdev)
         # print(self.split,data[3])
         return retpts,retdev
-                
-                
+
+
     # def getInR(self,point : list, dim : float, mode : int,depth : int = 0,*,getRads : bool = False):
     #      #Returns all the points which lie inside a give area arround a certain point
     #      #Mode 0 => Square area, point in center, side = 2 * dim
     #      #Mode 1 => Circle area, point in center, rad  = dim
     #      retPoints = []
     #      axis = depth % self.dimensions
-    #      node = self.node        
+    #      node = self.node
     #      if not(self.split):
     #          i = 1
     #          while i < len(tree):
@@ -943,8 +943,8 @@ class kdTree:
     #              i += 1
     #      else:
     #          #Uses square to obtain all possible sections that might be needed
-    #          #mode only comes into play when searching at bottom layers, however adding the node points 
-    #          #will still depend on mode  
+    #          #mode only comes into play when searching at bottom layers, however adding the node points
+    #          #will still depend on mode
     #          pts = []
     #          rads = []
     #          if point[axis] - dim > node[axis]:
@@ -989,7 +989,7 @@ class kdTree:
     #                      pts.append(node)
     #                      if getRads:
     #                          rads.append(rnode)
-               
+
     #          if len(pts) > 0:
     #              i = 0
     #              while i < len(pts):
@@ -1034,7 +1034,7 @@ class SplitTree:
                 i = 0
                 while i < len(inpts):
                     if len(inrad) > 0:
-                        self.skelepts.append(SkelePoint(inpts[i],rad = inrad[i]))    
+                        self.skelepts.append(SkelePoint(inpts[i],rad = inrad[i]))
                     else:
                         self.skelepts.append(SkelePoint(inpts[i]))
                     i += 1
@@ -1235,8 +1235,8 @@ class SplitTree:
                 self.leafs[5].addpoints(f)
                 self.leafs[6].addpoints(g)
                 self.leafs[7].addpoints(h)
-            
-                
+
+
     def exists(self,point : list,tolerance : float,depth : int = 0):
         if self.state:
             #Go Deeper
@@ -1318,7 +1318,7 @@ class SplitTree:
                         dep = dep7
                         ret = True
         else:
-            #Search here for it. 
+            #Search here for it.
             i = 0
             cdis = 0
             cpoint = []
@@ -1339,7 +1339,7 @@ class SplitTree:
                 i += 1
             return False, depth
         return ret,dep
-    
+
     def getConnections(self, point : list,*,getpoint = False):
         if self.state:
             #Go Deeper
@@ -1370,9 +1370,9 @@ class SplitTree:
                 else:
                     ret = self.leafs[7].getConnections(point,getpoint=getpoint)
         else:
-            #Search here for it. 
+            #Search here for it.
             i = 0
-            j = 0 
+            j = 0
             cdis = 0
             cpoint = []
             while i < len(self.skelepts):
@@ -1389,13 +1389,13 @@ class SplitTree:
                         j = i
                 i += 1
             if getpoint:
-                return self.skelepts[j]    
+                return self.skelepts[j]
             else:
                 return self.skelepts[j].connections
         return ret
-    
-    
-    
+
+
+
                 #ty = []
                 #while i < len(self.skelepts):
                 #    tx.append(self.skelepts[i].x)
@@ -1403,10 +1403,10 @@ class SplitTree:
                 #    plt.plot(self.skelepts[i].x + np.cos(theta) * self.skelepts[i].r,self.skelepts[i].y + np.sin(theta) * self.skelepts[i].r,5,color='red')
                 #    i += 1
                 #plt.scatter(tx,ty,5,color='green')
-    
 
 
-    def purge(self,incode : int = 0,indata : list = [],*,threshDistance : float = 0.0001): 
+
+    def purge(self,incode : int = 0,indata : list = [],*,threshDistance : float = 0.0001):
         #This method is a bit complicated. We pass up and down a code to determine how to act.
         #incode: 0 ->(default, for itterating down the structure),
         #outcode: -1 -> negative space: 0 -> (Bottom level initial information,hard compare): 1 ->
@@ -1454,7 +1454,7 @@ class SplitTree:
                     if (self.dim == 2 and len(touching) > 6) or (self.dim == 3 and len(touching) > 8):#Potential for complete segments, this adjusts stack to what we want
                         self.purge(1,[self.dep,touching],threshDistance=threshDistance)
             else:
-                #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will 
+                #The Bottom layer of a given sequence. We will fit a Linear line/surface. We will
                 #Save these fits in the layer until we want them destroyed
                 n = len(self.skelepts)
                 lowest = self.dep
@@ -1466,7 +1466,7 @@ class SplitTree:
                     while i < len(self.skelepts) - 1:
                         j = i + 1
                         while j < len(self.skelepts):
-                            pti = self.skelepts[i].getPoint() 
+                            pti = self.skelepts[i].getPoint()
                             ptj = self.skelepts[j].getPoint()
                             if getDistance(pti,ptj) < threshDistance / 5:
                                 mark.append(i)
@@ -1495,9 +1495,9 @@ class SplitTree:
                             sxy += pt[0]*pt[1]
                         self.fit = [(n*sxy-sx*sy)/(n*sx2-sx*sx)]#First is a of form ax
                         self.fit.append((sy-self.fit[0]*sx)/n)#now b for ax + b
-                        c0y = self.fit[0]*self.c[0][0]+self.fit[1]#y val taken at x of c0 
+                        c0y = self.fit[0]*self.c[0][0]+self.fit[1]#y val taken at x of c0
                         c0x = (self.c[0][1] - self.fit[1]) / self.fit[0]#x val taken at y of c0
-                        c1y = self.fit[0]*self.c[1][0]+self.fit[1] 
+                        c1y = self.fit[0]*self.c[1][0]+self.fit[1]
                         c1x = (self.c[1][1] - self.fit[1]) / self.fit[0]
                         if c0y > self.c[1][1] and c0y < self.c[0][1]:
                             intercepts.append([self.c[0][0],c0y])
@@ -1560,7 +1560,7 @@ class SplitTree:
                         #Next We Find the Intercepts Going through side of the bounding box
                         #We hold these intercepts in the form of a line equation
                         #IE y = Ax + B where y and x are the planes consistent coordinates
-                        #And we will also mark the end points 
+                        #And we will also mark the end points
                         #The expression will be [point1,point2,[A,B]]#We find the plane we are looking by finding conisistence in point1 and point 2
                         #There will be six tests
                         intercepts = []
@@ -1798,7 +1798,7 @@ class SplitTree:
                 elif sid == 3:#Go Further
                     self.leafs[i].purge(2,indata,threshDistance=threshDistance)
                 i += 1
-        
+
 ####UNUSED########################################################################################################################################################
         elif incode == 3:
             #Now we have our data, so lets go to the scope we want
@@ -1836,7 +1836,7 @@ class SplitTree:
                                 break
                     i += 1
                 if self.stackid[indata[1][0]] == 1:
-                    i = 0 
+                    i = 0
                     while i < len(indata[3]):
                         go = True
                         for tpath in self.leafs[indata[1][0]].touchstack:
@@ -1844,7 +1844,7 @@ class SplitTree:
                                 go = False
                                 break
                         if go:
-                            #If not already touching, then 
+                            #If not already touching, then
                             if len(self.stack[indata[1][0]]) == 1:
                                 if getDistance(self.stack[indata[1][0]][0],indata[2][i]) < threshDistance:
                                     self.leafs[indata[1][0]].touchstack.append([-1,indata[3][i]])
@@ -1962,7 +1962,7 @@ class SplitTree:
                             print('temp')
             #We now have the nodes that cound potentially hold something
             for loc in goto:
-                sid = self.stackid[loc] 
+                sid = self.stackid[loc]
                 if sid == 3:
                     res,pth = self.leafs[loc].deepDive(indepth,target,bounds,threshDistance=threshDistance)
                     if isinstance(res,list):
@@ -2291,7 +2291,7 @@ class SplitTree:
                                 if abs(inter[1][0]-corner[0]) < threshDistance or abs(inter[1][1]-corner[1]) < threshDistance or abs(inter[1][2]-corner[2]):
                                     extrema[0].append(self.stack[i][1])
                                     extrema[1].append(i)
-                                
+
                 i += 1
             return touchid,extrema
         else:
@@ -2459,9 +2459,9 @@ class SplitTree:
                                 plt.scatter(pt.x,pt.y,s=5,c='purple')
                     #if len(data) > 5:
                         #plt.plot([data[5][0][0],data[5][1][0]],[data[5][0][1],data[5][1][1]],c='green')
-                            
 
-            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + name    
+
+            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + name
             plt.savefig(save)
             if self.dim == 2:
                 plt.clf()
@@ -2485,9 +2485,9 @@ class SplitTree:
                                 plt.scatter(pt.x,pt.y,s=5,c='purple')
                     if len(data) > 5:
                         plt.plot([data[5][0][0],data[5][1][0]],[data[5][0][1],data[5][1][1]],c='green')
-                            
 
-            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + 'box' + name    
+
+            save = os.path.split(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])[0] + r'/Plot/' + 'box' + name
             plt.savefig(save)
         else:
             return rdata
@@ -2518,7 +2518,7 @@ class SkelePoint:
 
     def addConnection(self):
         self.connections += 1
-    
+
     def getAxis(self,dim : int):
         if dim == 0:
             return self.x
@@ -2542,7 +2542,7 @@ class SkelePoint:
                     return False
                 i += 1
         return True
-    
+
 
 
 
