@@ -14,7 +14,7 @@ def paraplot(data,start : int,stop : int):
     tx = data[0]
     ty = data[1]
     tz = data[2]
-    if data[-1] == 0:
+    if data[-1] == 0 or data[-1] == 2:
         tr = data[3]
     fig = plt.figure()
     ax = plt.axes(projection='3d')
@@ -22,10 +22,24 @@ def paraplot(data,start : int,stop : int):
     #ax.axes.set_ylim(bottom=-0.75,top=0.75)
     #ax.axes.set_zlim3d(bottom=-0.75,top=0.75)
     if data[-1] == 0:
+        #Draw skeleton Points
         p = ax.scatter3D(tx,ty,tz,s=15,c=tr,cmap='rainbow')
+        fig.colorbar(p)
+    elif data[-1] == 2:
+        #3D Sphere
+        print('Making Circles')
+        i = 0
+        u,v = np.mgrid[0.0:np.pi:100j,0.0:2*np.pi:100j]
+        while i < len(tx):
+            x = tx[i] + tr[i]*np.sin(u)*np.cos(v)
+            y = ty[i] + tr[i]*np.sin(u)*np.sin(v)
+            z = tz[i] + tr[i]*np.cos(u)
+            print('Making Circles',x,y,z)
+            ax.plot_surface(x,y,z)
+            i += 1
     else:
         p = ax.scatter3D(tx,ty,tz,s=15,c=tz,cmap='Greys')
-    fig.colorbar(p)
+        fig.colorbar(p)
     i = start
     while i < stop:
         print('step',i)
@@ -64,7 +78,8 @@ if __name__ == '__main__':
         inpath = source + r'SkeleData/Input/infc_50.dat'
     else:
         inpath = source + r'SkeleData/' + fp
-    if mode == 0:
+    print(mode,"mode try")
+    if mode == 0 or mode == 2:
         with open(inpath,'r') as csvfile:
             data = csv.reader(csvfile, delimiter = ',')
             tx = []
@@ -142,7 +157,7 @@ if __name__ == '__main__':
             else:
                 sp.append(last + nc)
                 last = last + nc
-            if mode == 0:
+            if mode == 0 or mode == 2:
                 data.append([tx,ty,tz,tr,mode])
             elif mode == 1:
                 data.append([tx,ty,tz,mode])
@@ -153,6 +168,7 @@ if __name__ == '__main__':
     else:
         if mode == 0:
             paraplot([tx,ty,tz,tr,0],0,360)
-        else:
+        elif mode == 1:
             paraplot([tx,ty,tz,1],0,360)
-
+        else:
+            paraplot([tx,ty,tz,tr,2],0,360)
