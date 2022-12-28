@@ -29,13 +29,13 @@ def paraplot(data,start : int,stop : int):
         #3D Sphere
         print('Making Circles')
         i = 0
-        u,v = np.mgrid[0.0:np.pi:100j,0.0:2*np.pi:100j]
+        u,v = np.mgrid[0.0:np.pi:10j,0.0:2*np.pi:10j]
         while i < len(tx):
             x = tx[i] + tr[i]*np.sin(u)*np.cos(v)
             y = ty[i] + tr[i]*np.sin(u)*np.sin(v)
             z = tz[i] + tr[i]*np.cos(u)
-            print('Making Circles',x,y,z)
-            ax.plot_surface(x,y,z)
+            print(i,'length',len(x),len(y),len(z))
+            #ax.plot_surface(x,y,z)
             i += 1
     else:
         p = ax.scatter3D(tx,ty,tz,s=15,c=tz,cmap='Greys')
