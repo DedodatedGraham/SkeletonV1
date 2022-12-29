@@ -74,7 +74,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         testp = []
         #print(index,cpuid)
         case = False
-        # print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
+        print('Tag:{},Id:{}'.format(tag,cpuid),index,'/',len(pts) - 1,'{}%'.format((index / (len(pts) - 1)) * 100))
         #Main loop for each points solve
         #Checks if the point is closer than the cross point if it falls here, alittle expensive but should fix errors
         #Important to remeber, a vector into the surface is -1 * norm
@@ -96,7 +96,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
         vpts,vdev = tree.getVectorR(inputdat[0])
         crossp = vpts[0]
         crossdis = getDistance(point,crossp.getPoint())
-        print('cross',crossdis < 0.3,crossdis)
+        #print('cross',crossdis < 0.3,crossdis)
         if animate:
             acrossp.append(crossp.getPoint())
         while not case:
@@ -344,7 +344,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 if abs(tempr[leng] - tempr[leng - 1]) < threshDistance:
                     SkelePoints.append(centerp[leng])
                     SkeleRad.append(getDistance(point,centerp[leng]))
-                    print(i,'got rad 11',SkeleRad[len(SkeleRad)-1])
+                    #print(i,'got rad 11',SkeleRad[len(SkeleRad)-1])
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng])
@@ -355,7 +355,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 elif dist < tempr[leng] + threshDistance:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                    print('got rad 12',SkeleRad[len(SkeleRad)-1])
+                    #print('got rad 12',SkeleRad[len(SkeleRad)-1])
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng - 1])
@@ -364,7 +364,7 @@ def skeletize(points : list,norms : list,threshDistance : float,tree : kdTree,an
                 elif tempr[leng] < 10*threshDistance:
                     SkelePoints.append(centerp[leng - 1])
                     SkeleRad.append(getDistance(point,centerp[leng - 1]))
-                    print(i,'got rad 13',SkeleRad[len(SkeleRad)-1])
+                    #print(i,'got rad 13',SkeleRad[len(SkeleRad)-1])
                     if animate:
                         acp[index].append(SkelePoints[len(SkelePoints) - 1])
                         atp[index].append(testp[leng - 1])
