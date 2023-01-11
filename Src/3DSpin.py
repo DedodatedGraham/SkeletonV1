@@ -9,46 +9,77 @@ from scipy import interpolate as itp
 from pathos.pools import ProcessPool
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)) + r'/DataStruct')
 from DataStructures import quicksort
-def paraplot(data,start : int,stop : int):
-    import matplotlib.pyplot as plt
+
+def paraplot(data,start : int,stop : int,ids : int):
+    print("Beggining Plot")
+    if data[-1] == 0 or data[-1] == 1:
+        import matplotlib.pyplot as plt
+    else:
+        from mayavi import mlab
+    #print('importing data')
     tx = data[0]
     ty = data[1]
     tz = data[2]
     if data[-1] == 0 or data[-1] == 2:
         tr = data[3]
-    fig = plt.figure()
-    ax = plt.axes(projection='3d')
-    #ax.axes.set_xlim3d(left=2.35,right=3.85)
-    #ax.axes.set_ylim(bottom=-0.75,top=0.75)
-    #ax.axes.set_zlim3d(bottom=-0.75,top=0.75)
+    #print('Loaded Data',data[-1])
+    if data[-1] == 0 or data[-1] == 1:
+        fig = plt.figure()
+        #print('got 2dfig')
+        ax = plt.axes(projection='3d')
+        ax.axes.set_xlim3d(left=-0.7,right=0.7)
+        ax.axes.set_ylim(bottom=-0.7,top=0.7)
+        ax.axes.set_zlim3d(bottom=-0.7,top=0.7)
+    #print('Loaded fig')
     if data[-1] == 0:
         #Draw skeleton Points
-        p = ax.scatter3D(tx,ty,tz,s=15,c=tr,cmap='rainbow')
+        p = ax.scatter3D(tx,ty,tz,c=tr,cmap='rainbow')
         fig.colorbar(p)
     elif data[-1] == 2:
         #3D Sphere
         print('Making Circles')
         i = 0
         u,v = np.mgrid[0.0:np.pi:10j,0.0:2*np.pi:10j]
-        while i < len(tx):
-            x = tx[i] + tr[i]*np.sin(u)*np.cos(v)
-            y = ty[i] + tr[i]*np.sin(u)*np.sin(v)
-            z = tz[i] + tr[i]*np.cos(u)
-            print(i,'length',len(x),len(y),len(z))
-            #ax.plot_surface(x,y,z)
-            i += 1
+        surface = []
+        #while i < len(tx):
+        #    x = tx[i] #+ tr[i]*np.sin(u)*np.cos(v)
+        #    y = ty[i] #+ tr[i]*np.sin(u)*np.sin(v)
+        #    z = tz[i] #+ tr[i]*np.cos(u)
+        #    print(i,'length',len(x),len(y),len(z))
+        surf = mlab.points3d(tx,ty,tz,tr,scale_factor=1,colormap="gist_rainbow")
+        print('made surface')
+        #    surface.append(tsurf)
+        #    print('added surface')
+        #    i += 1
+        #print('got surfaces')
     else:
         p = ax.scatter3D(tx,ty,tz,s=15,c=tz,cmap='Greys')
         fig.colorbar(p)
-    i = start
-    while i < stop:
-        print('step',i)
-        ax.view_init(30,i)
-        save = source + r'AnimationData/Spin/{0:0=3d}spin.png'.format(i)
-        plt.savefig(save)
-        #print(i)
-        i += 1
 
+    #Rotate & save
+
+    if data[-1] == 0 or data[-1] == 1:
+        print('starting animation')
+        i = start
+        while i < stop:
+            print('step',i)
+            ax.view_init(30,i)
+            print('Rotated', i)
+            save = source + r'AnimationData/Spin/{0:0=3d}spin.png'.format(i)
+            print('Wrote save name',i)
+            plt.savefig(save)
+            print('Saved',i)
+            i += 1
+    else:
+        i = start
+        while i < stop:
+            print('step',i)
+            mlab.view(azimuth=i)
+            save = source + r'AnimationData/Spin/{0:0=3d}spin.png'.format(i)
+            mlab.savefig(save,size=(300,300))
+            i += 1
+
+####MAIN
 if __name__ == '__main__':
 
     #Gets Args, Only Arg is number of processes though
@@ -142,6 +173,7 @@ if __name__ == '__main__':
         i = 0
         st = []
         sp = []
+        ids = []
         if nodes > 30:
             nodes = 30
         nf = int(np.floor(360/nodes))
@@ -150,6 +182,7 @@ if __name__ == '__main__':
         data = []
         md = []
         while i < nodes and last + nc < 360:
+            ids.append(i)
             st.append(last)
             if i % 2 == 0:
                 sp.append(last + nf)
@@ -164,11 +197,11 @@ if __name__ == '__main__':
             i += 1
         sp[len(sp) - 1] = 360
         pool = ProcessPool(nodes=nodes)
-        pool.map(paraplot,data,st,sp)
+        pool.map(paraplot,data,st,sp,ids)
     else:
         if mode == 0:
-            paraplot([tx,ty,tz,tr,0],0,360)
+            paraplot([tx,ty,tz,tr,0],0,360,0)
         elif mode == 1:
-            paraplot([tx,ty,tz,1],0,360)
+            paraplot([tx,ty,tz,1],0,360,0)
         else:
-            paraplot([tx,ty,tz,tr,2],0,360)
+            paraplot([tx,ty,tz,tr,2],0,360,0)
