@@ -86,13 +86,13 @@ if __name__ == '__main__':
     else:
         inpath = source + r'SkeleData/' + fp
     print(mode,"mode try")
+    tx = []
+    ty = []
+    tz = []
+    tr = []
     if mode == 0 or mode == 2:
         with open(inpath,'r') as csvfile:
             data = csv.reader(csvfile, delimiter = ',')
-            tx = []
-            ty = []
-            tz = []
-            tr = []
             liner = []
             i = 0
             j = 0
@@ -113,12 +113,12 @@ if __name__ == '__main__':
     if mode == 2:
         #Gets interface adress if mode 2
         inpath =  source + r'SkeleData/Input/infc_50.dat';
-    elif mode == 1 or mode == 2:
+    txx = []
+    tyy = []
+    tzz = []
+    if mode == 1 or mode == 2:
         with open(inpath,'r') as csvfile:
             data = csv.reader(csvfile, delimiter = ' ')
-            txx = []
-            tyy = []
-            tzz = []
             i = 0
             for row in data:
                 print(i,row)

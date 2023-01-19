@@ -1,5 +1,4 @@
 Starting at /data/ling_shared/garciag/SkeletonV1/Supercomputer
-node file /var/spool/pbs/aux/1228412.batch
-2 mode try
+node file /var/spool/pbs/aux/1228418.batch
 
-Job finished at Thu Jan 19 08:49:22 CST 2023
+Job finished at Thu Jan 19 08:56:20 CST 2023

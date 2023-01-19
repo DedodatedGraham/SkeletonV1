@@ -1,7 +1,7 @@
-Traceback (most recent call last):
-  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 90, in <module>
-    with open(inpath,'r') as csvfile:
-FileNotFoundError: [Errno 2] No such file or directory: '/data/ling_shared/garciag/SkeletonV1/SkeleData/Input/infc_50_savePrePurge.dat'
+  File "/data/ling_shared/garciag/SkeletonV1/Supercomputer/../Src/3DSpin.py", line 119
+    elif mode == 1 or mode == 2:
+    ^^^^
+SyntaxError: invalid syntax
 ffmpeg version 5.0.1-static https://johnvansickle.com/ffmpeg/  Copyright (c) 2000-2022 the FFmpeg developers
   built with gcc 8 (Debian 8.3.0-6)
   configuration: --enable-gpl --enable-version3 --enable-static --disable-debug --disable-ffplay --disable-indev=sndio --disable-outdev=sndio --cc=gcc --enable-fontconfig --enable-frei0r --enable-gnutls --enable-gmp --enable-libgme --enable-gray --enable-libfribidi --enable-libass --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-librubberband --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libvorbis --enable-libopus --enable-libtheora --enable-libvidstab --enable-libvo-amrwbenc --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg
@@ -31,7 +31,7 @@ Output #0, mp4, to '../AnimationData/Spin/Spin.mp4':
       encoder         : Lavc59.18.100 libx264
     Side data:
       cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
-frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   36 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   82 fps= 80 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  132 fps= 86 q=32.0 size=       0kB time=00:00:00.55 bitrate=   0.7kbits/s dup=2 drop=0 speed=0.363x    frame=  182 fps= 90 q=32.0 size=     256kB time=00:00:01.25 bitrate=1678.0kbits/s dup=2 drop=0 speed=0.615x    frame=  231 fps= 91 q=32.0 size=     512kB time=00:00:01.93 bitrate=2172.7kbits/s dup=2 drop=0 speed=0.762x    frame=  282 fps= 93 q=32.0 size=     768kB time=00:00:02.63 bitrate=2384.2kbits/s dup=2 drop=0 speed=0.869x    frame=  332 fps= 94 q=32.0 size=    1024kB time=00:00:03.33 bitrate=2516.7kbits/s dup=2 drop=0 speed=0.939x    frame=  362 fps= 90 q=-1.0 Lsize=    1895kB time=00:00:04.98 bitrate=3113.8kbits/s dup=2 drop=0 speed=1.24x    
+frame=    3 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   35 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=   79 fps= 78 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A dup=2 drop=0 speed=   0x    frame=  131 fps= 86 q=32.0 size=       0kB time=00:00:00.54 bitrate=   0.7kbits/s dup=2 drop=0 speed=0.356x    frame=  175 fps= 85 q=32.0 size=     256kB time=00:00:01.15 bitrate=1819.5kbits/s dup=2 drop=0 speed=0.559x    frame=  211 fps= 82 q=32.0 size=     512kB time=00:00:01.65 bitrate=2537.9kbits/s dup=2 drop=0 speed=0.643x    frame=  263 fps= 85 q=32.0 size=     768kB time=00:00:02.37 bitrate=2649.1kbits/s dup=2 drop=0 speed=0.769x    frame=  314 fps= 87 q=32.0 size=    1024kB time=00:00:03.08 bitrate=2720.7kbits/s dup=2 drop=0 speed=0.858x    frame=  362 fps= 88 q=32.0 size=    1280kB time=00:00:03.75 bitrate=2796.3kbits/s dup=2 drop=0 speed=0.915x    frame=  362 fps= 85 q=-1.0 Lsize=    1895kB time=00:00:04.98 bitrate=3113.8kbits/s dup=2 drop=0 speed=1.17x    
 video:1893kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.123868%
 [libx264 @ 0xb9b82c0] frame I:2     Avg QP:23.59  size: 38742
 [libx264 @ 0xb9b82c0] frame P:357   Avg QP:23.90  size:  5198
