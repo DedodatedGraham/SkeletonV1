@@ -1,277 +1,277 @@
 Starting at /data/ling_shared/garciag/SkeletonV1/Supercomputer
-node file /var/spool/pbs/aux/1227697.batch
+node file /var/spool/pbs/aux/1227709.batch
 processes 128
-Skeleton started at Tue Jan 17 17:05:28 CST 2023
+Skeleton started at Tue Jan 17 18:02:03 CST 2023
 
 We have 28 CPU's Available
 dim: 3
 Initiating k-d,Tree
-k-d tree took 0.0 minuites and 0.6988029479980469 seconds to make
-thresh [0.014199547906539012]
-process1 started
-Skeleton took 0.0 minuites and 9.15137767791748 seconds
-process3 started
-Skeleton took 0.0 minuites and 10.340108394622803 seconds
-process4 started
-Skeleton took 0.0 minuites and 9.595641613006592 seconds
-process0 started
-Skeleton took 0.0 minuites and 10.020439624786377 seconds
-process7 started
-Skeleton took 0.0 minuites and 9.87975001335144 seconds
-process8 started
-Skeleton took 0.0 minuites and 9.628356695175171 seconds
-process2 started
-Skeleton took 0.0 minuites and 10.055969953536987 seconds
-process10 started
-Skeleton took 0.0 minuites and 10.02017068862915 seconds
-process13 started
-Skeleton took 0.0 minuites and 9.46889591217041 seconds
-process9 started
-Skeleton took 0.0 minuites and 9.607172727584839 seconds
-process14 started
-Skeleton took 0.0 minuites and 9.215096950531006 seconds
-process5 started
-Skeleton took 0.0 minuites and 9.055681705474854 seconds
-process6 started
-Skeleton took 0.0 minuites and 9.477224111557007 seconds
-process16 started
-Skeleton took 0.0 minuites and 8.823591232299805 seconds
-process17 started
-Skeleton took 0.0 minuites and 8.977874517440796 seconds
-process11 started
-Skeleton took 0.0 minuites and 10.100909233093262 seconds
-process21 started
-Skeleton took 0.0 minuites and 9.34859561920166 seconds
-process12 started
-Skeleton took 0.0 minuites and 8.423677444458008 seconds
-process23 started
-Skeleton took 0.0 minuites and 9.52114200592041 seconds
-process24 started
-Skeleton took 0.0 minuites and 9.854114055633545 seconds
-process27 started
-Skeleton took 0.0 minuites and 9.38618803024292 seconds
-process15 started
-Skeleton took 0.0 minuites and 8.972054958343506 seconds
-process29 started
-Skeleton took 0.0 minuites and 9.882887125015259 seconds
-process30 started
-Skeleton took 0.0 minuites and 10.473549127578735 seconds
-process31 started
-Skeleton took 0.0 minuites and 10.612918853759766 seconds
-process33 started
-Skeleton took 0.0 minuites and 9.860510110855103 seconds
-process20 started
-Skeleton took 0.0 minuites and 9.8751540184021 seconds
-process19 started
-Skeleton took 0.0 minuites and 10.707279920578003 seconds
-process18 started
-Skeleton took 0.0 minuites and 9.620877981185913 seconds
-process38 started
-Skeleton took 0.0 minuites and 10.2701256275177 seconds
+k-d tree took 2.0 minuites and 47.78027963638306 seconds to make
+thresh [0.0013528561738260275]
 process25 started
-Skeleton took 0.0 minuites and 9.345841407775879 seconds
-process40 started
-Skeleton took 0.0 minuites and 9.756569385528564 seconds
-process41 started
-Skeleton took 0.0 minuites and 9.652632474899292 seconds
-process42 started
-Skeleton took 0.0 minuites and 9.131934642791748 seconds
-process22 started
-Skeleton took 0.0 minuites and 9.25291895866394 seconds
-process43 started
-Skeleton took 0.0 minuites and 8.97961711883545 seconds
-process26 started
-Skeleton took 0.0 minuites and 10.046285629272461 seconds
-process28 started
-Skeleton took 0.0 minuites and 9.022520542144775 seconds
-process32 started
-Skeleton took 0.0 minuites and 10.556600093841553 seconds
-process34 started
-Skeleton took 0.0 minuites and 9.918047904968262 seconds
-process35 started
-Skeleton took 0.0 minuites and 9.279187679290771 seconds
+Skeleton took 1152.0 minuites and 50.96464490890503 seconds
+process1 started
+Skeleton took 1192.0 minuites and 30.687798500061035 seconds
+process29 started
+Skeleton took 1157.0 minuites and 30.508976936340332 seconds
+process2 started
+Skeleton took 1173.0 minuites and 44.13488841056824 seconds
+process27 started
+Skeleton took 1177.0 minuites and 23.20564579963684 seconds
 process37 started
-Skeleton took 0.0 minuites and 10.518993139266968 seconds
-process36 started
-Skeleton took 0.0 minuites and 9.140303373336792 seconds
-process39 started
-Skeleton took 0.0 minuites and 9.75665020942688 seconds
-process46 started
-Skeleton took 0.0 minuites and 9.227861642837524 seconds
-process47 started
-Skeleton took 0.0 minuites and 9.074347019195557 seconds
-process48 started
-Skeleton took 0.0 minuites and 9.100702047348022 seconds
-process53 started
-Skeleton took 0.0 minuites and 9.523406267166138 seconds
-process55 started
-Skeleton took 0.0 minuites and 9.238328695297241 seconds
-process56 started
-Skeleton took 0.0 minuites and 9.230556011199951 seconds
-process44 started
-Skeleton took 0.0 minuites and 8.506321668624878 seconds
-process45 started
-Skeleton took 0.0 minuites and 9.015223026275635 seconds
-process58 started
-Skeleton took 0.0 minuites and 10.018144130706787 seconds
-process59 started
-Skeleton took 0.0 minuites and 9.286240816116333 seconds
-process60 started
-Skeleton took 0.0 minuites and 9.647114753723145 seconds
-process61 started
-Skeleton took 0.0 minuites and 10.954256534576416 seconds
-process49 started
-Skeleton took 0.0 minuites and 9.443726062774658 seconds
-process50 started
-Skeleton took 0.0 minuites and 9.161436319351196 seconds
-process52 started
-Skeleton took 0.0 minuites and 9.812649011611938 seconds
-process68 started
-Skeleton took 0.0 minuites and 9.162219524383545 seconds
-process51 started
-Skeleton took 0.0 minuites and 9.849446058273315 seconds
-process64 started
-Skeleton took 0.0 minuites and 10.550362825393677 seconds
-process69 started
-Skeleton took 0.0 minuites and 9.771103143692017 seconds
-process70 started
-Skeleton took 0.0 minuites and 9.573714971542358 seconds
-process71 started
-Skeleton took 0.0 minuites and 9.605126142501831 seconds
-process73 started
-Skeleton took 0.0 minuites and 9.129590034484863 seconds
-process72 started
-Skeleton took 0.0 minuites and 10.237361431121826 seconds
-process74 started
-Skeleton took 0.0 minuites and 9.272059679031372 seconds
-process75 started
-Skeleton took 0.0 minuites and 9.244737386703491 seconds
-process76 started
-Skeleton took 0.0 minuites and 9.05150580406189 seconds
-process54 started
-Skeleton took 0.0 minuites and 9.175329446792603 seconds
-process57 started
-Skeleton took 0.0 minuites and 9.279851198196411 seconds
-process82 started
-Skeleton took 0.0 minuites and 9.266000747680664 seconds
-process81 started
-Skeleton took 0.0 minuites and 9.24439811706543 seconds
-process83 started
-Skeleton took 0.0 minuites and 9.111010074615479 seconds
-process62 started
-Skeleton took 0.0 minuites and 10.653221130371094 seconds
-process65 started
-Skeleton took 0.0 minuites and 9.305409908294678 seconds
+Skeleton took 1169.0 minuites and 22.26482391357422 seconds
+process3 started
+Skeleton took 1208.0 minuites and 24.2639582157135 seconds
+process24 started
+Skeleton took 1187.0 minuites and 28.467766761779785 seconds
+process26 started
+Skeleton took 1204.0 minuites and 5.015706777572632 seconds
+process17 started
+Skeleton took 1266.0 minuites and 14.817932367324829 seconds
+process20 started
+Skeleton took 1264.0 minuites and 41.63051080703735 seconds
+process0 started
+Skeleton took 1272.0 minuites and 24.65956449508667 seconds
 process63 started
-Skeleton took 0.0 minuites and 11.026942253112793 seconds
-process86 started
-Skeleton took 0.0 minuites and 9.109023332595825 seconds
-process66 started
-Skeleton took 0.0 minuites and 10.29613447189331 seconds
-process67 started
-Skeleton took 0.0 minuites and 10.00087571144104 seconds
-process91 started
-Skeleton took 0.0 minuites and 9.272896766662598 seconds
-process77 started
-Skeleton took 0.0 minuites and 9.091420412063599 seconds
-process78 started
-Skeleton took 0.0 minuites and 9.57469391822815 seconds
-process79 started
-Skeleton took 0.0 minuites and 8.70179557800293 seconds
-process80 started
-Skeleton took 0.0 minuites and 8.748013734817505 seconds
-process84 started
-Skeleton took 0.0 minuites and 9.308029890060425 seconds
-process85 started
-Skeleton took 0.0 minuites and 9.386009693145752 seconds
-process87 started
-Skeleton took 0.0 minuites and 9.560011625289917 seconds
-process88 started
-Skeleton took 0.0 minuites and 9.828235387802124 seconds
-process90 started
-Skeleton took 0.0 minuites and 11.353981971740723 seconds
-process89 started
-Skeleton took 0.0 minuites and 10.367382526397705 seconds
-process95 started
-Skeleton took 0.0 minuites and 10.550973653793335 seconds
-process96 started
-Skeleton took 0.0 minuites and 9.843592882156372 seconds
-process97 started
-Skeleton took 0.0 minuites and 9.915276050567627 seconds
-process98 started
-Skeleton took 0.0 minuites and 9.28564453125 seconds
-process99 started
-Skeleton took 0.0 minuites and 8.950640678405762 seconds
-process100 started
-Skeleton took 0.0 minuites and 9.857952356338501 seconds
-process101 started
-Skeleton took 0.0 minuites and 10.092790603637695 seconds
-process102 started
-Skeleton took 0.0 minuites and 9.644301652908325 seconds
-process103 started
-Skeleton took 0.0 minuites and 9.52475619316101 seconds
-process104 started
-Skeleton took 0.0 minuites and 9.152783393859863 seconds
-process106 started
-Skeleton took 0.0 minuites and 9.451426267623901 seconds
-process111 started
-Skeleton took 0.0 minuites and 8.900851964950562 seconds
-process92 started
-Skeleton took 0.0 minuites and 9.416171073913574 seconds
-process110 started
-Skeleton took 0.0 minuites and 9.880096435546875 seconds
-process109 started
-Skeleton took 0.0 minuites and 10.46985912322998 seconds
-process112 started
-Skeleton took 0.0 minuites and 8.55653429031372 seconds
+Skeleton took 1212.0 minuites and 33.51797103881836 seconds
+process10 started
+Skeleton took 1279.0 minuites and 17.672476053237915 seconds
+process33 started
+Skeleton took 1253.0 minuites and 6.177567958831787 seconds
+process56 started
+Skeleton took 1229.0 minuites and 1.5093774795532227 seconds
+process61 started
+Skeleton took 1235.0 minuites and 5.129732370376587 seconds
+process57 started
+Skeleton took 1242.0 minuites and 39.47280192375183 seconds
 process93 started
-Skeleton took 0.0 minuites and 10.544569730758667 seconds
-process94 started
-Skeleton took 0.0 minuites and 10.18115520477295 seconds
-process115 started
-Skeleton took 0.0 minuites and 9.338154554367065 seconds
-process119 started
-Skeleton took 0.0 minuites and 10.421719789505005 seconds
-process121 started
-Skeleton took 0.0 minuites and 10.525939464569092 seconds
-process105 started
-Skeleton took 0.0 minuites and 9.343670129776001 seconds
-process123 started
-Skeleton took 0.0 minuites and 9.230271339416504 seconds
-process107 started
-Skeleton took 0.0 minuites and 8.896181583404541 seconds
-process125 started
-Skeleton took 0.0 minuites and 10.179336309432983 seconds
-process108 started
-Skeleton took 0.0 minuites and 9.096622467041016 seconds
-process127 started
-Skeleton took 0.0 minuites and 10.119826555252075 seconds
-process113 started
-Skeleton took 0.0 minuites and 9.218318939208984 seconds
-process114 started
-Skeleton took 0.0 minuites and 9.205649614334106 seconds
-process116 started
-Skeleton took 0.0 minuites and 9.856542110443115 seconds
-process117 started
-Skeleton took 0.0 minuites and 9.837998390197754 seconds
-process118 started
-Skeleton took 0.0 minuites and 9.882740020751953 seconds
-process120 started
-Skeleton took 0.0 minuites and 9.623051881790161 seconds
-process122 started
-Skeleton took 0.0 minuites and 9.4794921875 seconds
-process124 started
-Skeleton took 0.0 minuites and 9.680523157119751 seconds
+Skeleton took 1195.0 minuites and 38.797637701034546 seconds
+process58 started
+Skeleton took 1248.0 minuites and 13.933933734893799 seconds
+process5 started
+Skeleton took 1315.0 minuites and 17.187392711639404 seconds
+process89 started
+Skeleton took 1213.0 minuites and 41.09425354003906 seconds
+process101 started
+Skeleton took 1201.0 minuites and 50.49781322479248 seconds
+process102 started
+Skeleton took 1201.0 minuites and 48.556737184524536 seconds
+process35 started
+Skeleton took 1292.0 minuites and 10.01583456993103 seconds
+process32 started
+Skeleton took 1297.0 minuites and 34.56944489479065 seconds
 process126 started
-Skeleton took 0.0 minuites and 10.394518375396729 seconds
+Skeleton took 1188.0 minuites and 2.631587266921997 seconds
+process9 started
+Skeleton took 1342.0 minuites and 3.387873888015747 seconds
+process8 started
+Skeleton took 1343.0 minuites and 43.893157720565796 seconds
+process124 started
+Skeleton took 1194.0 minuites and 12.171196699142456 seconds
+process123 started
+Skeleton took 1201.0 minuites and 29.024843454360962 seconds
+process6 started
+Skeleton took 1353.0 minuites and 38.39642333984375 seconds
+process7 started
+Skeleton took 1353.0 minuites and 46.29396033287048 seconds
+process11 started
+Skeleton took 1350.0 minuites and 11.955973863601685 seconds
+process70 started
+Skeleton took 1279.0 minuites and 16.063681602478027 seconds
+process69 started
+Skeleton took 1285.0 minuites and 49.16244912147522 seconds
+process97 started
+Skeleton took 1251.0 minuites and 51.96089506149292 seconds
+process18 started
+Skeleton took 1354.0 minuites and 19.150816440582275 seconds
+process28 started
+Skeleton took 1343.0 minuites and 16.231242895126343 seconds
+process91 started
+Skeleton took 1267.0 minuites and 48.439674377441406 seconds
+process49 started
+Skeleton took 1322.0 minuites and 33.67185878753662 seconds
+process125 started
+Skeleton took 1221.0 minuites and 42.27658534049988 seconds
+process30 started
+Skeleton took 1353.0 minuites and 44.34447646141052 seconds
+process98 started
+Skeleton took 1261.0 minuites and 19.588193893432617 seconds
+process118 started
+Skeleton took 1241.0 minuites and 37.29124426841736 seconds
+process59 started
+Skeleton took 1321.0 minuites and 17.666778326034546 seconds
+process67 started
+Skeleton took 1312.0 minuites and 14.812739372253418 seconds
+process50 started
+Skeleton took 1338.0 minuites and 26.797919988632202 seconds
+process88 started
+Skeleton took 1289.0 minuites and 39.51699137687683 seconds
+process116 started
+Skeleton took 1247.0 minuites and 42.539048194885254 seconds
+process94 started
+Skeleton took 1282.0 minuites and 37.515066146850586 seconds
+process34 started
+Skeleton took 1361.0 minuites and 38.1281852722168 seconds
+process121 started
+Skeleton took 1257.0 minuites and 48.12247109413147 seconds
+process16 started
+Skeleton took 1400.0 minuites and 13.609926223754883 seconds
+process14 started
+Skeleton took 1409.0 minuites and 42.88316607475281 seconds
+process86 started
+Skeleton took 1318.0 minuites and 0.518702507019043 seconds
+process66 started
+Skeleton took 1338.0 minuites and 30.493646144866943 seconds
+process52 started
+Skeleton took 1366.0 minuites and 5.230931997299194 seconds
+process4 started
+Skeleton took 1398.0 minuites and 47.125332832336426 seconds
+process36 started
+Skeleton took 1387.0 minuites and 18.53465175628662 seconds
+process84 started
+Skeleton took 1332.0 minuites and 34.98558592796326 seconds
+process38 started
+Skeleton took 1390.0 minuites and 4.92291522026062 seconds
+process92 started
+Skeleton took 1318.0 minuites and 27.269110202789307 seconds
+process23 started
+Skeleton took 1410.0 minuites and 23.07996678352356 seconds
+process109 started
+Skeleton took 1311.0 minuites and 41.56481409072876 seconds
+process21 started
+Skeleton took 1422.0 minuites and 48.295544147491455 seconds
+process64 started
+Skeleton took 1379.0 minuites and 36.417290687561035 seconds
+process103 started
+Skeleton took 1330.0 minuites and 9.477270603179932 seconds
+process68 started
+Skeleton took 1365.0 minuites and 30.081406593322754 seconds
+process65 started
+Skeleton took 1382.0 minuites and 43.70019030570984 seconds
+process40 started
+Skeleton took 1414.0 minuites and 6.96212911605835 seconds
+process122 started
+Skeleton took 1309.0 minuites and 33.574400186538696 seconds
+process42 started
+Skeleton took 1387.0 minuites and 24.22265338897705 seconds
+process96 started
+Skeleton took 1347.0 minuites and 24.61934494972229 seconds
+process48 started
+Skeleton took 1411.0 minuites and 4.895801782608032 seconds
+process13 started
+Skeleton took 1460.0 minuites and 16.101081609725952 seconds
+process62 started
+Skeleton took 1394.0 minuites and 44.964536905288696 seconds
+process83 started
+Skeleton took 1376.0 minuites and 23.771557331085205 seconds
+process22 started
+Skeleton took 1455.0 minuites and 17.571678400039673 seconds
+process71 started
+Skeleton took 1395.0 minuites and 55.04244017601013 seconds
+process76 started
+Skeleton took 1390.0 minuites and 49.47824573516846 seconds
+process106 started
+Skeleton took 1355.0 minuites and 16.85656213760376 seconds
+process39 started
+Skeleton took 1450.0 minuites and 32.98611521720886 seconds
+process51 started
+Skeleton took 1437.0 minuites and 22.977561950683594 seconds
+process19 started
+Skeleton took 1484.0 minuites and 34.06913471221924 seconds
+process100 started
+Skeleton took 1381.0 minuites and 37.82921814918518 seconds
+process115 started
+Skeleton took 1362.0 minuites and 21.05282163619995 seconds
+process31 started
+Skeleton took 1473.0 minuites and 36.391520500183105 seconds
+process77 started
+Skeleton took 1417.0 minuites and 35.838727951049805 seconds
+process99 started
+Skeleton took 1388.0 minuites and 15.349679231643677 seconds
+process87 started
+Skeleton took 1407.0 minuites and 11.541302680969238 seconds
+process43 started
+Skeleton took 1460.0 minuites and 44.67719626426697 seconds
+process78 started
+Skeleton took 1420.0 minuites and 39.07886552810669 seconds
+process113 started
+Skeleton took 1373.0 minuites and 8.509738445281982 seconds
+process12 started
+Skeleton took 1504.0 minuites and 41.51661801338196 seconds
+process120 started
+Skeleton took 1365.0 minuites and 44.32632279396057 seconds
+process110 started
+Skeleton took 1380.0 minuites and 27.222959756851196 seconds
+process15 started
+Skeleton took 1497.0 minuites and 39.4539635181427 seconds
+process60 started
+Skeleton took 1447.0 minuites and 20.512134790420532 seconds
+process41 started
+Skeleton took 1471.0 minuites and 25.46293044090271 seconds
+process44 started
+Skeleton took 1465.0 minuites and 14.181118488311768 seconds
+process85 started
+Skeleton took 1429.0 minuites and 13.218887567520142 seconds
+process75 started
+Skeleton took 1458.0 minuites and 59.31780219078064 seconds
+process117 started
+Skeleton took 1386.0 minuites and 22.859833002090454 seconds
+process107 started
+Skeleton took 1389.0 minuites and 30.850770235061646 seconds
+process90 started
+Skeleton took 1429.0 minuites and 12.674417734146118 seconds
+process54 started
+Skeleton took 1488.0 minuites and 56.880353927612305 seconds
+process55 started
+Skeleton took 1490.0 minuites and 14.629206895828247 seconds
+process95 started
+Skeleton took 1445.0 minuites and 8.749202728271484 seconds
+process104 started
+Skeleton took 1428.0 minuites and 38.85297775268555 seconds
+process81 started
+Skeleton took 1475.0 minuites and 21.344959020614624 seconds
+process45 started
+Skeleton took 1525.0 minuites and 21.243040323257446 seconds
+process82 started
+Skeleton took 1481.0 minuites and 20.74225378036499 seconds
+process119 started
+Skeleton took 1422.0 minuites and 19.36082911491394 seconds
+process74 started
+Skeleton took 1510.0 minuites and 42.77124834060669 seconds
+process127 started
+Skeleton took 1429.0 minuites and 46.33635377883911 seconds
+process112 started
+Skeleton took 1465.0 minuites and 32.00252175331116 seconds
+process46 started
+Skeleton took 1547.0 minuites and 52.080734729766846 seconds
+process108 started
+Skeleton took 1473.0 minuites and 47.33681392669678 seconds
+process105 started
+Skeleton took 1490.0 minuites and 12.327661037445068 seconds
+process111 started
+Skeleton took 1483.0 minuites and 37.768699645996094 seconds
+process72 started
+Skeleton took 1531.0 minuites and 23.802141666412354 seconds
+process53 started
+Skeleton took 1576.0 minuites and 3.668013572692871 seconds
+process47 started
+Skeleton took 1592.0 minuites and 57.891573667526245 seconds
+process80 started
+Skeleton took 1547.0 minuites and 51.19077205657959 seconds
+process73 started
+Skeleton took 1573.0 minuites and 26.512490272521973 seconds
+process79 started
+Skeleton took 1586.0 minuites and 28.130602598190308 seconds
+process114 started
+Skeleton took 1558.0 minuites and 44.06208062171936 seconds
 booting processes...
 done
-Total Solve took: 2.0 Minuites 25.11635708808899 Seconds
+Total Solve took: 1757.0 Minuites 32.07133603096008 Seconds
 Saving ... Please Wait
-Save Complete! Took 0.0 Minuites and 0.13568615913391113 Seconds
-Total time to Complete: 2.0 Minuites 25.959189653396606 Seconds
+Save Complete! Took 0.0 Minuites and 9.444921016693115 Seconds
+Total time to Complete: 1759.0 Minuites 28.082743167877197 Seconds
 
-Skeleton finished at Tue Jan 17 17:08:05 CST 2023
+Skeleton finished at Wed Jan 18 23:21:37 CST 2023
 0 mode try
 Beggining Plot
 starting animation
@@ -325,56 +325,6 @@ Wrote save name 23
 Saved 23
 Beggining Plot
 starting animation
-step 24
-Rotated 24
-Wrote save name 24
-Saved 24
-step 25
-Rotated 25
-Wrote save name 25
-Saved 25
-step 26
-Rotated 26
-Wrote save name 26
-Saved 26
-step 27
-Rotated 27
-Wrote save name 27
-Saved 27
-step 28
-Rotated 28
-Wrote save name 28
-Saved 28
-step 29
-Rotated 29
-Wrote save name 29
-Saved 29
-step 30
-Rotated 30
-Wrote save name 30
-Saved 30
-step 31
-Rotated 31
-Wrote save name 31
-Saved 31
-step 32
-Rotated 32
-Wrote save name 32
-Saved 32
-step 33
-Rotated 33
-Wrote save name 33
-Saved 33
-step 34
-Rotated 34
-Wrote save name 34
-Saved 34
-step 35
-Rotated 35
-Wrote save name 35
-Saved 35
-Beggining Plot
-starting animation
 step 0
 Rotated 0
 Wrote save name 0
@@ -423,6 +373,56 @@ step 11
 Rotated 11
 Wrote save name 11
 Saved 11
+Beggining Plot
+starting animation
+step 24
+Rotated 24
+Wrote save name 24
+Saved 24
+step 25
+Rotated 25
+Wrote save name 25
+Saved 25
+step 26
+Rotated 26
+Wrote save name 26
+Saved 26
+step 27
+Rotated 27
+Wrote save name 27
+Saved 27
+step 28
+Rotated 28
+Wrote save name 28
+Saved 28
+step 29
+Rotated 29
+Wrote save name 29
+Saved 29
+step 30
+Rotated 30
+Wrote save name 30
+Saved 30
+step 31
+Rotated 31
+Wrote save name 31
+Saved 31
+step 32
+Rotated 32
+Wrote save name 32
+Saved 32
+step 33
+Rotated 33
+Wrote save name 33
+Saved 33
+step 34
+Rotated 34
+Wrote save name 34
+Saved 34
+step 35
+Rotated 35
+Wrote save name 35
+Saved 35
 Beggining Plot
 starting animation
 step 36
@@ -625,56 +625,6 @@ Wrote save name 83
 Saved 83
 Beggining Plot
 starting animation
-step 108
-Rotated 108
-Wrote save name 108
-Saved 108
-step 109
-Rotated 109
-Wrote save name 109
-Saved 109
-step 110
-Rotated 110
-Wrote save name 110
-Saved 110
-step 111
-Rotated 111
-Wrote save name 111
-Saved 111
-step 112
-Rotated 112
-Wrote save name 112
-Saved 112
-step 113
-Rotated 113
-Wrote save name 113
-Saved 113
-step 114
-Rotated 114
-Wrote save name 114
-Saved 114
-step 115
-Rotated 115
-Wrote save name 115
-Saved 115
-step 116
-Rotated 116
-Wrote save name 116
-Saved 116
-step 117
-Rotated 117
-Wrote save name 117
-Saved 117
-step 118
-Rotated 118
-Wrote save name 118
-Saved 118
-step 119
-Rotated 119
-Wrote save name 119
-Saved 119
-Beggining Plot
-starting animation
 step 96
 Rotated 96
 Wrote save name 96
@@ -723,6 +673,56 @@ step 107
 Rotated 107
 Wrote save name 107
 Saved 107
+Beggining Plot
+starting animation
+step 84
+Rotated 84
+Wrote save name 84
+Saved 84
+step 85
+Rotated 85
+Wrote save name 85
+Saved 85
+step 86
+Rotated 86
+Wrote save name 86
+Saved 86
+step 87
+Rotated 87
+Wrote save name 87
+Saved 87
+step 88
+Rotated 88
+Wrote save name 88
+Saved 88
+step 89
+Rotated 89
+Wrote save name 89
+Saved 89
+step 90
+Rotated 90
+Wrote save name 90
+Saved 90
+step 91
+Rotated 91
+Wrote save name 91
+Saved 91
+step 92
+Rotated 92
+Wrote save name 92
+Saved 92
+step 93
+Rotated 93
+Wrote save name 93
+Saved 93
+step 94
+Rotated 94
+Wrote save name 94
+Saved 94
+step 95
+Rotated 95
+Wrote save name 95
+Saved 95
 Beggining Plot
 starting animation
 step 120
@@ -775,54 +775,54 @@ Wrote save name 131
 Saved 131
 Beggining Plot
 starting animation
-step 132
-Rotated 132
-Wrote save name 132
-Saved 132
-step 133
-Rotated 133
-Wrote save name 133
-Saved 133
-step 134
-Rotated 134
-Wrote save name 134
-Saved 134
-step 135
-Rotated 135
-Wrote save name 135
-Saved 135
-step 136
-Rotated 136
-Wrote save name 136
-Saved 136
-step 137
-Rotated 137
-Wrote save name 137
-Saved 137
-step 138
-Rotated 138
-Wrote save name 138
-Saved 138
-step 139
-Rotated 139
-Wrote save name 139
-Saved 139
-step 140
-Rotated 140
-Wrote save name 140
-Saved 140
-step 141
-Rotated 141
-Wrote save name 141
-Saved 141
-step 142
-Rotated 142
-Wrote save name 142
-Saved 142
-step 143
-Rotated 143
-Wrote save name 143
-Saved 143
+step 108
+Rotated 108
+Wrote save name 108
+Saved 108
+step 109
+Rotated 109
+Wrote save name 109
+Saved 109
+step 110
+Rotated 110
+Wrote save name 110
+Saved 110
+step 111
+Rotated 111
+Wrote save name 111
+Saved 111
+step 112
+Rotated 112
+Wrote save name 112
+Saved 112
+step 113
+Rotated 113
+Wrote save name 113
+Saved 113
+step 114
+Rotated 114
+Wrote save name 114
+Saved 114
+step 115
+Rotated 115
+Wrote save name 115
+Saved 115
+step 116
+Rotated 116
+Wrote save name 116
+Saved 116
+step 117
+Rotated 117
+Wrote save name 117
+Saved 117
+step 118
+Rotated 118
+Wrote save name 118
+Saved 118
+step 119
+Rotated 119
+Wrote save name 119
+Saved 119
 Beggining Plot
 starting animation
 step 156
@@ -923,6 +923,56 @@ step 155
 Rotated 155
 Wrote save name 155
 Saved 155
+Beggining Plot
+starting animation
+step 132
+Rotated 132
+Wrote save name 132
+Saved 132
+step 133
+Rotated 133
+Wrote save name 133
+Saved 133
+step 134
+Rotated 134
+Wrote save name 134
+Saved 134
+step 135
+Rotated 135
+Wrote save name 135
+Saved 135
+step 136
+Rotated 136
+Wrote save name 136
+Saved 136
+step 137
+Rotated 137
+Wrote save name 137
+Saved 137
+step 138
+Rotated 138
+Wrote save name 138
+Saved 138
+step 139
+Rotated 139
+Wrote save name 139
+Saved 139
+step 140
+Rotated 140
+Wrote save name 140
+Saved 140
+step 141
+Rotated 141
+Wrote save name 141
+Saved 141
+step 142
+Rotated 142
+Wrote save name 142
+Saved 142
+step 143
+Rotated 143
+Wrote save name 143
+Saved 143
 Beggining Plot
 starting animation
 step 168
@@ -1075,56 +1125,6 @@ Wrote save name 203
 Saved 203
 Beggining Plot
 starting animation
-step 204
-Rotated 204
-Wrote save name 204
-Saved 204
-step 205
-Rotated 205
-Wrote save name 205
-Saved 205
-step 206
-Rotated 206
-Wrote save name 206
-Saved 206
-step 207
-Rotated 207
-Wrote save name 207
-Saved 207
-step 208
-Rotated 208
-Wrote save name 208
-Saved 208
-step 209
-Rotated 209
-Wrote save name 209
-Saved 209
-step 210
-Rotated 210
-Wrote save name 210
-Saved 210
-step 211
-Rotated 211
-Wrote save name 211
-Saved 211
-step 212
-Rotated 212
-Wrote save name 212
-Saved 212
-step 213
-Rotated 213
-Wrote save name 213
-Saved 213
-step 214
-Rotated 214
-Wrote save name 214
-Saved 214
-step 215
-Rotated 215
-Wrote save name 215
-Saved 215
-Beggining Plot
-starting animation
 step 216
 Rotated 216
 Wrote save name 216
@@ -1173,56 +1173,6 @@ step 227
 Rotated 227
 Wrote save name 227
 Saved 227
-Beggining Plot
-starting animation
-step 240
-Rotated 240
-Wrote save name 240
-Saved 240
-step 241
-Rotated 241
-Wrote save name 241
-Saved 241
-step 242
-Rotated 242
-Wrote save name 242
-Saved 242
-step 243
-Rotated 243
-Wrote save name 243
-Saved 243
-step 244
-Rotated 244
-Wrote save name 244
-Saved 244
-step 245
-Rotated 245
-Wrote save name 245
-Saved 245
-step 246
-Rotated 246
-Wrote save name 246
-Saved 246
-step 247
-Rotated 247
-Wrote save name 247
-Saved 247
-step 248
-Rotated 248
-Wrote save name 248
-Saved 248
-step 249
-Rotated 249
-Wrote save name 249
-Saved 249
-step 250
-Rotated 250
-Wrote save name 250
-Saved 250
-step 251
-Rotated 251
-Wrote save name 251
-Saved 251
 Beggining Plot
 starting animation
 step 228
@@ -1275,54 +1225,104 @@ Wrote save name 239
 Saved 239
 Beggining Plot
 starting animation
-step 252
-Rotated 252
-Wrote save name 252
-Saved 252
-step 253
-Rotated 253
-Wrote save name 253
-Saved 253
-step 254
-Rotated 254
-Wrote save name 254
-Saved 254
-step 255
-Rotated 255
-Wrote save name 255
-Saved 255
-step 256
-Rotated 256
-Wrote save name 256
-Saved 256
-step 257
-Rotated 257
-Wrote save name 257
-Saved 257
-step 258
-Rotated 258
-Wrote save name 258
-Saved 258
-step 259
-Rotated 259
-Wrote save name 259
-Saved 259
-step 260
-Rotated 260
-Wrote save name 260
-Saved 260
-step 261
-Rotated 261
-Wrote save name 261
-Saved 261
-step 262
-Rotated 262
-Wrote save name 262
-Saved 262
-step 263
-Rotated 263
-Wrote save name 263
-Saved 263
+step 204
+Rotated 204
+Wrote save name 204
+Saved 204
+step 205
+Rotated 205
+Wrote save name 205
+Saved 205
+step 206
+Rotated 206
+Wrote save name 206
+Saved 206
+step 207
+Rotated 207
+Wrote save name 207
+Saved 207
+step 208
+Rotated 208
+Wrote save name 208
+Saved 208
+step 209
+Rotated 209
+Wrote save name 209
+Saved 209
+step 210
+Rotated 210
+Wrote save name 210
+Saved 210
+step 211
+Rotated 211
+Wrote save name 211
+Saved 211
+step 212
+Rotated 212
+Wrote save name 212
+Saved 212
+step 213
+Rotated 213
+Wrote save name 213
+Saved 213
+step 214
+Rotated 214
+Wrote save name 214
+Saved 214
+step 215
+Rotated 215
+Wrote save name 215
+Saved 215
+Beggining Plot
+starting animation
+step 240
+Rotated 240
+Wrote save name 240
+Saved 240
+step 241
+Rotated 241
+Wrote save name 241
+Saved 241
+step 242
+Rotated 242
+Wrote save name 242
+Saved 242
+step 243
+Rotated 243
+Wrote save name 243
+Saved 243
+step 244
+Rotated 244
+Wrote save name 244
+Saved 244
+step 245
+Rotated 245
+Wrote save name 245
+Saved 245
+step 246
+Rotated 246
+Wrote save name 246
+Saved 246
+step 247
+Rotated 247
+Wrote save name 247
+Saved 247
+step 248
+Rotated 248
+Wrote save name 248
+Saved 248
+step 249
+Rotated 249
+Wrote save name 249
+Saved 249
+step 250
+Rotated 250
+Wrote save name 250
+Saved 250
+step 251
+Rotated 251
+Wrote save name 251
+Saved 251
 Beggining Plot
 starting animation
 step 264
@@ -1375,6 +1375,56 @@ Wrote save name 275
 Saved 275
 Beggining Plot
 starting animation
+step 252
+Rotated 252
+Wrote save name 252
+Saved 252
+step 253
+Rotated 253
+Wrote save name 253
+Saved 253
+step 254
+Rotated 254
+Wrote save name 254
+Saved 254
+step 255
+Rotated 255
+Wrote save name 255
+Saved 255
+step 256
+Rotated 256
+Wrote save name 256
+Saved 256
+step 257
+Rotated 257
+Wrote save name 257
+Saved 257
+step 258
+Rotated 258
+Wrote save name 258
+Saved 258
+step 259
+Rotated 259
+Wrote save name 259
+Saved 259
+step 260
+Rotated 260
+Wrote save name 260
+Saved 260
+step 261
+Rotated 261
+Wrote save name 261
+Saved 261
+step 262
+Rotated 262
+Wrote save name 262
+Saved 262
+step 263
+Rotated 263
+Wrote save name 263
+Saved 263
+Beggining Plot
+starting animation
 step 276
 Rotated 276
 Wrote save name 276
@@ -1425,56 +1475,6 @@ Wrote save name 287
 Saved 287
 Beggining Plot
 starting animation
-step 84
-Rotated 84
-Wrote save name 84
-Saved 84
-step 85
-Rotated 85
-Wrote save name 85
-Saved 85
-step 86
-Rotated 86
-Wrote save name 86
-Saved 86
-step 87
-Rotated 87
-Wrote save name 87
-Saved 87
-step 88
-Rotated 88
-Wrote save name 88
-Saved 88
-step 89
-Rotated 89
-Wrote save name 89
-Saved 89
-step 90
-Rotated 90
-Wrote save name 90
-Saved 90
-step 91
-Rotated 91
-Wrote save name 91
-Saved 91
-step 92
-Rotated 92
-Wrote save name 92
-Saved 92
-step 93
-Rotated 93
-Wrote save name 93
-Saved 93
-step 94
-Rotated 94
-Wrote save name 94
-Saved 94
-step 95
-Rotated 95
-Wrote save name 95
-Saved 95
-Beggining Plot
-starting animation
 step 300
 Rotated 300
 Wrote save name 300
@@ -1523,6 +1523,254 @@ step 311
 Rotated 311
 Wrote save name 311
 Saved 311
+Beggining Plot
+starting animation
+step 312
+Rotated 312
+Wrote save name 312
+Saved 312
+step 313
+Rotated 313
+Wrote save name 313
+Saved 313
+step 314
+Rotated 314
+Wrote save name 314
+Saved 314
+step 315
+Rotated 315
+Wrote save name 315
+Saved 315
+step 316
+Rotated 316
+Wrote save name 316
+Saved 316
+step 317
+Rotated 317
+Wrote save name 317
+Saved 317
+step 318
+Rotated 318
+Wrote save name 318
+Saved 318
+step 319
+Rotated 319
+Wrote save name 319
+Saved 319
+step 320
+Rotated 320
+Wrote save name 320
+Saved 320
+step 321
+Rotated 321
+Wrote save name 321
+Saved 321
+step 322
+Rotated 322
+Wrote save name 322
+Saved 322
+step 323
+Rotated 323
+Wrote save name 323
+Saved 323
+Beggining Plot
+starting animation
+step 336
+Rotated 336
+Wrote save name 336
+Saved 336
+step 337
+Rotated 337
+Wrote save name 337
+Saved 337
+step 338
+Rotated 338
+Wrote save name 338
+Saved 338
+step 339
+Rotated 339
+Wrote save name 339
+Saved 339
+step 340
+Rotated 340
+Wrote save name 340
+Saved 340
+step 341
+Rotated 341
+Wrote save name 341
+Saved 341
+step 342
+Rotated 342
+Wrote save name 342
+Saved 342
+step 343
+Rotated 343
+Wrote save name 343
+Saved 343
+step 344
+Rotated 344
+Wrote save name 344
+Saved 344
+step 345
+Rotated 345
+Wrote save name 345
+Saved 345
+step 346
+Rotated 346
+Wrote save name 346
+Saved 346
+step 347
+Rotated 347
+Wrote save name 347
+Saved 347
+step 348
+Rotated 348
+Wrote save name 348
+Saved 348
+step 349
+Rotated 349
+Wrote save name 349
+Saved 349
+step 350
+Rotated 350
+Wrote save name 350
+Saved 350
+step 351
+Rotated 351
+Wrote save name 351
+Saved 351
+step 352
+Rotated 352
+Wrote save name 352
+Saved 352
+step 353
+Rotated 353
+Wrote save name 353
+Saved 353
+step 354
+Rotated 354
+Wrote save name 354
+Saved 354
+step 355
+Rotated 355
+Wrote save name 355
+Saved 355
+step 356
+Rotated 356
+Wrote save name 356
+Saved 356
+step 357
+Rotated 357
+Wrote save name 357
+Saved 357
+step 358
+Rotated 358
+Wrote save name 358
+Saved 358
+step 359
+Rotated 359
+Wrote save name 359
+Saved 359
+Beggining Plot
+starting animation
+step 288
+Rotated 288
+Wrote save name 288
+Saved 288
+step 289
+Rotated 289
+Wrote save name 289
+Saved 289
+step 290
+Rotated 290
+Wrote save name 290
+Saved 290
+step 291
+Rotated 291
+Wrote save name 291
+Saved 291
+step 292
+Rotated 292
+Wrote save name 292
+Saved 292
+step 293
+Rotated 293
+Wrote save name 293
+Saved 293
+step 294
+Rotated 294
+Wrote save name 294
+Saved 294
+step 295
+Rotated 295
+Wrote save name 295
+Saved 295
+step 296
+Rotated 296
+Wrote save name 296
+Saved 296
+step 297
+Rotated 297
+Wrote save name 297
+Saved 297
+step 298
+Rotated 298
+Wrote save name 298
+Saved 298
+step 299
+Rotated 299
+Wrote save name 299
+Saved 299
+Beggining Plot
+starting animation
+step 324
+Rotated 324
+Wrote save name 324
+Saved 324
+step 325
+Rotated 325
+Wrote save name 325
+Saved 325
+step 326
+Rotated 326
+Wrote save name 326
+Saved 326
+step 327
+Rotated 327
+Wrote save name 327
+Saved 327
+step 328
+Rotated 328
+Wrote save name 328
+Saved 328
+step 329
+Rotated 329
+Wrote save name 329
+Saved 329
+step 330
+Rotated 330
+Wrote save name 330
+Saved 330
+step 331
+Rotated 331
+Wrote save name 331
+Saved 331
+step 332
+Rotated 332
+Wrote save name 332
+Saved 332
+step 333
+Rotated 333
+Wrote save name 333
+Saved 333
+step 334
+Rotated 334
+Wrote save name 334
+Saved 334
+step 335
+Rotated 335
+Wrote save name 335
+Saved 335
 
-Plot finished at Tue Jan 17 17:08:39 CST 2023
+Plot finished at Wed Jan 18 23:55:37 CST 2023
 

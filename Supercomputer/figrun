@@ -1,2 +1,2 @@
-qsub -l nodes=1:ppn=50 -q ling2 3DFIG.sh
-qsub -l nodes=1:ppn=50 -q ling 3DFIG.sh
+qsub -l nodes=1:ppn=128 -q ling2 3DFIG.sh
+qsub -l nodes=1:ppn=36 -q ling 3DFIG.sh
