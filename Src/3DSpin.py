@@ -35,10 +35,10 @@ def paraplot(data,start : int,stop : int,ids : int):
         #Draw skeleton Points
         p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
         fig.colorbar(p)
-        q = ax.scatter3D(intx,inty,intz,s=5,c=tz,cmap='Greys',alpha=0.5)
     elif data[-1] == 2:
         p = ax.scatter3D(tx,ty,tz,c=tr,cmap='rainbow')
         fig.colorbar(p)
+        q = ax.scatter3D(intx,inty,intz,s=5,c=tz,cmap='Greys',alpha=0.5)
     else:
         p = ax.scatter3D(tx,ty,tz,s=15,c=tz,cmap='Greys')
         fig.colorbar(p)
@@ -99,7 +99,7 @@ if __name__ == '__main__':
             for row in data:
                 if str(row[0]) == 'x':
                     a = 0
-                elif float(row[3]) > -100000000:
+                elif float(row[3]) > 0.47:
                     i += 1
                     x = float(row[0])
                     y = float(row[1])
