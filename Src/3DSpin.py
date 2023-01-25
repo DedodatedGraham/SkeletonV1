@@ -97,6 +97,7 @@ if __name__ == '__main__':
             i = 0
             j = 0
             for row in data:
+                print('loading',i,j)
                 if str(row[0]) == 'x':
                     a = 0
                 elif float(row[3]) > -10000000000:
