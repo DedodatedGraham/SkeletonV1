@@ -148,6 +148,7 @@ if __name__ == '__main__':
         fit = np.polyfit(plotz,plotr,3)
         plt.plot(plotz,plotr,color='blue')
         plt.savefig(saveapprox)
+    print('building')
     if nodes > 1:
         i = 0
         st = []
