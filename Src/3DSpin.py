@@ -92,14 +92,14 @@ if __name__ == '__main__':
     tr = []
     if mode == 0 or mode == 2:
         with open(inpath,'r') as csvfile:
-            data = csv.reader(csvfile, delimiter = ',')
+            data = csv.reader(csvfile, delimiter = ' ')
             liner = []
             i = 0
             j = 0
             for row in data:
                 if str(row[0]) == 'x':
                     a = 0
-                elif float(row[3]) > 0.47:
+                elif float(row[3]) > -10000000000:
                     i += 1
                     x = float(row[0])
                     y = float(row[1])

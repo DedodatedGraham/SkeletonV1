@@ -23,10 +23,10 @@ def checkRepeat(check : list):
     a = False
     size = len(check)
     while n < size:
-        
+
         right = check[size - n : size]
         left = check[size - 2 * n : size - (n)]
-        
+
         if right == left:
             a = True
             break
@@ -58,11 +58,11 @@ def getRadius(point1, point2 , norm) -> float:
     theta = np.arccos(inside)
     #Finally finds radius
     radius = np.abs(dist / (2 * np.cos(theta)))
-    
+
     return radius
 # @profile
 def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
-    
+
     i = 0
     inside = 0
     while i < len(vec1):
@@ -73,7 +73,7 @@ def getAngle(vec1 : list, vec2 : list,len1 : float, len2 : float) -> float:
     else:
         inside = inside / (len1 * len2)
         if inside > 1 or inside < -1:
-            inside = np.round(inside,6) 
+            inside = np.round(inside,6)
         theta = np.arccos(inside)
     return theta
 # @profile
@@ -122,7 +122,7 @@ def getPoint(point : list, vec : list):
         ret.append(point[i] + vec[i])
         i += 1
     return ret
-    
+
 
 
 def randPN(points : list,norms : list ):
@@ -153,7 +153,7 @@ def getDeviation(list1 : list, list2 : list):
     #1 = Completely same
     i = 0
     if len(list1) == 2:
-        top = list1[0]*list2[0] + list1[1]*list2[1] 
+        top = list1[0]*list2[0] + list1[1]*list2[1]
         bot = ((list1[0]*list1[0] + list1[1]*list1[1]) ** 0.5) * ((list2[0]*list2[0] + list2[1]*list2[1]) ** 0.5)
     else:
         top = list1[0]*list2[0] + list1[1]*list2[1] + list1[2]*list2[2]
@@ -168,7 +168,7 @@ def getDeviation(list1 : list, list2 : list):
         ins = 1
     angle = np.arccos(ins)
     angle = abs(angle) / np.pi
-    score = 1 - angle 
+    score = 1 - angle
     return score
 
 

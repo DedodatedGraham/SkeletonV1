@@ -1931,7 +1931,7 @@ class SkeleNet:
             output = pd.DataFrame({'x':tx,'y':ty,'r':tr})
         else:
             output = pd.DataFrame({'x':tx,'y':ty,'z':tz,'r':tr})
-        output[1:].to_csv(outputfile,index=False)
+        output[1:].to_csv(outputfile,index=False,sep = ' ')
         et = time.time()
         tt = et - st
         print('Save Complete! Took {} Minuites and {} Seconds'.format(tt // 60, tt % 60))

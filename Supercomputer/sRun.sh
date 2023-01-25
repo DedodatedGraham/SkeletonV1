@@ -12,7 +12,7 @@ echo "processes $num"
 
 echo "Skeleton started at `date`"
 echo
-mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/Main.py -m 1 -p 128 -i 'infc_50.dat' -o 'infc_50_save.dat'
+mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/Main.py -m 1 -p 128 -i 'infc_0.dat' -o 'infc_0_save.dat'
 echo
 echo "Skeleton finished at `date`"
 mpiexec -n 1 -machinefile $PBS_NODEFILE python3 ../Src/3DSpin.py -i 'Output/infc_50_savePrePurge.dat' -n 30 -m 0
