@@ -33,7 +33,18 @@ def paraplot(data,start : int,stop : int,ids : int):
     #print('Loaded fig')
     if data[-1] == 0:
         #Draw skeleton Points
-        p = ax.scatter3D(tx,ty,tz,c=tr,cmap='rainbow')
+        i = 0
+        txx = []
+        tyy = []
+        tzz = []
+        while(i < len(tx)){
+            u, v = np.mgrid[0:2 * np.pi:30j, 0:np.pi:20j]
+            txx = tx[i] + np.cos(u) * np.sin(v)
+            tyy = ty[i] + np.sin(u) * np.sin(v)
+            tzz = tz[i] + np.cos(v)
+            print('temp x is',txx)
+            p = ax.scatter3D(txx,tyy,tzz,c=tr,cmap='rainbow')
+        }
         fig.colorbar(p)
     elif data[-1] == 2:
         #3D Sphere
