@@ -12,15 +12,11 @@ from DataStructures import quicksort
 
 def paraplot(data,start : int,stop : int,ids : int):
     print("Beggining Plot")
-<<<<<<< HEAD
     if data[-1] == 0 or data[-1] == 1:
         import matplotlib
         import matplotlib.pyplot as plt
     else:
         from mayavi import mlab
-=======
-    import matplotlib.pyplot as plt
->>>>>>> ed1b910f9eabacd8ab874e9d67afcd381d8443dc
     #print('importing data')
     tx = data[0]
     ty = data[1]
@@ -41,7 +37,6 @@ def paraplot(data,start : int,stop : int,ids : int):
     #print('Loaded fig')
     if data[-1] == 0:
         #Draw skeleton Points
-<<<<<<< HEAD
         i = 0
         txx = []
         tyy = []
@@ -62,10 +57,6 @@ def paraplot(data,start : int,stop : int,ids : int):
             ax.scatter3D(txx,tyy,tzz,s=10,c=color,cmap=cmap,norm=norm)
             i += 1
         fig.colorbar(colorbar,ax=ax)
-=======
-        p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='rainbow')
-        fig.colorbar(p)
->>>>>>> ed1b910f9eabacd8ab874e9d67afcd381d8443dc
     elif data[-1] == 2:
         p = ax.scatter3D(tx,ty,tz,c=tr,cmap='rainbow')
         fig.colorbar(p)
