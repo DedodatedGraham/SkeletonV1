@@ -75,9 +75,9 @@ with open(intpath,'r') as csvfile:
 #plt.plot(,5,color='green')
 #plt.savefig('2DInt.png')
 
-#Next We Do the Actual Plotting 
+#Next We Do the Actual Plotting
 fig = plt.figure(outpath)
-ax = plt.axes(projection='3d') 
+ax = plt.axes(projection='3d')
 #p = ax.scatter3D(tx,ty,tz,s=5,c=tr,cmap='winter')
 #fig.colorbar(p)
 q = ax.scatter3D(ttx,tty,ttz,s=5,c=ttz,cmap='winter')
