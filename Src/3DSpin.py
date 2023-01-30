@@ -13,6 +13,7 @@ from DataStructures import quicksort
 def paraplot(data,start : int,stop : int,ids : int):
     print("Beggining Plot")
     if data[-1] == 0 or data[-1] == 1:
+        import matplotlib
         import matplotlib.pyplot as plt
     else:
         from mayavi import mlab
@@ -37,15 +38,22 @@ def paraplot(data,start : int,stop : int,ids : int):
         txx = []
         tyy = []
         tzz = []
-        while(i < len(tx)){
-            u, v = np.mgrid[0:2 * np.pi:30j, 0:np.pi:20j]
-            txx = tx[i] + np.cos(u) * np.sin(v)
-            tyy = ty[i] + np.sin(u) * np.sin(v)
-            tzz = tz[i] + np.cos(v)
-            print('temp x is',txx)
-            p = ax.scatter3D(txx,tyy,tzz,c=tr,cmap='rainbow')
-        }
-        fig.colorbar(p)
+        cmap = matplotlib.cm.rainbow
+        norm = matplotlib.colors.Normalize(vmin =min(tr),vmax=max(tr))
+        colorbar = matplotlib.cm.ScalarMappable(norm=norm,cmap=cmap);
+        while(i < len(tx)):
+            u,v = np.mgrid[0.0:np.pi:20j,0.0:2*np.pi:20j]
+            txx = tx[i] + tr[i] * np.cos(u) * np.sin(v)
+            tyy = ty[i] + tr[i] * np.sin(u) * np.sin(v)
+            tzz = tz[i] + tr[i] * np.cos(v)
+            j = 0
+            color = []
+            while(j < 400):
+                color.append(tr[i])
+                j += 1
+            ax.scatter3D(txx,tyy,tzz,s=10,c=color,cmap=cmap,norm=norm)
+            i += 1
+        fig.colorbar(colorbar,ax=ax)
     elif data[-1] == 2:
         #3D Sphere
         print('Making Circles')
